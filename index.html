@@ -1,0 +1,3561 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>유전자분석 · 실습 학습·미션</title>
+<style>
+/* ==========================================================================
+   유전자분석 — 실습 학습·미션 (로컬 전용 · 미배포)
+   밝고 깔끔한 일반 학습 앱 톤. 외부 폰트·스크립트·이미지·통신 일절 없음. file:// 로 바로 열립니다.
+   마스코트(동그래)는 인라인 SVG 스프라이트 + 절제된 CSS 애니메이션.
+   ========================================================================== */
+:root{
+  --bg:#eef1f6; --bg2:#f6f8fb; --card:#ffffff; --card2:#f7f9fc; --card3:#eef2f7;
+  --glass:#ffffff; --glass-line:#e3e8ef;
+  --line:#e5e9f0; --line2:#cbd5e1;
+  --tx:#1c2733; --tx2:#4c5a6a; --tx3:#8494a5;
+  --mint:#2b6cb0; --cyan:#3a7fc4; --magenta:#5a67d8; --violet:#5a67d8;
+  --green:#2f855a; --amber:#b7791f; --red:#c53030; --gold:#b7791f;
+  --mintdk:#e8f1fb; --amberdk:#fbf1df; --reddk:#fdecec; --greendk:#e7f4ec;
+  --glow-mint:0 1px 3px rgba(16,42,72,.08),0 4px 14px rgba(16,42,72,.06);
+  --glow-cyan:0 1px 3px rgba(16,42,72,.08);
+  --glow-magenta:0 1px 3px rgba(16,42,72,.08);
+  --shadow:0 1px 2px rgba(16,42,72,.06),0 2px 8px rgba(16,42,72,.05);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg);
+  color:var(--tx);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Malgun Gothic","Apple SD Gothic Neo","Noto Sans KR","맑은 고딕",sans-serif;
+  font-size:16px; line-height:1.62; word-break:keep-all; overflow-wrap:anywhere;
+}
+button,input,textarea{font-family:inherit;font-size:16px;color:inherit}
+.wrap{max-width:560px;margin:0 auto;padding:0 14px}
+
+/* ---------- 배경 장식 제거 (게임식 분자·DNA 흐름 삭제) ---------- */
+#bgfx{display:none}
+
+/* ---------- 검증 배너 ---------- */
+#checkBanner{position:relative;z-index:50;background:var(--reddk);border-bottom:2px solid var(--red);color:#7a2020;padding:12px 14px;font-size:15px;line-height:1.5}
+#checkBanner b{color:var(--red)}
+#checkBanner ul{margin:8px 0 0 18px;padding:0}
+
+/* ---------- 상단 바 ---------- */
+#topbar{position:sticky;top:0;z-index:40;background:#ffffff;border-bottom:1px solid var(--line)}
+.tb-row{display:flex;align-items:center;gap:10px;padding:9px 14px}
+.tb-back{flex:0 0 auto;min-width:44px;min-height:44px;border:1px solid var(--line2);background:var(--card2);border-radius:12px;cursor:pointer;font-size:18px;line-height:1;color:var(--tx)}
+.tb-back:active{transform:translateY(1px)}
+.hud-ava{flex:0 0 auto;width:40px;height:40px;border-radius:50%;background:var(--mintdk);border:1.5px solid var(--mint);
+  display:flex;align-items:flex-end;justify-content:center;overflow:hidden}
+.hud-ava .coli-svg{width:38px;transform:translateY(3px)}
+.tb-id{flex:1 1 auto;min-width:0}
+.tb-title{font-size:15px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tb-sub{font-size:12px;color:var(--tx3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tb-right{flex:0 0 auto;text-align:right;min-width:74px}
+.tb-bar{height:7px;border-radius:99px;background:var(--card3);border:1px solid var(--line);overflow:hidden;margin-top:4px}
+.tb-bar>i{display:block;height:100%;width:0;border-radius:99px;background:var(--mint);transition:width .5s ease}
+.tb-barlbl{font-size:10px;color:var(--tx3);margin-top:2px;letter-spacing:.02em}
+.notice{background:var(--amberdk);border-top:1px solid #e6d3a8;color:#8a6516;font-size:12.5px;line-height:1.45;padding:7px 14px;text-align:center}
+.notice b{color:var(--amber)}
+
+/* ---------- 화면 ---------- */
+main{position:relative;z-index:1;padding:16px 0 132px}
+.screen{display:none}
+.screen.active{display:block;animation:scEnter .3s ease-out}
+@keyframes scEnter{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+h2.sc-h{font-size:20px;margin:2px 0 4px}
+p.sc-p{color:var(--tx2);font-size:14.5px;margin:0 0 16px}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin:0 0 12px;box-shadow:var(--shadow)}
+.card.tight{padding:12px}
+.card h3{margin:0 0 8px;font-size:16px}
+.muted{color:var(--tx2);font-size:14px}
+.small{font-size:13px;color:var(--tx3)}
+.src{font-size:12px;color:var(--tx3);margin-top:8px;border-top:1px dashed var(--line2);padding-top:7px}
+.pre{white-space:pre-wrap}
+
+/* ---------- 버튼 ---------- */
+.btn{display:block;width:100%;min-height:50px;padding:13px 14px;margin:0 0 10px;background:var(--card);color:var(--tx);
+  border:1px solid var(--line2);border-radius:12px;cursor:pointer;text-align:left;font-size:16px;line-height:1.45}
+.btn:active{transform:scale(.985)}
+.btn.primary{background:var(--mint);color:#ffffff;border-color:var(--mint);font-weight:800;text-align:center}
+.btn.primary:active{background:#255d98}
+.btn.ghost{background:transparent;border-color:var(--line)}
+.btn.center{text-align:center}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.btn.sm{min-height:44px;padding:10px 12px;font-size:14.5px;margin-bottom:8px}
+.btn.danger{border-color:var(--red);color:var(--red)}
+/* 📅 교수 대시보드 주차 선택 — 가로 스크롤 없이 작은 버튼이 줄바꿈되어 다 보이게 */
+.wkpick{display:flex;flex-wrap:wrap;gap:6px}
+.wkbtn{flex:0 0 auto;width:auto;min-height:40px;padding:7px 10px;margin:0;border-radius:10px;
+  border:1px solid var(--line2);background:#eef1f4;color:var(--tx2);font-size:13.5px;line-height:1.2;
+  font-weight:600;cursor:pointer;text-align:center;white-space:nowrap}
+.wkbtn:active{transform:scale(.97)}
+.wkbtn.on{background:var(--mint);border-color:var(--mint);color:#ffffff;font-weight:800}
+.wkbtn .pre{font-size:11px;font-weight:600;opacity:.85;margin-left:2px}
+.row{display:flex;gap:8px}
+.row>*{flex:1 1 0;min-width:0}
+
+/* ---------- 로비 헤더 ---------- */
+.hero{position:relative;overflow:hidden;border:1px solid var(--line);border-top:3px solid var(--mint);
+  background:#ffffff;border-radius:16px;padding:18px 16px;margin-bottom:14px;box-shadow:var(--shadow)}
+.hero .helix-band{display:none}
+.hero>*{position:relative;z-index:1}
+.hero .k{font-size:12px;letter-spacing:.1em;color:var(--mint);font-weight:800}
+.hero h1{font-size:24px;margin:6px 0 4px;line-height:1.3;color:var(--tx)}
+.hero .sub{font-size:13.5px;color:var(--tx2)}
+.hero .chips{margin-top:12px;display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:12px;padding:4px 9px;border-radius:999px;background:var(--card3);border:1px solid var(--line);color:var(--tx2)}
+.chip.mint{background:var(--mintdk);border-color:#c3ddf5;color:var(--mint)}
+.chip.amber{background:var(--amberdk);border-color:#e6d3a8;color:var(--amber)}
+
+/* ---------- 마스코트 인사 말풍선 ---------- */
+.greet{display:flex;align-items:flex-end;gap:8px;margin:2px 0 12px}
+.greet .coli-svg{width:76px;flex:0 0 auto}
+.speech{position:relative;flex:1 1 auto;background:var(--card2);border:1px solid var(--line);border-radius:14px;border-bottom-left-radius:5px;
+  padding:11px 13px;font-size:14px;color:var(--tx);box-shadow:var(--shadow)}
+.speech:after{content:"";position:absolute;left:-7px;bottom:12px;width:0;height:0;border:7px solid transparent;border-right-color:var(--card2);border-left:0}
+
+/* ---------- 파이프라인 스텝 목록 (게임 보드 → 일반 목록) ---------- */
+.board-wrap{border-radius:12px}
+.steplist{margin:0}
+.steprow{display:flex;align-items:center;gap:11px;padding:10px 4px;border-bottom:1px solid var(--line)}
+.steprow:last-child{border-bottom:0}
+.steprow .snum{flex:0 0 auto;width:30px;height:30px;border-radius:8px;background:var(--card3);color:var(--tx3);text-align:center;line-height:30px;font-size:13px;font-weight:800}
+.steprow .sbd{flex:1 1 auto;min-width:0}
+.steprow .swk{font-size:12px;color:var(--tx3)}
+.steprow .snm{font-size:15px;font-weight:700;color:var(--tx)}
+.steprow .sst{flex:0 0 auto;font-size:11.5px;font-weight:800;padding:3px 9px;border-radius:999px;background:var(--card3);border:1px solid var(--line);color:var(--tx3);white-space:nowrap}
+.steprow.cur .snum{background:var(--mintdk);color:var(--mint)}
+.steprow.cur .sst{background:var(--mintdk);border-color:#c3ddf5;color:var(--mint)}
+.steprow.done .snum{background:var(--greendk);color:var(--green)}
+.steprow.done .sst{background:var(--greendk);border-color:#bfe2cd;color:var(--green)}
+.map-legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;font-size:12px;color:var(--tx2)}
+.map-legend i{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:5px;vertical-align:-1px}
+
+/* ---------- 모드 버튼 (방어용 · 현재 미사용) ---------- */
+.modebtn{display:flex;gap:11px;align-items:flex-start;width:100%;text-align:left;min-height:64px;padding:12px;margin-bottom:10px;
+  background:var(--card);border:1px solid var(--line2);border-radius:12px;cursor:pointer}
+.modebtn:active{transform:scale(.99)}
+.modebtn .ic{font-size:22px;line-height:1.15;flex:0 0 auto}
+.modebtn .bd{flex:1 1 auto;min-width:0}
+.modebtn .h{font-weight:700;font-size:15.5px}
+.modebtn .d{font-size:13px;color:var(--tx2);margin-top:2px}
+.modebtn .st{font-size:12.5px;margin-top:5px;color:var(--tx3)}
+.modebtn.done{border-color:var(--green)}
+.modebtn.done .st{color:var(--green)}
+
+/* ---------- 탐색·항목 ---------- */
+.item{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;min-height:52px;padding:11px 12px;margin-bottom:8px;
+  background:var(--card);border:1px solid var(--line);border-radius:12px;cursor:pointer}
+.item .bx{flex:0 0 auto;width:22px;height:22px;border-radius:7px;border:2px solid var(--line2);margin-top:2px;text-align:center;line-height:19px;font-size:14px}
+.item.on{border-color:var(--mint);background:var(--mintdk)}
+.item.on .bx{background:var(--mint);border-color:var(--mint);color:#fff;font-weight:900}
+.item .nm{font-size:15px}
+.item .ds{font-size:12.5px;color:var(--tx3);margin-top:2px}
+.fb{border-left:4px solid var(--line2);padding:9px 11px;margin-bottom:8px;background:var(--card2);border-radius:0 10px 10px 0}
+.fb.ok{border-left-color:var(--green)}
+.fb.miss{border-left-color:var(--amber)}
+.fb.bad{border-left-color:var(--red)}
+.fb .h{font-weight:700;font-size:14.5px}
+.fb .b{font-size:13.5px;color:var(--tx2);margin-top:3px}
+
+/* ---------- 순서 ---------- */
+.slot{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;padding:11px 12px;margin-bottom:8px;background:var(--card2);border:1px solid var(--line2);border-radius:12px;cursor:pointer;min-height:52px}
+.slot .no{flex:0 0 auto;width:26px;height:26px;border-radius:8px;background:var(--mintdk);color:var(--mint);text-align:center;line-height:26px;font-size:13px;font-weight:800}
+.slot.empty{background:transparent;border-style:dashed;color:var(--tx3);cursor:default}
+.pool .item{border-style:solid}
+.lockmk{color:var(--amber);font-weight:700}
+
+/* ---------- 퀴즈 ---------- */
+.qhead{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.qhead .p{font-size:13px;color:var(--tx3)}
+.qhead .c{margin-left:auto;font-size:13px;font-weight:800;color:var(--mint)}
+.quiz-coli{flex:0 0 auto;width:48px;height:54px;margin-left:6px}
+.quiz-coli .coli-svg{width:48px}
+.tbar{height:10px;border-radius:99px;background:var(--card3);border:1px solid var(--line);overflow:hidden;margin-bottom:14px}
+.tbar>i{display:block;height:100%;background:var(--mint);width:100%}
+.tbar.warn>i{background:var(--amber)}
+.tbar.crit>i{background:var(--red)}
+.qtext{font-size:18px;line-height:1.55;font-weight:700;margin:0 0 14px}
+.ch{display:flex;gap:10px;width:100%;text-align:left;min-height:54px;padding:13px;margin-bottom:9px;background:var(--card);border:1px solid var(--line2);border-radius:12px;cursor:pointer;font-size:15.5px}
+.ch:active{transform:scale(.99)}
+.ch .mk{flex:0 0 auto;width:24px;height:24px;border-radius:8px;background:var(--card3);text-align:center;line-height:24px;font-size:13px;font-weight:800}
+.ch.right{border-color:var(--green);background:var(--greendk)}
+.ch.wrong{border-color:var(--red);background:var(--reddk)}
+.verdict{position:relative;border-radius:12px;padding:12px 13px;margin-bottom:12px;font-weight:800}
+.verdict.ok{background:var(--greendk);border:1px solid var(--green);color:var(--green)}
+.verdict.no{background:var(--reddk);border:1px solid var(--red);color:var(--red)}
+.verdict.to{background:var(--amberdk);border:1px solid var(--amber);color:var(--amber)}
+.play-shake{animation:shake .4s}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(5px)}60%{transform:translateX(-4px)}80%{transform:translateX(2px)}}
+.numin{width:100%;min-height:54px;padding:12px;border-radius:12px;background:var(--card);border:1px solid var(--line2);font-size:20px;text-align:center;color:var(--tx)}
+.numin:focus{outline:none;border-color:var(--mint)}
+.toggle{display:flex;align-items:center;gap:10px;padding:11px 12px;background:var(--card);border:1px solid var(--line);border-radius:12px;margin-bottom:12px;cursor:pointer;min-height:48px}
+.toggle .sw{flex:0 0 auto;width:46px;height:26px;border-radius:99px;background:var(--card3);border:1px solid var(--line2);position:relative}
+.toggle .sw i{position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:99px;background:var(--tx3);transition:left .15s}
+.toggle.on .sw{background:var(--mintdk);border-color:var(--mint)}
+.toggle.on .sw i{left:22px;background:var(--mint)}
+.toggle .lb{flex:1 1 auto;font-size:14.5px}
+
+/* ---------- 추리(사건부) ---------- */
+.clue{border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:9px;background:var(--card2)}
+.clue.locked{opacity:.85;border-style:dashed}
+.clue .lb{font-weight:700;font-size:14.5px}
+.clue .bd{font-size:14px;color:var(--tx2);margin-top:6px}
+.clue .rh{font-size:13px;color:var(--mint);margin-top:7px;background:var(--mintdk);border-radius:10px;padding:8px 10px}
+.pick{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;min-height:54px;padding:12px;margin-bottom:9px;background:var(--card);border:1px solid var(--line2);border-radius:12px;cursor:pointer;font-size:15px}
+.pick .mk{flex:0 0 auto;width:26px;height:26px;border-radius:8px;background:var(--card3);text-align:center;line-height:26px;font-weight:800;font-size:13px}
+.pick.on{border-color:var(--mint);background:var(--mintdk)}
+.pick.on .mk{background:var(--mint);color:#fff}
+
+/* ---------- 배지·레벨 (방어용 · 현재 미사용) ---------- */
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.badge{border:1px solid var(--line);border-radius:12px;padding:10px 7px;text-align:center;background:var(--card)}
+.badge.got{border-color:var(--gold);background:var(--amberdk)}
+.badge .i{font-size:24px;line-height:1.2}
+.badge .n{font-size:11.5px;margin-top:3px;font-weight:700}
+.badge.locked{opacity:.5}
+.badge .c{font-size:10.5px;color:var(--tx3);margin-top:3px;line-height:1.35}
+.lvrow{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+.lvrow:last-child{border-bottom:0}
+.lvrow .lv{flex:0 0 auto;width:34px;font-weight:800;color:var(--tx3);font-size:13px}
+.lvrow .nm{font-weight:700;font-size:14.5px}
+.lvrow .cd{font-size:12.5px;color:var(--tx3)}
+.lvrow.cur .nm{color:var(--mint)}
+.lvrow.locked{opacity:.55}
+
+/* ---------- 표 ---------- */
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{text-align:left;padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--tx3);font-weight:600;font-size:12.5px}
+th.nw{white-space:nowrap}
+.tblwrap{overflow-x:auto}
+
+/* ---------- 마스코트 동그래 — 절제된 애니메이션 ---------- */
+.coli-svg{display:inline-block}
+.dgl{position:relative;display:inline-block;line-height:0;vertical-align:bottom}
+.dgl .dgl-body{width:100%;height:auto;display:block;position:relative;z-index:1;
+  transform-origin:50% 92%;animation:dglIdle 5s ease-in-out infinite;will-change:transform}
+.dgl .dgl-shadow{position:absolute;left:50%;bottom:-2%;width:50%;height:5%;transform:translateX(-50%);
+  border-radius:50%;background:radial-gradient(ellipse at center,rgba(28,39,51,.16),rgba(28,39,51,0) 72%);z-index:0}
+.dgl .dgl-fx{position:absolute;inset:0;z-index:2;pointer-events:none}
+.dgl .dgl-fx span{position:absolute;opacity:0}
+.dgl .spk{width:10%;height:10%;background:radial-gradient(circle,#fff 8%,var(--gold) 34%,transparent 64%);border-radius:50%}
+.dgl .spk1{top:6%;left:8%}.dgl .spk2{top:14%;right:6%}.dgl .spk3{top:38%;left:2%}
+.dgl .swt{top:16%;right:12%;width:8%;height:11%;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;
+  background:linear-gradient(160deg,#8fd8ff,#3aa0e6)}
+
+/* 아주 은은한 idle 만 — 통통 튐·기울임·스쿼시 제거 */
+@keyframes dglIdle{0%,100%{transform:translateY(0)}50%{transform:translateY(-1.6%)}}
+/* 정답: 짧고 작은 반짝임 (1회) */
+.dgl[data-mood="success"] .spk{animation:dglSpk 1.4s ease-in-out 1}
+.dgl[data-mood="success"] .spk2{animation-delay:.2s}
+.dgl[data-mood="success"] .spk3{animation-delay:.4s}
+@keyframes dglSpk{0%,100%{opacity:0;transform:scale(.3)}45%{opacity:.9;transform:scale(1)}}
+/* 오답: 작은 땀방울 (1회) */
+.dgl[data-mood="fail"] .swt{animation:dglSwt 1.5s ease-in 1}
+@keyframes dglSwt{0%{opacity:0;transform:translateY(0) scale(.6)}20%{opacity:.9;transform:translateY(0) scale(1)}75%{opacity:.9;transform:translateY(240%) scale(1)}100%{opacity:0;transform:translateY(280%) scale(.8)}}
+
+/* HUD 원형 아바타 */
+.hud-ava .dgl{width:100%!important;height:100%!important;transform:none!important}
+.hud-ava .dgl .dgl-body{width:100%;height:100%;object-fit:cover;object-position:50% 8%}
+.hud-ava .dgl .dgl-shadow,.hud-ava .dgl .dgl-fx{display:none}
+
+/* ---------- 축하 카드 (정적 · 화려한 연출 제거) ---------- */
+#rewardOv{position:fixed;inset:0;z-index:95;display:none;align-items:center;justify-content:center;background:rgba(28,39,51,.45);padding:20px}
+#rewardOv.on{display:flex}
+.reward-card{position:relative;max-width:340px;width:100%;text-align:center;padding:22px 18px 20px;border-radius:18px;
+  background:#ffffff;border:1px solid var(--line);border-top:4px solid var(--green);box-shadow:0 12px 40px rgba(16,42,72,.22);overflow:hidden}
+.reward-card>*{position:relative;z-index:1}
+.reward-coli .coli-svg{width:104px;margin:0 auto}
+.reward-kicker{font-size:12px;letter-spacing:.06em;color:var(--green);font-weight:800;margin-top:4px}
+.reward-title{font-size:21px;font-weight:900;margin-top:4px;color:var(--tx)}
+.reward-sub{font-size:14px;color:var(--tx2);margin-top:6px}
+.reward-tap{font-size:12px;color:var(--tx3);margin-top:16px}
+
+/* ---------- 튜토리얼 ---------- */
+#tutorial{position:fixed;inset:0;z-index:90;background:var(--bg);overflow:auto;display:none}
+#tutorial.on{display:block}
+#tutorial .wrap{padding-bottom:40px}
+.tcard{border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:9px;background:var(--card);box-shadow:var(--shadow)}
+.tcard .i{font-size:20px}
+.tcard .h{font-weight:800;font-size:15px;margin-top:3px}
+.tcard .d{font-size:13.5px;color:var(--tx2);margin-top:3px}
+.tut-coli{display:flex;justify-content:center;margin:4px 0 2px}
+.tut-coli .coli-svg{width:104px}
+.err{color:var(--red);font-size:13.5px;margin:6px 0 0;min-height:20px}
+
+/* ---------- 토스트 ---------- */
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:88px;z-index:80;max-width:460px;width:calc(100% - 28px);
+  background:#1c2733;color:#fff;border:1px solid #1c2733;border-radius:12px;padding:11px 13px;font-size:14px;display:none;box-shadow:0 6px 20px rgba(16,42,72,.28)}
+#toast.on{display:block}
+
+/* ---------- 인앱 확인 모달 (샌드박스에서도 동작) ---------- */
+#confirmOv{position:fixed;inset:0;z-index:110;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(16,42,72,.42)}
+#confirmOv.on{display:flex}
+#confirmOv .cf-box{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 18px;max-width:400px;width:100%;box-shadow:0 12px 40px rgba(16,42,72,.3)}
+#confirmOv .cf-msg{color:var(--tx);font-size:15px;line-height:1.6;margin:0 0 16px}
+#confirmOv .cf-btns{display:flex;gap:10px}
+#confirmOv .cf-btns .btn{margin:0;flex:1}
+
+/* ---------- 로비 카드 ---------- */
+.lobbycard{border:1px solid var(--line)}
+.lc2-row{display:flex;gap:11px;align-items:flex-start}
+.lc2-ic{font-size:26px;line-height:1.1;flex:0 0 auto}
+.lc2-bd{flex:1 1 auto;min-width:0}
+.lc2-t{font-size:16.5px;font-weight:800}
+.lc2-d{font-size:13px;color:var(--tx2);margin-top:2px}
+.lc2-prog{margin:11px 0 12px}
+.lobbycard .btn{margin-bottom:0}
+
+/* ---------- 7개 실습 목록 카드 ---------- */
+.lab-card{display:flex;gap:12px;align-items:center;width:100%;text-align:left;min-height:70px;padding:13px 12px;margin-bottom:10px;
+  background:var(--card);border:1px solid var(--line2);border-radius:14px;cursor:pointer;box-shadow:var(--shadow)}
+.lab-card:active{transform:scale(.99)}
+.lab-card.open{border-color:var(--mint)}
+.lab-card .lab-no{flex:0 0 auto;width:38px;height:38px;border-radius:10px;background:var(--card3);color:var(--tx3);
+  text-align:center;line-height:38px;font-size:20px;font-weight:800}
+.lab-card.open .lab-no{background:var(--mintdk);color:var(--mint)}
+.lab-card .lab-bd{flex:1 1 auto;min-width:0}
+.lab-card .lab-wk{font-size:12px;color:var(--tx3)}
+.lab-card .lab-t{font-size:16px;font-weight:800;color:var(--tx);margin:1px 0 2px}
+.lab-card .lab-d{font-size:12.5px;color:var(--tx2);line-height:1.4}
+.lab-card .lab-st{flex:0 0 auto;align-self:flex-start;font-size:11.5px;font-weight:800;padding:4px 9px;border-radius:999px;
+  background:var(--card3);border:1px solid var(--line);color:var(--tx3);white-space:nowrap}
+.lab-card .lab-st.on{background:var(--mintdk);border-color:#c3ddf5;color:var(--mint)}
+
+/* ---------- 학습(읽는) 카드 ---------- */
+.learncard{border:1px solid var(--line)}
+.lc-head{display:flex;gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap}
+.lc-head h3{font-size:16px}
+.lc-kind{flex:0 0 auto;font-size:11.5px;font-weight:800;padding:3px 9px;border-radius:999px;
+  background:var(--card3);border:1px solid var(--line);color:var(--tx2);letter-spacing:.02em}
+.lc-kind.amber{background:var(--amberdk);border-color:#e6d3a8;color:var(--amber)}
+.lc-kind.mint{background:var(--mintdk);border-color:#c3ddf5;color:var(--mint)}
+.keynums{display:flex;flex-wrap:wrap;gap:6px;margin:11px 0 4px}
+.keynum{font-size:12.5px;font-weight:700;padding:5px 10px;border-radius:8px;
+  background:var(--mintdk);border:1px solid #c3ddf5;color:var(--mint)}
+.takeaway{border:1px solid #e6d3a8;background:var(--amberdk)}
+.takeaway h3{color:var(--amber)}
+
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+  .dgl .dgl-body{animation:none!important}
+  .dgl .spk,.dgl .swt{display:none!important}
+}
+
+/* ---------- 미션 시스템 UI ---------- */
+.prog-wrap{margin:8px 0 4px}
+.prog-lbl{display:flex;justify-content:space-between;font-size:12.5px;color:var(--tx2);margin-bottom:5px}
+.prog-lbl b{color:var(--mint)}
+.prog-bar{height:12px;border-radius:99px;background:var(--card3);border:1px solid var(--line);overflow:hidden}
+.prog-bar>i{display:block;height:100%;border-radius:99px;background:var(--mint);transition:width .5s ease}
+.prog-bar.full>i{background:var(--green)}
+
+.lockcard{border:1px dashed var(--line2)}
+.lockcard.unlocked{border-style:solid;border-color:var(--mint)}
+.lockbadge{display:inline-block;font-size:11.5px;font-weight:800;padding:3px 9px;border-radius:999px;background:var(--card3);border:1px solid var(--line);color:var(--tx3)}
+.lockbadge.on{background:var(--mintdk);border-color:#c3ddf5;color:var(--mint)}
+.lockbadge.pass{background:var(--greendk);border-color:#bfe2cd;color:var(--green)}
+
+.pts{flex:0 0 auto;font-size:12px;font-weight:800;padding:3px 10px;border-radius:999px;background:var(--amberdk);border:1px solid #e6d3a8;color:var(--amber);white-space:nowrap}
+.qmeta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:0 0 10px}
+.qmeta .p{font-size:12.5px;color:var(--tx3)}
+.qmeta .kind{font-size:11.5px;font-weight:800;padding:2px 8px;border-radius:999px;background:var(--card3);border:1px solid var(--line);color:var(--tx2)}
+
+.oslot{display:flex;gap:10px;align-items:center;width:100%;text-align:left;padding:11px 12px;margin-bottom:8px;background:var(--card2);border:1px solid var(--line2);border-radius:12px;cursor:pointer;min-height:50px;font-size:15px}
+.oslot .no{flex:0 0 auto;width:26px;height:26px;border-radius:8px;background:var(--mintdk);color:var(--mint);text-align:center;line-height:26px;font-size:13px;font-weight:800}
+.oslot.empty{background:transparent;border-style:dashed;color:var(--tx3);cursor:default}
+.opool .oitem{display:flex;gap:10px;align-items:center;width:100%;text-align:left;min-height:48px;padding:10px 12px;margin-bottom:8px;background:var(--card);border:1px solid var(--line);border-radius:12px;cursor:pointer;font-size:15px}
+.opool .oitem .bx{flex:0 0 auto;width:22px;height:22px;border-radius:7px;border:2px solid var(--line2);text-align:center;line-height:19px;font-size:14px}
+
+/* ---------- 미션 결과·합격증 ---------- */
+.scorebig{text-align:center;font-size:52px;font-weight:900;line-height:1;margin:6px 0 2px}
+.scorebig.pass{color:var(--green)}
+.scorebig.fail{color:var(--amber)}
+.scoreunit{text-align:center;font-size:15px;color:var(--tx3);margin-bottom:4px}
+.passtag{text-align:center;font-size:16px;font-weight:900;margin:8px 0 2px}
+.passtag.pass{color:var(--green)}.passtag.fail{color:var(--amber)}
+.revrow{display:flex;gap:9px;align-items:flex-start;padding:10px 11px;margin-bottom:8px;border-radius:10px;border:1px solid var(--line);background:var(--card2)}
+.revrow.ok{border-left:4px solid var(--green)}
+.revrow.no{border-left:4px solid var(--red)}
+.revrow.part{border-left:4px solid var(--amber)}
+.revrow .ix{flex:0 0 auto;width:24px;height:24px;border-radius:7px;background:var(--card3);text-align:center;line-height:24px;font-size:12.5px;font-weight:800;color:var(--tx2)}
+.revrow .bd{flex:1 1 auto;min-width:0}
+.revrow .qt{font-size:14px;font-weight:700}
+.revrow .rs{font-size:12.5px;color:var(--tx3);margin-top:3px}
+.revrow .ex{font-size:13px;color:var(--tx2);margin-top:6px;border-top:1px dashed var(--line2);padding-top:6px}
+.revrow .rp{flex:0 0 auto;font-size:12px;font-weight:800;color:var(--amber)}
+
+.cert{position:relative;overflow:hidden;border:2px solid var(--gold);border-radius:16px;padding:20px 18px;margin:0 0 12px;
+  background:linear-gradient(160deg,#fffaf0,#ffffff);box-shadow:var(--shadow)}
+.cert .seal{position:absolute;top:12px;right:14px;font-size:34px;opacity:.9}
+.cert .ck{font-size:12px;letter-spacing:.08em;color:var(--gold);font-weight:800}
+.cert h2{font-size:20px;margin:6px 0 2px;color:var(--tx)}
+.cert .who{font-size:15px;color:var(--tx);margin:10px 0 2px}
+.cert .who b{font-size:18px;color:var(--mint)}
+.cert table{margin-top:12px}
+.cert th{color:var(--tx3)}
+.cert td{color:var(--tx);font-weight:600}
+.cert .capnote{font-size:12.5px;color:var(--amber);margin-top:12px;background:var(--amberdk);border:1px solid #e6d3a8;border-radius:10px;padding:8px 10px}
+.cert .srvnote{font-size:11.5px;color:var(--tx3);margin-top:7px}
+
+.idform label{display:block;font-size:13px;color:var(--tx2);margin:10px 0 5px}
+.idform input{width:100%;min-height:48px;padding:12px;border-radius:12px;background:var(--card);border:1px solid var(--line2);font-size:16px;color:var(--tx)}
+.idform input:focus{outline:none;border-color:var(--mint)}
+
+/* ---------- 3단계 허브(주차 메뉴) 카드 ---------- */
+.hub-card{display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;padding:14px 13px;margin:0 0 11px;
+  background:var(--card);border:1px solid var(--line2);border-radius:14px;box-shadow:var(--shadow)}
+.hub-card .hub-ic{flex:0 0 auto;width:44px;height:44px;border-radius:12px;background:var(--mintdk);color:var(--mint);
+  text-align:center;line-height:44px;font-size:22px;font-weight:800}
+.hub-card .hub-bd{flex:1 1 auto;min-width:0}
+.hub-card .hub-t{font-size:16.5px;font-weight:800}
+.hub-card .hub-d{font-size:13px;color:var(--tx2);margin-top:2px}
+.hub-card .hub-st{font-size:12px;font-weight:700;margin-top:6px;color:var(--tx3)}
+.hub-card .hub-st b{color:var(--mint)}
+.hub-card.done .hub-ic{background:var(--greendk);color:var(--green)}
+.hub-card.lock .hub-ic{background:var(--card3);color:var(--tx3)}
+
+/* ---------- 실험 결과보고서 입력 폼 ---------- */
+.rf-sec{margin:0 0 14px}
+.rf-sec .rf-lbl{font-size:15px;font-weight:800;margin:0 0 4px}
+.rf-sec .rf-hint{font-size:12px;color:var(--tx3);margin:0 0 7px;line-height:1.45}
+.rf-sec textarea{width:100%;padding:11px 12px;border-radius:10px;background:var(--card);border:1px solid var(--line2);
+  font-size:14.5px;color:var(--tx);line-height:1.6;resize:vertical;min-height:64px}
+.rf-sec textarea:focus{outline:none;border-color:var(--mint)}
+.rf-meta{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 8px}
+.rf-meta .fld label{display:block;font-size:12px;color:var(--tx2);margin:0 0 3px}
+.rf-meta .fld input{width:100%;min-height:42px;padding:9px 10px;border-radius:9px;background:var(--card);border:1px solid var(--line2);font-size:14.5px;color:var(--tx)}
+.rf-meta .fld input:focus{outline:none;border-color:var(--mint)}
+.rf-meta .fld input[readonly]{background:var(--card3);color:var(--tx2)}
+.rf-tbl{width:100%;border-collapse:collapse;margin:8px 0 0;font-size:13px}
+.rf-tbl th,.rf-tbl td{border:1px solid var(--line2);padding:5px 6px;text-align:left;vertical-align:middle}
+.rf-tbl th{background:var(--card3);color:var(--tx2);font-weight:700;font-size:12px}
+.rf-tbl td.rowlbl{background:var(--card2);font-weight:600;white-space:nowrap;font-size:12px}
+.rf-tbl input{width:100%;min-height:34px;padding:5px 7px;border:1px solid var(--line);border-radius:7px;background:var(--card);font-size:13.5px;color:var(--tx)}
+.rf-tbl input:focus{outline:none;border-color:var(--mint)}
+
+/* ---------- A4 미리보기 / 인쇄용 종이 ---------- */
+.paper{background:#ffffff;color:#141a20;border:1px solid var(--line2);border-radius:8px;
+  padding:26px 24px;box-shadow:var(--shadow);font-size:13.5px;line-height:1.7}
+.paper .p-head{text-align:center;border-bottom:2px solid #141a20;padding-bottom:10px;margin-bottom:12px}
+.paper .p-title{font-size:19px;font-weight:800;letter-spacing:.02em}
+.paper .p-course{font-size:12.5px;color:#3a444e;margin-top:4px}
+.paper .p-metatbl{width:100%;border-collapse:collapse;margin:0 0 14px;font-size:12.5px}
+.paper .p-metatbl td{border:1px solid #b9c2cc;padding:5px 8px}
+.paper .p-metatbl td.k{background:#eef2f6;font-weight:700;white-space:nowrap;width:1%}
+.paper h3.p-sh{font-size:14.5px;font-weight:800;margin:15px 0 5px;border-left:4px solid var(--mint);padding-left:8px}
+.paper .p-body{white-space:pre-wrap;font-size:13px;color:#20272e;min-height:16px}
+.paper .p-empty{color:#9aa6b2;font-style:italic}
+.paper table.p-dt{width:100%;border-collapse:collapse;margin:6px 0 2px;font-size:12.5px}
+.paper table.p-dt th,.paper table.p-dt td{border:1px solid #8f9aa5;padding:5px 7px;text-align:left}
+.paper table.p-dt th{background:#eef2f6;font-weight:700}
+.paper .p-cap{font-size:12px;color:#3a444e;margin:4px 0 2px}
+
+/* 교수 확인 표 */
+.dash-tbl{width:100%;border-collapse:collapse;font-size:13px}
+.dash-tbl th,.dash-tbl td{border-bottom:1px solid var(--line);padding:7px 6px;text-align:left;vertical-align:middle}
+.dash-tbl th{color:var(--tx3);font-size:12px;font-weight:600;white-space:nowrap}
+.dash-tbl td.c,.dash-tbl th.c{text-align:center}
+.pill{display:inline-block;font-size:11px;font-weight:800;padding:2px 8px;border-radius:999px;background:var(--card3);border:1px solid var(--line);color:var(--tx3);white-space:nowrap}
+.pill.ok{background:var(--greendk);border-color:#bfe2cd;color:var(--green)}
+.pill.mid{background:var(--mintdk);border-color:#c3ddf5;color:var(--mint)}
+.pill.no{background:var(--card3);border-color:var(--line);color:var(--tx3)}
+
+/* ---------- 실험보고서 이미지 업로드 슬롯 ---------- */
+.img-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0 0}
+@media(max-width:420px){.img-grid{grid-template-columns:1fr}}
+.img-slot{border:1px solid var(--line2);border-radius:11px;background:var(--card2);padding:9px 9px 10px;display:flex;flex-direction:column}
+.img-slot .is-cond{font-size:12.5px;font-weight:800;color:var(--tx);margin:0 0 6px;line-height:1.35}
+.img-slot .is-box{position:relative;border:1.5px dashed var(--line2);border-radius:9px;background:var(--card3);min-height:118px;
+  display:flex;align-items:center;justify-content:center;overflow:hidden}
+.img-slot .is-box img{display:block;width:100%;height:auto;max-height:260px;object-fit:contain;background:#fff}
+.img-slot .is-ph{color:var(--tx3);font-size:12px;text-align:center;padding:16px 8px;line-height:1.5}
+.img-slot .is-btns{display:flex;gap:7px;margin-top:8px}
+.img-slot .is-btns .btn{flex:1 1 0}
+.img-slot input[type=file]{display:none}
+.img-note{font-size:12px;color:var(--tx3);margin:8px 0 0;line-height:1.5}
+/* A4 미리보기·출력의 이미지 격자 */
+.paper .p-imgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0 4px}
+.paper .p-imgcell{border:1px solid #b9c2cc;border-radius:6px;overflow:hidden;background:#fff}
+.paper .p-imgcap{font-size:11.5px;font-weight:700;color:#20272e;background:#eef2f6;padding:4px 7px;border-bottom:1px solid #b9c2cc}
+.paper .p-imgcell img{display:block;width:100%;height:auto;max-height:230px;object-fit:contain;background:#fff}
+.paper .p-imgcell .p-imgno{font-size:11px;color:#9aa6b2;font-style:italic;padding:20px 8px;text-align:center}
+
+/* ---------- 실험조 구성 ---------- */
+.team-mine{border:1px solid #bfe2cd;background:var(--greendk);border-radius:12px;padding:14px}
+.team-mine .tm-no{font-size:22px;font-weight:900;color:var(--green)}
+.team-mine .tm-mem{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.team-mine .tm-row{display:flex;align-items:center;gap:8px;font-size:14.5px;background:var(--card);border:1px solid var(--line2);border-radius:9px;padding:8px 11px}
+.team-mine .tm-row .tm-tag{font-size:11px;font-weight:800;color:var(--mint);background:var(--mintdk);border-radius:999px;padding:1px 8px}
+.pick-list{display:flex;flex-direction:column;gap:7px;margin:8px 0 0;max-height:none}
+.pick-item{display:flex;align-items:center;gap:10px;border:1px solid var(--line2);border-radius:10px;padding:9px 12px;background:var(--card);cursor:pointer;font-size:14.5px}
+.pick-item.on{border-color:var(--mint);background:var(--mintdk)}
+.pick-item.dis{opacity:.5;cursor:not-allowed}
+.pick-item .pk-box{flex:0 0 auto;width:20px;height:20px;border-radius:6px;border:2px solid var(--line2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;color:#fff}
+.pick-item.on .pk-box{background:var(--mint);border-color:var(--mint)}
+.pick-item .pk-nm{font-weight:700}
+.pick-item .pk-team{font-size:11px;font-weight:800;color:var(--tx2);background:var(--line2);border-radius:999px;padding:1px 9px;margin-left:8px}
+.pick-item.dis .pk-team{color:var(--green);background:var(--greendk)}
+.pick-item .pk-sid{color:var(--tx3);font-size:12px;margin-left:auto}
+.pick-count{font-size:13px;font-weight:800;margin:10px 0 0;color:var(--tx2)}
+.pick-count b{color:var(--mint)}
+
+/* ---------- 인쇄(PDF 저장)용 — #printPaper 만 보이게 ---------- */
+#printPaper{display:none}
+@media print{
+  body.printing #topbar,body.printing #checkBanner,body.printing main,
+  body.printing #toast,body.printing #tutorial,body.printing #rewardOv{display:none!important}
+  body.printing #printPaper{display:block!important}
+  body.printing{background:#fff}
+  @page{size:A4;margin:16mm}
+  #printPaper .paper{border:0;border-radius:0;box-shadow:none;padding:0;font-size:11pt;color:#000}
+  #printPaper .paper .p-title{font-size:16pt}
+  #printPaper .paper h3.p-sh{font-size:12.5pt}
+  #printPaper .paper .p-body{font-size:10.5pt}
+  #printPaper .paper .p-imgcell img{max-height:70mm}
+}
+</style>
+</head>
+<body>
+
+<div id="checkBanner" hidden></div>
+
+<div id="bgfx"><div class="molfield" id="molfield"></div></div>
+
+<header id="topbar">
+  <div class="wrap tb-row">
+    <button class="tb-back" id="backBtn" type="button" aria-label="뒤로">←</button>
+    <div class="hud-ava" id="coliMini" aria-hidden="true"></div>
+    <div class="tb-id">
+      <div class="tb-title" id="tbTitle">유전자분석</div>
+      <div class="tb-sub" id="tbSub">학습자님</div>
+    </div>
+    <div class="tb-right">
+      <div class="tb-bar"><i id="tbBar"></i></div>
+      <div class="tb-barlbl" id="tbBarLbl">학습 0/30</div>
+    </div>
+  </div>
+  <div class="notice" id="notice"><b>실습 보고서 대체 미션 (시제품)</b></div>
+</header>
+
+<main>
+  <div class="wrap">
+    <section id="sc-labs"     class="screen active"></section>
+    <section id="sc-lobby"    class="screen"></section>
+    <section id="sc-team"     class="screen"></section>
+    <section id="sc-report"   class="screen"></section>
+    <section id="sc-learn"    class="screen"></section>
+    <section id="sc-lquiz"    class="screen"></section>
+    <section id="sc-mission"  class="screen"></section>
+    <section id="sc-notes"    class="screen"></section>
+    <section id="sc-growth"   class="screen"></section>
+    <section id="sc-summary"  class="screen"></section>
+    <section id="sc-profdash" class="screen"></section>
+    <section id="sc-roster"   class="screen"></section>
+  </div>
+</main>
+
+<div id="rewardOv" aria-hidden="true"></div>
+<div id="tutorial"><div class="wrap" id="tutInner"></div></div>
+<div id="toast"></div>
+<div id="printPaper"></div>
+
+<script src="assets/dgl_sprites.js"></script>
+<script src="content.js"></script>
+<script>
+/* ==========================================================================
+ * 게임 본체 — 새 미션 시스템 (2026-08-29 개편)
+ *   ① 학습·복습 퀴즈(pool.timed에서 30문) → 미션 해금
+ *   ② 미션(시간제한 8 + 추리 2 = 10문 · 배점합 100 · 70점 합격)
+ *   ③ 학생마다·재도전마다 문항이 바뀐다(직전 문항 제외).
+ *   챗봇은 완전히 제거했다. 외부 통신(fetch·XHR·CDN·외부폰트·외부이미지) 없음.
+ *   저장은 localStorage 하나뿐이며 모든 읽기·쓰기를 try/catch 로 감싼다.
+ * ========================================================================*/
+(function(){
+"use strict";
+
+var C = window.GAME_CONTENT;
+
+/* ==========================================================================
+ * 🧪 테스트 스위치 — 날짜 잠금 해제 (2026-08-30 추가)
+ *   true 이면 학생도 실습 날짜와 무관하게(ready 인 실습을) 바로 열 수 있다.
+ *   ⚠️ 실제 수업/배포 전에는 반드시 false 로 되돌린다 — 이 한 줄만 바꾸면 원래 날짜 잠금으로 복귀.
+ * ========================================================================*/
+var TEST_OPEN_ALL = false;  /* 테스트용 날짜 잠금 해제. 실제 수업/배포 전 false 로 바꿀 것 */
+
+/* ==========================================================================
+ * 활성 주차 — 지금은 2주차(w02 · 세포배양)만 열려 있다.
+ *   w02 콘텐츠는 C.byWeek.w02 에, 3주차(w03)는 최상위(C.pool/C.learn/C.cases)에 보존돼 있다.
+ *   AW(active week pack) = { learn, pool, cases, report } 로 통일해 미션 엔진이 읽는다.
+ * ========================================================================*/
+var ACTIVE_WEEK = "w02";
+function weekPack(id){
+  if(id === "w02" && C.byWeek && C.byWeek.w02){
+    var w = C.byWeek.w02;
+    return { learn: w.learn, pool: w.pool, cases: w.cases || [], report: w.report, summaryCard: w.summaryCard || null };
+  }
+  if(id === "w03"){ return { learn: C.learn, pool: C.pool, cases: C.cases || [], report: null, summaryCard: C.summaryCard || null }; }
+  return null;
+}
+var AW = null;                                  /* 활성 주차 콘텐츠 (boot 에서 설정) */
+function labById(id){ var r = null; (C.labs || []).forEach(function(l){ if(l.id === id) r = l; }); return r; }
+function curLab(){ return labById(ACTIVE_WEEK) || { weekLabel:"", title:"", dateLabel:"", unlockDate:"" }; }
+
+/* 교수 대시보드에서 선택한 주차 — 학생용 ACTIVE_WEEK 과 분리해, 대시보드 조회만 이 주차 키로 읽는다.
+ *   이렇게 나누면 교수가 다른 주차를 골라 봐도 학생용 활성 주차(미션·로비 등)에는 영향이 없다. */
+var DASH_WEEK = ACTIVE_WEEK;
+/* 그 주차에 학생이 실제로 수행할 콘텐츠(문항 풀 + 보고서 양식)가 준비돼 있는가 — 준비된 주차만 실제 데이터가 생긴다. */
+function weekPrepared(id){ var p = weekPack(id); return !!(p && p.pool && p.report); }
+
+/* 저장 키 — 학생별·주차별로 분리한다(같은 기기에서 여러 학생이 써도 섞이지 않게). */
+function progKey(){ return "dmu_gene_lab_" + ACTIVE_WEEK + "_" + (state && state.role === "prof" ? "prof" : (state && state.studentId ? state.studentId : "anon")); }
+function progKeyFor(sid, wk){ return "dmu_gene_lab_" + (wk || ACTIVE_WEEK) + "_" + sid; }
+function reportKey(sid, wk){ return "dmu_gene_report_" + (wk || ACTIVE_WEEK) + "_" + sid; }
+var SESSION_KEY = "dmu_gene_session";           /* 마지막 로그인(자동 재개용) */
+var EARLY_KEY = "dmu_gene_lab_early";           /* 조기 취업자(과제 면제) 학번 목록 — 교수가 이 기기에서 설정 */
+var TEAMS_KEY = "dmu_gene_lab_teams";           /* 실험조 편성 — 이 기기 로컬 저장 [{no,members:[sid,sid,sid]}] */
+var TEAM_MAX = 9;                               /* 최대 조 수 */
+var TEAM_SIZE = 3;                              /* 조당 인원 */
+
+var storageOk = true;
+var state = null;
+var reduced = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+
+/* ==========================================================================
+ * 동그래 — 학과 공식 마스코트. 항상 연구원(실험복) 모습으로 고정.
+ *   레벨업·복장 진화는 제거했다. 살아있는 애니메이션(idle·정답·오답·말하기)만 유지.
+ * ========================================================================*/
+var COLI_NAME = "동그래";
+var DGL = (window.DGL_SPRITES && typeof window.DGL_SPRITES === "object") ? window.DGL_SPRITES : {};
+var DGL_BLANK = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+M8AAAMBAQDJ/pLvAAAAAElFTkSuQmCC";
+/* 동그래는 언제나 연구원(실험복) 스프라이트 하나만 쓴다. */
+var RESEARCHER_SPRITE = DGL.researcher || DGL_BLANK;
+var FACE_MOOD = {
+  idle:"idle", explain:"talk", thinking:"idle",
+  correct:"success", celebrate:"success", encourage:"fail"
+};
+function coli(face, cls){
+  cls = cls || "";
+  var isStatic = /\bstatic\b/.test(cls);
+  var mood = FACE_MOOD[face] || "idle";
+  var react = (isStatic || reduced) ? "idle" : mood;
+  var sprite = RESEARCHER_SPRITE;
+  var fx = "";
+  if(react === "success"){ fx = '<span class="spk spk1"></span><span class="spk spk2"></span><span class="spk spk3"></span>'; }
+  else if(react === "fail"){ fx = '<span class="swt"></span>'; }
+  return '<span class="dgl coli-svg ' + cls + '" data-mood="' + react + '" role="img" aria-label="' + esc(COLI_NAME) + '">'
+    + '<img class="dgl-body" src="' + sprite + '" alt="' + esc(COLI_NAME) + '" draggable="false">'
+    + '<span class="dgl-fx">' + fx + '</span>'
+    + '<span class="dgl-shadow"></span>'
+    + '</span>';
+}
+
+/* ---------- 유틸 (원본 유지) ---------- */
+function $(id){ return document.getElementById(id); }
+function esc(s){
+  return String(s === null || s === undefined ? "" : s).replace(/[&<>"']/g, function(c){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+  });
+}
+function pct(x){ return Math.round(x * 100); }
+function today(){
+  var d = new Date();
+  function p(n){ return (n < 10 ? "0" : "") + n; }
+  return d.getFullYear() + "-" + p(d.getMonth() + 1) + "-" + p(d.getDate());
+}
+function shuffle(a){
+  var arr = a.slice(), i, j, t;
+  for(i = arr.length - 1; i > 0; i--){
+    j = Math.floor(Math.random() * (i + 1));
+    t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+  }
+  return arr;
+}
+var toastTimer = null;
+function toast(msg){
+  var t = $("toast");
+  t.textContent = msg;
+  t.classList.add("on");
+  if(toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ t.classList.remove("on"); }, 2600);
+}
+/* 인앱 확인 모달 — window.confirm 대체(보안 샌드박스/iframe에서 confirm 차단 대응).
+   askConfirm(메시지, onYes[, opts]) : [예] 누르면 onYes() 실행, [아니오]·바깥클릭·ESC는 닫기만.
+   opts.yes / opts.no 로 버튼 문구, opts.yesClass 로 [예] 버튼 스타일(기본 danger) 지정 가능. */
+function askConfirm(message, onYes, opts){
+  opts = opts || {};
+  var ov = $("confirmOv");
+  if(!ov){
+    ov = document.createElement("div");
+    ov.id = "confirmOv";
+    document.body.appendChild(ov);
+  }
+  var msgHtml = esc(message).replace(/\n/g, "<br>");
+  var yesTxt = esc(opts.yes || "예");
+  var noTxt = esc(opts.no || "아니오");
+  var yesCls = opts.yesClass || "danger";
+  ov.innerHTML =
+    '<div class="cf-box" role="alertdialog" aria-modal="true" aria-label="확인">' +
+      '<div class="cf-msg">' + msgHtml + '</div>' +
+      '<div class="cf-btns">' +
+        '<button type="button" class="btn sm ghost center" id="cfNo">' + noTxt + '</button>' +
+        '<button type="button" class="btn sm center ' + yesCls + '" id="cfYes">' + yesTxt + '</button>' +
+      '</div>' +
+    '</div>';
+  ov.classList.add("on");
+  function onKey(e){ if(e.key === "Escape"){ close(); } }
+  function close(){ ov.classList.remove("on"); ov.innerHTML = ""; document.removeEventListener("keydown", onKey); }
+  document.addEventListener("keydown", onKey);
+  ov.onclick = function(e){ if(e.target === ov){ close(); } };
+  $("cfYes").onclick = function(){ close(); if(typeof onYes === "function") onYes(); };
+  $("cfNo").onclick = function(){ close(); };
+}
+/* 실수 배열을 정수로 반올림하되 합을 target 으로 정확히 맞춘다(최대 잔여분 우선) */
+function roundToSum(arr, target){
+  var floors = arr.map(function(v){ return Math.floor(v); });
+  var used = floors.reduce(function(s, v){ return s + v; }, 0);
+  var rem = target - used;
+  var order = arr.map(function(v, i){ return { i: i, frac: v - Math.floor(v) }; })
+    .sort(function(a, b){ return b.frac - a.frac; });
+  for(var k = 0; k < order.length && rem > 0; k++){ floors[order[k].i]++; rem--; }
+  return floors;
+}
+
+/* ==========================================================================
+ * 저장 — localStorage. 막혀 있어도 게임은 그대로 돌아간다.
+ * ========================================================================*/
+function probeStorage(){
+  try{
+    localStorage.setItem("__probe__", "1");
+    localStorage.removeItem("__probe__");
+    return true;
+  }catch(e){ return false; }
+}
+function defaultState(){
+  return {
+    schemaVersion: C && C.schemaVersion ? C.schemaVersion : 1,
+    contentVersion: C ? C.contentVersion : "",
+    role: "",
+    studentId: "",
+    studentName: "",
+    tutorialDone: false,
+    settings: { timerOff: false },
+    learn: { read: false },
+    lquiz: { progress: 0, byQid: {}, served: [] },
+    mission: {
+      attempts: 0, passed: false, bestScore: 0, lastScore: 0,
+      lastTimed: [], lastReason: []
+    },
+    wrongNotes: {},
+    stats: { answered: 0, correct: 0 }
+  };
+}
+function isPlainObj(v){ return v && typeof v === "object" && !Array.isArray(v); }
+function mergeState(dst, src){
+  for(var k in dst){
+    if(!Object.prototype.hasOwnProperty.call(dst, k)) continue;
+    if(src && Object.prototype.hasOwnProperty.call(src, k) && src[k] !== null && src[k] !== undefined){
+      if(isPlainObj(dst[k]) && isPlainObj(src[k]) && Object.keys(dst[k]).length > 0){
+        mergeState(dst[k], src[k]);
+      }else{
+        dst[k] = src[k];
+      }
+    }
+  }
+}
+/* 특정 학생(또는 prof)의 진도를 읽어 온다 — 없으면 기본값 + 신원만 채운다. */
+function readRawProgress(idPart, wk){
+  var s = null;
+  try{ var raw = localStorage.getItem(progKeyFor(idPart, wk)); if(raw) s = JSON.parse(raw); }catch(e){ s = null; }
+  return (s && typeof s === "object") ? s : null;
+}
+function loadProgress(role, sid, name){
+  var idPart = (role === "prof") ? "prof" : sid;
+  var s = readRawProgress(idPart);
+  var d = defaultState();
+  if(s && s.schemaVersion === d.schemaVersion){ mergeState(d, s); }
+  d.role = role;
+  d.studentId = (role === "prof") ? "" : (sid || "");
+  d.studentName = name || "";
+  d.tutorialDone = true;
+  return d;
+}
+var warnedStorage = false;
+function saveState(){
+  try{
+    localStorage.setItem(progKey(), JSON.stringify(state));
+  }catch(e){
+    storageOk = false;
+    if(!warnedStorage){
+      warnedStorage = true;
+      toast("이 브라우저에서는 진도 저장이 안 됩니다. 게임은 그대로 진행됩니다.");
+    }
+  }
+}
+
+/* ---------- 로그인 세션(자동 재개) ---------- */
+function saveSession(){
+  try{ localStorage.setItem(SESSION_KEY, JSON.stringify({ role: state.role, sid: state.studentId, name: state.studentName })); }catch(e){}
+}
+function loadSession(){
+  try{
+    var r = localStorage.getItem(SESSION_KEY);
+    if(r){ var o = JSON.parse(r); if(o && (o.role === "student" || o.role === "prof")) return o; }
+  }catch(e){}
+  return null;
+}
+function clearSession(){ try{ localStorage.removeItem(SESSION_KEY); }catch(e){} }
+
+/* ---------- 조기 취업자(과제 면제) 명단 — 이 기기 로컬 저장 ---------- */
+function loadEarly(){
+  try{ var r = localStorage.getItem(EARLY_KEY); if(r){ var a = JSON.parse(r); if(Array.isArray(a)) return a.map(String); } }catch(e){}
+  return [];
+}
+function isEarly(sid){ if(!sid) return false; return loadEarly().indexOf(String(sid)) !== -1; }
+function toggleEarly(sid, on){
+  if(!sid) return;
+  var list = loadEarly(); var s = String(sid); var i = list.indexOf(s);
+  if(on && i === -1) list.push(s);
+  else if(!on && i !== -1) list.splice(i, 1);
+  try{ localStorage.setItem(EARLY_KEY, JSON.stringify(list)); }catch(e){}
+}
+/* 로그인한 학생 본인이 면제 대상인가 */
+function meIsEarly(){ return state && state.role === "student" && isEarly(state.studentId); }
+
+/* ---------- 실험조 편성 — 이 기기 로컬 저장 ---------- */
+function loadTeams(){
+  try{
+    var r = localStorage.getItem(TEAMS_KEY);
+    if(r){ var a = JSON.parse(r); if(Array.isArray(a)){
+      return a.filter(function(t){ return t && t.no && Array.isArray(t.members); })
+              .map(function(t){ return { no: t.no, members: t.members.map(String) }; });
+    } }
+  }catch(e){}
+  return [];
+}
+function saveTeams(list){
+  try{ localStorage.setItem(TEAMS_KEY, JSON.stringify(list)); return true; }catch(e){ return false; }
+}
+/* 조 해체 — 해당 번호의 조를 명단에서 제거한다(조원 전원이 다시 미배정 상태가 된다).
+   남은 조의 번호는 그대로 유지되고, 새로 만드는 조는 makeTeam 이 최대번호+1 을 부여한다. */
+function disbandTeam(no){
+  var ts = loadTeams().filter(function(t){ return t.no !== no; });
+  return saveTeams(ts);
+}
+/* ==========================================================================
+ * 출석부 명단 — 교수가 앱에서 등록해 이 기기 localStorage 에만 저장한다.
+ *   🔒 개인정보(학번·이름)를 소스코드에 넣지 않기 위한 구조.
+ *      공개 배포되는 소스(content.js)의 C.roster 는 항상 빈 배열이며,
+ *      실제 명단은 아래 저장소(ROSTER_KEY)에만 들어간다.
+ *   저장 형식: [{ sid:"학번", name:"이름" }, ...]  (JSON 문자열)
+ *   모든 읽기·쓰기를 try/catch 로 감싸 저장이 막혀 있어도 앱은 돌아간다.
+ * ========================================================================*/
+var ROSTER_KEY = "genelab_roster_v1";
+/* 저장된 명단을 읽어 [{sid,name}] 로 돌려준다. 없으면 C.roster(빈 배열)로 폴백. */
+function loadRoster(){
+  try{
+    var raw = localStorage.getItem(ROSTER_KEY);
+    if(raw){
+      var a = JSON.parse(raw);
+      if(Array.isArray(a)){
+        return a.filter(function(r){ return r && r.sid && r.name; })
+                .map(function(r){ return { sid: String(r.sid).trim(), name: String(r.name).trim() }; });
+      }
+    }
+  }catch(e){}
+  return (C && Array.isArray(C.roster)) ? C.roster.slice() : [];
+}
+/* 명단을 저장한다(중복 학번 제거, 앞뒤 공백 정리). 성공 true / 실패 false. */
+function saveRoster(list){
+  try{
+    var seen = {}, clean = [];
+    (list || []).forEach(function(r){
+      if(!r) return;
+      var sid = String(r.sid == null ? "" : r.sid).trim();
+      var name = String(r.name == null ? "" : r.name).trim();
+      if(!sid || !name) return;
+      if(seen[sid]) return; seen[sid] = true;
+      clean.push({ sid: sid, name: name });
+    });
+    localStorage.setItem(ROSTER_KEY, JSON.stringify(clean));
+    return true;
+  }catch(e){ return false; }
+}
+/* 현재 유효한 명단(단일 조회 지점) — 모든 화면이 이걸 통해 명단을 읽는다. */
+function getRoster(){ return loadRoster(); }
+
+/* 학번 → 이름(출석부 조회) */
+function nameOfSid(sid){
+  var list = getRoster();
+  for(var i = 0; i < list.length; i++){ if(String(list[i].sid) === String(sid)) return list[i].name; }
+  return sid;
+}
+/* 이 학번이 속한 조(객체) 또는 null */
+function teamOf(sid){
+  if(!sid) return null;
+  var s = String(sid), ts = loadTeams();
+  for(var i = 0; i < ts.length; i++){ if(ts[i].members.indexOf(s) !== -1) return ts[i]; }
+  return null;
+}
+/* 조 편성 가능한 학생 목록 — 조기취업 제외 + 이미 조에 속한 사람 제외 + 본인 제외 */
+function availableForTeam(mySid){
+  var list = getRoster();
+  var me = String(mySid || "");
+  return list.filter(function(st){
+    var s = String(st.sid);
+    if(s === me) return false;
+    if(isEarly(s)) return false;
+    if(teamOf(s)) return false;
+    return true;
+  });
+}
+/* 조 생성 — 리더 + 2명. 선착순 번호 부여. 성공 시 조 객체, 실패 시 null */
+function makeTeam(leaderSid, otherSids){
+  var lead = String(leaderSid || "");
+  if(!lead) return null;
+  var ts = loadTeams();
+  if(ts.length >= TEAM_MAX) return null;                 /* 모든 조가 찼음 */
+  if(teamOf(lead)) return teamOf(lead);                  /* 이미 조가 있으면 그대로 */
+  var others = (otherSids || []).map(String).filter(function(s){ return s && s !== lead; });
+  /* 중복 제거 */
+  var uniq = [];
+  others.forEach(function(s){ if(uniq.indexOf(s) === -1) uniq.push(s); });
+  if(uniq.length !== TEAM_SIZE - 1) return null;         /* 정확히 2명이어야 */
+  /* 고른 사람이 그 사이 다른 조에 들어갔는지 재검증 */
+  for(var i = 0; i < uniq.length; i++){
+    if(isEarly(uniq[i]) || teamOf(uniq[i])) return null;
+  }
+  var maxNo = 0;
+  ts.forEach(function(t){ if(t.no > maxNo) maxNo = t.no; });
+  var team = { no: maxNo + 1, members: [lead].concat(uniq) };
+  ts.push(team);
+  saveTeams(ts);
+  return team;
+}
+/* 편성 가능한 조가 더 있는가 */
+function teamsFull(){ return loadTeams().length >= TEAM_MAX; }
+/* 안내문 조각 — 테스트 모드 / 조기취업 면제 배너 (HTML 문자열) */
+function testModeNote(){
+  if(!TEST_OPEN_ALL) return "";
+  return '<div class="card tight" style="border-color:#e6d3a8;background:var(--amberdk)"><div class="small" style="color:var(--amber)">🧪 <b>테스트 모드</b>: 날짜 잠금이 해제되어 있습니다(실제 수업 땐 날짜대로 열립니다).</div></div>';
+}
+function earlyBanner(){
+  if(!meIsEarly()) return "";
+  return '<div class="card tight" style="border-color:#bfe2cd;background:var(--greendk)"><div class="small" style="color:var(--green)">🎓 <b>조기 취업자 — 과제 면제 대상입니다.</b> 보고서·학습·미션이 면제됩니다. 열어볼 수는 있지만, 미이수여도 불이익이 없어요.</div></div>';
+}
+
+/* ---------- 실험 결과보고서 저장/조회 ---------- */
+function emptyReport(){ return { meta: {}, sections: {}, tables: {}, images: {}, submitted: false, savedAt: "", submittedAt: "" }; }
+function loadReport(sid, wk){
+  var d = emptyReport();
+  try{
+    var r = localStorage.getItem(reportKey(sid, wk));
+    if(r){ var o = JSON.parse(r); if(o && typeof o === "object"){
+      d.meta = o.meta || {}; d.sections = o.sections || {}; d.tables = o.tables || {}; d.images = o.images || {};
+      d.submitted = !!o.submitted; d.savedAt = o.savedAt || ""; d.submittedAt = o.submittedAt || "";
+    } }
+  }catch(e){}
+  return d;
+}
+function saveReport(sid, data){
+  try{ localStorage.setItem(reportKey(sid), JSON.stringify(data)); return true; }catch(e){ return false; }
+}
+/* 보고서에 작성 흔적이 있는가 — 텍스트 섹션 또는 업로드한 사진 */
+function reportHasContent(rep){
+  if(!rep) return false;
+  if(rep.submitted) return true;
+  if(rep.sections && Object.keys(rep.sections).some(function(k){ return String(rep.sections[k] || "").trim(); })) return true;
+  if(rep.images && Object.keys(rep.images).some(function(k){ return Array.isArray(rep.images[k]) && rep.images[k].some(function(u){ return !!u; }); })) return true;
+  return false;
+}
+
+/* ---------- 로그인 대조 ----------
+ * 명단이 코드에서 빠졌으므로(공개 배포용) 로그인 규칙을 이렇게 바꾼다:
+ *   1) 학번은 숫자 8자리 형식이어야 하고, 이름은 비어 있으면 안 된다(형식 검증).
+ *   2) 이 기기에 등록된 명단에 그 학번이 있으면 → 이름까지 일치해야 통과(오타 방지).
+ *      학번은 있는데 이름이 다르면 거절한다.
+ *   3) 명단에 없거나(또는 이 기기에 명단이 없으면) → 형식만 맞으면 통과시키고
+ *      입력한 이름·학번을 그대로 제출물에 기록한다. 교수는 대시보드에서
+ *      자기가 등록한 명단과 대조한다.
+ * 반환: 성공 { sid, name, listed:true|false } / 실패 { error:"사유" }
+ */
+function findStudent(name, sid){
+  var nm = (name || "").replace(/\s/g, "");
+  var id = (sid || "").replace(/\s/g, "");
+  if(!/^\d{8}$/.test(id)) return { error: "학번은 숫자 8자리로 입력해 주세요." };
+  if(!nm) return { error: "이름을 입력해 주세요." };
+  var list = getRoster();
+  for(var i = 0; i < list.length; i++){
+    if(String(list[i].sid) === id){
+      if(String(list[i].name).replace(/\s/g, "") === nm) return { sid: id, name: list[i].name, listed: true };
+      return { error: "학번은 명단에 있는데 이름이 다릅니다. 이름을 다시 확인해 주세요." };
+    }
+  }
+  return { sid: id, name: nm, listed: false };
+}
+function checkProf(name, pid){
+  if(!C || !C.prof) return false;
+  return (C.prof.name || "").replace(/\s/g, "") === (name || "").replace(/\s/g, "")
+      && String(C.prof.pid) === (pid || "").replace(/\s/g, "");
+}
+/* 신원 적용 + 진도 로드 + 세션 저장 */
+function applyIdentity(role, sid, name){
+  state = loadProgress(role, sid, name);
+  saveSession();
+}
+
+/* ==========================================================================
+ * 콘텐츠 파생값 — pool(timed·reason) 중심. pool 없으면 방어.
+ * ========================================================================*/
+var POOL = null;
+var POOL_TIMED = [];
+var POOL_TIMED_BY_ID = {};
+var POOL_REASON = [];
+var POOL_REASON_BY_ID = {};
+function hasPool(){ return POOL_TIMED.length > 0 && POOL_REASON.length > 0; }
+function buildDerived(){
+  POOL = (AW && AW.pool && typeof AW.pool === "object") ? AW.pool : null;
+  POOL_TIMED = (POOL && Array.isArray(POOL.timed)) ? POOL.timed.filter(function(q){
+    return q && q.qid && q.type && (q.answer !== undefined) && q.points && q.limitSec;
+  }) : [];
+  POOL_TIMED_BY_ID = {};
+  POOL_TIMED.forEach(function(q){ POOL_TIMED_BY_ID[q.qid] = q; });
+
+  /* 추리 풀 — ref 항목은 cases[] 원본을 끌어와 points 를 붙인다(w02 는 reason 에 전체가 담겨 있다). */
+  var caseById = {};
+  ((AW && AW.cases) || []).forEach(function(cs){ caseById[cs.caseId] = cs; });
+  POOL_REASON = [];
+  (POOL && Array.isArray(POOL.reason) ? POOL.reason : []).forEach(function(r){
+    if(!r || !r.caseId) return;
+    var full;
+    if(r.clues && r.suspects && r.answer){
+      full = r;                                  /* 풀에 전체가 담긴 신규 사건 */
+    }else if(caseById[r.caseId]){
+      full = {};                                 /* cases[] 원본을 얕게 복제 */
+      for(var k in caseById[r.caseId]){ if(Object.prototype.hasOwnProperty.call(caseById[r.caseId], k)) full[k] = caseById[r.caseId][k]; }
+      full.points = r.points || 15;
+    }else{ return; }
+    if(!full.points) full.points = r.points || 15;
+    if(full.clues && full.suspects && full.answer) POOL_REASON.push(full);
+  });
+  POOL_REASON_BY_ID = {};
+  POOL_REASON.forEach(function(c){ POOL_REASON_BY_ID[c.caseId] = c; });
+}
+function UNLOCK_N(){ return (POOL && POOL.info && POOL.info.learnUnlockCount) || 30; }
+function MISSION_PASS(){ return (POOL && POOL.info && POOL.info.mission && POOL.info.mission.passPoints) || 70; }
+function MISSION_TIMED(){ return (POOL && POOL.info && POOL.info.mission && POOL.info.mission.timedCount) || 8; }
+function MISSION_REASON(){ return (POOL && POOL.info && POOL.info.mission && POOL.info.mission.reasonCount) || 2; }
+
+/* ==========================================================================
+ * checkContent() — 로드 시 자동 실행되는 자체 검증 (새 화면·pool 반영)
+ * ========================================================================*/
+var SCREENS = ["labs","lobby","team","report","learn","lquiz","mission","notes","growth","summary","profdash","roster"];
+var NAV_EDGES = {
+  labs:     ["lobby","profdash","team"],
+  lobby:    ["labs","report","learn","lquiz","mission","notes","growth","summary"],
+  team:     ["labs"],
+  report:   ["lobby","profdash"],
+  learn:    ["lquiz","lobby"],
+  lquiz:    ["mission","lobby"],
+  mission:  ["lobby","notes","lquiz"],
+  notes:    ["lquiz","lobby"],
+  growth:   ["lobby","notes"],
+  summary:  ["lobby"],
+  profdash: ["labs","report","lobby","roster"],
+  roster:   ["profdash"]
+};
+function checkContent(){
+  var errs = [], warns = [];
+  function E(m){ errs.push(m); }
+  function W(m){ warns.push(m); }
+
+  if(!C){ E("content.js 를 읽지 못했습니다 (window.GAME_CONTENT 없음). index.html 과 같은 폴더에 content.js 가 있어야 합니다."); return { errs: errs, warns: warns, n: 0 }; }
+  if(!C.meta || !C.meta.title) E("meta.title 이 없습니다");
+
+  /* --- 활성 주차(AW) pool 검증 (없으면 경고 · 구버전 방어) --- */
+  var n = 0;
+  var AP = AW && AW.pool;
+  if(!AP || !Array.isArray(AP.timed) || !Array.isArray(AP.reason)){
+    W("활성 주차(" + ACTIVE_WEEK + ") pool(timed·reason)이 없습니다 — 학습·복습 퀴즈와 미션이 비활성화됩니다.");
+  }else{
+    var seenQ = {}, seenText = {};
+    AP.timed.forEach(function(q, i){
+      var tag = "pool.timed[" + i + "] " + (q && q.qid ? q.qid : "(qid 없음)");
+      if(!q.qid) E(tag + " : qid 없음");
+      else if(seenQ[q.qid]) E(tag + " : qid 중복"); else seenQ[q.qid] = true;
+      var key = String(q.q || "").replace(/\s/g, "");
+      if(!key) E(tag + " : 지문(q) 비었음");
+      else if(seenText[key]) E(tag + " : 지문이 " + seenText[key] + " 와 중복"); else seenText[key] = q.qid;
+      if(!q.explain || !String(q.explain).trim()) E(tag + " : 해설(explain) 누락");
+      if(!q.source || !String(q.source).trim()) E(tag + " : 출처(source) 누락 — 지어낸 문항 방지 검사");
+      if(!q.limitSec || q.limitSec <= 0) E(tag + " : limitSec 없음");
+      if(!q.points || q.points <= 0) E(tag + " : points 없음");
+      if([1,2,3].indexOf(q.level) < 0) E(tag + " : level 이 1~3 이 아닙니다");
+      if(q.type === "mc"){
+        if(!Array.isArray(q.choices) || q.choices.length < 2) E(tag + " : choices 부족");
+        else if(typeof q.answer !== "number" || q.answer < 0 || q.answer >= q.choices.length) E(tag + " : answer 범위 밖");
+      }else if(q.type === "ox"){
+        if(typeof q.answer !== "boolean") E(tag + " : OX answer 는 true/false");
+      }else if(q.type === "num"){
+        if(typeof q.answer !== "number" || !isFinite(q.answer)) E(tag + " : num answer 가 숫자가 아님");
+      }else if(q.type === "order"){
+        if(!Array.isArray(q.steps) || q.steps.length < 2) E(tag + " : steps 부족");
+        if(!Array.isArray(q.answer) || q.answer.length !== (q.steps || []).length) E(tag + " : order answer 길이 불일치");
+        else{
+          var sortd = q.answer.slice().sort(function(a,b){return a-b;});
+          for(var z = 0; z < sortd.length; z++){ if(sortd[z] !== z){ E(tag + " : order answer 가 steps 인덱스의 순열이 아님"); break; } }
+        }
+      }else{
+        E(tag + " : 알 수 없는 type(" + q.type + ")");
+      }
+    });
+    var minTimed = MISSION_TIMED();
+    if(AP.timed.length < minTimed) E("pool.timed 가 " + AP.timed.length + "문 — 미션 시간제한 " + minTimed + "문에 못 미칩니다");
+
+    /* 추리 풀 — ref 는 cases[] 에 실재해야 한다(w02 는 reason 에 전체가 담겨 있다) */
+    var caseIds = {};
+    ((AW && AW.cases) || []).forEach(function(cs){ caseIds[cs.caseId] = cs; });
+    var okReason = 0;
+    AP.reason.forEach(function(r, i){
+      var tag = "pool.reason[" + i + "] " + (r && r.caseId ? r.caseId : "(caseId 없음)");
+      if(!r.caseId){ E(tag + " : caseId 없음"); return; }
+      var full = (r.clues && r.suspects && r.answer) ? r : caseIds[r.caseId];
+      if(!full){ E(tag + " : 전체 정의도 없고 cases[] 에도 없습니다 — 풀 수 없는 추리 항목"); return; }
+      if(!Array.isArray(full.clues) || full.clues.length < 3) E(tag + " : 단서 3개 미만");
+      if(!Array.isArray(full.suspects) || full.suspects.length < 2) E(tag + " : 원인 후보 2개 미만");
+      if(!full.answer || !full.answer.suspect) E(tag + " : answer.suspect 없음");
+      else{
+        var sus = (full.suspects || []).filter(function(s){ return s.id === full.answer.suspect; })[0];
+        if(!sus) E(tag + " : answer.suspect 가 suspects 에 없습니다");
+        else if(sus.correct !== true) E(tag + " : 정답 후보의 correct 가 true 가 아닙니다");
+      }
+      var ev = (full.answer || {}).evidence || [];
+      if(ev.length !== 2) E(tag + " : answer.evidence 는 2개여야 합니다 (현재 " + ev.length + ")");
+      okReason++;
+    });
+    var minR = MISSION_REASON();
+    if(okReason < minR) E("풀 수 있는 추리 항목이 " + okReason + "건 — 미션 추리 " + minR + "문에 못 미칩니다");
+    n = AP.timed.length;
+  }
+
+  /* --- roster(출석부) · prof(교수) · report(보고서 양식) 검증 ---
+   * 🔒 명단(학번·이름)은 개인정보 보호를 위해 소스코드에서 뺐다. C.roster 가
+   *    비어 있는 것이 정상이므로 비어 있어도 오류가 아니다(명단은 교수가
+   *    앱 「출석부 관리」에서 등록해 localStorage 에 저장한다).
+   *    C.roster 에 값이 남아 있는 경우에만 형식(학번·이름·중복)을 점검한다. */
+  if(Array.isArray(C.roster) && C.roster.length){
+    var seenSid = {};
+    C.roster.forEach(function(r, i){
+      if(!r || !r.sid || !r.name) E("roster[" + i + "] : 학번(sid)·이름(name)이 비었습니다");
+      else if(seenSid[r.sid]) E("roster[" + i + "] : 학번 중복 " + r.sid); else seenSid[r.sid] = true;
+    });
+  }
+  if(!C.prof || !C.prof.name || !C.prof.pid) E("prof(교수 로그인 이름·교번)이 없습니다");
+  if(AW && !AW.report){ W("활성 주차(" + ACTIVE_WEEK + ")에 report(보고서 양식)가 없습니다 — 결과보고서 작성을 열 수 없습니다."); }
+  else if(AW && AW.report){
+    if(!Array.isArray(AW.report.sections) || AW.report.sections.length === 0) E("report.sections 가 없습니다");
+    else{
+      var seenSecKey = {};
+      AW.report.sections.forEach(function(s, i){
+        var tag = "report.sections[" + i + "]" + (s && s.key ? " " + s.key : "");
+        if(!s || !s.key) E(tag + " : key 없음");
+        else if(seenSecKey[s.key]) E(tag + " : key 중복"); else seenSecKey[s.key] = true;
+        if(!s.label) E(tag + " : label 없음");
+        if(s.type === "images"){
+          if(!Array.isArray(s.conditions) || s.conditions.length === 0) E(tag + " : type=images 인데 conditions(조건 목록)가 없습니다");
+        }
+      });
+    }
+    if(!Array.isArray(AW.report.meta) || AW.report.meta.length === 0) E("report.meta 가 없습니다");
+  }
+
+  /* --- labs(7개 실습 메뉴) 검증 --- */
+  if(!Array.isArray(C.labs) || C.labs.length === 0){
+    E("labs 배열이 없습니다 — 7개 실습 메뉴를 만들 수 없습니다.");
+  }else{
+    var seenLab = {};
+    C.labs.forEach(function(l, i){
+      var tag = "labs[" + i + "] " + (l && l.id ? l.id : "(id 없음)");
+      if(!l.id) E(tag + " : id 없음");
+      else if(seenLab[l.id]) E(tag + " : id 중복"); else seenLab[l.id] = true;
+      if(!l.title) E(tag + " : title 없음");
+      if(!/^\d{4}-\d{2}-\d{2}$/.test(l.unlockDate || "")) E(tag + " : unlockDate 형식(YYYY-MM-DD) 오류");
+      if(typeof l.ready !== "boolean") E(tag + " : ready(true/false) 없음");
+    });
+    if(!seenLab[ACTIVE_WEEK]) E("labs 에 활성 주차(" + ACTIVE_WEEK + ") 실습이 없습니다");
+  }
+
+  SCREENS.forEach(function(s){
+    if(!document.getElementById("sc-" + s)) E("화면 sc-" + s + " 가 HTML 에 없습니다");
+  });
+  var seen = { labs: true }, queue = ["labs"];
+  while(queue.length){
+    var cur0 = queue.shift();
+    (NAV_EDGES[cur0] || []).forEach(function(nx){
+      if(SCREENS.indexOf(nx) < 0){ E("이동 대상 화면 '" + nx + "' 가 정의돼 있지 않습니다"); return; }
+      if(!seen[nx]){ seen[nx] = true; queue.push(nx); }
+    });
+  }
+  SCREENS.forEach(function(s){ if(!seen[s]) E("화면 '" + s + "' 는 로비에서 도달할 수 없습니다"); });
+
+  return { errs: errs, warns: warns, n: n };
+}
+function runCheck(){
+  var r;
+  try{ r = checkContent(); }
+  catch(e){ r = { errs: ["checkContent 실행 중 오류: " + e.message], warns: [], n: 0 }; }
+  if(r.errs.length){
+    var b = $("checkBanner");
+    b.hidden = false;
+    b.innerHTML = "<b>⚠ 콘텐츠 검증에서 " + r.errs.length + "건이 걸렸습니다.</b> 아래 항목을 고친 뒤 다시 여십시오.<ul>" +
+      r.errs.slice(0, 12).map(function(m){ return "<li>" + esc(m) + "</li>"; }).join("") +
+      (r.errs.length > 12 ? "<li>… 외 " + (r.errs.length - 12) + "건 (콘솔 참조)</li>" : "") + "</ul>";
+    if(window.console){
+      console.error("checkContent 실패 — " + r.errs.length + "건");
+      r.errs.forEach(function(m){ console.error("  · " + m); });
+      r.warns.forEach(function(m){ console.warn("  (경고) " + m); });
+    }
+  }else if(window.console){
+    console.log("checkContent OK — timed " + r.n + "문 · reason " + POOL_REASON.length + "건");
+    r.warns.forEach(function(m){ console.warn("  (경고) " + m); });
+  }
+  return r;
+}
+
+/* ==========================================================================
+ * 진행 계산 (레벨·XP·배지 제거 — 학습 진행 n/30 과 미션 합격 여부만 남긴다)
+ * ========================================================================*/
+function hasLearn(){ return !!(AW && AW.learn && Array.isArray(AW.learn.cards) && AW.learn.cards.length); }
+function learnRead(){ return hasLearn() ? !!(state.learn && state.learn.read) : true; }
+function markLearnRead(){
+  if(!state.learn) state.learn = { read: false };
+  if(state.learn.read) return false;
+  state.learn.read = true;
+  saveState();
+  return true;
+}
+function learnProgress(){ return (state.lquiz && state.lquiz.progress) || 0; }
+function missionUnlocked(){ return hasPool() && learnProgress() >= UNLOCK_N(); }
+
+/* ---------- 오답노트 (pool.timed 기준) ---------- */
+function noteWrong(qid){
+  var n = state.wrongNotes[qid] || { streak: 0, tries: 0, addedAt: today() };
+  n.streak = 0;
+  n.tries = (n.tries || 0) + 1;
+  n.lastAt = today();
+  state.wrongNotes[qid] = n;
+}
+function noteRight(qid){
+  var n = state.wrongNotes[qid];
+  if(!n) return;
+  n.streak = (n.streak || 0) + 1;
+  n.lastAt = today();
+  if(n.streak >= 2){ delete state.wrongNotes[qid]; toast("오답노트에서 뺐습니다 — 두 번 연속 정답"); }
+}
+function noteList(){ return Object.keys(state.wrongNotes).filter(function(qid){ return !!POOL_TIMED_BY_ID[qid]; }); }
+
+/* ==========================================================================
+ * 화면 전환
+ * ========================================================================*/
+var cur = "lobby";
+var navStack = [];
+var ctx = {};
+function go(name, push){
+  if(SCREENS.indexOf(name) < 0){ if(window.console) console.error("정의되지 않은 화면: " + name); return; }
+  if(push !== false && cur !== name) navStack.push(cur);
+  cur = name;
+  SCREENS.forEach(function(s){ var e = $("sc-" + s); if(e) e.classList.toggle("active", s === name); });
+  stopTimer();
+  var r = RENDER[name];
+  if(r) r();
+  paintTop();
+  window.scrollTo(0, 0);
+}
+function back(){
+  if(navStack.length){ go(navStack.pop(), false); }
+  else{ go("labs", false); }
+}
+var TITLES = {
+  labs: "유전자분석",
+  lobby: "실습 허브",
+  team: "실험조 구성",
+  report: "실험 결과보고서",
+  learn: "예습 · 내용·원리·핵심",
+  lquiz: "학습하기 · 퀴즈",
+  mission: "미션 퀴즈",
+  notes: "오답노트",
+  growth: "내 기록",
+  summary: "요약 카드",
+  profdash: "교수 확인",
+  roster: "출석부 관리"
+};
+function screenTitle(name){
+  var lab = curLab();
+  if(name === "lobby") return (lab.weekLabel || "") + " · " + (lab.title || "");
+  return TITLES[name] || (C.meta && C.meta.title) || "유전자분석";
+}
+var RENDER = {};
+function bindGo(root){
+  root.querySelectorAll("[data-go]").forEach(function(b){ b.onclick = function(){ go(b.getAttribute("data-go")); }; });
+}
+
+/* ==========================================================================
+ * 보상 오버레이 · 복장 진화 (원본 유지)
+ * ========================================================================*/
+var rewardActive = false;
+/* 게임식 축하 연출(회전 광선·색종이·배양접시 콜로니)은 제거했다.
+   합격 시에는 작은 동그래가 있는 정적인 축하 카드만 띄운다. */
+function showReward(o){
+  if(rewardActive) return;
+  rewardActive = true;
+  var ov = $("rewardOv");
+  var h = '<div class="reward-card">'
+    + '<div class="reward-coli">' + coli(o.face || "celebrate", "static") + '</div>'
+    + (o.kicker ? '<div class="reward-kicker">' + esc(o.kicker) + '</div>' : "")
+    + '<div class="reward-title">' + esc(o.title || "") + '</div>'
+    + (o.sub ? '<div class="reward-sub">' + esc(o.sub) + '</div>' : "")
+    + '<div class="reward-tap">화면을 탭하면 닫힙니다</div></div>';
+  ov.innerHTML = h;
+  ov.classList.add("on");
+  var close = function(){ ov.classList.remove("on"); ov.innerHTML = ""; rewardActive = false; };
+  ov.onclick = close;
+  setTimeout(close, reduced ? 1500 : (o.hold || 3200));
+}
+/* 복장 진화·레벨업 연출은 제거했다. 축하 오버레이는 showReward 하나만 남긴다. */
+
+/* ==========================================================================
+ * 상단 HUD
+ * ========================================================================*/
+var coliMiniPainted = false;
+function paintTop(){
+  var roleLabel = state.role === "prof" ? "교수" : state.role === "student" ? "학생" : "";
+  var nm = state.studentName ? state.studentName : "학습자님";
+  var who = (roleLabel ? roleLabel + " " : "") + nm;
+  var notice = (POOL && POOL.info && POOL.info.gradeNotice) ? POOL.info.gradeNotice : "실습 결과보고서 + 학습·미션 (시제품)";
+  $("tbTitle").textContent = screenTitle(cur);
+  $("tbSub").textContent = who;
+  $("backBtn").style.visibility = (cur === "labs" || cur === "profdash") ? "hidden" : "visible";
+  $("notice").innerHTML = "<b>" + esc(notice) + "</b>";
+
+  /* HUD 아바타 — 항상 연구원 동그래. 한 번만 그린다. */
+  if(!coliMiniPainted){ $("coliMini").innerHTML = coli("idle", "static"); coliMiniPainted = true; }
+
+  var bar = $("tbBar"), bl = $("tbBarLbl");
+  if(cur === "labs"){
+    if(bar) bar.style.width = "0%";
+    if(bl) bl.textContent = "실습 7개";
+  }else if(cur === "profdash"){
+    if(bar) bar.style.width = "0%";
+    if(bl) bl.textContent = "확인";
+  }else if(cur === "roster"){
+    if(bar) bar.style.width = "0%";
+    if(bl) bl.textContent = "출석부";
+  }else if(cur === "team"){
+    if(bar) bar.style.width = "0%";
+    if(bl) bl.textContent = "실험조";
+  }else if(cur === "report"){
+    if(bar) bar.style.width = "0%";
+    if(bl) bl.textContent = "보고서";
+  }else if(!hasPool()){
+    if(bar) bar.style.width = "0%";
+    if(bl) bl.textContent = "—";
+  }else if(missionUnlocked()){
+    if(bar) bar.style.width = "100%";
+    if(bl) bl.textContent = state.mission.passed ? "미션 합격 " + (state.mission.bestScore||0) : "미션 대기";
+  }else{
+    var p = Math.min(1, learnProgress() / UNLOCK_N());
+    if(bar) bar.style.width = (p * 100) + "%";
+    if(bl) bl.textContent = "학습 " + learnProgress() + "/" + UNLOCK_N();
+  }
+}
+
+/* ==========================================================================
+ * 배경 장식 · 헬릭스 (원본 유지)
+ * ========================================================================*/
+/* 게임식 DNA 이중나선 배경 장식은 제거했다. 헤더는 깔끔한 카드로 대체한다. */
+function helixSVG(){ return ""; }
+/* 떠다니는 분자 파티클 배경도 제거했다(#bgfx 는 CSS 에서 숨김). */
+function buildBgFx(){ var m = $("molfield"); if(m) m.innerHTML = ""; }
+
+/* ==========================================================================
+ * 튜토리얼 (첫 실행) — 학번·이름을 받는다(평가 도구이므로).
+ * ========================================================================*/
+var TUT_CARDS = [
+  { i: "📖", h: "예습 카드 — 내용·원리·핵심", d: "세 병(P1·P2·P3)의 순서와 '다시 붙는 능력' 같은 원리를 읽는 카드로 미리 봅니다. (선택)" },
+  { i: "⚡", h: "학습·복습 퀴즈 — 미션 열림", d: "실험 관련 문제를 풀며 공부합니다. 약 " + (POOL && POOL.info ? POOL.info.learnUnlockCount : 30) + "문을 풀면 미션이 열립니다." },
+  { i: "🎯", h: "미션 — 보고서 점수 평가", d: "시간제한 8문 + 추리 2문 = 10문(배점 합 100). 70점 이상이면 합격이며 보고서 점수를 받습니다." },
+  { i: "🔀", h: "학생마다·재도전마다 다른 문제", d: "미션 문항은 사람마다 다르게 뽑히고, 다시 도전할 때마다 바뀝니다. 외워서 통과할 수 없습니다." }
+];
+/* ==========================================================================
+ * 로그인 — 명단(roster) 대조. #tutorial 오버레이를 재활용한다.
+ *   ① 역할 고르기(학생/교수) → ② 이름·학번(교번) 입력·대조.
+ *   학생: 이름+학번이 출석부에 있고 일치해야 로그인. 교수: 이름+교번이 prof 와 일치해야.
+ *   ⚠️ 로컬 시제품이라 서버 인증은 다음 단계다(입력값은 이 기기 안에만 남는다).
+ * ========================================================================*/
+var roleGateStep = { role: null };
+function showLogin(){
+  var lab = curLab();
+  var h = "";
+  h += '<div style="height:14px"></div>';
+  h += '<div class="hero">' + helixSVG();
+  h += '<div class="tut-coli">' + coli("explain") + '</div>';
+  h += '<div class="k">DMU 바이오융합공학과 · 유전자분석</div>';
+  h += '<h1>유전자분석 실습</h1>';
+  h += '<div class="sub">실험 결과보고서 작성 · 제출 + 학습 · 미션</div>';
+  h += '<div class="chips"><span class="chip mint">' + esc(lab.weekLabel || "2주차") + ' · ' + esc(lab.title || "세포배양") + ' 열림</span></div></div>';
+
+  if(!roleGateStep.role){
+    h += '<div class="greet">' + coli("idle", "static") + '<div class="speech">로그인해 주세요. 학생은 <b>이름·학번</b>, 교수는 <b>이름·교번</b>으로 들어갑니다.</div></div>';
+    h += '<button class="modebtn" type="button" id="roleStudent"><div class="ic">🧑‍🎓</div><div class="bd"><div class="h">학생 로그인</div><div class="d">출석부에 있는 이름·학번으로 로그인합니다</div></div></button>';
+    h += '<button class="modebtn" type="button" id="roleProf"><div class="ic">🧑‍🏫</div><div class="bd"><div class="h">교수 로그인</div><div class="d">이름·교번으로 확인 대시보드에 들어갑니다</div></div></button>';
+    h += '<p class="small" style="text-align:center;margin-top:8px">※ 로컬 시제품입니다. 서버 인증·전체 집계는 다음 단계이며, 입력값은 이 기기 안에만 남습니다.</p>';
+    h += '<div style="height:30px"></div>';
+    $("tutInner").innerHTML = h;
+    $("tutorial").classList.add("on");
+    $("roleStudent").onclick = function(){ roleGateStep.role = "student"; showLogin(); };
+    $("roleProf").onclick = function(){ roleGateStep.role = "prof"; showLogin(); };
+    return;
+  }
+
+  var isProf = roleGateStep.role === "prof";
+  h += '<div class="greet">' + coli("explain", "static") + '<div class="speech">' + (isProf ? "교수 로그인이에요. 이름과 교번을 입력해 주세요." : "학생 로그인이에요. 출석부의 이름과 학번을 정확히 입력해 주세요.") + '</div></div>';
+  h += '<div class="card idform"><h3>' + (isProf ? "교수 로그인" : "학생 로그인") + ' <span class="small">이름 · ' + (isProf ? "교번" : "학번") + '</span></h3>';
+  h += '<label for="rgName">이름</label><input id="rgName" type="text" autocomplete="off" maxlength="20" placeholder="' + (isProf ? "예: 곽호석" : "예: 홍길동") + '" value="">';
+  h += '<label for="rgId">' + (isProf ? "교번" : "학번") + '</label><input id="rgId" type="text" inputmode="numeric" autocomplete="off" maxlength="15" placeholder="' + (isProf ? "예: 2017097" : "예: 20250000") + '" value="">';
+  h += '<p class="err" id="rgErr"></p>';
+  h += '<p class="small" style="margin:6px 0 0">⚠ 로컬 시제품이라 결과가 서버로 자동 제출되지 않습니다. 입력값·기록은 이 기기 안에만 남습니다.</p></div>';
+  h += '<button class="btn primary" id="rgStart" type="button">' + (isProf ? "교수 로그인 🧑‍🏫" : "학생 로그인 🧑‍🎓") + '</button>';
+  h += '<button class="btn ghost center" id="rgBack" type="button">← 역할 다시 고르기</button>';
+  h += '<p class="small" style="text-align:center">' + esc(C.meta.storageNote || "") + '</p>';
+  h += '<div style="height:30px"></div>';
+  $("tutInner").innerHTML = h;
+  $("tutorial").classList.add("on");
+
+  $("rgBack").onclick = function(){ roleGateStep.role = null; showLogin(); };
+  function submitLogin(){
+    var nm = ($("rgName").value || "").trim();
+    var idv = ($("rgId").value || "").trim();
+    var errBox = $("rgErr");
+    if(!nm || !idv){ errBox.textContent = "이름과 " + (isProf ? "교번" : "학번") + "을 모두 입력해 주세요."; return; }
+    if(isProf){
+      if(!checkProf(nm, idv)){ errBox.textContent = "교수 이름·교번이 일치하지 않습니다."; return; }
+      applyIdentity("prof", "", C.prof.name);
+      $("tutorial").classList.remove("on");
+      paintTop(); go("profdash", false);
+      toast("교수님 로그인 — 확인 대시보드입니다.");
+      return;
+    }
+    var stu = findStudent(nm, idv);
+    if(stu.error){ errBox.textContent = stu.error; return; }
+    errBox.textContent = "";
+    applyIdentity("student", stu.sid, stu.name);
+    $("tutorial").classList.remove("on");
+    paintTop(); go("labs", false);
+    toast(stu.name + "님, 로그인되었습니다.");
+  }
+  $("rgStart").onclick = submitLogin;
+  $("rgId").onkeydown = function(e){ if(e.key === "Enter") submitLogin(); };
+}
+/* 로그아웃 — 세션을 지우고 로그인 화면으로. 진도·보고서는 기기에 그대로 남는다. */
+function logout(){
+  clearSession();
+  state = defaultState();
+  ctx = {}; navStack = []; cur = "labs";
+  roleGateStep.role = null;
+  showLogin();
+  paintTop();
+}
+
+/* ==========================================================================
+ * 파이프라인 보드맵 (로비 장식 — 유지)
+ * ========================================================================*/
+/* 한 학기 실습 단계 — labs 를 그대로 스텝 목록으로 표시한다(활성 주차를 진행 중으로). */
+function buildBoard(){
+  var done = state.mission.passed;
+  var s = '<div class="steplist">';
+  (C.labs || []).forEach(function(lab, i){
+    var st = (lab.id === ACTIVE_WEEK) ? (done ? "done" : "cur") : "lock";
+    var rowcls = st === "cur" ? " cur" : st === "done" ? " done" : "";
+    var stlbl = st === "cur" ? "진행 중" : st === "done" ? "완료" : "예정";
+    s += '<div class="steprow' + rowcls + '">';
+    s += '<div class="snum">' + (i + 1) + '</div>';
+    s += '<div class="sbd"><div class="swk">' + esc(lab.weekLabel || "") + '</div><div class="snm">' + esc(lab.title || "") + '</div></div>';
+    s += '<div class="sst">' + stlbl + '</div>';
+    s += '</div>';
+  });
+  s += '</div>';
+  return s;
+}
+
+/* ==========================================================================
+ * 7개 실습 목록 (메인) — content.js 의 labs
+ *   날짜 잠금은 브라우저의 오늘 날짜(today())로 판정한다. PC 시계가 틀리면
+ *   판정도 흔들리는 로컬 한계가 있다(운영본에서 서버 시간으로 대체 예정).
+ *   실제 콘텐츠(learn→미션)가 붙어 있는 실습은 현재 w02(세포배양) 하나뿐이다.
+ *   3주차(w03) 콘텐츠는 최상위 C.pool/C.learn/C.cases 에 그대로 보존돼 있지만,
+ *   아래 LABS_WITH_CONTENT 에 없어 지금은 "준비 중"으로만 표시된다.
+ * ========================================================================*/
+function labList(){ return (C && Array.isArray(C.labs)) ? C.labs : []; }
+
+/* ⚠️ 실제 미션 콘텐츠(pool/cases)가 붙어 있는 실습의 id 목록.
+ *   지금은 w02(byWeek.w02) 하나뿐이며, weekPack()이 그 id 에 맞는 콘텐츠 세트를 골라 돌려준다.
+ *   ── 다음 단계에서 다른 주차(w03·w04 등)에 문항을 붙일 때 반드시 함께 할 일 ──
+ *     1) content.js 의 해당 lab 을 ready:true 로 바꾼다.
+ *     2) 그 lab 의 미션 콘텐츠를 붙이고(byWeek.wNN 또는 weekPack()에 연결), 로비/미션이 읽게 한다.
+ *     3) 이 배열에 그 id 를 추가한다(예: ["w02","w03"]).  ← 이 줄을 빠뜨리면
+ *        ready:true 로 바꿔도 labEnterable() 이 계속 false 라 못 들어간다. */
+var LABS_WITH_CONTENT = ["w02"];
+
+/* 눌러서 실제로 들어갈 수 있는가 — 콘텐츠가 붙어 있고, 교수이거나 학생이면 날짜가 됐을 때 */
+function labEnterable(lab){
+  if(!lab || LABS_WITH_CONTENT.indexOf(lab.id) === -1) return false;   /* 콘텐츠가 붙은 실습만 */
+  if(state.role === "prof") return true;
+  return !!lab.ready && (TEST_OPEN_ALL || today() >= lab.unlockDate);
+}
+/* 카드에 표시할 상태 뱃지 */
+function labBadge(lab){
+  if(!lab.ready) return { t: "문항 준비 중", cls: "" };
+  if(state.role === "prof") return { t: "열람 가능", cls: "on" };
+  if(today() >= lab.unlockDate) return { t: "열림", cls: "on" };
+  if(TEST_OPEN_ALL) return { t: "열림(테스트)", cls: "on" };
+  return { t: "🔒 " + (lab.dateLabel || "") + " 열림", cls: "" };
+}
+var CIRC = ["①","②","③","④","⑤","⑥","⑦","⑧","⑨"];
+RENDER.labs = function(){
+  var labs = labList();
+  var isProf = state.role === "prof";
+  var actLab = curLab();
+  var h = "";
+  h += '<div class="hero">' + helixSVG();
+  h += '<div class="k">DMU 바이오융합공학과 · 유전자분석</div>';
+  h += '<h1>한 학기 실습 7개</h1>';
+  h += '<div class="sub">중간고사 전까지 7번의 실습을 연속으로 진행합니다.</div>';
+  h += '<div class="chips">';
+  h += '<span class="chip ' + (isProf ? "amber" : "mint") + '">' + (isProf ? "🧑‍🏫 교수 " + esc(state.studentName || "") : "🧑‍🎓 " + esc(state.studentName || "")) + '</span>';
+  h += '<span class="chip">' + (isProf ? "교번 " + esc(C.prof.pid) : "학번 " + esc(state.studentId || "")) + '</span>';
+  h += '</div></div>';
+
+  if(isProf){
+    h += '<button class="btn primary" type="button" data-go="profdash" style="margin-bottom:12px">🧑‍🏫 학생 확인 대시보드로</button>';
+  }
+
+  h += '<div class="greet">' + coli(isProf ? "explain" : "idle", "static") + '<div class="speech">' +
+    (isProf
+      ? "교수 화면이에요. 아래는 학생이 보는 실습 목록 미리보기예요. 지금 열린 실습은 " + esc(actLab.weekLabel || "2주차") + "(" + esc(actLab.title || "세포배양") + ")뿐이에요."
+      : "실습 제목을 눌러 들어가요. 각 실습은 <b>해당 날짜</b>가 되면 열려요. 지금은 " + esc(actLab.weekLabel || "2주차") + "(" + esc(actLab.title || "세포배양") + ")만 열려 있어요.") +
+    '</div></div>';
+
+  h += testModeNote();
+  h += earlyBanner();
+
+  if(!labs.length){
+    h += '<div class="card"><h3>실습 목록을 읽지 못했습니다</h3><p class="muted">content.js 에 labs(7개 실습)가 없습니다.</p></div>';
+    var sc0 = $("sc-labs"); sc0.innerHTML = h; return;
+  }
+
+  /* ⓪ 실험조 구성 — 실습 목록 맨 위(세포배양 앞). 진입점을 허브에서 여기로 옮겼다. */
+  (function(){
+    var meEarly = meIsEarly();
+    var mySid = state.studentId || "";
+    var myTm = (state.role === "student" && mySid) ? teamOf(mySid) : null;
+    var nTeams = loadTeams().length;
+    var stCls, stTxt, dTxt;
+    if(isProf){ stCls = ""; stTxt = "미리보기"; dTxt = "학생이 조원 2명을 골라 3명 한 조를 만듭니다. 현재 " + nTeams + "/" + TEAM_MAX + "조 편성."; }
+    else if(meEarly){ stCls = ""; stTxt = "면제"; dTxt = "조기 취업 면제 — 실험조 편성 대상이 아닙니다."; }
+    else if(myTm){ stCls = "on"; stTxt = "내 조 " + myTm.no + "조"; dTxt = "내 조: " + myTm.no + "조 · " + esc(myTm.members.map(function(s){ return nameOfSid(s); }).join(", ")); }
+    else if(nTeams >= TEAM_MAX){ stCls = ""; stTxt = "편성 마감"; dTxt = "모든 조(" + TEAM_MAX + "조)가 구성되었습니다."; }
+    else{ stCls = "on"; stTxt = "조 만들기"; dTxt = "3명이 한 조로 실험합니다. 조원 2명을 골라 조를 만드세요. (현재 " + nTeams + "/" + TEAM_MAX + "조)"; }
+    h += '<button class="lab-card open" type="button" id="labsTeamCard">';
+    h += '<div class="lab-no">0</div>';
+    h += '<div class="lab-bd"><div class="lab-wk">실험 준비 · 조 편성</div>';
+    h += '<div class="lab-t">실험조 구성</div>';
+    h += '<div class="lab-d">' + dTxt + '</div></div>';
+    h += '<div class="lab-st ' + stCls + '">' + esc(stTxt) + '</div>';
+    h += '</button>';
+  })();
+
+  labs.forEach(function(lab){
+    var b = labBadge(lab);
+    var enter = labEnterable(lab);
+    var circ = CIRC[(lab.no || 1) - 1] || String(lab.no || "");
+    h += '<button class="lab-card' + (enter ? " open" : "") + '" type="button" data-lab="' + esc(lab.id) + '">';
+    h += '<div class="lab-no">' + circ + '</div>';
+    h += '<div class="lab-bd"><div class="lab-wk">' + esc(lab.weekLabel || "") + ' · ' + esc(lab.dateLabel || "") + '</div>';
+    h += '<div class="lab-t">' + esc(lab.title || "") + '</div>';
+    h += '<div class="lab-d">' + esc(lab.desc || "") + '</div></div>';
+    h += '<div class="lab-st ' + b.cls + '">' + esc(b.t) + '</div>';
+    h += '</button>';
+  });
+
+  h += '<button class="btn sm ghost center" type="button" id="logoutBtn" style="margin-top:12px">🚪 로그아웃</button>';
+  h += '<p class="small" style="margin-top:10px">' + esc(C.meta.storageNote || "") + '</p>';
+  h += '<p class="small">※ 로컬 시제품입니다. 열림 여부는 이 기기의 오늘 날짜로 판단하며, 서버 인증·자동 집계는 다음 단계입니다.</p>';
+
+  var sc = $("sc-labs"); sc.innerHTML = h;
+  sc.querySelectorAll("[data-lab]").forEach(function(bt){
+    bt.onclick = function(){
+      var id = bt.getAttribute("data-lab"), lab = null;
+      labs.forEach(function(l){ if(l.id === id) lab = l; });
+      if(!lab) return;
+      if(labEnterable(lab)){ ACTIVE_WEEK = lab.id; AW = weekPack(ACTIVE_WEEK); buildDerived(); go("lobby"); return; }
+      if(!lab.ready){ toast("이 실습의 문항은 준비 중입니다."); return; }
+      if(state.role !== "prof" && !TEST_OPEN_ALL && today() < lab.unlockDate){ toast((lab.dateLabel || "") + " 부터 열립니다. 아직 잠겨 있어요."); return; }
+      toast("이 실습의 문항은 준비 중입니다.");
+    };
+  });
+  if($("labsTeamCard")) $("labsTeamCard").onclick = function(){ go("team"); };
+  if($("logoutBtn")) $("logoutBtn").onclick = logout;
+  bindGo(sc);   /* ★ 누락 수정: 교수 미리보기의 '학생 확인 대시보드로'(data-go="profdash") 버튼을 실제로 연결한다 */
+};
+
+/* ==========================================================================
+ * 실습 허브 (= 주차 실습 안 · 3단계 메뉴)
+ *   ① 실험 결과보고서 작성  ② 학습하기(퀴즈 30문)  ③ 미션 퀴즈(10문)
+ * ========================================================================*/
+RENDER.lobby = function(){
+  var lab = curLab();
+  var unlocked = missionUnlocked();
+  var prog = learnProgress(), need = UNLOCK_N();
+  var isProf = state.role === "prof";
+  var rep = (state.studentId) ? loadReport(state.studentId) : emptyReport();
+  var repHasText = reportHasContent(rep);
+
+  var greet, gface;
+  if(isProf){ greet = "교수 미리보기예요. 학생이 보는 " + (lab.weekLabel || "") + " 실습 화면이에요."; gface = "explain"; }
+  else if(state.mission.passed){ greet = "미션에 합격했어요! " + (lab.weekLabel || "") + " 보고서 점수를 받은 거예요. 정말 잘했어요."; gface = "celebrate"; }
+  else if(unlocked){ greet = "학습을 충분히 했어요 — 미션이 열렸어요. 준비되면 도전해요!"; gface = "explain"; }
+  else if(prog > 0){ greet = "돌아왔네요! 미션까지 " + (need - prog) + "문 남았어요. 이어서 풀어볼까요?"; gface = "explain"; }
+  else{ greet = "안녕하세요! 결과보고서를 작성하고, 학습 퀴즈를 풀면 미션이 열려요."; gface = "idle"; }
+
+  var h = "";
+  h += '<button class="btn sm ghost" type="button" data-go="labs" style="margin-bottom:12px;text-align:left">← 실습 목록으로</button>';
+  h += '<div class="hero">' + helixSVG();
+  h += '<div class="k">DMU 바이오융합공학과 · ' + esc(lab.weekLabel || "") + ' 실습</div>';
+  h += '<h1>' + esc(lab.title || "") + '</h1>';
+  h += '<div class="sub">' + esc(lab.weekLabel || "") + ' · ' + esc(lab.dateLabel || "") + ' — 결과보고서 + 학습 + 미션</div>';
+  h += '<div class="chips">';
+  h += '<span class="chip mint">🧑‍🔬 학습 도우미 동그래</span>';
+  h += '<span class="chip">' + (unlocked ? '미션 열림' : '학습 ' + Math.min(prog, need) + '/' + need) + '</span>';
+  h += '<span class="chip amber">70점 이상 합격</span>';
+  h += '</div></div>';
+
+  h += '<div class="greet">' + coli(gface, gface === "celebrate" ? "" : "static") + '<div class="speech">' + esc(greet) + '</div></div>';
+
+  h += testModeNote();
+  h += earlyBanner();
+  var meEarly = meIsEarly();
+  var exBadge = meEarly ? ' <span class="lockbadge pass">면제</span>' : '';
+
+  /* 실험조 구성은 실습 목록(labs) 첫 화면 맨 위로 이동했다 — 여기(허브)에서는 제거. */
+
+  /* ① 실험 결과보고서 작성 */
+  h += '<div class="hub-card' + (rep.submitted ? ' done' : '') + '">';
+  h += '<div class="hub-ic">📝</div><div class="hub-bd">';
+  h += '<div class="hub-t">① 실험 결과보고서 작성' + exBadge + '</div>';
+  h += '<div class="hub-d">A4 서식에 맞춰 작성하고 제출합니다. (A4 미리보기·워드·PDF는 교수님 확인 화면에서 내려받습니다)</div>';
+  h += '<div class="hub-st">' + (rep.submitted ? '<b>제출함</b> · ' + esc(rep.submittedAt || "") : (repHasText ? '작성 중 (임시 저장됨)' : '아직 시작 안 함')) + '</div>';
+  h += '<button class="btn sm primary" type="button" id="hubReport" style="margin-top:8px">보고서 ' + (repHasText ? '이어 작성' : '작성 시작') + ' 📝</button>';
+  h += '</div></div>';
+
+  if(!hasPool()){
+    h += '<div class="card"><h3>문항 풀을 읽지 못했습니다</h3><p class="muted">활성 주차 pool(timed·reason)이 없어 학습·미션을 열 수 없습니다.</p></div>';
+    var sc0 = $("sc-lobby"); sc0.innerHTML = h;
+    if($("hubReport")) $("hubReport").onclick = function(){ openReportSelf(); };
+    bindGo(sc0); return;
+  }
+
+  /* ② 학습하기 (퀴즈 30문 · 미션 해금) */
+  h += '<div class="hub-card' + (unlocked ? ' done' : '') + '">';
+  h += '<div class="hub-ic">📚</div><div class="hub-bd">';
+  h += '<div class="hub-t">② 학습하기 <span class="small">퀴즈 ' + need + '문</span>' + exBadge + '</div>';
+  h += '<div class="hub-d">문제를 풀며 공부해요(정답·오답 무관). ' + need + '문을 풀면 미션이 열려요.</div>';
+  h += '<div class="prog-wrap"><div class="prog-lbl"><span>미션까지</span><span><b>' + Math.min(prog, need) + '</b> / ' + need + '문</span></div>';
+  h += '<div class="prog-bar' + (unlocked ? ' full' : '') + '"><i style="width:' + Math.min(100, prog / need * 100) + '%"></i></div></div>';
+  h += '<div class="row" style="margin-top:8px"><button class="btn sm" type="button" data-go="learn">📖 예습 카드</button>';
+  h += '<button class="btn sm primary" type="button" data-go="lquiz">' + (unlocked ? '퀴즈 더 풀기 ⚡' : (prog > 0 ? '이어서 풀기 ⚡' : '퀴즈 시작 ⚡')) + '</button></div>';
+  h += '</div></div>';
+
+  /* ③ 미션 퀴즈 (10문) */
+  var missOpen = unlocked || meEarly;      /* 면제 학생은 자율 학습용으로 열어볼 수 있다 */
+  h += '<div class="hub-card' + (state.mission.passed ? ' done' : (missOpen ? '' : ' lock')) + '">';
+  h += '<div class="hub-ic">🎯</div><div class="hub-bd">';
+  h += '<div class="hub-t">③ 미션 퀴즈 ' + (unlocked ? '<span class="lockbadge on">열림</span>' : '<span class="lockbadge">🔒 잠김</span>') + exBadge +
+       (state.mission.passed ? ' <span class="lockbadge pass">합격 ' + (state.mission.bestScore||0) + '점</span>' : '') + '</div>';
+  h += '<div class="hub-d">시간제한 8문 + 추리 2문 = 10문 · 배점 합 100 · 70점 합격 · 재도전마다 문제 교체</div>';
+  if(meEarly){
+    h += '<div class="hub-st" style="color:var(--green)">면제 대상 — 이수 의무 없음(열어보기 자유)</div>';
+    h += '<button class="btn sm primary" type="button" data-go="mission" style="margin-top:8px">미션 열어보기(면제) 🎯</button>';
+  }else if(unlocked){
+    h += '<button class="btn sm primary" type="button" data-go="mission" style="margin-top:8px">' + (state.mission.passed ? '미션 다시 도전 🎯' : '미션 도전 🎯') + '</button>';
+  }else{
+    h += '<div class="hub-st">열림 조건 — 학습 ' + (need - prog) + '문 더 풀기</div>';
+    h += '<button class="btn sm" type="button" disabled style="margin-top:8px">학습 ' + (need - prog) + '문 더 풀면 열립니다</button>';
+  }
+  h += '</div></div>';
+
+  /* 한 학기 실습 단계 (안내 목록) */
+  h += '<div class="card"><h3>한 학기 실습 단계 <span class="small">7단계 중 현재 ' + esc(lab.weekLabel || "") + '</span></h3>';
+  h += '<div class="board-wrap">' + buildBoard() + '</div>';
+  h += '<div class="map-legend"><span><i style="background:var(--mint)"></i>진행 중</span>';
+  h += '<span><i style="background:var(--green)"></i>완료</span>';
+  h += '<span><i style="background:var(--card3)"></i>예정</span></div>';
+  h += '<p class="small" style="margin:11px 0 0">지금은 ' + esc(lab.weekLabel || "") + '(' + esc(lab.title || "") + ')만 열려 있습니다. 나머지 주차는 다음 단계에서 추가됩니다.</p></div>';
+
+  /* 오답노트 / 내 기록 / 요약 */
+  h += '<div class="row"><button class="btn sm center" type="button" data-go="notes">오답노트<br><span class="small">' + noteList().length + '문항</span></button>';
+  h += '<button class="btn sm center" type="button" data-go="growth">내 기록<br><span class="small">' + (state.mission.passed ? '미션 합격' : (unlocked ? '미션 대기' : '학습 중')) + '</span></button></div>';
+  h += '<button class="btn sm ghost center" type="button" data-go="summary">📄 이 주차 요약 카드</button>';
+
+  h += '<p class="small" style="margin-top:14px">' + esc(C.meta.storageNote || "") + '</p>';
+  if(!storageOk) h += '<p class="small" style="color:var(--amber)">※ 이 브라우저에서는 진도 저장이 안 됩니다. 창을 닫으면 기록이 사라집니다.</p>';
+
+  var sc = $("sc-lobby");
+  sc.innerHTML = h;
+  if($("hubReport")) $("hubReport").onclick = function(){ openReportSelf(); };
+  bindGo(sc);
+};
+/* ==========================================================================
+ * 실험조 구성 — 로그인 학생이 조원 2명을 골라 3명 한 조를 만든다(선착순 번호)
+ *   저장: localStorage TEAMS_KEY. 이 기기 로컬 — 여러 기기에서 짜면 합쳐지지 않는다.
+ * ========================================================================*/
+RENDER.team = function(){
+  var sc = $("sc-team");
+  var mySid = state.studentId || "";
+  var localNote = '<p class="small" style="margin-top:14px">※ 조 편성은 <b>이 기기</b>에만 저장됩니다. 여러 학생이 각자 기기에서 따로 짜면 합쳐지지 않습니다(전체 공유는 서버 단계에서). 한 기기(예: 실습실 공용 PC)에서 함께 짜는 것을 권합니다.</p>';
+  var h = "";
+  h += '<button class="btn sm ghost" type="button" data-go="labs" style="margin-bottom:10px;text-align:left">← 실습 목록으로</button>';
+  h += '<h2 class="sc-h">👥 실험조 구성</h2>';
+  h += '<p class="sc-p">한 조는 3명입니다. 총 ' + TEAM_MAX + '개 조까지 만들 수 있고, 조 번호는 먼저 만든 조부터 1조·2조… 선착순으로 정해집니다.</p>';
+
+  /* 교수·비로그인 방어 */
+  if(state.role !== "student" || !mySid){
+    h += '<div class="card"><p class="muted">학생으로 로그인하면 실험조를 구성할 수 있습니다.' + (state.role==="prof" ? ' (교수 미리보기에서는 편성만 확인됩니다.)' : '') + '</p></div>';
+    h += teamStatusCard();
+    h += localNote;
+    sc.innerHTML = h; bindGo(sc); return;
+  }
+
+  /* 조기취업 면제 */
+  if(meIsEarly()){
+    h += '<div class="card tight" style="border-color:#bfe2cd;background:var(--greendk)"><div class="small" style="color:var(--green)">🎓 <b>조기 취업 면제 대상</b>입니다. 실험조 편성 의무가 없어 명단에서 제외됩니다.</div></div>';
+    h += teamStatusCard();
+    h += localNote;
+    sc.innerHTML = h; bindGo(sc); return;
+  }
+
+  var myTm = teamOf(mySid);
+  if(myTm){
+    /* 이미 조가 있으면 내 조를 보여준다 */
+    h += '<div class="team-mine"><div class="tm-no">' + myTm.no + '조</div>';
+    h += '<div class="tm-mem">';
+    myTm.members.forEach(function(s){
+      var isMe = String(s) === String(mySid);
+      h += '<div class="tm-row"><span class="tm-tag">' + (isMe ? '나' : '조원') + '</span><b>' + esc(nameOfSid(s)) + '</b><span class="pk-sid" style="margin-left:auto;color:var(--tx3);font-size:12px">' + esc(String(s)) + '</span></div>';
+    });
+    h += '</div></div>';
+    h += '<p class="small" style="margin-top:12px">조가 편성되었습니다. 보고서 머리말의 "조" 칸에 <b>' + myTm.no + '조</b>가 자동으로 채워집니다.</p>';
+    h += '<button class="btn sm danger center" type="button" id="teamRebuild" style="margin-top:4px">조 다시 짜기</button>';
+    h += '<p class="small" style="margin:2px 0 0;color:var(--tx3)">※ 다시 짜면 우리 조가 해체되고 조원 3명이 모두 미배정 상태가 됩니다. 새로 만들면 선착순 번호를 다시 받습니다.</p>';
+    h += teamStatusCard();
+    h += localNote;
+    sc.innerHTML = h; bindGo(sc);
+    if($("teamRebuild")) $("teamRebuild").onclick = function(){
+      askConfirm(myTm.no + "조를 해체하고 다시 짜시겠어요?\n조원 3명이 모두 미배정 상태가 되고, 새로 만들면 조 번호를 다시 받습니다.", function(){
+        disbandTeam(myTm.no);
+        ctx.teamPick = [];
+        toast(myTm.no + "조를 해체했습니다. 조원을 다시 골라 주세요.");
+        RENDER.team();
+      });
+    };
+    return;
+  }
+
+  /* 모든 조가 찼는가 */
+  if(teamsFull()){
+    h += '<div class="card"><h3>모든 조가 구성되었습니다</h3><p class="muted">' + TEAM_MAX + '개 조가 모두 편성되어 더 만들 수 없습니다. 조 배정에 문제가 있으면 담당 교수님께 문의하세요.</p></div>';
+    h += teamStatusCard();
+    h += localNote;
+    sc.innerHTML = h; bindGo(sc); return;
+  }
+
+  /* ---------- 조 만들기 ---------- */
+  var avail = availableForTeam(mySid);
+  if(!ctx.teamPick) ctx.teamPick = [];
+  /* 그 사이 조가 찬 학생은 선택 목록에서 사라지므로 picked 정리 */
+  var availSids = {};
+  avail.forEach(function(st){ availSids[String(st.sid)] = true; });
+  ctx.teamPick = ctx.teamPick.filter(function(s){ return availSids[s]; });
+
+  var nextNo = (function(){ var m = 0; loadTeams().forEach(function(t){ if(t.no > m) m = t.no; }); return m + 1; })();
+  h += '<div class="card"><h3>조 만들기 <span class="small">이 조는 ' + nextNo + '조가 됩니다</span></h3>';
+  h += '<p class="sc-p" style="margin:0 0 6px">나(<b>' + esc(state.studentName || "") + '</b>)와 함께할 <b>조원 2명</b>을 명단에서 고르세요. 고른 2명도 자동으로 이 조에 편성됩니다.</p>';
+
+  if(avail.length < TEAM_SIZE - 1){
+    h += '<p class="muted" style="margin:8px 0">함께 조를 짤 수 있는 학생이 ' + avail.length + '명뿐입니다(조기취업·이미 편성된 학생 제외). 조를 만들려면 최소 2명이 필요합니다.</p>';
+    h += '</div>';
+    h += teamStatusCard();
+    h += localNote;
+    sc.innerHTML = h; bindGo(sc); return;
+  }
+
+  /* 이미 다른 조에 배정된 학생(본인·조기취업 제외) — 목록에 남기되 비활성 + N조 표시 */
+  var roster0 = getRoster();
+  var assigned = roster0.filter(function(st){
+    var s = String(st.sid);
+    if(s === String(mySid)) return false;
+    if(isEarly(s)) return false;
+    return !!teamOf(s);
+  });
+  h += '<div class="pick-list" id="pickList">';
+  avail.forEach(function(st){
+    var s = String(st.sid);
+    var on = ctx.teamPick.indexOf(s) !== -1;
+    h += '<div class="pick-item' + (on ? ' on' : '') + '" data-pick="' + esc(s) + '">';
+    h += '<span class="pk-box">' + (on ? '✓' : '') + '</span>';
+    h += '<span class="pk-nm">' + esc(st.name) + '</span>';
+    h += '<span class="pk-sid">' + esc(s) + '</span>';
+    h += '</div>';
+  });
+  assigned.forEach(function(st){
+    var s = String(st.sid);
+    var tm = teamOf(s);
+    h += '<div class="pick-item dis" aria-disabled="true" title="이미 편성된 학생입니다">';
+    h += '<span class="pk-box"></span>';
+    h += '<span class="pk-nm">' + esc(st.name) + '</span>';
+    h += '<span class="pk-team">' + (tm ? tm.no + '조' : '배정됨') + '</span>';
+    h += '<span class="pk-sid">' + esc(s) + '</span>';
+    h += '</div>';
+  });
+  h += '</div>';
+  h += '<div class="pick-count" id="pickCount"></div>';
+  h += '<button class="btn primary center" type="button" id="teamMake" style="margin-top:12px">조 만들기 확정</button>';
+  h += '</div>';
+  h += teamStatusCard();
+  h += localNote;
+  sc.innerHTML = h;
+  bindGo(sc);
+
+  function refreshPick(){
+    var cnt = ctx.teamPick.length;
+    var cel = $("pickCount");
+    if(cel) cel.innerHTML = '선택 <b>' + cnt + '</b> / ' + (TEAM_SIZE - 1) + '명' + (cnt === TEAM_SIZE - 1 ? ' — 준비 완료!' : (cnt > TEAM_SIZE - 1 ? ' — 2명만 고르세요' : ''));
+    var mk = $("teamMake");
+    if(mk) mk.disabled = (cnt !== TEAM_SIZE - 1);
+  }
+  sc.querySelectorAll("[data-pick]").forEach(function(el){
+    el.onclick = function(){
+      var s = el.getAttribute("data-pick");
+      var i = ctx.teamPick.indexOf(s);
+      if(i !== -1){ ctx.teamPick.splice(i, 1); el.classList.remove("on"); el.querySelector(".pk-box").textContent = ""; }
+      else{
+        if(ctx.teamPick.length >= TEAM_SIZE - 1){ toast("조원은 2명까지만 고를 수 있어요."); return; }
+        ctx.teamPick.push(s); el.classList.add("on"); el.querySelector(".pk-box").textContent = "✓";
+      }
+      refreshPick();
+    };
+  });
+  refreshPick();
+  if($("teamMake")) $("teamMake").onclick = function(){
+    if(ctx.teamPick.length !== TEAM_SIZE - 1){ toast("조원 2명을 골라 주세요."); return; }
+    var team = makeTeam(mySid, ctx.teamPick.slice());
+    if(!team){ toast("조를 만들지 못했습니다. 고른 학생이 방금 다른 조에 편성되었거나 모든 조가 찼습니다."); ctx.teamPick = []; RENDER.team(); return; }
+    ctx.teamPick = [];
+    toast(team.no + "조가 만들어졌습니다.");
+    if(!reduced) showReward({ face:"celebrate", kicker:"실험조 편성", title:team.no + "조 완성", sub:team.members.map(function(s){ return nameOfSid(s); }).join(" · "), hold:2400 });
+    RENDER.team();
+  };
+};
+/* 편성 현황 요약 카드(조 목록) — 공용 */
+function teamStatusCard(){
+  var ts = loadTeams();
+  var h = '<div class="card"><h3>편성 현황 <span class="small">' + ts.length + ' / ' + TEAM_MAX + '조</span></h3>';
+  if(!ts.length){ h += '<p class="muted">아직 편성된 조가 없습니다.</p></div>'; return h; }
+  ts.slice().sort(function(a,b){ return a.no - b.no; }).forEach(function(t){
+    var nm = t.members.map(function(s){ return nameOfSid(s); }).join(", ");
+    h += '<div class="tm-row" style="margin-top:7px"><span class="tm-tag" style="color:var(--mint);background:var(--mintdk)">' + t.no + '조</span><span>' + esc(nm) + '</span></div>';
+  });
+  h += '</div>';
+  return h;
+}
+
+/* 로그인 학생 본인의 보고서 작성 화면을 연다 */
+function openReportSelf(){
+  ctx.report = { sid: state.studentId, name: state.studentName, readonly: false, view: "edit" };
+  go("report");
+}
+
+/* ==========================================================================
+ * 실험 결과보고서 — 입력 폼 · A4 미리보기 · 워드(.doc)/PDF 다운로드
+ *   ctx.report = { sid, name, readonly, view("edit"|"preview"), data }
+ *   저장: localStorage reportKey(sid). 외부 라이브러리 없이 Blob(.doc)·window.print(PDF).
+ * ========================================================================*/
+function reportDef(){ return (AW && AW.report) ? AW.report : null; }
+function reportMetaMap(def, sid, name, data){
+  /* 화면·출력에 쓸 머리말 값 표(고정값 + 학생 입력 date/team + 로그인 sid/name) */
+  var m = {};
+  (def.meta || []).forEach(function(f){ m[f.key] = { label: f.label, value: f.value || "", fixed: !!f.fixed }; });
+  if(m.date) m.date.value = (data.meta && data.meta.date) || m.date.value || curLab().unlockDate || "";
+  if(m.team){ var tm = teamOf(sid); m.team.value = (data.meta && data.meta.team) || (tm ? tm.no + "조" : "") || ""; }
+  if(m.sid)  m.sid.value = sid || "";
+  if(m.name) m.name.value = name || "";
+  return m;
+}
+function reportFileBase(sid){ return "CellCulture_Report_" + (sid || "student"); }
+
+/* 이미지 파일 → 가로 최대 maxW 로 리사이즈 + JPEG 압축 → base64 dataURL. 순수 브라우저 API. */
+function resizeImageFile(file, maxW, cb){
+  if(!file || !/^image\//.test(file.type || "")){ cb(null, "이미지 파일이 아닙니다."); return; }
+  var reader = new FileReader();
+  reader.onerror = function(){ cb(null, "파일을 읽지 못했습니다."); };
+  reader.onload = function(){
+    var img = new Image();
+    img.onerror = function(){ cb(null, "이미지를 여는 데 실패했습니다."); };
+    img.onload = function(){
+      try{
+        var w = img.naturalWidth || img.width, ht = img.naturalHeight || img.height;
+        if(!w || !ht){ cb(null, "이미지 크기를 알 수 없습니다."); return; }
+        var scale = w > maxW ? (maxW / w) : 1;
+        var cw = Math.max(1, Math.round(w * scale)), ch = Math.max(1, Math.round(ht * scale));
+        var cv = document.createElement("canvas"); cv.width = cw; cv.height = ch;
+        var g = cv.getContext("2d");
+        g.fillStyle = "#ffffff"; g.fillRect(0, 0, cw, ch);   /* 투명 PNG 대비 흰 배경 */
+        g.drawImage(img, 0, 0, cw, ch);
+        cb(cv.toDataURL("image/jpeg", 0.82), null);
+      }catch(e){ cb(null, "이미지 변환 중 오류: " + (e && e.message ? e.message : e)); }
+    };
+    img.src = reader.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+/* 이미지 업로드 섹션(배양 전/후) — 조건별 슬롯 그리드(편집 폼용) */
+function buildImageSlots(s, data, readonly){
+  var conds = s.conditions || [];
+  var arr = (data.images && data.images[s.key]) || [];
+  var h = '<div class="img-grid">';
+  conds.forEach(function(cond, i){
+    var durl = arr[i] || "";
+    var iid = "imgf_" + s.key + "_" + i;
+    h += '<div class="img-slot">';
+    h += '<div class="is-cond">' + (i + 1) + ') ' + esc(cond) + '</div>';
+    h += '<div class="is-box">' + (durl
+        ? '<img src="' + durl + '" alt="' + esc(cond) + '">'
+        : '<div class="is-ph">사진 없음<br>' + (readonly ? '(미첨부)' : '아래 버튼으로 올려요') + '</div>') + '</div>';
+    if(!readonly){
+      h += '<input type="file" accept="image/*" id="' + iid + '" data-imgfile="' + esc(s.key) + '" data-idx="' + i + '">';
+      h += '<div class="is-btns"><button class="btn sm" type="button" data-imgpick="' + iid + '">' + (durl ? '📷 사진 바꾸기' : '📷 사진 올리기') + '</button>';
+      if(durl) h += '<button class="btn sm ghost" type="button" data-imgdel="' + esc(s.key) + '" data-idx="' + i + '" style="flex:0 0 auto">삭제</button>';
+      h += '</div>';
+    }
+    h += '</div>';
+  });
+  h += '</div>';
+  if(!readonly) h += '<div class="img-note">사진은 자동으로 가로 최대 1000px로 줄여 저장합니다(용량 절약). 큰 원본은 그대로 저장되지 않습니다.</div>';
+  return h;
+}
+
+/* A4 보고서 본문 HTML — 미리보기·인쇄·워드에서 공용 */
+function buildReportHTML(sid, name, data){
+  var def = reportDef();
+  if(!def) return '<div class="p-body p-empty">보고서 양식이 없습니다.</div>';
+  var lab = curLab();
+  var m = reportMetaMap(def, sid, name, data);
+  var sec = data.sections || {};
+  var tbl = data.tables || {};
+  function val(k){ return (m[k] && m[k].value) ? esc(m[k].value) : "—"; }
+  var h = "";
+  h += '<div class="p-head"><div class="p-title">실험 결과보고서</div>';
+  h += '<div class="p-course">' + esc(def.course || C.meta.course || "유전자분석") + '</div></div>';
+  /* 머리말 표 */
+  h += '<table class="p-metatbl">';
+  h += '<tr><td class="k">과목</td><td>' + esc((m.course && m.course.value) || "유전자분석") + '</td><td class="k">주차</td><td>' + esc((m.week && m.week.value) || lab.weekLabel || "") + '</td></tr>';
+  h += '<tr><td class="k">실험명</td><td colspan="3">' + esc((m.expName && m.expName.value) || def.experimentName || lab.title || "") + '</td></tr>';
+  h += '<tr><td class="k">실험일자</td><td>' + val("date") + '</td><td class="k">조</td><td>' + val("team") + '</td></tr>';
+  h += '<tr><td class="k">학번</td><td>' + val("sid") + '</td><td class="k">이름</td><td>' + val("name") + '</td></tr>';
+  h += '</table>';
+  /* 섹션 */
+  (def.sections || []).forEach(function(s){
+    var lbl = (s.no ? s.no + '. ' : '') + s.label;
+    h += '<h3 class="p-sh">' + esc(lbl) + '</h3>';
+    if(s.type === "images"){
+      var conds = s.conditions || [];
+      var arr = (data.images && data.images[s.key]) || [];
+      h += '<div class="p-imgrid">';
+      conds.forEach(function(cond, i){
+        var durl = arr[i] || "";
+        h += '<div class="p-imgcell"><div class="p-imgcap">' + (i + 1) + ') ' + esc(cond) + '</div>';
+        h += durl ? '<img src="' + durl + '" alt="' + esc(cond) + '">' : '<div class="p-imgno">(미첨부)</div>';
+        h += '</div>';
+      });
+      h += '</div>';
+      return;
+    }
+    var txt = String(sec[s.key] || "").trim();
+    h += '<div class="p-body' + (txt ? '' : ' p-empty') + '">' + (txt ? esc(txt) : "(미작성)") + '</div>';
+    if(s.table){
+      var T = s.table, rows = T.rowLabels || [], cols = T.cols || [];
+      h += (T.caption ? '<div class="p-cap">' + esc(T.caption) + '</div>' : '');
+      h += '<table class="p-dt"><tr>';
+      cols.forEach(function(c){ h += '<th>' + esc(c) + '</th>'; });
+      h += '</tr>';
+      rows.forEach(function(rl, ri){
+        h += '<tr><td>' + esc(rl) + '</td>';
+        var rowvals = (tbl[s.key] && tbl[s.key][ri]) || [];
+        for(var ci = 1; ci < cols.length; ci++){
+          var cv = rowvals[ci - 1];
+          h += '<td>' + (cv ? esc(cv) : "") + '</td>';
+        }
+        h += '</tr>';
+      });
+      h += '</table>';
+    }
+  });
+  return h;
+}
+
+/* 워드(.doc) 다운로드 — application/msword Blob (외부 라이브러리 없음) */
+function downloadReportWord(sid, name, data){
+  var body = buildReportHTML(sid, name, data);
+  var css = "@page{size:A4;margin:20mm} body{font-family:'Malgun Gothic','맑은 고딕',sans-serif;font-size:11pt;line-height:1.7;color:#000}"
+    + " .p-head{text-align:center;border-bottom:2px solid #000;padding-bottom:8px;margin-bottom:12px}"
+    + " .p-title{font-size:16pt;font-weight:bold} .p-course{font-size:10.5pt;color:#333;margin-top:4px}"
+    + " .p-metatbl{border-collapse:collapse;width:100%;margin-bottom:14px;font-size:10.5pt}"
+    + " .p-metatbl td{border:1px solid #888;padding:5px 8px} .p-metatbl td.k{background:#eee;font-weight:bold}"
+    + " h3.p-sh{font-size:12.5pt;margin:14px 0 4px;border-left:4px solid #2b6cb0;padding-left:7px}"
+    + " .p-body{white-space:pre-wrap;font-size:10.5pt} .p-empty{color:#999;font-style:italic}"
+    + " table.p-dt{border-collapse:collapse;width:100%;margin:6px 0;font-size:10.5pt}"
+    + " table.p-dt th,table.p-dt td{border:1px solid #666;padding:5px 7px;text-align:left} table.p-dt th{background:#eee}"
+    + " .p-cap{font-size:10pt;color:#333;margin:4px 0}"
+    + " .p-imgrid{margin:6px 0} .p-imgcell{border:1px solid #999;margin:0 0 8px;display:inline-block;width:47%;vertical-align:top}"
+    + " .p-imgcap{font-size:9.5pt;font-weight:bold;background:#eee;padding:3px 6px;border-bottom:1px solid #999}"
+    + " .p-imgcell img{display:block;width:100%;max-width:280px;height:auto}"
+    + " .p-imgno{font-size:9.5pt;color:#999;font-style:italic;padding:14px 8px;text-align:center}";
+  var html = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>"
+    + "<head><meta charset='utf-8'><title>실험 결과보고서</title><style>" + css + "</style></head><body>" + body + "</body></html>";
+  try{
+    var blob = new Blob(["﻿", html], { type: "application/msword" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url; a.download = reportFileBase(sid) + ".doc";
+    document.body.appendChild(a); a.click();
+    setTimeout(function(){ URL.revokeObjectURL(url); if(a.parentNode) a.parentNode.removeChild(a); }, 1500);
+    toast("워드 파일을 내려받았습니다: " + reportFileBase(sid) + ".doc");
+  }catch(e){
+    toast("이 브라우저에서는 파일 다운로드가 막혀 있습니다. Chrome/Edge에서 파일을 직접 열어 주세요.");
+  }
+}
+/* PDF — 인쇄 대화상자에서 'PDF로 저장' */
+function printReportPDF(sid, name, data){
+  var pp = $("printPaper");
+  pp.innerHTML = '<div class="paper">' + buildReportHTML(sid, name, data) + '</div>';
+  document.body.classList.add("printing");
+  var cleanup = function(){ document.body.classList.remove("printing"); pp.innerHTML = ""; window.onafterprint = null; };
+  window.onafterprint = cleanup;
+  setTimeout(function(){ try{ window.print(); }catch(e){ cleanup(); toast("인쇄를 열 수 없습니다."); } }, 60);
+  /* 일부 브라우저는 onafterprint 를 안 쏘므로 보조 정리 */
+  setTimeout(function(){ if(document.body.classList.contains("printing")) cleanup(); }, 12000);
+}
+
+RENDER.report = function(){
+  var def = reportDef();
+  var sc = $("sc-report");
+  if(!ctx.report){ ctx.report = { sid: state.studentId, name: state.studentName, readonly: state.role === "prof", view: "edit" }; }
+  var R = ctx.report;
+  if(!R.data){ R.data = loadReport(R.sid); }
+  var data = R.data;
+  var readonly = !!R.readonly;
+
+  if(!def){
+    sc.innerHTML = '<h2 class="sc-h">실험 결과보고서</h2><div class="card"><p class="muted">이 주차에는 보고서 양식이 없습니다.</p></div>' +
+      '<button class="btn ghost center" type="button" data-go="' + (state.role==="prof"?"profdash":"lobby") + '">돌아가기</button>';
+    bindGo(sc); return;
+  }
+
+  if(R.view === "preview"){ renderReportPreview(sc, R, def); return; }
+
+  /* ---------- 편집 폼 ---------- */
+  var lab = curLab();
+  var m = reportMetaMap(def, R.sid, R.name, data);
+  var h = "";
+  h += '<button class="btn sm ghost" type="button" id="rpBack" style="margin-bottom:10px;text-align:left">← ' + (state.role==="prof"?"확인 대시보드로":"실습 허브로") + '</button>';
+  h += '<h2 class="sc-h">📝 실험 결과보고서 — ' + esc(def.title || lab.title || "") + '</h2>';
+  h += '<p class="sc-p">' + esc(def.gradeNote || "") + (readonly ? ' · A4 미리보기·워드·PDF로 내려받을 수 있어요.' : ' · 작성한 뒤 [보고서 제출]을 눌러 주세요.') + '</p>';
+  if(readonly) h += '<div class="card tight"><div class="small" style="color:var(--amber)">👀 교수 열람 모드 — 이 보고서는 ' + esc(R.name || R.sid) + ' 학생의 제출본입니다. 내용은 수정할 수 없고 내려받기만 됩니다.</div></div>';
+
+  /* 머리말 */
+  h += '<div class="card"><h3>머리말</h3><div class="rf-meta">';
+  h += '<div class="fld"><label>과목</label><input type="text" value="' + esc((m.course&&m.course.value)||"유전자분석") + '" readonly></div>';
+  h += '<div class="fld"><label>주차</label><input type="text" value="' + esc((m.week&&m.week.value)||lab.weekLabel||"") + '" readonly></div>';
+  h += '<div class="fld" style="grid-column:1 / -1"><label>실험명</label><input type="text" value="' + esc((m.expName&&m.expName.value)||def.experimentName||"") + '" readonly></div>';
+  h += '<div class="fld"><label>실험일자</label><input id="rfDate" type="text" value="' + esc((m.date&&m.date.value)||"") + '"' + (readonly?" readonly":"") + '></div>';
+  h += '<div class="fld"><label>조</label><input id="rfTeam" type="text" placeholder="예: 3조" value="' + esc((m.team&&m.team.value)||"") + '"' + (readonly?" readonly":"") + '></div>';
+  h += '<div class="fld"><label>학번</label><input type="text" value="' + esc((m.sid&&m.sid.value)||"") + '" readonly></div>';
+  h += '<div class="fld"><label>이름</label><input type="text" value="' + esc((m.name&&m.name.value)||"") + '" readonly></div>';
+  h += '</div></div>';
+
+  /* 섹션 */
+  (def.sections || []).forEach(function(s){
+    var lbl = (s.no ? s.no + '. ' : '') + s.label;
+    h += '<div class="card"><div class="rf-sec">';
+    h += '<div class="rf-lbl">' + esc(lbl) + '</div>';
+    if(s.hint) h += '<div class="rf-hint">' + esc(s.hint) + '</div>';
+    if(s.type === "images"){
+      h += buildImageSlots(s, data, readonly);
+      h += '</div></div>';
+      return;
+    }
+    var v = (data.sections && data.sections[s.key]) || "";
+    h += '<textarea data-sec="' + esc(s.key) + '" rows="' + (s.rows || 4) + '"' + (readonly?" readonly":"") + ' placeholder="여기에 작성하세요">' + esc(v) + '</textarea>';
+    if(s.table){
+      var T = s.table, cols = T.cols || [], rows = T.rowLabels || [];
+      h += '<table class="rf-tbl"><tr>';
+      cols.forEach(function(c){ h += '<th>' + esc(c) + '</th>'; });
+      h += '</tr>';
+      rows.forEach(function(rl, ri){
+        h += '<tr><td class="rowlbl">' + esc(rl) + '</td>';
+        var rowvals = (data.tables && data.tables[s.key] && data.tables[s.key][ri]) || [];
+        for(var ci = 1; ci < cols.length; ci++){
+          var cv = rowvals[ci - 1] || "";
+          h += '<td><input type="text" data-tbl="' + esc(s.key) + '" data-r="' + ri + '" data-c="' + (ci - 1) + '" value="' + esc(cv) + '"' + (readonly?" readonly":"") + '></td>';
+        }
+        h += '</tr>';
+      });
+      h += '</table>';
+    }
+    h += '</div></div>';
+  });
+
+  /* 액션 */
+  if(!readonly){
+    h += '<div class="row"><button class="btn sm" type="button" id="rfSave">💾 임시 저장</button>';
+    h += '<button class="btn ' + (data.submitted ? '' : 'primary') + '" type="button" id="rfSubmit">' + (data.submitted ? '✅ 제출됨 — 다시 제출' : '보고서 제출') + '</button></div>';
+  }else{
+    h += '<div class="row"><button class="btn sm" type="button" id="rfPreview">A4 미리보기 👁</button>';
+    h += '<button class="btn sm" type="button" id="rfWord">📄 워드(.doc)</button></div>';
+    h += '<button class="btn sm" type="button" id="rfPdf">🖨 PDF로 저장</button>';
+  }
+  h += '<p class="small" style="margin-top:10px">※ 로컬 시제품 — 작성 내용은 이 기기 안에만 저장됩니다.' + (readonly ? ' PDF는 인쇄 대화상자에서 "PDF로 저장"을 고르세요.' : ' 제출하면 교수 확인 화면에 기록됩니다.') + '</p>';
+
+  sc.innerHTML = h;
+
+  function collect(){
+    if(readonly) return data;
+    var d = R.data;
+    if(!d.meta) d.meta = {};
+    if($("rfDate")) d.meta.date = ($("rfDate").value || "").trim();
+    if($("rfTeam")) d.meta.team = ($("rfTeam").value || "").trim();
+    if(!d.sections) d.sections = {};
+    sc.querySelectorAll("[data-sec]").forEach(function(t){ d.sections[t.getAttribute("data-sec")] = t.value; });
+    if(!d.tables) d.tables = {};
+    sc.querySelectorAll("[data-tbl]").forEach(function(inp){
+      var k = inp.getAttribute("data-tbl"), r = parseInt(inp.getAttribute("data-r"),10), c = parseInt(inp.getAttribute("data-c"),10);
+      if(!d.tables[k]) d.tables[k] = [];
+      if(!d.tables[k][r]) d.tables[k][r] = [];
+      d.tables[k][r][c] = inp.value;
+    });
+    return d;
+  }
+  function persist(silent){
+    var d = collect();
+    d.savedAt = today();
+    var ok = saveReport(R.sid, d);
+    if(!silent) toast(ok ? "임시 저장했습니다." : "저장이 막혀 있습니다(브라우저 설정).");
+    return d;
+  }
+  if($("rpBack")) $("rpBack").onclick = function(){ if(!readonly) persist(true); go(state.role==="prof"?"profdash":"lobby"); };
+  if($("rfSave")) $("rfSave").onclick = function(){ persist(false); };
+  if($("rfPreview")) $("rfPreview").onclick = function(){ R.data = readonly ? data : persist(true); R.view = "preview"; RENDER.report(); };
+  if($("rfWord")) $("rfWord").onclick = function(){ var d = readonly ? data : persist(true); downloadReportWord(R.sid, R.name, d); };
+  if($("rfPdf")) $("rfPdf").onclick = function(){ var d = readonly ? data : persist(true); printReportPDF(R.sid, R.name, d); };
+  if($("rfSubmit")) $("rfSubmit").onclick = function(){
+    var d = collect(); d.submitted = true; d.submittedAt = today(); d.savedAt = today();
+    saveReport(R.sid, d); R.data = d;
+    toast("보고서를 제출했습니다. (교수 확인 화면에 기록됩니다)");
+    if(!reduced) showReward({ face:"celebrate", kicker:"결과보고서 제출", title:"제출 완료", sub:curLab().weekLabel + " " + curLab().title + " 결과보고서", hold:2600 });
+    RENDER.report();
+  };
+  /* 편집 중 자동 저장(입력 멈춤 시) */
+  if(!readonly){
+    var saveTimer = null;
+    sc.querySelectorAll("textarea,[data-tbl],#rfDate,#rfTeam").forEach(function(el){
+      el.oninput = function(){ if(saveTimer) clearTimeout(saveTimer); saveTimer = setTimeout(function(){ persist(true); }, 700); };
+    });
+    /* 이미지 업로드 슬롯 바인딩 */
+    sc.querySelectorAll("[data-imgpick]").forEach(function(b){
+      b.onclick = function(){ var f = document.getElementById(b.getAttribute("data-imgpick")); if(f) f.click(); };
+    });
+    sc.querySelectorAll("[data-imgfile]").forEach(function(inp){
+      inp.onchange = function(){
+        var file = inp.files && inp.files[0];
+        if(!file) return;
+        var key = inp.getAttribute("data-imgfile"), idx = parseInt(inp.getAttribute("data-idx"), 10);
+        toast("사진 처리 중…");
+        resizeImageFile(file, 1000, function(durl, err){
+          if(err || !durl){ toast(err || "사진을 불러오지 못했습니다."); return; }
+          collect();                               /* 고찰 등 현재 입력 보존 */
+          var d = R.data;
+          if(!d.images) d.images = {};
+          if(!Array.isArray(d.images[key])) d.images[key] = [];
+          var prev = d.images[key][idx] || "";
+          d.images[key][idx] = durl;
+          d.savedAt = today();
+          var ok = saveReport(R.sid, d);
+          if(!ok){
+            d.images[key][idx] = prev;              /* 롤백 */
+            toast("사진이 너무 커 저장하지 못했습니다. 더 작은 사진(또는 더 적은 장수)으로 올려 주세요.");
+            return;
+          }
+          toast("사진을 올렸습니다.");
+          RENDER.report();                          /* 미리보기 갱신 */
+        });
+      };
+    });
+    sc.querySelectorAll("[data-imgdel]").forEach(function(b){
+      b.onclick = function(){
+        var key = b.getAttribute("data-imgdel"), idx = parseInt(b.getAttribute("data-idx"), 10);
+        collect();
+        var d = R.data;
+        if(d.images && Array.isArray(d.images[key])) d.images[key][idx] = "";
+        d.savedAt = today();
+        saveReport(R.sid, d);
+        toast("사진을 삭제했습니다.");
+        RENDER.report();
+      };
+    });
+  }
+};
+function renderReportPreview(sc, R, def){
+  var data = R.data || loadReport(R.sid);
+  var readonly = !!R.readonly;
+  var h = "";
+  h += '<button class="btn sm ghost" type="button" id="rvBack" style="margin-bottom:10px;text-align:left">← ' + (readonly ? "열람으로" : "편집으로") + '</button>';
+  h += '<h2 class="sc-h">👁 A4 미리보기</h2>';
+  h += '<p class="sc-p">아래 모양으로 인쇄·저장됩니다. 워드(.doc)·PDF로 내려받으세요.</p>';
+  h += '<div class="paper">' + buildReportHTML(R.sid, R.name, data) + '</div>';
+  h += '<div class="row" style="margin-top:12px"><button class="btn sm primary" type="button" id="rvWord">📄 워드(.doc)</button>';
+  h += '<button class="btn sm" type="button" id="rvPdf">🖨 PDF로 저장</button></div>';
+  if(!readonly) h += '<button class="btn ' + (data.submitted ? '' : 'primary') + ' center" type="button" id="rvSubmit">' + (data.submitted ? '✅ 제출됨 — 다시 제출' : '보고서 제출') + '</button>';
+  h += '<button class="btn ghost center" type="button" id="rvHub">' + (state.role==="prof"?"확인 대시보드로":"실습 허브로") + '</button>';
+  sc.innerHTML = h;
+  $("rvBack").onclick = function(){ R.view = "edit"; RENDER.report(); };
+  $("rvWord").onclick = function(){ downloadReportWord(R.sid, R.name, data); };
+  $("rvPdf").onclick = function(){ printReportPDF(R.sid, R.name, data); };
+  if($("rvSubmit")) $("rvSubmit").onclick = function(){
+    data.submitted = true; data.submittedAt = today(); data.savedAt = today();
+    saveReport(R.sid, data); toast("보고서를 제출했습니다.");
+    RENDER.report();
+  };
+  $("rvHub").onclick = function(){ go(state.role==="prof"?"profdash":"lobby"); };
+}
+
+/* ==========================================================================
+ * 🧪 교수 화면 미리보기용 예시 데이터 (가상 학생) — 실제 학생 데이터와 분리
+ *   실제 저장키(progKeyFor·reportKey·TEAMS_KEY·EARLY_KEY)에 그대로 주입하므로
+ *   교수 대시보드가 실제 학생 활동과 똑같이 표·집계를 그린다. 덮어쓰기 전 원래
+ *   값을 스냅샷(DEMO_SNAPSHOT_KEY)에 담아 두어, [지우기]로 정확히 원상복구한다.
+ * ========================================================================*/
+var DEMO_SNAPSHOT_KEY = "dmu_gene_lab_demo_snapshot";
+function demoActive(){ try{ return !!localStorage.getItem(DEMO_SNAPSHOT_KEY); }catch(e){ return false; } }
+
+/* 배양 접시 예시 이미지 — canvas 로 즉석 생성(외부 통신 없음). colonies = 콜로니 점 개수 */
+function demoPlate(seed, colonies, label){
+  try{
+    var cv = document.createElement("canvas"); cv.width = 220; cv.height = 160;
+    var g = cv.getContext("2d");
+    g.fillStyle = "#f6f1e6"; g.fillRect(0, 0, 220, 160);
+    g.beginPath(); g.arc(110, 78, 66, 0, Math.PI * 2); g.fillStyle = "#ece0c2"; g.fill();
+    g.lineWidth = 5; g.strokeStyle = "#c3aa72"; g.stroke();
+    var r = ((seed * 9301 + 49297) % 233280 + 233280) % 233280;
+    function rnd(){ r = (r * 9301 + 49297) % 233280; return r / 233280; }
+    for(var i = 0; i < colonies; i++){
+      var a = rnd() * Math.PI * 2, rad = rnd() * 54;
+      var x = 110 + Math.cos(a) * rad, y = 78 + Math.sin(a) * rad;
+      g.beginPath(); g.arc(x, y, 1.5 + rnd() * 2.4, 0, Math.PI * 2);
+      g.fillStyle = "#cdbb7d"; g.fill();
+    }
+    g.fillStyle = "#5a4a1e"; g.font = "11px sans-serif";
+    g.fillText(String(label || ""), 8, 152);
+    return cv.toDataURL("image/jpeg", 0.7);
+  }catch(e){ return ""; }
+}
+
+/* 예시 데이터 주입 — 이미 채워져 있으면 아무것도 안 함(중복 방지). 성공 시 true */
+function seedDemo(){
+  if(demoActive()) return false;
+  var sv = (C && C.schemaVersion) || 1;
+  /* 🔒 예시(가상) 학생 — 실제 학생 정보가 아니다. 소스 노출을 막기 위해 전부 지어낸 값이다.
+     학번은 실제 학번과 겹치지 않는 20009000번대, 이름은 임의의 예시 이름이다.
+     이 예시 명단은 아래에서 ROSTER_KEY 에 잠깐 주입되고, [지우기] 시 원래 명단으로 복구된다. */
+  var demoRoster = [
+    { sid: "20009001", name: "홍길동" }, { sid: "20009002", name: "김철수" },
+    { sid: "20009003", name: "이영희" }, { sid: "20009004", name: "박민준" },
+    { sid: "20009005", name: "최지우" }, { sid: "20009006", name: "정도윤" },
+    { sid: "20009007", name: "강서연" }, { sid: "20009008", name: "조하준" },
+    { sid: "20009009", name: "윤지호" }, { sid: "20009010", name: "장예린" },
+    { sid: "20009011", name: "임서준" }, { sid: "20009012", name: "한지민" },
+    { sid: "20009013", name: "오시우" }
+  ];
+  var demoNameMap = {};
+  demoRoster.forEach(function(r){ demoNameMap[r.sid] = r.name; });
+  function demoName(sid){ return demoNameMap[sid] || String(sid); }
+  var teams = [
+    { no: 1, members: ["20009001", "20009002", "20009003"] },
+    { no: 2, members: ["20009004", "20009005", "20009006"] },
+    { no: 3, members: ["20009007", "20009008", "20009009"] },
+    { no: 4, members: ["20009010", "20009011", "20009012"] }
+  ];
+  var early = ["20009009", "20009012"];                         /* 조기취업 면제(예시) */
+  /* [학번, 조번호(0=미편성), 학습진도(0~30), 미션합격, 최고점, 응시수, 보고서('sub'|'draft'|'')] */
+  var plan = [
+    ["20009001", 1, 30, true,  90, 1, "sub"],
+    ["20009002", 1, 30, true,  80, 1, "sub"],
+    ["20009003", 1, 30, false,  0, 0, "sub"],
+    ["20009004", 2, 30, true,  85, 1, "sub"],
+    ["20009005", 2, 30, false, 60, 2, "sub"],
+    ["20009006", 2, 30, false,  0, 0, ""],
+    ["20009007", 3, 18, false,  0, 0, "draft"],
+    ["20009008", 3,  0, false,  0, 0, ""],
+    ["20009009", 3,  0, false,  0, 0, ""],
+    ["20009010", 4,  0, false,  0, 0, ""],
+    ["20009011", 4,  0, false,  0, 0, ""],
+    ["20009012", 4,  0, false,  0, 0, ""],
+    ["20009013", 0,  0, false,  0, 0, ""]     /* 조 미편성·미활동(예시) */
+  ];
+  var imgEmpty  = demoPlate(3,   4, "배양 전");
+  var imgDense  = demoPlate(17, 96, "배양 후 (+)");
+  var imgSparse = demoPlate(29, 20, "배양 후");
+  var disc = [
+    "카나마이신 배지에서 pBI5ΔRTD 형질전환체만 콜로니를 형성했고, 앰피실린 배지에서는 pUC19 형질전환체가 자랐다. 이는 각 플라스미드가 지닌 내성 유전자와 배지의 항생제가 일치할 때만 세포가 선택압을 이겨내고 증식함을 보여준다. 우리 조는 두 일치 조건 모두에서 콜로니가 관찰되어 교차 배양이 성공적으로 이루어졌다고 판단했다.",
+    "네 조건 중 내성이 일치하는 두 조건에서만 뚜렷한 콜로니가 나타났다. 내성이 맞지 않는 조건에서 배경 성장이 거의 없었던 점은 항생제 선택이 제대로 작동했음을 뜻한다. 다만 배양 후 일부 접시에서 위성 콜로니로 보이는 작은 점들이 있어, 다음에는 배양 시간을 24시간으로 통일할 필요가 있다.",
+    "우리 조는 앰피실린 조건에서 예상보다 콜로니 수가 적었다. 형질전환 효율이 낮았거나 도말량이 적었던 것으로 추정된다. 카나마이신 조건은 콜로니가 조밀해 내성 발현이 잘 되었음을 확인했다. 수율이 낮았던 조건의 원인으로는 항생제 농도 오차와 배양 온도 편차를 고려했다."
+  ];
+  function progObj(sid, name, learn, mp, mb, ma){
+    return JSON.stringify({
+      schemaVersion: sv, contentVersion: (C && C.contentVersion) || "",
+      role: "student", studentId: String(sid), studentName: name || "",
+      tutorialDone: true, settings: { timerOff: false },
+      learn: { read: learn > 0 },
+      lquiz: { progress: learn, byQid: {}, served: [] },
+      mission: { attempts: ma, passed: !!mp, bestScore: mb, lastScore: mb, lastTimed: [], lastReason: [] },
+      wrongNotes: {}, stats: { answered: learn, correct: Math.round(learn * 0.8) }
+    });
+  }
+  function repObj(teamNo, kind, di){
+    var rep = { meta: { date: "2026-09-02", team: teamNo ? (teamNo + "조") : "" },
+      sections: {}, tables: {}, images: {}, submitted: false, savedAt: "2026-09-02", submittedAt: "" };
+    if(kind === "sub"){
+      rep.sections.discussion = disc[di % disc.length];
+      rep.images.before = [imgEmpty, imgEmpty, "", ""];
+      rep.images.after  = [imgDense, imgSparse, "", ""];
+      rep.submitted = true; rep.submittedAt = "2026-09-02";
+    }else if(kind === "draft"){
+      rep.sections.discussion = "카나마이신 조건에서는 콜로니가 관찰되었다. 나머지 조건은 아직 사진 정리 중이며 고찰을 이어서 작성할 예정.";
+      rep.images.before = [imgEmpty, "", "", ""];
+    }
+    return JSON.stringify(rep);
+  }
+  var writes = {};
+  writes[ROSTER_KEY] = JSON.stringify(demoRoster);   /* 예시 명단(가상)을 잠깐 주입 — [지우기]로 복구 */
+  writes[TEAMS_KEY] = JSON.stringify(teams);
+  writes[EARLY_KEY] = JSON.stringify(early);
+  var di = 0;
+  plan.forEach(function(p){
+    var sid = p[0], teamNo = p[1], learn = p[2], mp = p[3], mb = p[4], ma = p[5], rep = p[6];
+    writes[progKeyFor(sid, DASH_WEEK)] = progObj(sid, demoName(sid), learn, mp, mb, ma);
+    if(rep){ writes[reportKey(sid, DASH_WEEK)] = repObj(teamNo, rep, di++); }
+  });
+  /* 덮어쓰기 전 원래 값을 스냅샷(없으면 null)해 두고 주입 */
+  try{
+    var snap = {};
+    for(var k in writes){ if(writes.hasOwnProperty(k)){ var prev = null; try{ prev = localStorage.getItem(k); }catch(e){} snap[k] = prev; } }
+    localStorage.setItem(DEMO_SNAPSHOT_KEY, JSON.stringify(snap));
+    try{
+      for(var k2 in writes){ if(writes.hasOwnProperty(k2)){ localStorage.setItem(k2, writes[k2]); } }
+    }catch(werr){
+      /* 주입 도중(용량 초과 등) 실패 — 이미 쓴 값을 스냅샷 기준으로 되돌리고 스냅샷 키까지
+         제거해, "채우다 만" 상태(seedDemo는 실패했는데 demoActive()만 true로 어긋남)를 남기지 않는다.
+         결과적으로 seedDemo는 전부 성공(true·demoActive true) 또는 전부 원상복구(false·demoActive false) 둘 중 하나다. */
+      for(var rk in snap){ if(snap.hasOwnProperty(rk)){ try{ if(snap[rk]===null||snap[rk]===undefined) localStorage.removeItem(rk); else localStorage.setItem(rk, snap[rk]); }catch(e){} } }
+      try{ localStorage.removeItem(DEMO_SNAPSHOT_KEY); }catch(e){}
+      return false;
+    }
+    return true;
+  }catch(e){ return false; }
+}
+
+/* 예시 데이터 제거 — 스냅샷 기준으로 각 키를 원래 값으로 되돌린다(없던 키는 삭제) */
+function clearDemo(){
+  var snap = null;
+  try{ snap = JSON.parse(localStorage.getItem(DEMO_SNAPSHOT_KEY) || "null"); }catch(e){ snap = null; }
+  if(snap && typeof snap === "object"){
+    for(var k in snap){ if(snap.hasOwnProperty(k)){
+      try{
+        if(snap[k] === null || snap[k] === undefined) localStorage.removeItem(k);
+        else localStorage.setItem(k, snap[k]);
+      }catch(e){}
+    } }
+  }
+  try{ localStorage.removeItem(DEMO_SNAPSHOT_KEY); }catch(e){}
+  return true;
+}
+
+/* ==========================================================================
+ * 교수 확인 대시보드 — 학생별 ①보고서 제출 ②학습 완료 ③미션 합격
+ *   로컬 시제품: 이 기기에 저장된 기록만 보인다(전체 집계는 서버 단계).
+ * ========================================================================*/
+RENDER.profdash = function(){
+  var roster = getRoster();
+  var need = UNLOCK_N();
+  var labList = (C && Array.isArray(C.labs)) ? C.labs : [];
+  /* 선택 주차가 유효한지 확인 — 없으면 활성 주차로 되돌린다. */
+  if(!labById(DASH_WEEK)){ DASH_WEEK = ACTIVE_WEEK; }
+  var wk = DASH_WEEK;
+  var prepared = weekPrepared(wk);
+  var rows = roster.map(function(st){
+    /* 준비된 주차만 실제 기록을 읽는다. 미준비 주차는 저장된 데이터가 없어 전원 '—'가 된다. */
+    var prog = readRawProgress(st.sid, wk);
+    var learnP = (prog && prog.lquiz && prog.lquiz.progress) || 0;
+    var passed = !!(prog && prog.mission && prog.mission.passed);
+    var best = (prog && prog.mission && prog.mission.bestScore) || 0;
+    var attempts = (prog && prog.mission && prog.mission.attempts) || 0;
+    var rep = loadReport(st.sid, wk);
+    var repHasText = reportHasContent(rep);
+    return { st: st, early: isEarly(st.sid), learnP: learnP, learnDone: learnP >= need, passed: passed, best: best, attempts: attempts,
+             rep: rep, repSubmitted: rep.submitted, repDraft: repHasText && !rep.submitted, hasData: !!prog || repHasText };
+  });
+  var nEarly = rows.filter(function(r){ return r.early; }).length;
+  var denom = roster.length - nEarly;                          /* 면제자를 뺀 분모 */
+  var nSub = rows.filter(function(r){ return !r.early && r.repSubmitted; }).length;
+  var nLearn = rows.filter(function(r){ return !r.early && r.learnDone; }).length;
+  var nPass = rows.filter(function(r){ return !r.early && r.passed; }).length;
+  var nActive = rows.filter(function(r){ return r.hasData; }).length;
+  var lab = labById(wk) || curLab();
+
+  var h = "";
+  h += '<div class="hero">' + helixSVG();
+  h += '<div class="k">유전자분석 · 교수 확인</div>';
+  h += '<h1>' + esc(lab.weekLabel || "") + ' 수행 현황</h1>';
+  h += '<div class="sub">' + esc(lab.title || "") + (lab.dateLabel ? ' · ' + esc(lab.dateLabel) : '') + ' — 학생별 보고서·학습·미션</div>';
+  if(prepared){
+    var exNote = nEarly ? ' <span class="chip">🎓 면제 ' + nEarly + '명</span>' : '';
+    h += '<div class="chips"><span class="chip">보고서 제출 ' + nSub + '/' + denom + '</span>';
+    h += '<span class="chip">학습 완료 ' + nLearn + '/' + denom + '</span>';
+    h += '<span class="chip amber">미션 합격 ' + nPass + '/' + denom + '</span>' + exNote + '</div>';
+    if(nEarly) h += '<div class="sub" style="margin-top:6px">집계 분모 ' + denom + '명 = 재적 ' + roster.length + '명 − 조기취업 면제 ' + nEarly + '명</div>';
+  }else{
+    h += '<div class="chips"><span class="chip">이 주차는 아직 준비 전</span></div>';
+  }
+  h += '</div>';
+
+  /* 👥 출석부 관리 — 명단은 코드가 아니라 교수가 여기서 등록한다(localStorage 저장). */
+  h += '<div class="card tight" style="border-color:#bcd6f0;background:var(--mintdk)">';
+  h += '<div class="small" style="margin:0 0 6px"><b>👥 출석부(명단) 관리</b> — 현재 <b>' + roster.length + '명</b> 등록됨.</div>';
+  if(roster.length === 0){
+    h += '<div class="small" style="color:var(--amber);margin:0 0 8px">아직 등록된 명단이 없습니다. 아래 버튼에서 출석부를 붙여넣어 등록하세요. (명단이 없어도 학생은 이름·학번을 입력해 로그인할 수 있습니다.)</div>';
+  }
+  h += '<button class="btn sm" type="button" data-go="roster">출석부 관리 열기 →</button></div>';
+
+  /* 📅 주차 선택 — 7개 실습 중 확인할 주차를 고른다(작은 버튼, 줄바꿈으로 가로 스크롤 없이 다 보임). 준비된 주차만 실제 데이터가 있다. */
+  h += '<div class="card tight"><div class="small" style="margin:0 0 6px"><b>확인할 주차</b> — 주차를 눌러 그 주차의 학생 현황을 봅니다.</div>';
+  h += '<div class="wkpick">';
+  labList.forEach(function(l){
+    var on = (l.id === wk);
+    var ready = weekPrepared(l.id);
+    var mark = ready ? '' : '<span class="pre">·준비전</span>';
+    h += '<button class="wkbtn' + (on ? ' on' : '') + '" type="button" data-week="' + esc(l.id) + '">' + esc(l.weekLabel || l.id) + mark + '</button>';
+  });
+  h += '</div></div>';
+
+  if(!prepared){
+    /* 미준비 주차 — 콘텐츠(문항·보고서 양식)가 아직 없어 학생 기록이 생길 수 없다. */
+    h += '<div class="card tight" style="border-color:#e6d9b8;background:#fbf6e7"><div class="small" style="color:#8a6d1a">📭 <b>이 주차는 아직 문항이 준비되지 않았습니다(데이터 없음).</b><br>학생이 수행할 학습·미션·보고서 양식이 준비되면, 이 화면에 그 주차의 현황이 채워집니다. 현재는 <b>2주차(세포배양)</b>만 실제 데이터가 있습니다.</div></div>';
+  }else{
+    /* 🧪 예시 데이터(가상 학생) — 교수 화면 미리보기용 (준비된 주차에서만) */
+    if(demoActive()){
+      h += '<div class="card tight" style="border-color:#d7c7ef;background:#f4eefc"><div class="small" style="color:#6b46c1">🧪 <b>예시 데이터가 채워져 있습니다</b> — 아래 표·집계는 미리보기용 예시 값입니다.<br><b style="color:#b91c1c">⚠ 지금 이 기기에서 실제 학생이 로그인하면 본인이 하지 않은 합격·제출 예시가 그대로 보입니다.</b> 확인이 끝나면 아래 [지우기]로 반드시 원상복구하세요.</div>';
+      h += '<button class="btn sm ghost" type="button" id="demoClear" style="margin-top:8px">예시 데이터 지우기</button></div>';
+    }else{
+      h += '<div class="card tight"><div class="small">교수 화면이 학생 활동으로 어떻게 채워지는지 미리 보시려면 아래 버튼을 누르세요. 확인 후 [지우기]로 원상복구됩니다.<br><b style="color:#b91c1c">⚠ 교수님 개인 기기에서만 사용하세요.</b> 예시 값은 이 기기에 저장된 실제 학생 기록 위에 덮어쓰였다가 [지우기]로 되돌려집니다 — <b>학생이 로그인하는 기기(실습실 공용 PC 등)에서는 쓰지 마세요.</b></div>';
+      h += '<button class="btn sm" type="button" id="demoSeed" style="margin-top:8px">🧪 예시 데이터 채우기</button></div>';
+    }
+  }
+
+  h += '<div class="card tight"><div class="small" style="color:var(--amber)">⚠ 로컬 시제품 — <b>이 기기에 저장된 기록만</b> 표시됩니다(이 기기에서 활동한 학생 ' + nActive + '명). 전체 학생 집계는 서버 연동 후 가능합니다.</div></div>';
+
+  h += '<div class="card"><h3>학생별 현황 <span class="small">' + roster.length + '명</span></h3>';
+  h += '<p class="small" style="margin:0 0 8px"><b>조기취업</b> 칸을 체크하면 그 학생은 보고서·학습·미션이 <b>면제</b>되고 집계 분모에서 빠집니다(이 기기에 저장).</p>';
+  h += '<div class="tblwrap"><table class="dash-tbl">';
+  h += '<tr><th>#</th><th>학번</th><th>이름</th><th class="c">조기취업</th><th class="c">보고서</th><th class="c">학습</th><th class="c">미션</th><th></th></tr>';
+  rows.forEach(function(r, i){
+    var repPill, learnPill, missPill;
+    if(r.early){
+      repPill = learnPill = missPill = '<span class="pill mid">면제</span>';
+    }else{
+      repPill = r.repSubmitted ? '<span class="pill ok">제출</span>' : (r.repDraft ? '<span class="pill mid">작성중</span>' : '<span class="pill no">—</span>');
+      learnPill = r.learnDone ? '<span class="pill ok">완료</span>' : (r.learnP>0 ? '<span class="pill mid">' + r.learnP + '/' + need + '</span>' : '<span class="pill no">—</span>');
+      missPill = r.passed ? '<span class="pill ok">합격 ' + r.best + '</span>' : (r.attempts>0 ? '<span class="pill mid">응시 ' + r.attempts + '</span>' : '<span class="pill no">—</span>');
+    }
+    var canOpen = r.repSubmitted || r.repDraft;
+    h += '<tr' + (r.early ? ' style="background:var(--greendk)"' : '') + '><td>' + (i+1) + '</td><td>' + esc(r.st.sid) + '</td><td>' + esc(r.st.name) + '</td>';
+    h += '<td class="c"><input type="checkbox" data-early="' + esc(r.st.sid) + '"' + (r.early ? ' checked' : '') + ' style="width:20px;height:20px;cursor:pointer" aria-label="조기취업 면제"></td>';
+    h += '<td class="c">' + repPill + '</td><td class="c">' + learnPill + '</td><td class="c">' + missPill + '</td>';
+    h += '<td class="c">' + (canOpen ? '<button class="pill mid" type="button" data-open="' + esc(r.st.sid) + '" data-name="' + esc(r.st.name) + '" style="cursor:pointer">보고서</button>' : '') + '</td></tr>';
+  });
+  h += '</table></div></div>';
+
+  h += '<button class="btn sm ghost center" type="button" data-go="labs">🧑‍🎓 학생 화면 미리보기</button>';
+  h += '<button class="btn sm danger center" type="button" id="pdLogout">🚪 로그아웃</button>';
+  h += '<p class="small" style="margin-top:10px">' + esc(C.meta.storageNote || "") + '</p>';
+
+  var sc = $("sc-profdash"); sc.innerHTML = h;
+  if($("demoSeed")) $("demoSeed").onclick = function(){
+    var ok = seedDemo();
+    toast(ok ? "예시 데이터를 채웠습니다. 표·집계가 채워졌습니다." : "예시 데이터를 채우지 못했습니다(브라우저 저장 제한).");
+    RENDER.profdash();
+  };
+  if($("demoClear")) $("demoClear").onclick = function(){
+    clearDemo();
+    toast("예시 데이터를 지웠습니다(원상복구).");
+    RENDER.profdash();
+  };
+  sc.querySelectorAll("[data-early]").forEach(function(cb){
+    cb.onchange = function(){
+      toggleEarly(cb.getAttribute("data-early"), cb.checked);
+      RENDER.profdash();                 /* 집계·면제 표시를 즉시 갱신 */
+    };
+  });
+  sc.querySelectorAll("[data-open]").forEach(function(b){
+    b.onclick = function(){
+      ctx.report = { sid: b.getAttribute("data-open"), name: b.getAttribute("data-name"), readonly: true, view: "preview", week: wk };
+      ctx.report.data = loadReport(ctx.report.sid, wk);   /* 선택 주차의 보고서를 읽는다 */
+      go("report");
+    };
+  });
+  /* 📅 주차 전환 — 대시보드 조회 주차만 바꾼다(학생용 ACTIVE_WEEK 은 그대로). */
+  sc.querySelectorAll("[data-week]").forEach(function(b){
+    b.onclick = function(){ DASH_WEEK = b.getAttribute("data-week"); RENDER.profdash(); };
+  });
+  if($("pdLogout")) $("pdLogout").onclick = logout;
+  bindGo(sc);
+};
+
+/* ==========================================================================
+ * 출석부 관리 — 교수가 명단을 등록·수정·삭제·백업한다(교수 전용).
+ *   🔒 명단(학번·이름)은 소스코드가 아니라 이 기기 localStorage(ROSTER_KEY)에만 저장된다.
+ *   기능: ① 일괄 등록(붙여넣기)  ② 개별 추가/수정  ③ 삭제  ④ 목록·인원수  ⑤ 백업/복원
+ * ========================================================================*/
+/* "학번 이름" / "학번,이름" / "학번\t이름" 여러 줄, 또는 JSON 배열을 [{sid,name}] 로 파싱.
+   반환 { list:[{sid,name}], bad:[원문줄...] } — bad 는 형식이 안 맞아 건너뛴 줄. */
+function parseRosterText(text){
+  var out = [], bad = [];
+  var t = String(text || "").trim();
+  if(!t) return { list: out, bad: bad };
+  /* JSON(배열/객체) 형태면 JSON 으로 먼저 시도 */
+  if(t.charAt(0) === "[" || t.charAt(0) === "{"){
+    try{
+      var j = JSON.parse(t);
+      var arr = Array.isArray(j) ? j : (j && Array.isArray(j.roster) ? j.roster : null);
+      if(arr){
+        arr.forEach(function(r){
+          var sid = r && (r.sid != null ? String(r.sid) : "");
+          var name = r && (r.name != null ? String(r.name) : "");
+          sid = sid.replace(/\s/g, ""); name = name.trim();
+          if(/^\d{8}$/.test(sid) && name) out.push({ sid: sid, name: name });
+          else bad.push(JSON.stringify(r));
+        });
+        return { list: out, bad: bad };
+      }
+    }catch(e){ /* JSON 아니면 아래 줄 단위 파싱으로 */ }
+  }
+  /* 줄 단위: 첫 8자리 숫자를 학번으로, 나머지를 이름으로 */
+  t.split(/\r?\n/).forEach(function(line){
+    var s = line.trim();
+    if(!s) return;
+    /* 구분자(쉼표·탭·공백)로 나눠 8자리 숫자 토큰을 학번으로 잡는다 */
+    var parts = s.split(/[,\t]+/).length > 1 ? s.split(/[,\t]+/) : s.split(/\s+/);
+    var sid = "", name = "";
+    for(var i = 0; i < parts.length; i++){
+      var p = parts[i].trim();
+      if(!sid && /^\d{8}$/.test(p)){ sid = p; }
+      else if(p){ name += (name ? " " : "") + p; }
+    }
+    if(/^\d{8}$/.test(sid) && name) out.push({ sid: sid, name: name });
+    else bad.push(s);
+  });
+  return { list: out, bad: bad };
+}
+/* 명단을 "학번 이름" 여러 줄 텍스트로 */
+function rosterToText(list){
+  return (list || []).map(function(r){ return r.sid + " " + r.name; }).join("\n");
+}
+/* 텍스트를 클립보드로 복사(실패 시 textarea 선택으로 폴백) */
+function copyText(text, okMsg){
+  var done = function(ok){ toast(ok ? (okMsg || "복사했습니다.") : "복사가 막혔습니다. 아래 상자에서 직접 선택해 복사하세요."); };
+  try{
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){ done(true); }, function(){ fallback(); });
+      return;
+    }
+  }catch(e){}
+  fallback();
+  function fallback(){
+    try{
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      var ok = document.execCommand("copy");
+      document.body.removeChild(ta);
+      done(!!ok);
+    }catch(e2){ done(false); }
+  }
+}
+
+RENDER.roster = function(){
+  var sc = $("sc-roster");
+  var list = getRoster();
+  var h = "";
+  h += '<button class="btn sm ghost" type="button" data-go="profdash" style="margin-bottom:10px;text-align:left">← 교수 확인 대시보드로</button>';
+  h += '<div class="hero">' + helixSVG();
+  h += '<div class="k">유전자분석 · 교수 전용</div>';
+  h += '<h1>출석부 관리</h1>';
+  h += '<div class="sub">명단을 등록·수정·삭제하고, 백업(내보내기)·복원(불러오기)합니다.</div>';
+  h += '<div class="chips"><span class="chip mint">현재 ' + list.length + '명 등록</span></div></div>';
+
+  /* 안내 */
+  h += '<div class="card tight" style="border-color:#bcd6f0;background:var(--mintdk)"><div class="small">🔒 <b>명단은 이 기기(브라우저)에만 저장됩니다.</b> 소스코드에는 학생 정보가 들어가지 않아 공개 배포해도 안전합니다.<br>다만 이 기기에 등록한 명단은 <b>학생 기기로 자동 공유되지 않습니다</b>(서버가 없는 앱이라서요). 그래서 아래 <b>백업(내보내기)</b>으로 명단을 텍스트/JSON 으로 보관해 두시면, 기기를 바꾸거나 브라우저 기록이 지워져도 <b>불러오기</b>로 되살릴 수 있습니다.</div></div>';
+
+  /* ① 일괄 등록 */
+  h += '<div class="card"><h3>① 일괄 등록 <span class="small">붙여넣기</span></h3>';
+  h += '<p class="small" style="margin:0 0 6px">엑셀·출석부에서 복사해 붙여넣으세요. <b>한 줄에 한 명</b>, <b>"학번 이름"</b> 또는 <b>"학번,이름"</b> 형식입니다(학번은 숫자 8자리). JSON 백업도 그대로 붙여넣어 불러올 수 있습니다.</p>';
+  h += '<textarea id="rmBulk" rows="6" placeholder="20250001 홍길동&#10;20250002,김철수&#10;20250003 이영희" style="width:100%;resize:vertical"></textarea>';
+  h += '<label class="small" style="display:flex;align-items:center;gap:6px;margin:8px 0"><input type="checkbox" id="rmReplace" style="width:18px;height:18px"> 기존 명단을 <b>모두 지우고</b> 이 내용으로 교체</label>';
+  h += '<button class="btn sm" type="button" id="rmBulkAdd">붙여넣은 명단 등록</button></div>';
+
+  /* ② 개별 추가/수정 */
+  h += '<div class="card"><h3>② 개별 추가·수정 <span class="small">학번·이름</span></h3>';
+  h += '<p class="small" style="margin:0 0 6px">이미 있는 학번을 다시 넣으면 이름이 <b>수정</b>됩니다.</p>';
+  h += '<label for="rmSid">학번(숫자 8자리)</label><input id="rmSid" type="text" inputmode="numeric" autocomplete="off" maxlength="8" placeholder="예: 20250000">';
+  h += '<label for="rmName">이름</label><input id="rmName" type="text" autocomplete="off" maxlength="20" placeholder="예: 홍길동">';
+  h += '<p class="err" id="rmErr" style="margin:6px 0 0"></p>';
+  h += '<button class="btn sm" type="button" id="rmAddOne" style="margin-top:8px">추가 / 수정</button></div>';
+
+  /* ③ 현재 명단 목록 */
+  h += '<div class="card"><h3>③ 등록된 명단 <span class="small">' + list.length + '명</span></h3>';
+  if(list.length === 0){
+    h += '<p class="small" style="color:var(--amber)">아직 등록된 명단이 없습니다. 위에서 등록해 주세요.</p>';
+  }else{
+    h += '<div class="tblwrap"><table class="dash-tbl">';
+    h += '<tr><th>#</th><th>학번</th><th>이름</th><th class="c">삭제</th></tr>';
+    list.forEach(function(r, i){
+      h += '<tr><td>' + (i+1) + '</td><td>' + esc(r.sid) + '</td><td>' + esc(r.name) + '</td>';
+      h += '<td class="c"><button class="pill no" type="button" data-del="' + esc(r.sid) + '" data-name="' + esc(r.name) + '" style="cursor:pointer">삭제</button></td></tr>';
+    });
+    h += '</table></div>';
+    h += '<button class="btn sm danger center" type="button" id="rmClearAll" style="margin-top:10px">명단 전체 비우기</button>';
+  }
+  h += '</div>';
+
+  /* ④ 백업(내보내기) */
+  h += '<div class="card"><h3>④ 백업 · 내보내기 <span class="small">복사해서 보관</span></h3>';
+  h += '<p class="small" style="margin:0 0 6px">아래 상자의 내용을 복사해 메모·메일·문서에 보관해 두세요. 나중에 ① 일괄 등록에 붙여넣으면 그대로 복원됩니다.</p>';
+  h += '<div class="row" style="gap:8px;margin:0 0 8px"><button class="btn sm" type="button" id="rmCopyText">📋 텍스트 복사</button><button class="btn sm ghost" type="button" id="rmCopyJson">📋 JSON 복사</button></div>';
+  h += '<textarea id="rmExport" rows="5" readonly style="width:100%;resize:vertical" placeholder="(등록된 명단이 없습니다)">' + esc(rosterToText(list)) + '</textarea>';
+  h += '</div>';
+
+  h += '<button class="btn sm ghost center" type="button" data-go="profdash">← 교수 확인 대시보드로</button>';
+  h += '<div style="height:20px"></div>';
+
+  sc.innerHTML = h;
+
+  /* --- 동작 연결 --- */
+  /* ① 일괄 등록 */
+  $("rmBulkAdd").onclick = function(){
+    var parsed = parseRosterText($("rmBulk").value);
+    if(parsed.list.length === 0){
+      toast("등록할 명단을 찾지 못했습니다. 형식(학번 8자리 + 이름)을 확인해 주세요.");
+      return;
+    }
+    var replace = $("rmReplace").checked;
+    var apply = function(){
+      var base = replace ? [] : getRoster();
+      var map = {};
+      base.forEach(function(r){ map[r.sid] = r.name; });
+      parsed.list.forEach(function(r){ map[r.sid] = r.name; });
+      var merged = Object.keys(map).map(function(sid){ return { sid: sid, name: map[sid] }; });
+      var ok = saveRoster(merged);
+      var msg = ok ? (getRoster().length + "명 등록되었습니다.") : "저장에 실패했습니다(브라우저 저장 제한).";
+      if(parsed.bad.length) msg += " (형식이 안 맞아 건너뛴 줄 " + parsed.bad.length + "개)";
+      toast(msg);
+      RENDER.roster();
+    };
+    if(replace){
+      askConfirm("기존 명단을 모두 지우고 붙여넣은 " + parsed.list.length + "명으로 교체합니다.\n계속하시겠습니까?", apply, { yes: "교체" });
+    }else{ apply(); }
+  };
+  /* ② 개별 추가/수정 */
+  $("rmAddOne").onclick = function(){
+    var sid = ($("rmSid").value || "").replace(/\s/g, "");
+    var name = ($("rmName").value || "").trim();
+    var errBox = $("rmErr");
+    if(!/^\d{8}$/.test(sid)){ errBox.textContent = "학번은 숫자 8자리로 입력해 주세요."; return; }
+    if(!name){ errBox.textContent = "이름을 입력해 주세요."; return; }
+    errBox.textContent = "";
+    var cur = getRoster();
+    var found = false;
+    cur.forEach(function(r){ if(r.sid === sid){ r.name = name; found = true; } });
+    if(!found) cur.push({ sid: sid, name: name });
+    var ok = saveRoster(cur);
+    toast(ok ? (found ? "수정했습니다: " + name : "추가했습니다: " + name) : "저장에 실패했습니다(브라우저 저장 제한).");
+    RENDER.roster();
+  };
+  $("rmSid").onkeydown = function(e){ if(e.key === "Enter") $("rmName").focus(); };
+  $("rmName").onkeydown = function(e){ if(e.key === "Enter") $("rmAddOne").click(); };
+  /* ③ 삭제 / 전체 비우기 */
+  sc.querySelectorAll("[data-del]").forEach(function(b){
+    b.onclick = function(){
+      var sid = b.getAttribute("data-del"), nm = b.getAttribute("data-name") || "";
+      askConfirm(nm + "(" + sid + ") 님을 명단에서 삭제할까요?", function(){
+        var next = getRoster().filter(function(r){ return r.sid !== sid; });
+        saveRoster(next);
+        toast("삭제했습니다: " + nm);
+        RENDER.roster();
+      }, { yes: "삭제" });
+    };
+  });
+  if($("rmClearAll")) $("rmClearAll").onclick = function(){
+    askConfirm("등록된 명단 " + getRoster().length + "명을 모두 지웁니다.\n되돌릴 수 없으니, 필요하면 먼저 ④ 백업으로 복사해 두세요. 계속할까요?", function(){
+      saveRoster([]);
+      toast("명단을 모두 비웠습니다.");
+      RENDER.roster();
+    }, { yes: "전체 삭제" });
+  };
+  /* ④ 백업 복사 */
+  $("rmCopyText").onclick = function(){
+    var t = rosterToText(getRoster());
+    if(!t){ toast("복사할 명단이 없습니다."); return; }
+    copyText(t, "명단(텍스트)을 복사했습니다.");
+  };
+  $("rmCopyJson").onclick = function(){
+    var arr = getRoster();
+    if(arr.length === 0){ toast("복사할 명단이 없습니다."); return; }
+    copyText(JSON.stringify(arr), "명단(JSON)을 복사했습니다.");
+  };
+
+  bindGo(sc);
+};
+
+/* ==========================================================================
+ * 예습 학습 화면 — content.js 의 learn 을 렌더 (읽는 카드)
+ * ========================================================================*/
+RENDER.learn = function(){
+  var sc = $("sc-learn");
+  var h = "";
+  h += '<h2 class="sc-h">📖 예습 — 오늘 실험의 내용·원리·핵심</h2>';
+  h += earlyBanner();
+
+  if(!hasLearn()){
+    h += '<div class="greet">' + coli("explain", "static") + '<div class="speech">이 버전에는 예습 카드가 없어요. 퀴즈로 바로 공부해 볼까요?</div></div>';
+    h += '<button class="btn primary" type="button" data-go="lquiz">학습·복습 퀴즈로 ⚡</button>';
+    h += '<button class="btn ghost center" type="button" data-go="lobby">로비로</button>';
+    sc.innerHTML = h; bindGo(sc); return;
+  }
+
+  var L = AW.learn;
+  h += '<p class="sc-p">' + esc((L.intro && L.intro.oneLiner) || "") + '</p>';
+  if(L.intro && L.intro.bigQuestion){
+    h += '<div class="greet">' + coli("explain", "static") + '<div class="speech"><b>오늘의 큰 질문</b><br>' + esc(L.intro.bigQuestion) + '</div></div>';
+  }
+  if(L.intro && L.intro.note){
+    h += '<div class="card"><p class="muted">' + esc(L.intro.note) + '</p>' + (L.intro.source ? '<div class="src">출처 · ' + esc(L.intro.source) + '</div>' : "") + '</div>';
+  }
+  (L.cards || []).forEach(function(c){
+    var tagcls = c.kind === "원리" ? "amber" : c.kind === "핵심" ? "mint" : "";
+    h += '<div class="card learncard">';
+    h += '<div class="lc-head"><span class="lc-kind ' + tagcls + '">' + esc(c.kind || "내용") + '</span><h3>' + esc(c.title || "") + '</h3></div>';
+    h += '<p class="muted pre">' + esc(c.body || "") + '</p>';
+    if(c.keyNumbers && c.keyNumbers.length){
+      h += '<div class="keynums">';
+      c.keyNumbers.forEach(function(k){ h += '<span class="keynum">' + esc(k) + '</span>'; });
+      h += '</div>';
+    }
+    if(c.source) h += '<div class="src">출처 · ' + esc(c.source) + '</div>';
+    h += '</div>';
+  });
+  if(L.takeaways && L.takeaways.length){
+    h += '<div class="card takeaway"><h3>⭐ 오늘 꼭 기억할 ' + L.takeaways.length + '가지</h3>';
+    L.takeaways.forEach(function(t, i){ h += '<div class="fb ok"><div class="h">' + (i + 1) + '</div><div class="b">' + esc(t) + '</div></div>'; });
+    h += '</div>';
+  }
+  var read = learnRead();
+  h += '<div class="greet">' + coli(read ? "celebrate" : "explain", "static") + '<div class="speech">' +
+    (read ? "다 읽으셨네요! 이제 퀴즈로 공부해 볼까요?" : "카드를 다 읽으셨으면 아래 버튼을 눌러 주세요.") + '</div></div>';
+  if(read){
+    h += '<button class="btn primary" type="button" data-go="lquiz">학습·복습 퀴즈로 ⚡</button>';
+  }else{
+    h += '<button class="btn primary" type="button" id="learnDone">다 읽었어요 ✅</button>';
+  }
+  h += '<button class="btn ghost center" type="button" data-go="lobby">로비로</button>';
+
+  sc.innerHTML = h;
+  if($("learnDone")) $("learnDone").onclick = function(){
+    var g = markLearnRead();
+    toast(g ? "예습을 마쳤어요! 이제 퀴즈로 공부해요." : "이미 예습을 마쳤습니다.");
+    paintTop(); RENDER.learn();
+  };
+  bindGo(sc);
+};
+
+/* ==========================================================================
+ * 타이머
+ * ========================================================================*/
+var timerRAF = null, tStart = 0, tLimit = 0, tOnEnd = null;
+function startTimer(sec, onEnd, sel){
+  stopTimer();
+  tStart = Date.now(); tLimit = sec * 1000; tOnEnd = onEnd;
+  var bar = document.querySelector(sel || "#sc-lquiz .tbar");
+  var fill = bar ? bar.querySelector("i") : null;
+  function stepf(){
+    var left = tLimit - (Date.now() - tStart);
+    var r = Math.max(0, left / tLimit);
+    if(fill) fill.style.width = (r * 100) + "%";
+    if(bar){ bar.classList.toggle("warn", r <= 0.5 && r > 0.2); bar.classList.toggle("crit", r <= 0.2); }
+    if(left <= 0){ timerRAF = null; if(tOnEnd){ var f = tOnEnd; tOnEnd = null; f(); } return; }
+    timerRAF = requestAnimationFrame(stepf);
+  }
+  timerRAF = requestAnimationFrame(stepf);
+}
+function stopTimer(){ if(timerRAF){ cancelAnimationFrame(timerRAF); timerRAF = null; } tOnEnd = null; }
+function elapsedSec(){ return (Date.now() - tStart) / 1000; }
+
+/* ==========================================================================
+ * 공용 — 문항 판정 & 답 위젯 (mc·ox·num·order)
+ * ========================================================================*/
+function judge(q, pick){
+  if(q.type === "mc") return pick === q.answer;
+  if(q.type === "ox") return pick === q.answer;
+  if(q.type === "num"){
+    var tol = typeof q.tolerance === "number" ? q.tolerance : 0;
+    return isFinite(pick) && Math.abs(pick - q.answer) <= tol;
+  }
+  if(q.type === "order"){
+    if(!Array.isArray(pick) || pick.length !== q.answer.length) return false;
+    for(var i = 0; i < q.answer.length; i++){ if(pick[i] !== q.answer[i]) return false; }
+    return true;
+  }
+  return false;
+}
+/* 답 위젯 HTML. os = order 진행상태 {placed, pool}. locked 시 정오 표시. */
+function answerWidget(q, opts){
+  opts = opts || {};
+  var locked = !!opts.locked, pick = opts.pick, os = opts.orderState, reveal = !!opts.reveal;
+  var h = "";
+  if(q.type === "mc"){
+    q.choices.forEach(function(c, i){
+      var cls = "ch";
+      if(locked && reveal){ if(i === q.answer) cls += " right"; else if(pick === i) cls += " wrong"; }
+      else if(locked && pick === i) cls += " right";
+      h += '<button class="' + cls + '" type="button" data-ans="' + i + '"' + (locked ? " disabled" : "") + '>' +
+        '<div class="mk">' + (i + 1) + '</div><div>' + esc(c) + '</div></button>';
+    });
+  }else if(q.type === "ox"){
+    [["O", true], ["X", false]].forEach(function(p){
+      var cls = "ch";
+      if(locked && reveal){ if(p[1] === q.answer) cls += " right"; else if(pick === p[1]) cls += " wrong"; }
+      else if(locked && pick === p[1]) cls += " right";
+      h += '<button class="' + cls + '" type="button" data-ox="' + (p[1] ? "1" : "0") + '"' + (locked ? " disabled" : "") + '>' +
+        '<div class="mk">' + p[0] + '</div><div>' + (p[1] ? "맞다" : "아니다") + '</div></button>';
+    });
+  }else if(q.type === "num"){
+    h += '<input class="numin" id="numIn" type="text" inputmode="decimal" autocomplete="off" placeholder="숫자만 입력"' +
+      (locked && pick !== null && pick !== undefined ? ' value="' + esc(String(pick)) + '"' : "") + (locked ? " disabled" : "") + '>';
+    h += '<p class="small" style="text-align:center;margin:6px 0 12px">단위: ' + esc(q.unit || "") + '</p>';
+    if(!locked) h += '<button class="btn primary" type="button" id="numSubmit">답 제출</button>';
+  }else if(q.type === "order"){
+    os = os || { placed: [], pool: q.steps.map(function(_, i){ return i; }) };
+    h += '<div class="card"><h3 style="font-size:14px">순서 <span class="small">' + os.placed.length + '/' + q.steps.length + '</span></h3>';
+    for(var i = 0; i < q.steps.length; i++){
+      if(i < os.placed.length){
+        var idx = os.placed[i];
+        var cls = "oslot";
+        if(locked && reveal){ cls += (q.answer[i] === idx ? "" : ""); }
+        h += '<button class="' + cls + '" type="button" data-oun="' + i + '"' + (locked ? " disabled" : "") + '><div class="no">' + (i + 1) + '</div><div>' + esc(q.steps[idx]) + '</div></button>';
+      }else{
+        h += '<div class="oslot empty"><div class="no" style="background:transparent;color:var(--tx3)">' + (i + 1) + '</div><div>비어 있음</div></div>';
+      }
+    }
+    h += '</div>';
+    if(!locked && os.pool.length){
+      h += '<div class="card opool"><h3 style="font-size:14px">남은 단계 ' + os.pool.length + '개</h3>';
+      os.pool.forEach(function(idx){
+        h += '<button class="oitem" type="button" data-oput="' + idx + '"><div class="bx">+</div><div>' + esc(q.steps[idx]) + '</div></button>';
+      });
+      h += '</div>';
+    }
+    if(!locked) h += '<button class="btn primary" type="button" id="orderSubmit"' + (os.placed.length === q.steps.length ? "" : " disabled") + '>순서 제출</button>';
+    if(locked && reveal){
+      h += '<div class="card"><h3 style="font-size:14px">정답 순서</h3>';
+      q.answer.forEach(function(idx, i){ h += '<div class="oslot"><div class="no">' + (i + 1) + '</div><div>' + esc(q.steps[idx]) + '</div></div>'; });
+      h += '</div>';
+    }
+  }
+  return h;
+}
+/* order 진행상태 조작 후 콜백 재렌더 */
+function bindAnswer(sc, q, orderState, onSubmit, repaint){
+  sc.querySelectorAll("[data-ans]").forEach(function(b){ b.onclick = function(){ onSubmit(parseInt(b.getAttribute("data-ans"), 10)); }; });
+  sc.querySelectorAll("[data-ox]").forEach(function(b){ b.onclick = function(){ onSubmit(b.getAttribute("data-ox") === "1"); }; });
+  if($("numSubmit")) $("numSubmit").onclick = function(){
+    var v = ($("numIn").value || "").replace(/[^0-9.\-]/g, "");
+    if(v === ""){ toast("숫자를 입력해 주십시오."); return; }
+    onSubmit(parseFloat(v));
+  };
+  if($("numIn")) $("numIn").onkeydown = function(e){ if(e.key === "Enter" && $("numSubmit")) $("numSubmit").click(); };
+  if(orderState){
+    sc.querySelectorAll("[data-oput]").forEach(function(b){
+      b.onclick = function(){ var idx = parseInt(b.getAttribute("data-oput"), 10); orderState.pool = orderState.pool.filter(function(x){ return x !== idx; }); orderState.placed.push(idx); repaint(); };
+    });
+    sc.querySelectorAll("[data-oun]").forEach(function(b){
+      b.onclick = function(){ var i = parseInt(b.getAttribute("data-oun"), 10); var idx = orderState.placed.splice(i, 1)[0]; orderState.pool.push(idx); repaint(); };
+    });
+    if($("orderSubmit")) $("orderSubmit").onclick = function(){ if(orderState.placed.length === q.steps.length) onSubmit(orderState.placed.slice()); };
+  }
+}
+function kindLabel(t){ return t === "mc" ? "4지선다" : t === "ox" ? "OX 속답" : t === "num" ? "숫자 계산" : t === "order" ? "순서 배열" : t; }
+
+/* ==========================================================================
+ * 학습·복습 퀴즈 (미션 해금 전) — pool.timed 에서 출제
+ * ========================================================================*/
+function pickLearnQ(){
+  var served = state.lquiz.served || [];
+  var pool = POOL_TIMED.filter(function(q){ return served.indexOf(q.qid) < 0; });
+  if(!pool.length){ pool = POOL_TIMED.slice(); state.lquiz.served = []; served = []; }
+  /* 직전 문항과 바로 안 겹치게 */
+  if(ctx.lquiz && ctx.lquiz.lastQid && pool.length > 1){
+    var f = pool.filter(function(q){ return q.qid !== ctx.lquiz.lastQid; });
+    if(f.length) pool = f;
+  }
+  return shuffle(pool)[0];
+}
+RENDER.lquiz = function(){
+  if(!hasPool()){ go("lobby", false); return; }
+  if(!ctx.lquiz){ ctx.lquiz = { q: null, phase: "ask", pick: null, last: null, order: null, lastQid: null }; }
+  if(!ctx.lquiz.q){ loadLearnQ(); return; }
+  paintLQ();
+};
+function loadLearnQ(){
+  var q = pickLearnQ();
+  ctx.lquiz.q = q;
+  ctx.lquiz.phase = "ask";
+  ctx.lquiz.pick = null;
+  ctx.lquiz.last = null;
+  ctx.lquiz.order = (q.type === "order") ? { placed: [], pool: q.steps.map(function(_, i){ return i; }) } : null;
+  paintLQ();
+}
+function paintLQ(){
+  var S = ctx.lquiz, q = S.q;
+  var need = UNLOCK_N(), prog = learnProgress(), unlocked = prog >= need;
+  var locked = (S.phase !== "ask");
+  var timerOff = !!state.settings.timerOff;
+  var coliFace = "thinking";
+  if(locked && S.last) coliFace = S.last.kind === "ok" ? "correct" : S.last.kind === "timeout" ? "thinking" : "encourage";
+
+  var h = "";
+  h += earlyBanner();
+  h += '<div class="prog-wrap"><div class="prog-lbl"><span>미션까지</span><span><b>' + Math.min(prog, need) + '</b> / ' + need + '문' + (unlocked ? ' · 열렸어요 🎯' : '') + '</span></div>';
+  h += '<div class="prog-bar' + (unlocked ? ' full' : '') + '"><i style="width:' + Math.min(100, prog / need * 100) + '%"></i></div></div>';
+
+  h += '<div class="toggle ' + (timerOff ? "on" : "") + '" id="timerToggle"><div class="sw"><i></i></div>' +
+    '<div class="lb">타이머 끄기 (연습 모드)<div class="small">켜면 시간 압박 없이 풉니다</div></div></div>';
+
+  h += '<div class="qmeta"><span class="kind">' + kindLabel(q.type) + '</span><span class="p">난이도 Lv' + q.level + '</span>';
+  h += '<div class="quiz-coli" style="margin-left:auto">' + coli(coliFace, (locked && S.last && S.last.kind !== "timeout") ? "" : "static") + '</div></div>';
+
+  var barDim = (timerOff || locked || q.type === "order" || q.type === "num") ? ' style="opacity:.25"' : '';
+  h += '<div class="tbar"' + barDim + '><i style="width:100%"></i></div>';
+  if(timerOff) h += '<p class="small" style="margin:-8px 0 12px">연습 모드 — 제한시간 없이 푸십시오.</p>';
+  else h += '<p class="small" style="margin:-8px 0 12px">제한 ' + q.limitSec + '초</p>';
+
+  h += '<div class="qtext">' + esc(q.q) + '</div>';
+  h += answerWidget(q, { locked: locked, pick: S.pick, orderState: S.order, reveal: true });
+
+  if(locked){
+    var L = S.last;
+    var vcls = (L.kind === "ok" ? "ok" : L.kind === "timeout" ? "to" : "no");
+    h += '<div class="verdict ' + vcls + (L.kind === "no" ? " play-shake" : "") + '">' +
+      (L.kind === "ok" ? "✅ 정답" : L.kind === "timeout" ? "⏱ 미응답 (시간 초과)" : "❌ 오답") + '</div>';
+    if(q.type === "num") h += '<p class="muted" style="margin-top:-4px">정답 — <b>' + esc(String(q.answer)) + ' ' + esc(q.unit || "") + '</b></p>';
+    if(q.type === "ox") h += '<p class="muted" style="margin-top:-4px">정답 — <b>' + (q.answer ? "O (맞다)" : "X (아니다)") + '</b></p>';
+    h += '<div class="card"><h3>해설</h3><p class="muted pre">' + esc(q.explain) + '</p><div class="src">출처 · ' + esc(q.source) + '</div></div>';
+    if(unlocked && !S.announcedUnlock){
+      h += '<div class="card takeaway"><h3>🎉 미션이 열렸어요!</h3><p class="muted">학습·복습 ' + need + '문을 넘겼어요. 이제 미션에 도전할 수 있어요.</p></div>';
+    }
+    h += '<button class="btn primary" type="button" id="lqNext">다음 문항</button>';
+    if(unlocked) h += '<button class="btn center" type="button" data-go="mission">🎯 미션 도전하러 가기</button>';
+  }
+  h += '<button class="btn ghost center" type="button" data-go="lobby">그만두고 로비로</button>';
+
+  var sc = $("sc-lquiz");
+  sc.innerHTML = h;
+
+  $("timerToggle").onclick = function(){ state.settings.timerOff = !state.settings.timerOff; saveState(); stopTimer(); paintLQ(); };
+  bindAnswer(sc, q, (S.phase === "ask" ? S.order : null), function(pick){ answerLQ(pick, false); }, paintLQ);
+  if($("lqNext")) $("lqNext").onclick = function(){ loadLearnQ(); };
+  bindGo(sc);
+
+  if(S.phase === "ask" && !timerOff && (q.type === "mc" || q.type === "ox")){
+    startTimer(q.limitSec, function(){ answerLQ(null, true); }, "#sc-lquiz .tbar");
+  }else{ tStart = Date.now(); stopTimer(); }
+}
+function answerLQ(pick, timedOut){
+  var S = ctx.lquiz;
+  if(S.phase !== "ask") return;
+  stopTimer();
+  var q = S.q;
+  var rec = state.lquiz.byQid[q.qid] || { answers: 0, corrects: 0, wrongs: 0, firstTry: false };
+  var kind;
+
+  if(timedOut){
+    kind = "timeout";
+    noteWrong(q.qid);
+  }else{
+    var correct = judge(q, pick);
+    var firstResponse = (rec.answers || 0) === 0;
+    rec.answers = (rec.answers || 0) + 1;
+    state.stats.answered++;
+    if(correct){
+      rec.corrects = (rec.corrects || 0) + 1;
+      state.stats.correct++;
+      if(firstResponse) rec.firstTry = true;
+      kind = "ok";
+      noteRight(q.qid);
+    }else{
+      rec.wrongs = (rec.wrongs || 0) + 1;
+      kind = "no";
+      noteWrong(q.qid);
+    }
+  }
+  rec.lastAt = today();
+  state.lquiz.byQid[q.qid] = rec;
+  /* 진행 카운트 — 한 문항 완료마다 1 (해금 전까지 의미) */
+  var wasUnlocked = missionUnlocked();
+  state.lquiz.progress = (state.lquiz.progress || 0) + 1;
+  if(!state.lquiz.served) state.lquiz.served = [];
+  if(state.lquiz.served.indexOf(q.qid) < 0) state.lquiz.served.push(q.qid);
+  S.lastQid = q.qid;
+  S.phase = "done";
+  S.pick = timedOut ? null : pick;
+  S.last = { kind: kind };
+  saveState();
+  if(!wasUnlocked && missionUnlocked()){
+    S.announcedUnlock = false;   /* 이번 화면에서 해금 안내를 보여준다 */
+    paintTop();
+    if(!reduced) showReward({ face:"celebrate", kicker:"미션이 열렸어요", title:"미션 열림", sub:"학습·복습 " + UNLOCK_N() + "문 완료 · 이제 평가에 도전할 수 있어요", hold:3200 });
+  }else{
+    paintTop();
+  }
+  if(missionUnlocked()) S.announcedUnlock = false; else S.announcedUnlock = true;
+  paintLQ();
+  /* 해금 안내를 한 번 보여준 뒤 다음 문항부터는 숨긴다 */
+  if(missionUnlocked()) S.announcedUnlock = true;
+}
+
+/* ==========================================================================
+ * 미션 (평가) — 시간제한 8 + 추리 2 = 10문 · 배점 합 100 · 70점 합격
+ * ========================================================================*/
+function buildMission(){
+  var prevT = state.mission.lastTimed || [], prevR = state.mission.lastReason || [];
+  var nT = MISSION_TIMED(), nR = MISSION_REASON();
+
+  var timedPool = POOL_TIMED.filter(function(q){ return prevT.indexOf(q.qid) < 0; });
+  if(timedPool.length < nT) timedPool = POOL_TIMED.slice();            /* 풀 소진 시 순환 */
+  var timed = shuffle(timedPool).slice(0, nT);
+
+  var reasonPool = POOL_REASON.filter(function(c){ return prevR.indexOf(c.caseId) < 0; });
+  if(reasonPool.length < nR) reasonPool = POOL_REASON.slice();
+  var reason = shuffle(reasonPool).slice(0, nR);
+
+  var items = timed.map(function(q){ return { kind: "timed", q: q, raw: q.points }; })
+    .concat(reason.map(function(c){ return { kind: "reason", cs: c, raw: c.points }; }));
+
+  /* 배점 정규화 — raw 합을 100 으로 스케일, 정수 반올림하며 합 100 유지 */
+  var totalRaw = items.reduce(function(s, it){ return s + it.raw; }, 0);
+  var scaled = items.map(function(it){ return it.raw * 100 / totalRaw; });
+  var pts = roundToSum(scaled, 100);
+  items.forEach(function(it, i){ it.points = pts[i]; });
+
+  /* 다음 재도전에서 제외할 직전 문항 기록 */
+  state.mission.lastTimed = timed.map(function(q){ return q.qid; });
+  state.mission.lastReason = reason.map(function(c){ return c.caseId; });
+  saveState();
+
+  return items;
+}
+RENDER.mission = function(){
+  if(!hasPool()){ go("lobby", false); return; }
+  if(!missionUnlocked() && !meIsEarly()){ paintMissionLocked(); return; }
+  if(!ctx.mission){ ctx.mission = { phase: "intro" }; }
+  if(ctx.mission.phase === "intro"){ paintMissionIntro(); return; }
+  if(ctx.mission.phase === "result"){ paintMissionResult(); return; }
+  paintMissionItem();
+};
+function paintMissionLocked(){
+  var need = UNLOCK_N(), prog = learnProgress();
+  var h = "";
+  h += '<h2 class="sc-h">🎯 미션 — 아직 잠겨 있어요</h2>';
+  h += '<div class="greet">' + coli("explain", "static") + '<div class="speech">학습·복습 퀴즈를 ' + need + '문 풀면 미션이 열려요. 지금 ' + prog + '문 풀었어요.</div></div>';
+  h += '<div class="prog-wrap"><div class="prog-lbl"><span>미션까지</span><span><b>' + Math.min(prog, need) + '</b> / ' + need + '문</span></div>';
+  h += '<div class="prog-bar"><i style="width:' + Math.min(100, prog / need * 100) + '%"></i></div></div>';
+  h += '<button class="btn primary" type="button" data-go="lquiz">학습·복습 퀴즈 풀러 가기 ⚡</button>';
+  h += '<button class="btn ghost center" type="button" data-go="lobby">로비로</button>';
+  var sc = $("sc-mission"); sc.innerHTML = h; bindGo(sc);
+}
+function paintMissionIntro(){
+  var info = (POOL && POOL.info) ? POOL.info : {};
+  var m = info.mission || {};
+  var h = "";
+  h += '<h2 class="sc-h">🎯 미션 — ' + esc(curLab().weekLabel || "") + ' 보고서 평가</h2>';
+  h += '<div class="greet">' + coli("explain", "static") + '<div class="speech">이 미션이 실습 보고서를 대신해요. 침착하게 풀어봐요 — 통과하면 보고서 점수를 받아요.</div></div>';
+  h += earlyBanner();
+  h += '<div class="card"><h3>규칙</h3><div class="tblwrap"><table>' +
+    '<tr><th>구성</th><td>시간제한 ' + MISSION_TIMED() + '문 + 추리 ' + MISSION_REASON() + '문 = ' + (MISSION_TIMED() + MISSION_REASON()) + '문</td></tr>' +
+    '<tr><th>배점</th><td>문항별 차등 · 합계 100점 (난이도에 따라 다름)</td></tr>' +
+    '<tr><th>합격</th><td><b>70점(70%) 이상</b></td></tr>' +
+    '<tr><th>시간제한</th><td>각 시간제한 문항에 제한시간이 있습니다(초과 시 0점)</td></tr>' +
+    '<tr><th>추리</th><td>원인 1개 + 근거 단서 2개 (제한시간 없음)</td></tr>' +
+    '<tr><th>재도전</th><td>불합격 시 다시 도전 · <b>문항이 매번 바뀝니다</b></td></tr>' +
+    '</table></div></div>';
+  h += '<div class="card idform"><h3>응시자 <span class="small">합격증에 표시</span></h3>';
+  h += '<p class="muted" style="margin:0 0 4px">학번 <b>' + esc(state.studentId || "(미입력)") + '</b> · 이름 <b>' + esc(state.studentName || "(미입력)") + '</b></p>';
+  h += '<button class="btn sm center" type="button" id="mEditId">학번·이름 수정</button>';
+  h += '<div id="mIdEdit" style="display:none"><label for="mSid">학번</label><input id="mSid" type="text" inputmode="numeric" maxlength="15" value="' + esc(state.studentId || "") + '">' +
+       '<label for="mName">이름</label><input id="mName" type="text" maxlength="20" value="' + esc(state.studentName || "") + '">' +
+       '<button class="btn sm primary center" type="button" id="mSaveId" style="margin-top:10px">저장</button></div>';
+  h += '<p class="small" style="margin:8px 0 0;color:var(--amber)">⚠ 지금은 연습본이라 결과가 자동 제출되지 않습니다.</p></div>';
+  if(state.mission.passed) h += '<div class="card tight"><div class="small" style="color:var(--gold)">🏆 이미 합격했습니다 (최고 ' + (state.mission.bestScore||0) + '점). 다시 도전하면 새 문항으로 재응시합니다.</div></div>';
+  h += '<button class="btn primary" type="button" id="mStart">미션 시작 🎯</button>';
+  h += '<button class="btn ghost center" type="button" data-go="lobby">로비로</button>';
+
+  var sc = $("sc-mission"); sc.innerHTML = h;
+  $("mEditId").onclick = function(){ var e = $("mIdEdit"); e.style.display = e.style.display === "none" ? "block" : "none"; };
+  $("mSaveId").onclick = function(){ state.studentId = ($("mSid").value||"").trim(); state.studentName = ($("mName").value||"").trim(); saveState(); toast("저장했습니다."); paintMissionIntro(); };
+  $("mStart").onclick = function(){ startMission(); };
+  bindGo(sc);
+}
+function startMission(){
+  var items = buildMission();
+  ctx.mission = {
+    phase: "run", items: items, i: 0,
+    answers: [], order: null,
+    subEvidence: [], subSuspect: null
+  };
+  state.mission.attempts = (state.mission.attempts || 0) + 1;
+  saveState();
+  initMissionItem();
+}
+function initMissionItem(){
+  var M = ctx.mission, it = M.items[M.i];
+  M.order = (it.kind === "timed" && it.q.type === "order") ? { placed: [], pool: it.q.steps.map(function(_, i){ return i; }) } : null;
+  /* 문항이 처음 열린 시각을 고정해 둔다 — 순서·숫자 문항이 다시 그려져도 제한시간이 리셋되지 않게 한다. */
+  M.itemStart = Date.now();
+  if(it.kind === "reason"){
+    M.subSuspect = null; M.subEvidence = [];
+    /* 단서 열람 제한 제거 — 4개(전체)를 처음부터 모두 보여준다. */
+  }
+  paintMissionItem();
+}
+/* 미션 타이머 — 고정 deadline 기준. 재렌더(순서 탭)에도 리셋되지 않는다. */
+function startMissionTimer(){
+  stopTimer();
+  var M = ctx.mission, it = M.items[M.i];
+  if(!it || it.kind !== "timed") return;
+  var total = it.q.limitSec * 1000;
+  var deadline = M.itemStart + total;
+  var bar = document.querySelector("#sc-mission .tbar");
+  var fill = bar ? bar.querySelector("i") : null;
+  function stepf(){
+    var left = deadline - Date.now();
+    var r = Math.max(0, left / total);
+    if(fill) fill.style.width = (r * 100) + "%";
+    if(bar){ bar.classList.toggle("warn", r <= 0.5 && r > 0.2); bar.classList.toggle("crit", r <= 0.2); }
+    if(left <= 0){ timerRAF = null; submitMissionTimed(null, true); return; }
+    timerRAF = requestAnimationFrame(stepf);
+  }
+  timerRAF = requestAnimationFrame(stepf);
+}
+function paintMissionItem(){
+  var M = ctx.mission, it = M.items[M.i], n = M.items.length;
+  var h = "";
+  h += '<div class="prog-wrap"><div class="prog-lbl"><span>미션 문항</span><span><b>' + (M.i + 1) + '</b> / ' + n + '</span></div>';
+  h += '<div class="prog-bar full"><i style="width:' + ((M.i) / n * 100) + '%"></i></div></div>';
+
+  if(it.kind === "timed"){
+    /* 미션은 평가이므로 연습 모드(timerOff)와 무관하게 모든 시간제한 문항에 타이머를 강제한다. */
+    var q = it.q;
+    h += '<div class="qmeta"><span class="kind">' + kindLabel(q.type) + '</span><span class="p">난이도 Lv' + q.level + '</span>' +
+      '<span class="pts">배점 ' + it.points + '점</span>' +
+      '<div class="quiz-coli" style="margin-left:auto">' + coli("thinking", "static") + '</div></div>';
+    h += '<div class="tbar"><i style="width:100%"></i></div>';
+    h += '<p class="small" style="margin:-8px 0 12px">제한 ' + q.limitSec + '초 · 초과 시 0점</p>';
+    h += '<div class="qtext">' + esc(q.q) + '</div>';
+    h += answerWidget(q, { locked: false, orderState: M.order });
+  }else{
+    h += paintMissionReason(it);
+  }
+  h += '<button class="btn ghost center" type="button" id="mQuit">그만두기 (기록 안 됨)</button>';
+
+  var sc = $("sc-mission"); sc.innerHTML = h;
+  $("mQuit").onclick = function(){ stopTimer(); ctx.mission = null; go("lobby"); };
+
+  if(it.kind === "timed"){
+    var q2 = it.q;
+    bindAnswer(sc, q2, M.order, function(pick){ submitMissionTimed(pick, false); }, paintMissionItem);
+    startMissionTimer();
+  }else{
+    bindMissionReason(sc, it);
+  }
+}
+function submitMissionTimed(pick, timedOut){
+  var M = ctx.mission, it = M.items[M.i], q = it.q;
+  stopTimer();
+  var correct = timedOut ? false : judge(q, pick);
+  var earned = correct ? it.points : 0;
+  M.answers.push({ kind: "timed", q: q, points: it.points, pick: pick, correct: correct, timedOut: !!timedOut, earned: earned });
+  advanceMission();
+}
+/* ---- 미션 추리 문항 ---- */
+function paintMissionReason(it){
+  var M = ctx.mission, cs = it.cs;
+  var h = "";
+  h += '<div class="qmeta"><span class="kind">추리</span><span class="pts">배점 ' + it.points + '점</span>' +
+    '<div class="quiz-coli" style="margin-left:auto">' + coli("thinking", "static") + '</div></div>';
+  h += '<h2 class="sc-h" style="font-size:17px">' + esc(cs.no || "사건") + ' · ' + esc(cs.title || "") + '</h2>';
+  if(cs.subtitle) h += '<p class="sc-p">' + esc(cs.subtitle) + '</p>';
+  h += '<div class="card"><h3>의뢰</h3><p class="muted pre">' + esc(cs.brief) + '</p></div>';
+
+  h += '<div class="card"><h3>단서 <span class="small">' + cs.clues.length + '개 전부 공개</span></h3>';
+  cs.clues.forEach(function(c){
+    h += '<div class="clue"><div class="lb">' + esc(c.label) + '</div>';
+    h += '<div class="bd pre">' + esc(c.body) + '</div>';
+    if(c.readingHint) h += '<div class="rh">읽는 법 — ' + esc(c.readingHint) + '</div>';
+    h += '</div>';
+  });
+  h += '</div>';
+
+  h += '<div class="card"><h3>원인 지목 <span class="small">하나만</span></h3>';
+  cs.suspects.forEach(function(s){
+    h += '<button class="pick ' + (M.subSuspect === s.id ? "on" : "") + '" type="button" data-rsus="' + s.id + '"><div class="mk">' + esc(s.mark || "·") + '</div><div>' + esc(s.label) + '</div></button>';
+  });
+  h += '</div>';
+
+  h += '<div class="card"><h3>근거 단서 <span class="small">정확히 2개</span></h3>';
+  cs.clues.forEach(function(c){
+    var on = M.subEvidence.indexOf(c.id) >= 0;
+    h += '<button class="pick ' + (on ? "on" : "") + '" type="button" data-rev="' + c.id + '"><div class="mk">' + (on ? "✓" : "") + '</div><div>' + esc(c.label) + '</div></button>';
+  });
+  h += '</div>';
+
+  var ready = M.subSuspect && M.subEvidence.length === 2;
+  h += '<button class="btn primary" type="button" id="rSubmit"' + (ready ? "" : " disabled") + '>' + (ready ? "지목하고 제출" : "원인 1개 · 근거 2개를 고르십시오") + '</button>';
+  return h;
+}
+function bindMissionReason(sc, it){
+  var M = ctx.mission, cs = it.cs;
+  sc.querySelectorAll("[data-rsus]").forEach(function(b){
+    b.onclick = function(){ M.subSuspect = b.getAttribute("data-rsus"); paintMissionItem(); };
+  });
+  sc.querySelectorAll("[data-rev]").forEach(function(b){
+    b.onclick = function(){
+      var id = b.getAttribute("data-rev"); var i = M.subEvidence.indexOf(id);
+      if(i >= 0) M.subEvidence.splice(i, 1);
+      else{ if(M.subEvidence.length >= 2) M.subEvidence.shift(); M.subEvidence.push(id); }
+      paintMissionItem();
+    };
+  });
+  if($("rSubmit")) $("rSubmit").onclick = function(){ submitMissionReason(it); };
+}
+function submitMissionReason(it){
+  var M = ctx.mission, cs = it.cs;
+  var right = (M.subSuspect === cs.answer.suspect);
+  var evHit = M.subEvidence.filter(function(id){ return cs.answer.evidence.indexOf(id) >= 0; }).length;
+  var frac = 0, tier = "wrong";
+  if(right){
+    if(evHit === 2){ frac = 1; tier = "full"; }
+    else if(evHit === 1){ frac = 0.75; tier = "partial1"; }
+    else { frac = 0.5; tier = "causeOnly"; }
+  }
+  var earned = it.points * frac;
+  M.answers.push({ kind: "reason", cs: cs, points: it.points, suspect: M.subSuspect, evidence: M.subEvidence.slice(),
+    right: right, evHit: evHit, tier: tier, earned: earned });
+  advanceMission();
+}
+function advanceMission(){
+  var M = ctx.mission;
+  M.i++;
+  if(M.i >= M.items.length){ finishMission(); return; }
+  initMissionItem();
+}
+function finishMission(){
+  var M = ctx.mission;
+  var earned = M.answers.reduce(function(s, a){ return s + (a.earned || 0); }, 0);
+  var score = Math.round(earned);
+  var pass = score >= MISSION_PASS();
+  M.score = score; M.pass = pass; M.phase = "result";
+
+  state.mission.lastScore = score;
+  if(score > (state.mission.bestScore || 0)) state.mission.bestScore = score;
+  if(pass && !state.mission.passed){
+    state.mission.passed = true;
+  }
+  saveState();
+  paintTop();
+  if(pass) showReward({ face:"celebrate", kicker:"미션 합격", title:score + "점 · 합격!", sub:curLab().weekLabel + " 보고서 점수를 받았어요", hold:3200 });
+  paintMissionResult();
+}
+function paintMissionResult(){
+  var M = ctx.mission;
+  var score = M.score, pass = M.pass;
+  var h = "";
+  h += '<h2 class="sc-h">미션 결과</h2>';
+
+  /* 크고 분명한 합격/불합격 메시지 */
+  if(pass){
+    h += '<div style="text-align:center;border-radius:16px;padding:20px 16px;margin:0 0 12px;' +
+      'background:var(--greendk);border:1px solid var(--green);box-shadow:var(--shadow)">' +
+      '<div style="font-size:30px;font-weight:900;color:var(--green);line-height:1.25">🎉 합격!</div>' +
+      '<div style="font-size:17px;font-weight:800;color:var(--tx);margin-top:4px">미션을 통과했어요</div>' +
+      '<div style="font-size:15px;color:var(--tx2);margin-top:6px">' + score + ' / 100점 · ' + esc(curLab().weekLabel || "") + ' 보고서 점수를 받았어요</div></div>';
+  }else{
+    h += '<div style="text-align:center;border-radius:16px;padding:20px 16px;margin:0 0 12px;' +
+      'background:var(--amberdk);border:1px solid var(--amber);box-shadow:var(--shadow)">' +
+      '<div style="font-size:26px;font-weight:900;color:var(--amber);line-height:1.25">아쉬워요, 다시 도전해요</div>' +
+      '<div style="font-size:15px;color:var(--tx2);margin-top:6px">' + score + ' / 100점 · 합격선 ' + MISSION_PASS() + '점까지 ' + Math.max(0, MISSION_PASS() - score) + '점 남았어요</div></div>';
+  }
+
+  h += '<div class="greet">' + coli(pass ? "celebrate" : "encourage", pass ? "" : "static") +
+    '<div class="speech">' + (pass ? "합격이에요! 근거까지 잘 짚었어요." : "합격선까지 조금 남았어요. 문항을 바꿔서 다시 도전해요.") + '</div></div>';
+
+  h += '<div class="card">';
+  h += '<div class="scorebig ' + (pass ? "pass" : "fail") + '">' + score + '</div>';
+  h += '<div class="scoreunit">/ 100점 · 합격선 ' + MISSION_PASS() + '점</div>';
+  h += '<div class="passtag ' + (pass ? "pass" : "fail") + '">' + (pass ? "✅ 합격" : "❌ 불합격 — 재도전") + '</div>';
+  h += '</div>';
+
+  /* 문항별 리뷰 */
+  h += '<div class="card"><h3>문항별 정오답 · 해설</h3>';
+  M.answers.forEach(function(a, i){
+    if(a.kind === "timed"){
+      var q = a.q;
+      var cls = a.correct ? "ok" : "no";
+      var rs = a.timedOut ? "⏱ 시간 초과(미응답)" : (a.correct ? "정답" : "오답");
+      var picktxt = "";
+      if(!a.timedOut){
+        if(q.type === "mc") picktxt = "선택: " + (typeof a.pick === "number" && q.choices[a.pick] !== undefined ? q.choices[a.pick] : "-");
+        else if(q.type === "ox") picktxt = "선택: " + (a.pick ? "O" : "X");
+        else if(q.type === "num") picktxt = "입력: " + a.pick + " " + (q.unit || "");
+        else if(q.type === "order") picktxt = "제출한 순서 " + (a.correct ? "정답" : "오답");
+      }
+      var ansTxt = "";
+      if(q.type === "mc") ansTxt = "정답: " + q.choices[q.answer];
+      else if(q.type === "ox") ansTxt = "정답: " + (q.answer ? "O" : "X");
+      else if(q.type === "num") ansTxt = "정답: " + q.answer + " " + (q.unit || "");
+      else if(q.type === "order") ansTxt = "정답: " + q.answer.map(function(idx){ return q.steps[idx]; }).join(" → ");
+      h += '<div class="revrow ' + cls + '"><div class="ix">' + (i + 1) + '</div><div class="bd">' +
+        '<div class="qt">' + esc(q.q) + '</div>' +
+        '<div class="rs">' + rs + ' · ' + esc(picktxt) + (picktxt ? ' · ' : '') + esc(ansTxt) + '</div>' +
+        '<div class="ex">' + esc(q.explain) + '<br><span style="color:var(--tx3)">출처 · ' + esc(q.source) + '</span></div>' +
+        '</div><div class="rp">' + Math.round(a.earned) + '/' + a.points + '</div></div>';
+    }else{
+      var cs = a.cs;
+      var cls2 = a.tier === "full" ? "ok" : a.tier === "wrong" ? "no" : "part";
+      var tierTxt = a.tier === "full" ? "원인+근거2 정답" : a.tier === "partial1" ? "원인 정답+근거1" : a.tier === "causeOnly" ? "원인만 정답" : "원인 오답";
+      var sus = cs.suspects.filter(function(s){ return s.id === cs.answer.suspect; })[0];
+      h += '<div class="revrow ' + cls2 + '"><div class="ix">추</div><div class="bd">' +
+        '<div class="qt">' + esc(cs.no || "") + ' · ' + esc(cs.title || "") + '</div>' +
+        '<div class="rs">' + esc(tierTxt) + ' (근거 ' + a.evHit + '/2)</div>' +
+        '<div class="ex">정답 원인 — <b>' + esc(sus ? sus.label : "") + '</b><br>' + esc(cs.debrief || "") + '<br><span style="color:var(--tx3)">출처 · ' + esc(cs.source || "") + '</span></div>' +
+        '</div><div class="rp">' + Math.round(a.earned) + '/' + a.points + '</div></div>';
+    }
+  });
+  h += '</div>';
+
+  if(pass){
+    h += renderCertificate(score);
+    h += '<button class="btn center" type="button" id="mRetry">새 문항으로 다시 도전</button>';
+    h += '<button class="btn primary center" type="button" data-go="lobby">로비로</button>';
+  }else{
+    h += '<div class="card takeaway"><h3>다시 도전</h3><p class="muted">아래 버튼을 누르면 <b>직전과 다른 문항</b>으로 다시 출제됩니다. 오답노트에서 틀린 문항을 복습한 뒤 도전하면 좋아요.</p></div>';
+    h += '<button class="btn primary center" type="button" id="mRetry">🎯 다시 도전 (문항 교체)</button>';
+    h += '<button class="btn center" type="button" data-go="notes">오답노트 보기</button>';
+    h += '<button class="btn ghost center" type="button" data-go="lobby">로비로</button>';
+  }
+
+  var sc = $("sc-mission"); sc.innerHTML = h;
+  if($("mRetry")) $("mRetry").onclick = function(){ startMission(); };
+  bindGo(sc);
+}
+function renderCertificate(score){
+  var h = "";
+  h += '<div class="cert"><div class="seal">🏅</div>';
+  h += '<div class="ck">미션 합격증 · CERTIFICATE OF COMPLETION</div>';
+  h += '<h2>유전자분석 · ' + esc(curLab().weekLabel || "") + ' 실습 미션</h2>';
+  h += '<div class="who">응시자 <b>' + esc(state.studentName || "(미입력)") + '</b>' + (state.studentId ? ' · 학번 ' + esc(state.studentId) : '') + '</div>';
+  h += '<div class="tblwrap"><table>' +
+    '<tr><th>과목</th><td>' + esc(C.meta.course || "유전자분석") + '</td></tr>' +
+    '<tr><th>주차 · 실습</th><td>' + esc(curLab().weekLabel || "") + ' · ' + esc(curLab().title || "") + '</td></tr>' +
+    '<tr><th>점수</th><td>' + score + ' / 100점 (합격선 ' + MISSION_PASS() + '점)</td></tr>' +
+    '<tr><th>판정</th><td style="color:var(--green);font-weight:800">합격</td></tr>' +
+    '<tr><th>날짜</th><td>' + today() + '</td></tr>' +
+    '</table></div>';
+  h += '<div class="srvnote">※ 이번 시제품은 로컬 저장만 하며 서버 자동 집계는 다음 운영본 단계입니다. 조작 방지·학번 자동집계도 운영본에서 적용됩니다.</div>';
+  h += '</div>';
+  return h;
+}
+
+/* ==========================================================================
+ * 오답노트
+ * ========================================================================*/
+RENDER.notes = function(){
+  var ids = noteList();
+  var h = "";
+  h += '<h2 class="sc-h">오답노트</h2>';
+  h += '<p class="sc-p">학습·복습에서 틀리거나 시간 초과한 문항이 쌓입니다. <b>두 번 연속 맞히면 노트에서 빠집니다.</b></p>';
+  if(!ids.length){
+    h += '<div class="greet">' + coli("idle", "static") + '<div class="speech">아직 노트가 비어 있어요. 틀려도 괜찮아요 — 여기 모아서 두 번 맞히면 빠져요.</div></div>';
+    h += '<div class="card"><h3>비어 있습니다</h3><p class="muted">아직 틀린 문항이 없거나, 모두 두 번 연속 맞혀 노트에서 빠졌습니다.</p></div>';
+  }else{
+    h += '<div class="greet">' + coli("explain", "static") + '<div class="speech">' + ids.length + '문항을 모아 뒀어요. 학습·복습에서 다시 만나요.</div></div>';
+    ids.forEach(function(qid){
+      var q = POOL_TIMED_BY_ID[qid], n = state.wrongNotes[qid], rec = state.lquiz.byQid[qid] || {};
+      h += '<div class="card"><h3>' + esc(q.q) + '</h3>' +
+        '<div class="small">유형 ' + kindLabel(q.type) + ' · Lv' + q.level + ' · 틀린 횟수 ' + (rec.wrongs || 0) + '회 · 연속 정답 ' + (n.streak || 0) + '/2 · 최근 ' + esc(n.lastAt || "") + '</div></div>';
+    });
+  }
+  h += '<button class="btn primary" type="button" data-go="lquiz">학습·복습 퀴즈로 ⚡</button>';
+  h += '<button class="btn ghost center" type="button" data-go="lobby">로비로</button>';
+  var sc = $("sc-notes"); sc.innerHTML = h; bindGo(sc);
+};
+
+/* ==========================================================================
+ * 내 기록 — 학습 진행 · 미션 합격 여부 · 오답노트 (레벨·XP·로드맵·배지 제거)
+ * ========================================================================*/
+RENDER.growth = function(){
+  var need = UNLOCK_N(), prog = learnProgress();
+  var all = state.stats.answered ? (state.stats.correct / state.stats.answered) : 0;
+  var passed = state.mission.passed;
+  var h = "";
+  h += '<h2 class="sc-h">내 기록</h2>';
+  h += '<div class="greet">' + coli(passed ? "celebrate" : "idle", passed ? "" : "static") +
+    '<div class="speech">' + esc(state.studentName || "학습자님") + ', ' +
+    (passed ? "미션에 합격했어요! 잘했어요." : (missionUnlocked() ? "미션이 열렸어요. 준비되면 도전해요!" : "지금까지 " + prog + "문 풀었어요. 미션까지 " + Math.max(0, need - prog) + "문!")) +
+    '</div></div>';
+
+  /* 응시자 */
+  h += '<div class="card"><h3>🧑‍🔬 ' + esc(state.studentName || "학습자님") + '</h3>';
+  h += '<p class="muted">' + (state.studentId ? '학번 ' + esc(state.studentId) : '학번 미입력') + ' · 학습 도우미 동그래와 함께</p></div>';
+
+  /* 진행 요약 */
+  h += '<div class="card"><h3>진행</h3><div class="tblwrap"><table>' +
+    '<tr><th>예습</th><td>' + (hasLearn() ? (learnRead() ? "읽음" : "미완료") : "없음") + '</td></tr>' +
+    '<tr><th>학습·복습</th><td>' + Math.min(prog, need) + '/' + need + '문 (누적 ' + prog + '문 · 정답률 ' + pct(all) + '%)</td></tr>' +
+    '<tr><th>미션 열림</th><td>' + (missionUnlocked() ? "✅ 열림" : "잠김") + '</td></tr>' +
+    '<tr><th>미션 합격</th><td>' + (passed ? "✅ 합격 (최고 " + (state.mission.bestScore||0) + "점 · " + (state.mission.attempts||0) + "회 응시)" : "미합격 (" + (state.mission.attempts||0) + "회 응시)") + '</td></tr>' +
+    '<tr><th>오답노트</th><td>' + noteList().length + '문항</td></tr>' +
+    '</table></div>';
+  h += '<button class="btn sm center" type="button" data-go="notes" style="margin-top:10px">오답노트 바로가기</button></div>';
+
+  /* 저장/초기화 */
+  h += '<div class="card"><h3>저장</h3><p class="small">' + esc(C.meta.storageNote || "") +
+    (storageOk ? "" : "<br><span style=\"color:var(--amber)\">현재 이 브라우저에서는 저장이 되지 않습니다.</span>") + '</p>';
+  h += '<button class="btn sm danger center" type="button" id="gwReset">진도 초기화</button></div>';
+  h += '<button class="btn ghost center" type="button" data-go="lobby">로비로</button>';
+
+  var sc = $("sc-growth"); sc.innerHTML = h; bindGo(sc);
+  if($("gwReset")) $("gwReset").onclick = function(){
+    var doReset = function(){
+      var keepRole = state.role, keepId = state.studentId, keepName = state.studentName;
+      try{ localStorage.removeItem(progKey()); }catch(e){}
+      state = defaultState();
+      state.role = keepRole; state.studentId = keepId; state.studentName = keepName; state.tutorialDone = true;
+      saveState();
+      ctx = {}; navStack = []; cur = "lobby";
+      paintTop(); toast("초기화했습니다."); go("lobby", false);
+    };
+    askConfirm("진도를 초기화합니다. 학습 진행 · 미션 기록 · 오답노트가 모두 지워집니다.\n되돌릴 수 없습니다. 계속하시겠습니까?", function(){
+      askConfirm("정말 초기화할까요? 이 작업은 되돌릴 수 없습니다.", doReset, { yes:"초기화" });
+    });
+  };
+};
+
+/* ==========================================================================
+ * 요약 카드 (원본 유지)
+ * ========================================================================*/
+RENDER.summary = function(){
+  var s = (AW && AW.summaryCard) ? AW.summaryCard : (C.summaryCard || {});
+  var h = "";
+  h += '<h2 class="sc-h">' + esc(s.title || "요약 카드") + '</h2>';
+  h += '<p class="sc-p">' + esc(s.pipeline || "") + '</p>';
+  if(s.oneLiner){
+    h += '<div class="greet">' + coli("explain", "static") + '<div class="speech" style="color:var(--mint)"><b>' + esc(s.oneLiner) + '</b></div></div>';
+    h += '<div class="card"><h3 style="color:var(--mint)">' + esc(s.oneLiner) + '</h3><p class="muted">' + esc(s.hook || "") + '</p></div>';
+  }
+  if(s.concepts){ h += '<div class="card"><h3>개념</h3>'; s.concepts.forEach(function(c){ h += '<div class="fb ok"><div class="h">' + esc(c.h) + '</div><div class="b">' + esc(c.d) + '</div></div>'; }); h += '</div>'; }
+  if(s.numbers){ h += '<div class="card"><h3>수치</h3><div class="tblwrap"><table>'; s.numbers.forEach(function(n){ h += '<tr><th style="white-space:nowrap">' + esc(n.step) + '</th><td>' + esc(n.value) + '</td></tr>'; }); h += '</table></div></div>'; }
+  if(s.cautions){ h += '<div class="card"><h3>주의사항</h3>'; s.cautions.forEach(function(c){ h += '<div class="fb bad"><div class="b">' + esc(c) + '</div></div>'; }); h += '</div>'; }
+  if(s.expected){
+    h += '<div class="card"><h3>예상 결과</h3><p class="small" style="margin:0 0 6px">잘 됐을 때</p>';
+    (s.expected.good || []).forEach(function(g){ h += '<div class="fb ok"><div class="b">' + esc(g) + '</div></div>'; });
+    h += '<p class="small" style="margin:10px 0 6px">이상 신호</p>';
+    (s.expected.suspect || []).forEach(function(g){ h += '<div class="fb miss"><div class="b">' + esc(g) + '</div></div>'; });
+    h += '</div>';
+  }
+  if(s.closing) h += '<div class="card"><h3>마무리</h3><p class="muted">' + esc(s.closing) + '</p>' + (s.report ? '<p class="small">' + esc(s.report) + '</p>' : "") + (s.source ? '<div class="src">출처 · ' + esc(s.source) + '</div>' : "") + '</div>';
+  h += '<button class="btn ghost center" type="button" data-go="lobby">로비로</button>';
+  var sc = $("sc-summary"); sc.innerHTML = h; bindGo(sc);
+};
+
+/* ==========================================================================
+ * 시작
+ * ========================================================================*/
+function boot(){
+  if(!window.GAME_CONTENT){
+    var b = $("checkBanner");
+    b.hidden = false;
+    b.innerHTML = "<b>⚠ content.js 를 읽지 못했습니다.</b> index.html 과 같은 폴더에 content.js 가 있어야 합니다.";
+    return;
+  }
+  storageOk = probeStorage();
+  ACTIVE_WEEK = "w02";
+  AW = weekPack(ACTIVE_WEEK);
+  buildDerived();
+  runCheck();
+  buildBgFx();
+
+  $("backBtn").onclick = back;
+
+  /* 저장된 로그인(세션)이 있고 유효하면 자동 재개, 없으면 로그인 화면. */
+  var sess = loadSession();
+  var ok = false;
+  if(sess){
+    if(sess.role === "prof" && checkProf(sess.name, C.prof.pid)){
+      applyIdentity("prof", "", C.prof.name); ok = true; paintTop(); go("profdash", false);
+    }else if(sess.role === "student" && findStudent(sess.name, sess.sid)){
+      applyIdentity("student", sess.sid, sess.name); ok = true; paintTop(); go("labs", false);
+    }
+  }
+  if(!ok){
+    clearSession();
+    state = defaultState();
+    roleGateStep.role = null; showLogin(); paintTop();
+  }
+}
+boot();
+
+})();
+</script>
+</body>
+</html>
