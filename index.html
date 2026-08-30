@@ -1052,10 +1052,22 @@ function findStudent(name, sid){
   }
   return { sid: id, name: nm, listed: false };
 }
+/* 교번 평문 노출 방지 — 공개 소스에 교번을 숫자 그대로 두지 않고 FNV-1a 해시값만 저장한다.
+   로그인 시 입력한 교번을 같은 방식으로 해시해 비교한다(교수 로그인 동작은 동일). */
+function profHash(s){
+  s = String(s == null ? "" : s);
+  var h = 0x811c9dc5;
+  for(var i = 0; i < s.length; i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; }
+  return ("00000000" + (h >>> 0).toString(16)).slice(-8);
+}
+function profNameMatch(name){
+  if(!C || !C.prof) return false;
+  return (C.prof.name || "").replace(/\s/g, "") === (name || "").replace(/\s/g, "");
+}
 function checkProf(name, pid){
   if(!C || !C.prof) return false;
-  return (C.prof.name || "").replace(/\s/g, "") === (name || "").replace(/\s/g, "")
-      && String(C.prof.pid) === (pid || "").replace(/\s/g, "");
+  return profNameMatch(name)
+      && profHash((pid || "").replace(/\s/g, "")) === String(C.prof.pidHash || "");
 }
 /* 신원 적용 + 진도 로드 + 세션 저장 */
 function applyIdentity(role, sid, name){
@@ -1209,7 +1221,7 @@ function checkContent(){
       else if(seenSid[r.sid]) E("roster[" + i + "] : 학번 중복 " + r.sid); else seenSid[r.sid] = true;
     });
   }
-  if(!C.prof || !C.prof.name || !C.prof.pid) E("prof(교수 로그인 이름·교번)이 없습니다");
+  if(!C.prof || !C.prof.name || !C.prof.pidHash) E("prof(교수 로그인 이름·교번)이 없습니다");
   if(AW && !AW.report){ W("활성 주차(" + ACTIVE_WEEK + ")에 report(보고서 양식)가 없습니다 — 결과보고서 작성을 열 수 없습니다."); }
   else if(AW && AW.report){
     if(!Array.isArray(AW.report.sections) || AW.report.sections.length === 0) E("report.sections 가 없습니다");
@@ -1479,8 +1491,8 @@ function showLogin(){
   var isProf = roleGateStep.role === "prof";
   h += '<div class="greet">' + coli("explain", "static") + '<div class="speech">' + (isProf ? "교수 로그인이에요. 이름과 교번을 입력해 주세요." : "학생 로그인이에요. 출석부의 이름과 학번을 정확히 입력해 주세요.") + '</div></div>';
   h += '<div class="card idform"><h3>' + (isProf ? "교수 로그인" : "학생 로그인") + ' <span class="small">이름 · ' + (isProf ? "교번" : "학번") + '</span></h3>';
-  h += '<label for="rgName">이름</label><input id="rgName" type="text" autocomplete="off" maxlength="20" placeholder="' + (isProf ? "예: 곽호석" : "예: 홍길동") + '" value="">';
-  h += '<label for="rgId">' + (isProf ? "교번" : "학번") + '</label><input id="rgId" type="text" inputmode="numeric" autocomplete="off" maxlength="15" placeholder="' + (isProf ? "예: 2017097" : "예: 20250000") + '" value="">';
+  h += '<label for="rgName">이름</label><input id="rgName" type="text" autocomplete="off" maxlength="20" placeholder="이름 입력" value="">';
+  h += '<label for="rgId">' + (isProf ? "교번" : "학번") + '</label><input id="rgId" type="text" inputmode="numeric" autocomplete="off" maxlength="15" placeholder="' + (isProf ? "교번 입력" : "학번(숫자 8자리)") + '" value="">';
   h += '<p class="err" id="rgErr"></p>';
   h += '<p class="small" style="margin:6px 0 0">⚠ 로컬 시제품이라 결과가 서버로 자동 제출되지 않습니다. 입력값·기록은 이 기기 안에만 남습니다.</p></div>';
   h += '<button class="btn primary" id="rgStart" type="button">' + (isProf ? "교수 로그인 🧑‍🏫" : "학생 로그인 🧑‍🎓") + '</button>';
@@ -1591,7 +1603,7 @@ RENDER.labs = function(){
   h += '<div class="sub">중간고사 전까지 7번의 실습을 연속으로 진행합니다.</div>';
   h += '<div class="chips">';
   h += '<span class="chip ' + (isProf ? "amber" : "mint") + '">' + (isProf ? "🧑‍🏫 교수 " + esc(state.studentName || "") : "🧑‍🎓 " + esc(state.studentName || "")) + '</span>';
-  h += '<span class="chip">' + (isProf ? "교번 " + esc(C.prof.pid) : "학번 " + esc(state.studentId || "")) + '</span>';
+  h += '<span class="chip">' + (isProf ? "교번 인증됨" : "학번 " + esc(state.studentId || "")) + '</span>';
   h += '</div></div>';
 
   if(isProf){
@@ -2147,7 +2159,7 @@ RENDER.report = function(){
   h += '<div class="fld"><label>주차</label><input type="text" value="' + esc((m.week&&m.week.value)||lab.weekLabel||"") + '" readonly></div>';
   h += '<div class="fld" style="grid-column:1 / -1"><label>실험명</label><input type="text" value="' + esc((m.expName&&m.expName.value)||def.experimentName||"") + '" readonly></div>';
   h += '<div class="fld"><label>실험일자</label><input id="rfDate" type="text" value="' + esc((m.date&&m.date.value)||"") + '"' + (readonly?" readonly":"") + '></div>';
-  h += '<div class="fld"><label>조</label><input id="rfTeam" type="text" placeholder="예: 3조" value="' + esc((m.team&&m.team.value)||"") + '"' + (readonly?" readonly":"") + '></div>';
+  h += '<div class="fld"><label>조</label><input id="rfTeam" type="text" placeholder="조 번호" value="' + esc((m.team&&m.team.value)||"") + '"' + (readonly?" readonly":"") + '></div>';
   h += '<div class="fld"><label>학번</label><input type="text" value="' + esc((m.sid&&m.sid.value)||"") + '" readonly></div>';
   h += '<div class="fld"><label>이름</label><input type="text" value="' + esc((m.name&&m.name.value)||"") + '" readonly></div>';
   h += '</div></div>';
@@ -2519,15 +2531,15 @@ RENDER.roster = function(){
   /* ① 일괄 등록 */
   h += '<div class="card"><h3>① 일괄 등록 <span class="small">붙여넣기</span></h3>';
   h += '<p class="small" style="margin:0 0 6px">엑셀·출석부에서 복사해 붙여넣으세요. <b>한 줄에 한 명</b>, <b>"학번 이름"</b> 또는 <b>"학번,이름"</b> 형식입니다(학번은 숫자 8자리). JSON 백업도 그대로 붙여넣어 불러올 수 있습니다.</p>';
-  h += '<textarea id="rmBulk" rows="6" placeholder="20250001 홍길동&#10;20250002,김철수&#10;20250003 이영희" style="width:100%;resize:vertical"></textarea>';
+  h += '<textarea id="rmBulk" rows="6" placeholder="한 줄에 한 명씩&#10;학번(숫자 8자리) 이름&#10;또는  학번,이름" style="width:100%;resize:vertical"></textarea>';
   h += '<label class="small" style="display:flex;align-items:center;gap:6px;margin:8px 0"><input type="checkbox" id="rmReplace" style="width:18px;height:18px"> 기존 명단을 <b>모두 지우고</b> 이 내용으로 교체</label>';
   h += '<button class="btn sm" type="button" id="rmBulkAdd">붙여넣은 명단 등록</button></div>';
 
   /* ② 개별 추가/수정 */
   h += '<div class="card"><h3>② 개별 추가·수정 <span class="small">학번·이름</span></h3>';
   h += '<p class="small" style="margin:0 0 6px">이미 있는 학번을 다시 넣으면 이름이 <b>수정</b>됩니다.</p>';
-  h += '<label for="rmSid">학번(숫자 8자리)</label><input id="rmSid" type="text" inputmode="numeric" autocomplete="off" maxlength="8" placeholder="예: 20250000">';
-  h += '<label for="rmName">이름</label><input id="rmName" type="text" autocomplete="off" maxlength="20" placeholder="예: 홍길동">';
+  h += '<label for="rmSid">학번(숫자 8자리)</label><input id="rmSid" type="text" inputmode="numeric" autocomplete="off" maxlength="8" placeholder="학번(숫자 8자리)">';
+  h += '<label for="rmName">이름</label><input id="rmName" type="text" autocomplete="off" maxlength="20" placeholder="이름 입력">';
   h += '<p class="err" id="rmErr" style="margin:6px 0 0"></p>';
   h += '<button class="btn sm" type="button" id="rmAddOne" style="margin-top:8px">추가 / 수정</button></div>';
 
@@ -3508,7 +3520,7 @@ function boot(){
   var sess = loadSession();
   var ok = false;
   if(sess){
-    if(sess.role === "prof" && checkProf(sess.name, C.prof.pid)){
+    if(sess.role === "prof" && profNameMatch(sess.name)){
       applyIdentity("prof", "", C.prof.name); ok = true; paintTop(); go("profdash", false);
     }else if(sess.role === "student" && findStudent(sess.name, sess.sid)){
       applyIdentity("student", sess.sid, sess.name); ok = true; paintTop(); go("labs", false);
