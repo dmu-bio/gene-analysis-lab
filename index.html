@@ -4,6 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>유전자분석 · 실습 학습·미션</title>
+<!-- PWA (홈 화면 앱 설치) — 경로는 하위경로 배포 대비 상대경로 -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0e7c6b">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <style>
 /* ==========================================================================
    유전자분석 — 실습 학습·미션 (로컬 전용 · 미배포)
@@ -850,6 +854,7 @@ function saveState(){
       toast("이 브라우저에서는 진도 저장이 안 됩니다. 게임은 그대로 진행됩니다.");
     }
   }
+  if(window.GLR && GLR.on) GLR.syncProgress(state);   /* 학생 본인 진도만 서버로(내부에서 판정) */
 }
 
 /* ---------- 로그인 세션(자동 재개) ---------- */
@@ -877,6 +882,7 @@ function toggleEarly(sid, on){
   if(on && i === -1) list.push(s);
   else if(!on && i !== -1) list.splice(i, 1);
   try{ localStorage.setItem(EARLY_KEY, JSON.stringify(list)); }catch(e){}
+  if(window.GLR && GLR.on) GLR.syncEarly(s, !!on);
 }
 /* 로그인한 학생 본인이 면제 대상인가 */
 function meIsEarly(){ return state && state.role === "student" && isEarly(state.studentId); }
@@ -893,7 +899,12 @@ function loadTeams(){
   return [];
 }
 function saveTeams(list){
-  try{ localStorage.setItem(TEAMS_KEY, JSON.stringify(list)); return true; }catch(e){ return false; }
+  try{
+    var old = loadTeams();
+    localStorage.setItem(TEAMS_KEY, JSON.stringify(list));
+    if(window.GLR && GLR.on) GLR.syncTeams(list, old);
+    return true;
+  }catch(e){ return false; }
 }
 /* 조 해체 — 해당 번호의 조를 명단에서 제거한다(조원 전원이 다시 미배정 상태가 된다).
    남은 조의 번호는 그대로 유지되고, 새로 만드는 조는 makeTeam 이 최대번호+1 을 부여한다. */
@@ -927,6 +938,7 @@ function loadRoster(){
 /* 명단을 저장한다(중복 학번 제거, 앞뒤 공백 정리). 성공 true / 실패 false. */
 function saveRoster(list){
   try{
+    var old = loadRoster();                 /* 서버 삭제 판정을 위해 이전 명단 기억 */
     var seen = {}, clean = [];
     (list || []).forEach(function(r){
       if(!r) return;
@@ -937,6 +949,7 @@ function saveRoster(list){
       clean.push({ sid: sid, name: name });
     });
     localStorage.setItem(ROSTER_KEY, JSON.stringify(clean));
+    if(window.GLR && GLR.on) GLR.syncRoster(clean, old);
     return true;
   }catch(e){ return false; }
 }
@@ -1017,7 +1030,11 @@ function loadReport(sid, wk){
   return d;
 }
 function saveReport(sid, data){
-  try{ localStorage.setItem(reportKey(sid), JSON.stringify(data)); return true; }catch(e){ return false; }
+  try{
+    localStorage.setItem(reportKey(sid), JSON.stringify(data));
+    if(window.GLR && GLR.on) GLR.syncReport(sid, data, ACTIVE_WEEK);   /* 사진은 Storage 로, 경로만 표에 */
+    return true;
+  }catch(e){ return false; }
 }
 /* 보고서에 작성 흔적이 있는가 — 텍스트 섹션 또는 업로드한 사진 */
 function reportHasContent(rep){
@@ -1461,7 +1478,8 @@ var TUT_CARDS = [
  * 로그인 — 명단(roster) 대조. #tutorial 오버레이를 재활용한다.
  *   ① 역할 고르기(학생/교수) → ② 이름·학번(교번) 입력·대조.
  *   학생: 이름+학번이 출석부에 있고 일치해야 로그인. 교수: 이름+교번이 prof 와 일치해야.
- *   ⚠️ 로컬 시제품이라 서버 인증은 다음 단계다(입력값은 이 기기 안에만 남는다).
+ *   서버 방식(remote)에서는 gene-login 함수가 명단을 대조하고, 자료는 서버에 저장돼 기기 간 이어진다.
+ *   접속이 안 될 때만 이 기기 저장(local)으로 임시 회피한다(?db=local).
  * ========================================================================*/
 var roleGateStep = { role: null };
 function showLogin(){
@@ -1479,7 +1497,7 @@ function showLogin(){
     h += '<div class="greet">' + coli("idle", "static") + '<div class="speech">로그인해 주세요. 학생은 <b>이름·학번</b>, 교수는 <b>이름·교번</b>으로 들어갑니다.</div></div>';
     h += '<button class="modebtn" type="button" id="roleStudent"><div class="ic">🧑‍🎓</div><div class="bd"><div class="h">학생 로그인</div><div class="d">출석부에 있는 이름·학번으로 로그인합니다</div></div></button>';
     h += '<button class="modebtn" type="button" id="roleProf"><div class="ic">🧑‍🏫</div><div class="bd"><div class="h">교수 로그인</div><div class="d">이름·교번으로 확인 대시보드에 들어갑니다</div></div></button>';
-    h += '<p class="small" style="text-align:center;margin-top:8px">※ 로컬 시제품입니다. 서버 인증·전체 집계는 다음 단계이며, 입력값은 이 기기 안에만 남습니다.</p>';
+    h += '<p class="small" style="text-align:center;margin-top:8px">※ ' + ((window.GLR&&GLR.on) ? '이름·번호로 로그인하면 자료가 서버에 안전하게 저장돼 어느 기기에서든 이어집니다.' : '이 기기 저장 모드입니다 — 입력값은 이 기기 안에만 남습니다.') + '</p>';
     h += '<div style="height:30px"></div>';
     $("tutInner").innerHTML = h;
     $("tutorial").classList.add("on");
@@ -1494,7 +1512,7 @@ function showLogin(){
   h += '<label for="rgName">이름</label><input id="rgName" type="text" autocomplete="off" maxlength="20" placeholder="이름 입력" value="">';
   h += '<label for="rgId">' + (isProf ? "교번" : "학번") + '</label><input id="rgId" type="text" inputmode="numeric" autocomplete="off" maxlength="15" placeholder="' + (isProf ? "교번 입력" : "학번(숫자 8자리)") + '" value="">';
   h += '<p class="err" id="rgErr"></p>';
-  h += '<p class="small" style="margin:6px 0 0">⚠ 로컬 시제품이라 결과가 서버로 자동 제출되지 않습니다. 입력값·기록은 이 기기 안에만 남습니다.</p></div>';
+  h += '<p class="small" style="margin:6px 0 0">' + ((window.GLR&&GLR.on) ? '✔ 입력하신 이름·번호를 서버 명단과 대조해 로그인합니다. 기록은 서버에 저장돼 기기가 바뀌어도 이어집니다.' : '⚠ 이 기기 저장 모드 — 기록이 이 기기 안에만 남습니다.') + '</p></div>';
   h += '<button class="btn primary" id="rgStart" type="button">' + (isProf ? "교수 로그인 🧑‍🏫" : "학생 로그인 🧑‍🎓") + '</button>';
   h += '<button class="btn ghost center" id="rgBack" type="button">← 역할 다시 고르기</button>';
   h += '<p class="small" style="text-align:center">' + esc(C.meta.storageNote || "") + '</p>';
@@ -1508,21 +1526,22 @@ function showLogin(){
     var idv = ($("rgId").value || "").trim();
     var errBox = $("rgErr");
     if(!nm || !idv){ errBox.textContent = "이름과 " + (isProf ? "교번" : "학번") + "을 모두 입력해 주세요."; return; }
-    if(isProf){
-      if(!checkProf(nm, idv)){ errBox.textContent = "교수 이름·교번이 일치하지 않습니다."; return; }
-      applyIdentity("prof", "", C.prof.name);
-      $("tutorial").classList.remove("on");
-      paintTop(); go("profdash", false);
-      toast("교수님 로그인 — 확인 대시보드입니다.");
-      return;
-    }
-    var stu = findStudent(nm, idv);
-    if(stu.error){ errBox.textContent = stu.error; return; }
     errBox.textContent = "";
-    applyIdentity("student", stu.sid, stu.name);
-    $("tutorial").classList.remove("on");
-    paintTop(); go("labs", false);
-    toast(stu.name + "님, 로그인되었습니다.");
+    var remote = !!(window.GLR && GLR.on);
+    if(remote){ errBox.textContent = "확인 중…"; if($("rgStart")) $("rgStart").disabled = true; }
+    doLogin(isProf ? "prof" : "student", nm, idv, function(err, role, stu){
+      if($("rgStart")) $("rgStart").disabled = false;
+      if(err){ errBox.textContent = err; return; }
+      errBox.textContent = "";
+      $("tutorial").classList.remove("on");
+      if(role === "prof"){
+        paintTop(); go("profdash", false);
+        toast("교수님 로그인 — 확인 대시보드입니다.");
+      }else{
+        paintTop(); go("labs", false);
+        toast(((stu && stu.name) || nm) + "님, 로그인되었습니다.");
+      }
+    });
   }
   $("rgStart").onclick = submitLogin;
   $("rgId").onkeydown = function(e){ if(e.key === "Enter") submitLogin(); };
@@ -1660,7 +1679,7 @@ RENDER.labs = function(){
 
   h += '<button class="btn sm ghost center" type="button" id="logoutBtn" style="margin-top:12px">🚪 로그아웃</button>';
   h += '<p class="small" style="margin-top:10px">' + esc(C.meta.storageNote || "") + '</p>';
-  h += '<p class="small">※ 로컬 시제품입니다. 열림 여부는 이 기기의 오늘 날짜로 판단하며, 서버 인증·자동 집계는 다음 단계입니다.</p>';
+  h += '<p class="small">※ 열림 여부는 오늘 날짜로 판단합니다.' + ((window.GLR&&GLR.on) ? ' 학습·미션·보고서는 서버에 저장돼 기기가 바뀌어도 이어집니다.' : ' (이 기기 저장 모드 — 기록이 이 기기에만 남습니다.)') + '</p>';
 
   var sc = $("sc-labs"); sc.innerHTML = h;
   sc.querySelectorAll("[data-lab]").forEach(function(bt){
@@ -2205,7 +2224,7 @@ RENDER.report = function(){
     h += '<button class="btn sm" type="button" id="rfWord">📄 워드(.doc)</button></div>';
     h += '<button class="btn sm" type="button" id="rfPdf">🖨 PDF로 저장</button>';
   }
-  h += '<p class="small" style="margin-top:10px">※ 로컬 시제품 — 작성 내용은 이 기기 안에만 저장됩니다.' + (readonly ? ' PDF는 인쇄 대화상자에서 "PDF로 저장"을 고르세요.' : ' 제출하면 교수 확인 화면에 기록됩니다.') + '</p>';
+  h += '<p class="small" style="margin-top:10px">※ ' + ((window.GLR&&GLR.on) ? '작성·사진은 서버에 저장돼 기기가 바뀌어도 이어집니다.' : '이 기기 저장 모드 — 작성 내용이 이 기기 안에만 남습니다.') + (readonly ? ' PDF는 인쇄 대화상자에서 "PDF로 저장"을 고르세요.' : ' 제출하면 교수 확인 화면에 기록됩니다.') + '</p>';
 
   sc.innerHTML = h;
 
@@ -2321,7 +2340,7 @@ function renderReportPreview(sc, R, def){
 
 /* ==========================================================================
  * 교수 확인 대시보드 — 학생별 ①보고서 제출 ②학습 완료 ③미션 합격
- *   로컬 시제품: 이 기기에 저장된 기록만 보인다(전체 집계는 서버 단계).
+ *   서버 방식: 교수는 전체 학생의 진도·보고서를 서버에서 읽어 집계한다(RLS 로 교수만 전체 조회).
  * ========================================================================*/
 RENDER.profdash = function(){
   var roster = getRoster();
@@ -2373,7 +2392,12 @@ RENDER.profdash = function(){
   if(roster.length === 0){
     h += '<div class="small" style="color:var(--amber);margin:0 0 8px">아직 등록된 명단이 없습니다. 아래 버튼에서 명단을 붙여넣어 등록하세요. (명단이 없어도 학생은 이름·학번을 입력해 로그인할 수 있습니다.)</div>';
   }
-  h += '<button class="btn sm" type="button" data-go="roster">학생 명단관리 열기 →</button></div>';
+  h += '<button class="btn sm" type="button" data-go="roster">학생 명단관리 열기 →</button>';
+  if(window.GLR && GLR.on && GLR.hasSnapshot()){
+    h += '<div style="margin-top:8px"><button class="btn sm" type="button" onclick="glMigratePrompt()">📤 이 기기의 예전 자료를 서버로 올리기</button>';
+    h += '<div class="small" style="color:var(--muted);margin-top:4px">서버로 바꾸기 전 이 기기에 있던 명단·조·진도·보고서를 한 번에 올립니다(덮어쓰지 않고 합칩니다).</div></div>';
+  }
+  h += '</div>';
 
   /* 📅 주차 선택 — 7개 실습 중 확인할 주차를 고른다(작은 버튼, 줄바꿈으로 가로 스크롤 없이 다 보임). 준비된 주차만 실제 데이터가 있다. */
   h += '<div class="card tight"><div class="small" style="margin:0 0 6px"><b>확인할 주차</b> — 주차를 눌러 그 주차의 학생 현황을 봅니다.</div>';
@@ -2391,7 +2415,11 @@ RENDER.profdash = function(){
     h += '<div class="card tight" style="border-color:#e6d9b8;background:#fbf6e7"><div class="small" style="color:#8a6d1a">📭 <b>이 주차는 아직 문항이 준비되지 않았습니다(데이터 없음).</b><br>학생이 수행할 학습·미션·보고서 양식이 준비되면, 이 화면에 그 주차의 현황이 채워집니다. 현재는 <b>2주차(세포배양)</b>만 실제 데이터가 있습니다.</div></div>';
   }
 
-  h += '<div class="card tight"><div class="small" style="color:var(--amber)">⚠ 로컬 시제품 — <b>이 기기에 저장된 기록만</b> 표시됩니다(이 기기에서 활동한 학생 ' + nActive + '명). 전체 학생 집계는 서버 연동 후 가능합니다.</div></div>';
+  if(window.GLR && GLR.on){
+    h += '<div class="card tight"><div class="small" style="color:var(--green)">🌐 서버 방식 — <b>전체 학생의 기록</b>을 서버에서 불러와 집계합니다(현재 자료가 있는 학생 ' + nActive + '명). 학생이 다른 기기에서 저장해도 여기 반영됩니다.</div></div>';
+  }else{
+    h += '<div class="card tight"><div class="small" style="color:var(--amber)">⚠ 이 기기 저장 모드 — <b>이 기기에 저장된 기록만</b> 표시됩니다(이 기기에서 활동한 학생 ' + nActive + '명).</div></div>';
+  }
 
   h += '<div class="card"><h3>학생별 현황 <span class="small">' + roster.length + '명</span></h3>';
   h += '<p class="small" style="margin:0 0 8px"><b>조기취업(면제)</b>은 위 <b>[학생 명단관리]</b>에서 학생별로 체크합니다. 여기 표에는 <b>🎓면제</b> 여부만 표시됩니다.</p>';
@@ -3390,7 +3418,7 @@ function renderCertificate(score){
     '<tr><th>판정</th><td style="color:var(--green);font-weight:800">합격</td></tr>' +
     '<tr><th>날짜</th><td>' + today() + '</td></tr>' +
     '</table></div>';
-  h += '<div class="srvnote">※ 이번 시제품은 로컬 저장만 하며 서버 자동 집계는 다음 운영본 단계입니다. 조작 방지·학번 자동집계도 운영본에서 적용됩니다.</div>';
+  h += '<div class="srvnote">※ ' + ((window.GLR&&GLR.on) ? '서버 방식 — 학생 자료는 서버에 저장되고, 교수는 전체를 집계해서 봅니다(남의 자료는 본인·교수만 열람).' : '이 기기 저장 모드 — 기록이 이 기기 안에만 남습니다.') + '</div>';
   h += '</div>';
   return h;
 }
@@ -3498,14 +3526,327 @@ RENDER.summary = function(){
 };
 
 /* ==========================================================================
+ * 원격 저장 계층 (GLR) — 기존 서버 bio-career 에 gl_ 접두어로 얹음
+ * --------------------------------------------------------------------------
+ *  본보기: PBL index_deploy.html 의 DBR. 화면 코드는 거의 안 고치고, 기존 저장 함수
+ *  (saveRoster/saveTeams/toggleEarly/saveState/saveReport)를 바깥에서 감쌉니다.
+ *  · 읽기: 시작할 때 서버에서 통째로 받아 localStorage 에 「미러링」 → 기존 동기 읽기
+ *          함수(loadRoster 등)가 코드 변경 없이 서버 자료를 읽습니다.
+ *  · 쓰기: 저장할 때 줄 단위로 서버에 보냅니다(큐+재시도). 통째로 덮지 않습니다.
+ *  · 사진: base64 를 gl-report-photos 버킷에 올리고 경로만 표(gl_reports.photos)에.
+ * ========================================================================*/
+var GLCONF = {
+  url   : "https://nasizwclypmaojvwfxnn.supabase.co",           /* bio-career 공유 프로젝트 */
+  key   : "sb_publishable_H92J8-9eQB-bE4DQEUnHvw_jku33h7S",     /* anon(공개) 키 — RLS 가 지킴 */
+  mode  : "remote",                                             /* 'local' | 'remote' */
+  bucket: "gl-report-photos"
+};
+var GLMODE_KEY = "gl_db_mode";
+(function(){
+  try{
+    var q = (location.search + location.hash).match(/[?&#]db=(local|remote)/);
+    if(q){ localStorage.setItem(GLMODE_KEY, q[1]); GLCONF.mode = q[1]; return; }
+    var s = localStorage.getItem(GLMODE_KEY);
+    if(s === "local" || s === "remote") GLCONF.mode = s;
+  }catch(e){}
+})();
+
+/* 앱 이름 → 서버 표(gl_) */
+var GLTBL = {
+  roster:{ db:"gl_roster" }, teams:{ db:"gl_teams" }, early:{ db:"gl_early" },
+  progress:{ db:"gl_progress" }, reports:{ db:"gl_reports" }
+};
+
+/* dataURL ↔ Blob (사진 업/다운로드) */
+function glDataUrlToBlob(durl){
+  var parts = durl.split(","), mime = (parts[0].match(/:(.*?);/) || [,"image/jpeg"])[1];
+  var bin = atob(parts[1]), n = bin.length, u8 = new Uint8Array(n);
+  while(n--){ u8[n] = bin.charCodeAt(n); }
+  return new Blob([u8], { type: mime });
+}
+function glBlobToDataUrl(blob){
+  return new Promise(function(res, rej){
+    var r = new FileReader();
+    r.onload = function(){ res(r.result); };
+    r.onerror = function(){ rej(new Error("read")); };
+    r.readAsDataURL(blob);
+  });
+}
+
+var GLR = {
+  on:false, ready:false, tok:null, _acc:null, q:[], failed:[], down:false, busy:false,
+  MSG_DOWN:"지금 접속이 되지 않습니다. 잠시 뒤 다시 시도해 주세요.",
+  QKEY:"gl_db_queue_v1", TOKKEY:"gl_db_tok_v1", SNAPKEY:"gl_premigrate_snapshot_v1",
+
+  init:function(){ this.on = (GLCONF.mode === "remote" && !!GLCONF.url && !!GLCONF.key); return this.on; },
+
+  mix:function(a,b){ for(var k in b) if(b.hasOwnProperty(k)) a[k]=b[k]; return a; },
+  hdr:function(json){
+    var h = { apikey:GLCONF.key, Authorization:"Bearer "+((this.tok&&this.tok.access_token)||GLCONF.key) };
+    if(json) h["Content-Type"]="application/json";
+    return h;
+  },
+  ahdr:function(){ return { apikey:GLCONF.key, Authorization:"Bearer "+GLCONF.key, "Content-Type":"application/json" }; },
+  call:function(path, opt){
+    var self=this; opt=opt||{};
+    return fetch(GLCONF.url+path, opt).then(function(res){
+      if(res.status===401 || res.status===403) return res.text().then(function(t){ throw {kind:"auth", status:res.status, msg:t}; });
+      if(!res.ok) return res.text().then(function(t){ throw {kind:"server", status:res.status, msg:t}; });
+      self.up();
+      if(res.status===204) return null;
+      return res.text().then(function(t){ return t? JSON.parse(t) : null; });
+    }, function(){ throw {kind:"net", msg:"네트워크"}; });
+  },
+
+  /* ---- 화면 위 안내줄 (조용히 실패하지 않습니다) ---- */
+  bar:function(html, tone){
+    var el=document.getElementById("glBar");
+    if(!el){
+      el=document.createElement("div"); el.id="glBar";
+      el.style.cssText="position:sticky;top:0;z-index:99999;padding:9px 12px;font-size:14px;font-weight:700;line-height:1.5;border-bottom:2px solid #000";
+      if(document.body.firstChild) document.body.insertBefore(el, document.body.firstChild); else document.body.appendChild(el);
+    }
+    el.style.background=(tone==="red"?"#ffe3e3":(tone==="amber"?"#fff4d6":"#e6f4ea"));
+    el.style.color="#111"; el.innerHTML=html; el.style.display=html?"block":"none";
+  },
+  down_:function(){ this.down=true; this.bar("⚠ "+this.MSG_DOWN+' <span style="font-weight:400">새로 저장한 것은 보관해 두었다가 접속이 돌아오면 자동으로 보냅니다.</span>',"red"); if(window.toast) toast("⚠ "+this.MSG_DOWN); },
+  up:function(){ if(this.down){ this.down=false; this.bar("",""); if(window.toast) toast("접속이 돌아왔습니다."); } this.showQ(); },
+  showQ:function(){
+    if(this.failed.length){ this.bar('🔴 서버가 저장을 거부한 것이 <b>'+this.failed.length+'건</b> 있습니다. <span style="font-weight:400">소장에게 알려 주세요.</span>',"red"); }
+    else if(this.q.length && !this.down){ this.bar("서버로 보내는 중… <b>"+this.q.length+"건</b>","amber"); }
+    else if(!this.down){ this.bar("",""); }
+  },
+
+  /* ---- 출입증(access·refresh)은 sessionStorage: 탭을 닫으면 지워집니다(공용 PC 안전) ---- */
+  saveTok:function(){ try{ sessionStorage.setItem(this.TOKKEY, JSON.stringify(this.tok)); }catch(e){} },
+  loadTok:function(){ try{ this.tok=JSON.parse(sessionStorage.getItem(this.TOKKEY)||"null"); }catch(e){ this.tok=null; } },
+  clearTok:function(){ this.tok=null; try{ sessionStorage.removeItem(this.TOKKEY); }catch(e){} },
+
+  /* ---- 저장 줄서기 ---- */
+  saveQ:function(){ try{ localStorage.setItem(this.QKEY, JSON.stringify(this.q)); }catch(e){} },
+  loadQ:function(){ try{ this.q=JSON.parse(localStorage.getItem(this.QKEY)||"[]")||[]; }catch(e){ this.q=[]; } },
+
+  /* ---- 로그인: gene-login → verify → access_token ---- */
+  login:function(name, num, role){
+    var self=this;
+    return this.call("/functions/v1/gene-login", { method:"POST", headers:this.ahdr(), body:JSON.stringify({name:name,num:num,role:role}) })
+      .then(function(r){
+        if(!r || !r.token_hash) throw {kind:"auth", msg:"명단에서 찾을 수 없습니다."};
+        return self.call("/auth/v1/verify", { method:"POST", headers:self.ahdr(), body:JSON.stringify({type:"magiclink", token_hash:r.token_hash}) })
+          .then(function(s){ self.tok=s; self._acc=r.account; self.saveTok(); return r.account; });
+      });
+  },
+  refresh:function(){
+    var self=this;
+    if(!this.tok || !this.tok.refresh_token) return Promise.reject({kind:"auth"});
+    return this.call("/auth/v1/token?grant_type=refresh_token", { method:"POST", headers:this.ahdr(), body:JSON.stringify({refresh_token:this.tok.refresh_token}) })
+      .then(function(s){ self.tok=s; self.saveTok(); return s; });
+  },
+
+  /* ---- 통째로 받아 localStorage 에 미러링 (기존 읽기 함수가 그대로 읽게) ---- */
+  loadTable:function(t){ return this.call("/rest/v1/"+GLTBL[t].db+"?select=*&order=id.asc", { headers:this.hdr(false) }); },
+  clearMirror:function(){
+    try{
+      localStorage.removeItem(ROSTER_KEY); localStorage.removeItem(TEAMS_KEY); localStorage.removeItem(EARLY_KEY);
+      var kill=[], i;
+      for(i=0;i<localStorage.length;i++){ var k=localStorage.key(i); if(k && (k.indexOf("dmu_gene_lab_")===0 || k.indexOf("dmu_gene_report_")===0)) kill.push(k); }
+      for(i=0;i<kill.length;i++){ localStorage.removeItem(kill[i]); }
+    }catch(e){}
+  },
+  snapshotPreMigrate:function(){
+    /* 서버로 덮기 전에, 이 기기의 기존(로컬 전용) 자료를 한 번만 백업 — 「올리기」 버튼이 이걸 씀 */
+    try{
+      if(localStorage.getItem(this.SNAPKEY)) return;
+      var snap={ roster:loadRoster(), teams:loadTeams(), early:loadEarly(), progress:[], reports:[] }, i;
+      for(i=0;i<localStorage.length;i++){
+        var k=localStorage.key(i); if(!k) continue;
+        var mP=k.match(/^dmu_gene_lab_(w\d+)_(\d{4,})$/);   /* 진도: 주차_학번 (teams/early 는 제외) */
+        var mR=k.match(/^dmu_gene_report_(w\d+)_(\d{4,})$/);
+        try{
+          if(mP){ snap.progress.push({week:mP[1], sid:mP[2], data:JSON.parse(localStorage.getItem(k))}); }
+          else if(mR){ snap.reports.push({week:mR[1], sid:mR[2], data:JSON.parse(localStorage.getItem(k))}); }
+        }catch(e){}
+      }
+      var has = snap.roster.length||snap.teams.length||snap.early.length||snap.progress.length||snap.reports.length;
+      if(has) localStorage.setItem(this.SNAPKEY, JSON.stringify(snap));
+    }catch(e){}
+  },
+  hasSnapshot:function(){ try{ return !!localStorage.getItem(this.SNAPKEY); }catch(e){ return false; } },
+  readSnapshot:function(){ try{ return JSON.parse(localStorage.getItem(this.SNAPKEY)||"null"); }catch(e){ return null; } },
+
+  fetchPhoto:function(path){
+    return fetch(GLCONF.url+"/storage/v1/object/"+GLCONF.bucket+"/"+path, { headers:this.hdr(false) })
+      .then(function(res){ if(!res.ok) throw res.status; return res.blob(); }).then(glBlobToDataUrl);
+  },
+  uploadPhoto:function(path, durl){
+    return this.call("/storage/v1/object/"+GLCONF.bucket+"/"+path, { method:"POST", headers:this.mix(this.hdr(false), {"x-upsert":"true","Content-Type":"image/jpeg"}), body:glDataUrlToBlob(durl) });
+  },
+
+  loadAll:function(){
+    var self=this;
+    this.snapshotPreMigrate();
+    this.clearMirror();
+    var names=["roster","teams","early","progress","reports"];
+    return Promise.all(names.map(function(t){ return self.loadTable(t); })).then(function(res){
+      try{ localStorage.setItem(ROSTER_KEY, JSON.stringify((res[0]||[]).map(function(r){ return {sid:r.sid, name:r.name}; }))); }catch(e){}
+      try{ localStorage.setItem(TEAMS_KEY, JSON.stringify((res[1]||[]).map(function(t){ return {no:t.no, members:((t.data&&t.data.members)||[]).map(String)}; }))); }catch(e){}
+      try{ localStorage.setItem(EARLY_KEY, JSON.stringify((res[2]||[]).map(function(e){ return String(e.sid); }))); }catch(e){}
+      (res[3]||[]).forEach(function(r){ try{ localStorage.setItem("dmu_gene_lab_"+r.week+"_"+r.sid, JSON.stringify(r.data||{})); }catch(e){} });
+      /* 보고서 사진: 경로 → dataURL 로 되살려 미러에 넣습니다(화면은 그대로 <img src> 로 그림) */
+      var reps=res[4]||[];
+      return Promise.all(reps.map(function(r){
+        var data=r.data||{}, imgs=data.images||{}, tasks=[];
+        Object.keys(imgs).forEach(function(key){
+          var arr=imgs[key]; if(!Array.isArray(arr)) return;
+          arr.forEach(function(val, idx){
+            if(val && typeof val==="string" && val.indexOf("data:")!==0 && val.indexOf("/")!==-1){
+              tasks.push(self.fetchPhoto(val).then(function(d){ arr[idx]=d; }, function(){}));
+            }
+          });
+        });
+        return Promise.all(tasks).then(function(){ try{ localStorage.setItem("dmu_gene_report_"+r.week+"_"+r.sid, JSON.stringify(data)); }catch(e){} });
+      }));
+    }).then(function(){ self.ready=true; self.up(); });
+  },
+
+  /* ---- 쓰기: 저장 함수들이 로컬 저장 뒤 이걸 부릅니다 ---- */
+  syncRoster:function(newList, oldList){
+    if(!this.on) return; var self=this, seen={};
+    (newList||[]).forEach(function(r){ var s=String(r.sid); seen[s]=1; self.q.push({op:"upsert", t:"roster", id:"r_"+s, row:{id:"r_"+s, sid:s, name:String(r.name), active:true}}); });
+    (oldList||[]).forEach(function(r){ var s=String(r.sid); if(!seen[s]) self.q.push({op:"delete", t:"roster", id:"r_"+s}); });
+    this.saveQ(); this.showQ(); this.pump();
+  },
+  syncTeams:function(newList, oldList){
+    if(!this.on) return; var self=this, seen={};
+    (newList||[]).forEach(function(t){ var n=t.no; seen[n]=1; self.q.push({op:"upsert", t:"teams", id:"t_"+n, row:{id:"t_"+n, no:n, data:{members:(t.members||[]).map(String)}}}); });
+    (oldList||[]).forEach(function(t){ if(!seen[t.no]) self.q.push({op:"delete", t:"teams", id:"t_"+t.no}); });
+    this.saveQ(); this.showQ(); this.pump();
+  },
+  syncEarly:function(sid, on){
+    if(!this.on) return; var s=String(sid);
+    if(on) this.q.push({op:"upsert", t:"early", id:"e_"+s, row:{id:"e_"+s, sid:s}});
+    else   this.q.push({op:"delete", t:"early", id:"e_"+s});
+    this.saveQ(); this.showQ(); this.pump();
+  },
+  syncProgress:function(st){
+    if(!this.on || !st || st.role!=="student" || !st.studentId) return;
+    var sid=String(st.studentId), wk=ACTIVE_WEEK, m=st.mission||{};
+    this.q.push({op:"upsert", t:"progress", id:"p_"+wk+"_"+sid, row:{id:"p_"+wk+"_"+sid, sid:sid, week:wk, mission_passed:!!m.passed, mission_best:m.bestScore||0, data:JSON.parse(JSON.stringify(st))}});
+    this.saveQ(); this.showQ(); this.pump();
+  },
+  syncReport:function(sid, data, week){
+    if(!this.on) return;
+    this.q.push({op:"report", sid:String(sid), week:week||ACTIVE_WEEK, data:JSON.parse(JSON.stringify(data||{}))});
+    this.saveQ(); this.showQ(); this.pump();
+  },
+  /* 「이 기기 데이터를 서버로 올리기」 — 덮어쓰기 없이 upsert 만 */
+  migrateFrom:function(snap){
+    if(!this.on || !snap) return;
+    this.syncRoster(snap.roster||[], []);
+    this.syncTeams(snap.teams||[], []);
+    (snap.early||[]).forEach(function(s){ GLR.syncEarly(s, true); });
+    (snap.progress||[]).forEach(function(p){
+      var m=(p.data&&p.data.mission)||{};
+      GLR.q.push({op:"upsert", t:"progress", id:"p_"+p.week+"_"+p.sid, row:{id:"p_"+p.week+"_"+p.sid, sid:String(p.sid), week:p.week, mission_passed:!!m.passed, mission_best:m.bestScore||0, data:p.data||{}}});
+    });
+    (snap.reports||[]).forEach(function(r){ GLR.q.push({op:"report", sid:String(r.sid), week:r.week, data:r.data||{}}); });
+    this.saveQ(); this.showQ(); this.pump();
+  },
+
+  pump:function(){
+    var self=this;
+    if(this.busy || !this.on || !this.q.length) return;
+    if(!this.tok || !this.tok.access_token) return;   /* 로그인 전에는 보내지 않습니다 */
+    this.busy=true;
+    var job=this.q[0], p;
+
+    if(job.op==="report"){
+      var data=job.data, imgs=data.images||{}, ups=[], photos={};
+      Object.keys(imgs).forEach(function(key){
+        var arr=imgs[key]; if(!Array.isArray(arr)) return; photos[key]=[];
+        arr.forEach(function(val, idx){
+          if(val && typeof val==="string" && val.indexOf("data:")===0){
+            var path=job.week+"/"+job.sid+"/"+key+"_"+idx+".jpg";
+            photos[key][idx]=path; ups.push(self.uploadPhoto(path, val)); arr[idx]=path;
+          }else{ photos[key][idx]=(val||""); }
+        });
+      });
+      p=Promise.all(ups).then(function(){
+        var row={ id:"rp_"+job.week+"_"+job.sid, sid:job.sid, week:job.week, submitted:!!data.submitted, photos:photos, data:data };
+        return self.call("/rest/v1/gl_reports", { method:"POST", headers:self.mix(self.hdr(true), {Prefer:"return=minimal,resolution=merge-duplicates"}), body:JSON.stringify(row) });
+      });
+    }else if(job.op==="delete"){
+      p=this.call("/rest/v1/"+GLTBL[job.t].db+"?id=eq."+encodeURIComponent(job.id), { method:"DELETE", headers:this.hdr(false) });
+    }else{
+      p=this.call("/rest/v1/"+GLTBL[job.t].db, { method:"POST", headers:this.mix(this.hdr(true), {Prefer:"return=minimal,resolution=merge-duplicates"}), body:JSON.stringify(job.row) });
+    }
+
+    p.then(function(){ self.q.shift(); self.saveQ(); self.busy=false; self.showQ(); if(self.q.length) self.pump(); },
+      function(err){ self.busy=false; self.onJobErr(job, err); });
+  },
+  onJobErr:function(job, err){
+    var self=this;
+    if(err.kind==="net"){ this.down_(); setTimeout(function(){ self.pump(); }, 5000); return; }
+    if(err.kind==="auth" && err.status===401 && !job._retried){
+      job._retried=true; this.busy=true;
+      this.refresh().then(function(){ self.busy=false; self.pump(); },
+        function(){ self.busy=false; self.clearTok(); self.bar('🔴 로그인이 만료되었습니다. 다시 로그인하시면 자동으로 이어서 보냅니다.',"red"); if(window.toast) toast("로그인이 만료되었습니다. 다시 로그인해 주세요."); });
+      return;
+    }
+    var bad=this.q.shift(); this.saveQ();
+    bad.why=(err.status||"")+" "+String(err.msg||"").slice(0,200);
+    this.failed.push(bad); this.showQ();
+    if(window.toast) toast("🔴 저장이 거부되었습니다. 화면 위 안내를 봐 주세요.");
+    this.pump();
+  },
+
+  fallLocal:function(){ this.bar("⚠ 서버 접속이 안 돼 이 기기 저장으로 임시 전환했습니다. 저장한 것은 이 기기에만 남습니다.","amber"); bootResumeLocal(); }
+};
+/* 🔴 앱은 즉시실행함수(IIFE) 안에 있어 GLR 이 window 에 없으면 window.GLR 판정이 늘 거짓이 됩니다.
+   저장 훅(if(window.GLR && GLR.on))이 실제로 켜지도록 window 에 노출합니다. */
+window.GLR = GLR; window.GLCONF = GLCONF; window.glMigratePrompt = glMigratePrompt;
+
+/* 로그인(로컬/원격 공통) — 성공 시 신원 적용, cb(err, role, stu) */
+function doLogin(role, name, num, cb){
+  if(!(window.GLR && GLR.on)){
+    if(role==="prof"){ if(!checkProf(name, num)) return cb("교수 이름·교번이 일치하지 않습니다."); applyIdentity("prof","",C.prof.name); return cb(null,"prof"); }
+    var stu=findStudent(name, num); if(stu.error) return cb(stu.error); applyIdentity("student", stu.sid, stu.name); return cb(null,"student",stu);
+  }
+  GLR.login(name, num, role).then(function(acc){
+    GLR.ready=false;
+    GLR.loadAll().then(function(){
+      if(role==="prof"){ applyIdentity("prof","", acc.name||name); cb(null,"prof"); }
+      else{ applyIdentity("student", num, acc.name||name); cb(null,"student",{sid:num, name:acc.name||name}); }
+      GLR.pump();
+    }, function(){ cb("자료를 받지 못했습니다. 잠시 뒤 다시 시도해 주세요."); });
+  }, function(err){ cb((err&&err.kind==="auth") ? "명단에서 찾을 수 없습니다. 이름과 번호를 다시 확인해 주세요." : "지금 접속이 되지 않습니다. 잠시 뒤 다시 시도해 주세요."); });
+}
+
+/* 교수 대시보드의 「이 기기 데이터를 서버로 올리기」 */
+function glMigratePrompt(){
+  if(!(window.GLR && GLR.on)){ toast("서버 방식일 때만 올릴 수 있습니다."); return; }
+  var snap=GLR.readSnapshot();
+  if(!snap){ toast("이 기기에 올릴 예전 자료가 없습니다."); return; }
+  var msg="이 기기에 있던 예전 자료를 서버로 올립니다(덮어쓰지 않고 합칩니다).\n\n"+
+    "· 명단 "+((snap.roster||[]).length)+"명\n· 조 "+((snap.teams||[]).length)+"개\n· 면제 "+((snap.early||[]).length)+"명\n"+
+    "· 진도 "+((snap.progress||[]).length)+"건\n· 보고서 "+((snap.reports||[]).length)+"건\n\n올릴까요?";
+  askConfirm(msg, function(){
+    GLR.migrateFrom(snap);
+    try{ localStorage.removeItem(GLR.SNAPKEY); }catch(e){}
+    toast("서버로 올리는 중입니다. 화면 위 표시가 사라지면 끝난 것입니다.");
+    if(typeof RENDER!=="undefined" && RENDER.profdash) go("profdash", false);
+  }, { yes:"올리기", yesClass:"primary" });
+}
+
+/* ==========================================================================
  * 시작
  * ========================================================================*/
-function boot(){
+function bootContent(){
   if(!window.GAME_CONTENT){
     var b = $("checkBanner");
     b.hidden = false;
     b.innerHTML = "<b>⚠ content.js 를 읽지 못했습니다.</b> index.html 과 같은 폴더에 content.js 가 있어야 합니다.";
-    return;
+    return false;
   }
   storageOk = probeStorage();
   ACTIVE_WEEK = "w02";
@@ -3513,10 +3854,11 @@ function boot(){
   buildDerived();
   runCheck();
   buildBgFx();
-
   $("backBtn").onclick = back;
-
-  /* 저장된 로그인(세션)이 있고 유효하면 자동 재개, 없으면 로그인 화면. */
+  return true;
+}
+/* 로컬 방식 자동 재개(또는 로그인 화면) — 서버 안 쓸 때 */
+function bootResumeLocal(){
   var sess = loadSession();
   var ok = false;
   if(sess){
@@ -3531,6 +3873,32 @@ function boot(){
     state = defaultState();
     roleGateStep.role = null; showLogin(); paintTop();
   }
+}
+/* 원격 방식 시작 — 출입증이 있으면 자동 재개(loadAll 후), 없으면 로그인 화면 */
+function bootRemote(){
+  GLR.loadTok(); GLR.loadQ();
+  var sess = loadSession();
+  if(GLR.tok && GLR.tok.access_token && sess && (sess.role==="prof" || sess.role==="student")){
+    var resume = function(){
+      if(sess.role==="prof"){ applyIdentity("prof","", sess.name); paintTop(); go("profdash", false); }
+      else{ applyIdentity("student", sess.sid, sess.name); paintTop(); go("labs", false); }
+      GLR.pump();
+    };
+    GLR.loadAll().then(resume, function(err){
+      /* 출입증이 만료됐으면 한 번 갱신하고 다시 받아 봅니다(수업 시간 대비) */
+      if(err && err.kind==="auth" && GLR.tok && GLR.tok.refresh_token){
+        GLR.refresh().then(function(){ GLR.loadAll().then(resume, function(){ GLR.fallLocal(); }); }, function(){ GLR.clearTok(); state=defaultState(); roleGateStep.role=null; showLogin(); paintTop(); });
+      }else{ GLR.fallLocal(); }
+    });
+  }else{
+    state = defaultState(); roleGateStep.role = null; showLogin(); paintTop();
+  }
+}
+function boot(){
+  if(!bootContent()) return;
+  GLR.init();
+  if(!GLR.on){ bootResumeLocal(); return; }
+  bootRemote();
 }
 boot();
 
