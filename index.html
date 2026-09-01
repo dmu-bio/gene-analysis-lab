@@ -893,7 +893,7 @@ function loadTeams(){
     var r = localStorage.getItem(TEAMS_KEY);
     if(r){ var a = JSON.parse(r); if(Array.isArray(a)){
       return a.filter(function(t){ return t && t.no && Array.isArray(t.members); })
-              .map(function(t){ return { no: t.no, members: t.members.map(String) }; });
+              .map(function(t){ return { id: t.id || ("t_leg_" + t.no), no: t.no, members: t.members.map(String) }; });
     } }
   }catch(e){}
   return [];
@@ -999,11 +999,15 @@ function makeTeam(leaderSid, otherSids){
   }
   var maxNo = 0;
   ts.forEach(function(t){ if(t.no > maxNo) maxNo = t.no; });
-  var team = { no: maxNo + 1, members: [lead].concat(uniq) };
+  /* 🔴 조에 무작위 id 부여 — 두 기기가 같은 조번호를 만들어도 서로 다른 행이라 덮어쓰지 않는다.
+     조번호(no) 중복은 서버의 gl_teams_no_uq 가 거부하고, 거부된 쪽은 빈 번호로 재시도한다(pump). */
+  var team = { id: glTeamRid(), no: maxNo + 1, members: [lead].concat(uniq) };
   ts.push(team);
   saveTeams(ts);
   return team;
 }
+/* 시각+무작위 조 id (PBL rid 방식) — 기기 간 충돌 없음 */
+function glTeamRid(){ return "t_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
 /* 편성 가능한 조가 더 있는가 */
 function teamsFull(){ return loadTeams().length >= TEAM_MAX; }
 /* 안내문 조각 — 테스트 모드 / 조기취업 면제 배너 (HTML 문자열) */
@@ -1549,6 +1553,7 @@ function showLogin(){
 /* 로그아웃 — 세션을 지우고 로그인 화면으로. 진도·보고서는 기기에 그대로 남는다. */
 function logout(){
   clearSession();
+  if(window.GLR && GLR.on){ GLR.stopTeamPoll(); GLR.clearTok(); }   /* 🟡 서버 출입증도 지운다(공용 PC 안전) + 폴링 중단 */
   state = defaultState();
   ctx = {}; navStack = []; cur = "labs";
   roleGateStep.role = null;
@@ -1614,6 +1619,7 @@ var CIRC = ["①","②","③","④","⑤","⑥","⑦","⑧","⑨"];
 RENDER.labs = function(){
   var labs = labList();
   var isProf = state.role === "prof";
+  if(window.GLR && GLR.on && state.role === "student") GLR.ensureTeamPoll();   /* 허브에서도 조 변경 실시간 반영 */
   var actLab = curLab();
   var h = "";
   h += '<div class="hero">' + helixSVG();
@@ -1811,7 +1817,10 @@ RENDER.lobby = function(){
 RENDER.team = function(){
   var sc = $("sc-team");
   var mySid = state.studentId || "";
-  var localNote = '<p class="small" style="margin-top:14px">※ 조 편성은 <b>이 기기</b>에만 저장됩니다. 여러 학생이 각자 기기에서 따로 짜면 합쳐지지 않습니다(전체 공유는 서버 단계에서). 한 기기(예: 실습실 공용 PC)에서 함께 짜는 것을 권합니다.</p>';
+  if(window.GLR && GLR.on && state.role === "student") GLR.ensureTeamPoll();   /* 실시간(폴링) 시작 */
+  var localNote = (window.GLR && GLR.on)
+    ? '<p class="small" style="margin-top:14px">※ 조 편성은 <b>서버에 저장</b>되어 조원 모두의 화면에 공유됩니다. 각자 자기 폰에서 짜도 됩니다 — 누가 나를 조에 넣으면 잠시 뒤 내 화면에도 자동으로 표시됩니다(바로 안 뜨면 새로고침).</p>'
+    : '<p class="small" style="margin-top:14px">※ (이 기기 저장 모드) 조 편성이 이 기기에만 저장됩니다. 한 기기에서 함께 짜는 것을 권합니다.</p>';
   var h = "";
   h += '<button class="btn sm ghost" type="button" data-go="labs" style="margin-bottom:10px;text-align:left">← 실습 목록으로</button>';
   h += '<h2 class="sc-h">👥 실험조 구성</h2>';
@@ -3689,7 +3698,7 @@ var GLR = {
     var names=["roster","teams","early","progress","reports"];
     return Promise.all(names.map(function(t){ return self.loadTable(t); })).then(function(res){
       try{ localStorage.setItem(ROSTER_KEY, JSON.stringify((res[0]||[]).map(function(r){ return {sid:r.sid, name:r.name}; }))); }catch(e){}
-      try{ localStorage.setItem(TEAMS_KEY, JSON.stringify((res[1]||[]).map(function(t){ return {no:t.no, members:((t.data&&t.data.members)||[]).map(String)}; }))); }catch(e){}
+      try{ localStorage.setItem(TEAMS_KEY, JSON.stringify((res[1]||[]).map(function(t){ return {id:t.id, no:t.no, members:((t.data&&t.data.members)||[]).map(String)}; }))); }catch(e){}
       try{ localStorage.setItem(EARLY_KEY, JSON.stringify((res[2]||[]).map(function(e){ return String(e.sid); }))); }catch(e){}
       (res[3]||[]).forEach(function(r){ try{ localStorage.setItem("dmu_gene_lab_"+r.week+"_"+r.sid, JSON.stringify(r.data||{})); }catch(e){} });
       /* 보고서 사진: 경로 → dataURL 로 되살려 미러에 넣습니다(화면은 그대로 <img src> 로 그림) */
@@ -3716,11 +3725,81 @@ var GLR = {
     (oldList||[]).forEach(function(r){ var s=String(r.sid); if(!seen[s]) self.q.push({op:"delete", t:"roster", id:"r_"+s}); });
     this.saveQ(); this.showQ(); this.pump();
   },
+  /* 🔴 조는 id(무작위) 기준으로 diff — 새 조는 team_create(번호충돌 재시도), 없어진 조는 삭제 */
   syncTeams:function(newList, oldList){
-    if(!this.on) return; var self=this, seen={};
-    (newList||[]).forEach(function(t){ var n=t.no; seen[n]=1; self.q.push({op:"upsert", t:"teams", id:"t_"+n, row:{id:"t_"+n, no:n, data:{members:(t.members||[]).map(String)}}}); });
-    (oldList||[]).forEach(function(t){ if(!seen[t.no]) self.q.push({op:"delete", t:"teams", id:"t_"+t.no}); });
+    if(!this.on) return; var self=this, oldIds={}, newIds={};
+    (oldList||[]).forEach(function(t){ if(t.id) oldIds[t.id]=1; });
+    (newList||[]).forEach(function(t){ if(t.id) newIds[t.id]=1; });
+    (newList||[]).forEach(function(t){
+      if(t.id && !oldIds[t.id]) self.q.push({op:"team_create", id:t.id, no:t.no, members:(t.members||[]).map(String)});
+    });
+    (oldList||[]).forEach(function(t){
+      if(t.id && !newIds[t.id]) self.q.push({op:"delete", t:"teams", id:t.id});
+    });
     this.saveQ(); this.showQ(); this.pump();
+  },
+  /* 조 서버 생성 — 조번호가 겹치면(gl_teams_no_uq 거부) 빈 번호를 다시 받아 재시도한다.
+     행 id 는 무작위라 다른 조를 덮어쓰는 일은 절대 없다. */
+  _createTeam:function(job, attempt){
+    var self=this;
+    var row={ id:job.id, no:job.no, data:{members:job.members} };
+    return this.call("/rest/v1/gl_teams", { method:"POST", headers:this.mix(this.hdr(true), {Prefer:"return=minimal"}), body:JSON.stringify(row) })
+      .then(null, function(err){
+        var msg=String((err&&err.msg)||"");
+        if(err && err.status===409 && /gl_teams_no_uq/.test(msg)){
+          if(attempt >= (typeof TEAM_MAX!=="undefined"?TEAM_MAX:9)) throw err;   /* 무한루프 방지 */
+          /* 다른 학생이 그 번호를 먼저 가져갔다 — 현재 조 목록을 받아 빈 번호로 바꿔 다시 */
+          return self.call("/rest/v1/gl_teams?select=no", { headers:self.hdr(false) }).then(function(rows){
+            var used={}; (rows||[]).forEach(function(r){ used[r.no]=1; });
+            var n=1; while(used[n]) n++;
+            job.no=n; self._relabelLocalTeam(job.id, n);
+            return self._createTeam(job, attempt+1);
+          });
+        }
+        if(err && err.status===409){ return null; }   /* 같은 조(id) 중복 = 이미 만들어짐 → 성공으로 간주 */
+        throw err;
+      });
+  },
+  /* 재시도로 조번호가 바뀌면 로컬·화면도 맞춘다 (saveTeams 를 부르지 않아 재동기화 루프를 막는다) */
+  _relabelLocalTeam:function(id, no){
+    try{
+      var ts=loadTeams(), changed=false;
+      ts.forEach(function(t){ if(t.id===id && t.no!==no){ t.no=no; changed=true; } });
+      if(changed){
+        localStorage.setItem(TEAMS_KEY, JSON.stringify(ts));
+        if(typeof RENDER!=="undefined" && typeof cur!=="undefined" && (cur==="team"||cur==="labs") && RENDER[cur]) RENDER[cur]();
+      }
+    }catch(e){}
+  },
+  /* ---- 🟠 실시간(수 초 폴링) — 조편성/허브 화면에서만 돈다. 남이 나를 조에 넣으면 곧 내 화면에 뜬다 ---- */
+  teamPollTimer:null, _pollBusy:false,
+  ensureTeamPoll:function(){
+    var self=this;
+    if(this.teamPollTimer) return;
+    if(!this.on || typeof state==="undefined" || state.role!=="student") return;
+    this.teamPollTimer=setInterval(function(){
+      /* 학생이 아니거나 조편성/허브 화면을 떠나면 스스로 멈춘다 */
+      if(!self.on || typeof state==="undefined" || state.role!=="student" || typeof cur==="undefined" || (cur!=="team" && cur!=="labs")){ self.stopTeamPoll(); return; }
+      /* 내가 방금 만든 조가 아직 서버로 못 갔으면(큐 대기) 덮어쓰지 않도록 이번 회차는 건너뛴다 */
+      if(self.q.some(function(j){ return j.op==="team_create" || (j.op==="delete" && j.t==="teams"); })) return;
+      self.pollTeams();
+    }, 5000);
+  },
+  stopTeamPoll:function(){ if(this.teamPollTimer){ clearInterval(this.teamPollTimer); this.teamPollTimer=null; } },
+  pollTeams:function(){
+    var self=this;
+    if(this._pollBusy) return; this._pollBusy=true;
+    this.call("/rest/v1/gl_teams?select=*&order=no.asc", { headers:this.hdr(false) }).then(function(rows){
+      self._pollBusy=false;
+      var mirror=(rows||[]).map(function(t){ return {id:t.id, no:t.no, members:((t.data&&t.data.members)||[]).map(String)}; });
+      var newJson=JSON.stringify(mirror), oldJson="[]";
+      try{ oldJson=localStorage.getItem(TEAMS_KEY)||"[]"; }catch(e){}
+      if(newJson!==oldJson){
+        try{ localStorage.setItem(TEAMS_KEY, newJson); }catch(e){}
+        /* 화면 갱신 — 학생이 조원 고르는 중(선택항목)이라면 선택은 ctx.teamPick 로 보존된다 */
+        if(typeof RENDER!=="undefined" && typeof cur!=="undefined" && (cur==="team"||cur==="labs") && RENDER[cur]) RENDER[cur]();
+      }
+    }, function(){ self._pollBusy=false; });
   },
   syncEarly:function(sid, on){
     if(!this.on) return; var s=String(sid);
@@ -3775,6 +3854,8 @@ var GLR = {
         var row={ id:"rp_"+job.week+"_"+job.sid, sid:job.sid, week:job.week, submitted:!!data.submitted, photos:photos, data:data };
         return self.call("/rest/v1/gl_reports", { method:"POST", headers:self.mix(self.hdr(true), {Prefer:"return=minimal,resolution=merge-duplicates"}), body:JSON.stringify(row) });
       });
+    }else if(job.op==="team_create"){
+      p=this._createTeam(job, 0);
     }else if(job.op==="delete"){
       p=this.call("/rest/v1/"+GLTBL[job.t].db+"?id=eq."+encodeURIComponent(job.id), { method:"DELETE", headers:this.hdr(false) });
     }else{
