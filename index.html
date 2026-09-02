@@ -522,7 +522,15 @@ th.nw{white-space:nowrap}
   #printPaper .paper h3.p-sh{font-size:12.5pt}
   #printPaper .paper .p-body{font-size:10.5pt}
   #printPaper .paper .p-imgcell img{max-height:70mm}
+  /* 일괄(주차 전체) 인쇄 — 학생마다 새 페이지에서 시작 */
+  #printPaper .p-studentblock{page-break-after:always;break-after:page}
+  #printPaper .p-studentblock:last-child{page-break-after:auto;break-after:auto}
+  #printPaper .p-bulkhead{page-break-inside:avoid}
 }
+/* 일괄 인쇄 머리말(학번·이름·조) — 각 보고서 앞 */
+#printPaper .p-bulkhead{border:2px solid #000;border-radius:6px;padding:6px 10px;margin:0 0 10px;
+  font-size:11pt;color:#000;background:#f2f2f2;font-weight:bold}
+#printPaper .p-bulkhead .sub{font-weight:normal;font-size:9.5pt;color:#333;margin-left:6px}
 </style>
 </head>
 <body>
@@ -2154,6 +2162,35 @@ function printReportPDF(sid, name, data){
   /* 일부 브라우저는 onafterprint 를 안 쏘므로 보조 정리 */
   setTimeout(function(){ if(document.body.classList.contains("printing")) cleanup(); }, 12000);
 }
+/* 주차별 일괄 PDF — 그 주차의 '제출' 보고서 전체를 한 문서에 이어서 인쇄(학생마다 페이지 구분).
+   대상은 제출본만(작성 중·미작성 제외). 제출자 0명이면 안내만 하고 인쇄하지 않는다. */
+function printBulkReports(wk){
+  var roster = getRoster();
+  var lab = labById(wk) || curLab();
+  var subs = [];
+  roster.forEach(function(st){
+    var rep = loadReport(st.sid, wk);
+    if(rep && rep.submitted) subs.push({ st: st, rep: rep });
+  });
+  if(subs.length === 0){ toast("이 주차에 제출된 보고서가 없습니다."); return; }
+  var parts = "";
+  subs.forEach(function(o){
+    var tm = teamOf(o.st.sid);
+    var teamLbl = tm ? (tm.no + "조") : ((o.rep.meta && o.rep.meta.team) || "");
+    var head = '<div class="p-bulkhead">' + esc(o.st.sid) + ' · ' + esc(o.st.name)
+      + (teamLbl ? '<span class="sub">' + esc(teamLbl) + '</span>' : '')
+      + '<span class="sub">' + esc(lab.weekLabel || "") + ' ' + esc(lab.title || "") + '</span></div>';
+    parts += '<div class="paper p-studentblock">' + head + buildReportHTML(o.st.sid, o.st.name, o.rep) + '</div>';
+  });
+  var pp = $("printPaper");
+  pp.innerHTML = parts;
+  document.body.classList.add("printing");
+  var cleanup = function(){ document.body.classList.remove("printing"); pp.innerHTML = ""; window.onafterprint = null; };
+  window.onafterprint = cleanup;
+  toast("제출 보고서 " + subs.length + "건을 인쇄 준비했습니다.");
+  setTimeout(function(){ try{ window.print(); }catch(e){ cleanup(); toast("인쇄를 열 수 없습니다."); } }, 80);
+  setTimeout(function(){ if(document.body.classList.contains("printing")) cleanup(); }, 15000);
+}
 
 RENDER.report = function(){
   var def = reportDef();
@@ -2180,6 +2217,7 @@ RENDER.report = function(){
   h += '<h2 class="sc-h">📝 실험 결과보고서 — ' + esc(def.title || lab.title || "") + '</h2>';
   h += '<p class="sc-p">' + esc(def.gradeNote || "") + (readonly ? ' · A4 미리보기·워드·PDF로 내려받을 수 있어요.' : ' · 작성한 뒤 [보고서 제출]을 눌러 주세요.') + '</p>';
   if(readonly) h += '<div class="card tight"><div class="small" style="color:var(--amber)">👀 교수 열람 모드 — 이 보고서는 ' + esc(R.name || R.sid) + ' 학생의 제출본입니다. 내용은 수정할 수 없고 내려받기만 됩니다.</div></div>';
+  if(!readonly && data.submitted) h += '<div class="card tight" style="border-color:#bcd6f0;background:var(--mintdk)"><div class="small" style="color:var(--green)">✅ <b>제출 완료</b>' + (data.submittedAt ? ' (' + esc(data.submittedAt) + ')' : '') + ' — 제출 뒤에도 <b>내용을 고쳐 [다시 제출]</b>할 수 있어요. 고친 내용은 교수님 확인 화면에 새로 반영됩니다.</div></div>';
 
   /* 머리말 */
   h += '<div class="card"><h3>머리말</h3><div class="rf-meta">';
@@ -2430,6 +2468,15 @@ RENDER.profdash = function(){
     h += '<div class="card tight"><div class="small" style="color:var(--amber)">⚠ 이 기기 저장 모드 — <b>이 기기에 저장된 기록만</b> 표시됩니다(이 기기에서 활동한 학생 ' + nActive + '명).</div></div>';
   }
 
+  /* 📄 주차별 제출 보고서 일괄 PDF — 그 주차의 '제출'본 전체를 한 번의 인쇄로 내려받는다. */
+  if(prepared){
+    h += '<div class="card tight" style="border-color:#cbb8e0;background:#f6f1fb">';
+    h += '<div class="small" style="margin:0 0 8px"><b>📄 이 주차 제출 보고서 전체 PDF</b> — ' + esc(lab.weekLabel || "") + ' <b>제출 ' + nSub + '건</b>을 한 문서로 이어서 인쇄합니다(학생마다 새 페이지, 작성 중·미작성 제외).</div>';
+    h += '<button class="btn sm primary" type="button" id="pdBulkPdf"' + (nSub ? '' : ' disabled') + '>📄 이 주차 제출 보고서 전체 PDF</button>';
+    h += '<div class="small" style="color:var(--muted);margin-top:6px">브라우저 인쇄창에서 \'대상\'을 \'PDF로 저장\'으로 고르시면 됩니다.' + (nSub ? '' : ' (현재 제출된 보고서가 없습니다.)') + '</div>';
+    h += '</div>';
+  }
+
   h += '<div class="card"><h3>학생별 현황 <span class="small">' + roster.length + '명</span></h3>';
   h += '<p class="small" style="margin:0 0 8px"><b>조기취업(면제)</b>은 위 <b>[학생 명단관리]</b>에서 학생별로 체크합니다. 여기 표에는 <b>🎓면제</b> 여부만 표시됩니다.</p>';
   h += '<div class="tblwrap"><table class="dash-tbl">';
@@ -2467,6 +2514,7 @@ RENDER.profdash = function(){
   sc.querySelectorAll("[data-week]").forEach(function(b){
     b.onclick = function(){ DASH_WEEK = b.getAttribute("data-week"); RENDER.profdash(); };
   });
+  if($("pdBulkPdf")) $("pdBulkPdf").onclick = function(){ printBulkReports(wk); };
   if($("pdLogout")) $("pdLogout").onclick = logout;
   bindGo(sc);
 };
