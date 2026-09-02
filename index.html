@@ -2718,6 +2718,63 @@ function buildWeekResults(wk){
   return h;
 }
 
+/* ⑥ 조편성 현황 — 학기 공통(주차 무관). 조별 조원(학번·이름)+미배정 목록. 실데이터(loadTeams/getRoster). */
+function buildTeamRoster(){
+  var teams = loadTeams().slice().sort(function(a, b){ return a.no - b.no; });
+  var roster = getRoster();
+  var h = '<div class="paper">';
+  h += '<div class="p-head"><div class="p-title">유전자분석 · 조편성 현황</div>';
+  h += '<div class="p-course">동양미래대학교 바이오융합공학과 · 2026-2학기 · 담당 곽호석 · 학기 공통(주차 무관)</div></div>';
+  /* 배정된 학번 집합 */
+  var assigned = {};
+  teams.forEach(function(t){ (t.members || []).forEach(function(sid){ assigned[String(sid)] = true; }); });
+  var nAssigned = 0; for(var k in assigned){ if(assigned.hasOwnProperty(k)) nAssigned++; }
+  var unassigned = roster.filter(function(st){ return !assigned[String(st.sid)]; });
+
+  if(teams.length === 0){
+    h += '<div class="p-body p-empty">아직 편성된 조가 없습니다.</div>';
+    if(roster.length){
+      h += '<h3 class="p-sh">미배정 학생 (' + roster.length + '명)</h3>';
+      h += '<table class="p-grid"><tr><th style="width:8%">#</th><th style="width:22%">학번</th><th class="l">이름</th><th style="width:14%">면제</th></tr>';
+      roster.forEach(function(st, i){
+        h += '<tr><td>' + (i+1) + '</td><td>' + esc(st.sid) + '</td><td class="l">' + esc(st.name) + '</td><td>' + (isEarly(st.sid) ? '🎓면제' : '') + '</td></tr>';
+      });
+      h += '</table>';
+    }
+    h += '</div>';
+    return h;
+  }
+
+  h += '<table class="p-grid"><tr><th style="width:14%">조</th><th style="width:24%">학번</th><th class="l">이름</th><th style="width:14%">면제</th></tr>';
+  teams.forEach(function(t){
+    var mem = t.members || [];
+    var lbl = t.no + '조 (' + mem.length + '명)';
+    if(mem.length === 0){
+      h += '<tr><td>' + esc(lbl) + '</td><td colspan="3" class="l" style="color:#9aa6b2">(조원 없음)</td></tr>';
+      return;
+    }
+    mem.forEach(function(sid, i){
+      h += '<tr><td>' + (i === 0 ? esc(lbl) : '') + '</td><td>' + esc(sid) + '</td><td class="l">' + esc(nameOfSid(sid)) + '</td><td>' + (isEarly(sid) ? '🎓면제' : '') + '</td></tr>';
+    });
+  });
+  h += '</table>';
+
+  h += '<h3 class="p-sh">미배정 학생 (' + unassigned.length + '명)</h3>';
+  if(unassigned.length === 0){
+    h += '<div class="p-body p-empty">미배정 학생이 없습니다(전원 조 편성 완료).</div>';
+  }else{
+    h += '<table class="p-grid"><tr><th style="width:8%">#</th><th style="width:24%">학번</th><th class="l">이름</th><th style="width:14%">면제</th></tr>';
+    unassigned.forEach(function(st, i){
+      h += '<tr><td>' + (i+1) + '</td><td>' + esc(st.sid) + '</td><td class="l">' + esc(st.name) + '</td><td>' + (isEarly(st.sid) ? '🎓면제' : '') + '</td></tr>';
+    });
+    h += '</table>';
+  }
+  h += '<div class="p-note">※ 편성 ' + teams.length + '개 조 · 배정 ' + nAssigned + '명 · 미배정 ' + unassigned.length + '명 · 재적 ' + roster.length + '명. 🎓면제=조기취업(과제 면제). 조는 학기 공통이라 주차와 무관합니다.'
+     + ((window.GLR && GLR.on) ? '' : ' (이 기기에 저장된 편성만 반영됩니다.)') + '</div>';
+  h += '</div>';
+  return h;
+}
+
 RENDER.outputs = function(){
   var sc = $("sc-outputs");
   var labList = (C && Array.isArray(C.labs)) ? C.labs : [];
@@ -2754,6 +2811,7 @@ RENDER.outputs = function(){
   h += item('③', '성적 점수표 (빈 틀)', '세로 학생 명단 × 가로 주차 + 합계·비고의 빈 표. 배점 미정이라 점수 칸은 비어 있습니다(손으로 기입).', 'outGrade');
   h += item('④', '실험보고서 (빈 양식)', '학생이 손으로 작성할 빈 보고서 양식(선택 주차 · <b>' + esc(lab.weekLabel || '') + '</b> 기준). 앱에서 제출된 보고서는 대시보드의 [보고서]·[이 주차 제출 보고서 전체 PDF]로 뽑습니다.', 'outBlank');
   h += item('⑤', '주차별 학습·미션 결과', '선택 주차(<b>' + esc(lab.weekLabel || '') + '</b>)의 학생별 학습 완료·미션 점수·보고서 제출 여부 집계표.', 'outResults');
+  h += item('⑥', '조편성 현황', '학기 공통(주차 무관). 조별 조원(학번·이름)과 미배정 학생 목록을 표로. 🎓면제 표시 포함.', 'outTeams');
 
   sc.innerHTML = h;
   sc.querySelectorAll("[data-week]").forEach(function(b){
@@ -2764,6 +2822,7 @@ RENDER.outputs = function(){
   if($("outGrade")) $("outGrade").onclick = function(){ printOut(buildGradeSheet()); };
   if($("outBlank")) $("outBlank").onclick = function(){ printOut(buildBlankReport(DASH_WEEK)); };
   if($("outResults")) $("outResults").onclick = function(){ printOut(buildWeekResults(DASH_WEEK)); };
+  if($("outTeams")) $("outTeams").onclick = function(){ printOut(buildTeamRoster()); };
   bindGo(sc);
 };
 
