@@ -459,6 +459,16 @@ th.nw{white-space:nowrap}
 .paper table.p-dt th,.paper table.p-dt td{border:1px solid #8f9aa5;padding:5px 7px;text-align:left}
 .paper table.p-dt th{background:#eef2f6;font-weight:700}
 .paper .p-cap{font-size:12px;color:#3a444e;margin:4px 0 2px}
+/* ---------- 출력물(교수용 인쇄물 5종) 공용 ---------- */
+.paper .p-note{font-size:11px;color:#3a444e;margin:5px 0 0;line-height:1.5}
+.paper table.p-kv{width:100%;border-collapse:collapse;margin:0 0 10px;font-size:12px}
+.paper table.p-kv td{border:1px solid #b9c2cc;padding:5px 8px;vertical-align:top}
+.paper table.p-kv td.k{background:#eef2f6;font-weight:700;white-space:nowrap;width:1%}
+.paper table.p-grid{width:100%;border-collapse:collapse;margin:6px 0 2px;font-size:11.5px;table-layout:fixed}
+.paper table.p-grid th,.paper table.p-grid td{border:1px solid #8f9aa5;padding:5px 4px;text-align:center;word-break:break-all}
+.paper table.p-grid th{background:#eef2f6;font-weight:700}
+.paper table.p-grid td.l,.paper table.p-grid th.l{text-align:left}
+.paper .p-blank{border:1px solid #b9c2cc;border-radius:4px;min-height:26mm;padding:6px 8px;background:#fff}
 
 /* 교수 확인 표 */
 .dash-tbl{width:100%;border-collapse:collapse;font-size:13px}
@@ -569,6 +579,7 @@ th.nw{white-space:nowrap}
     <section id="sc-summary"  class="screen"></section>
     <section id="sc-profdash" class="screen"></section>
     <section id="sc-roster"   class="screen"></section>
+    <section id="sc-outputs"  class="screen"></section>
   </div>
 </main>
 
@@ -1149,7 +1160,7 @@ function MISSION_REASON(){ return (POOL && POOL.info && POOL.info.mission && POO
 /* ==========================================================================
  * checkContent() — 로드 시 자동 실행되는 자체 검증 (새 화면·pool 반영)
  * ========================================================================*/
-var SCREENS = ["labs","lobby","team","report","learn","lquiz","mission","notes","growth","summary","profdash","roster"];
+var SCREENS = ["labs","lobby","team","report","learn","lquiz","mission","notes","growth","summary","profdash","roster","outputs"];
 var NAV_EDGES = {
   labs:     ["lobby","profdash","team"],
   lobby:    ["labs","report","learn","lquiz","mission","notes","growth","summary"],
@@ -1161,8 +1172,9 @@ var NAV_EDGES = {
   notes:    ["lquiz","lobby"],
   growth:   ["lobby","notes"],
   summary:  ["lobby"],
-  profdash: ["labs","report","lobby","roster"],
-  roster:   ["profdash"]
+  profdash: ["labs","report","lobby","roster","outputs"],
+  roster:   ["profdash"],
+  outputs:  ["profdash"]
 };
 function checkContent(){
   var errs = [], warns = [];
@@ -1387,7 +1399,8 @@ var TITLES = {
   growth: "내 기록",
   summary: "요약 카드",
   profdash: "교수 확인",
-  roster: "학생 명단관리"
+  roster: "학생 명단관리",
+  outputs: "출력물"
 };
 function screenTitle(name){
   var lab = curLab();
@@ -1450,6 +1463,9 @@ function paintTop(){
   }else if(cur === "roster"){
     if(bar) bar.style.width = "0%";
     if(bl) bl.textContent = "출석부";
+  }else if(cur === "outputs"){
+    if(bar) bar.style.width = "0%";
+    if(bl) bl.textContent = "출력물";
   }else if(cur === "team"){
     if(bar) bar.style.width = "0%";
     if(bl) bl.textContent = "실험조";
@@ -2436,6 +2452,9 @@ RENDER.profdash = function(){
   /* 🧑‍🎓 학생 화면 미리보기 — (2026-09-02 위치 교체: 원래 맨 아래에 있던 것을 이 자리로 옮김. 아래 "학생 명단관리"와 자리를 맞바꿨다) */
   h += '<button class="btn sm ghost center" type="button" data-go="labs">🧑‍🎓 학생 화면 미리보기</button>';
 
+  /* 📤 출력물 — 수업·평가에 쓰는 인쇄물 5종(강의소개·주차계획·성적표틀·빈 보고서양식·주차별 결과)을 A4 PDF 로. */
+  h += '<button class="btn sm primary center" type="button" data-go="outputs" style="margin-bottom:12px">📤 출력물 — 인쇄물(PDF) 만들기</button>';
+
   /* 📅 주차 선택 — 7개 실습 중 확인할 주차를 고른다(작은 버튼, 줄바꿈으로 가로 스크롤 없이 다 보임). 준비된 주차만 실제 데이터가 있다. */
   h += '<div class="card tight"><div class="small" style="margin:0 0 6px"><b>확인할 주차</b> — 주차를 눌러 그 주차의 학생 현황을 봅니다.</div>';
   h += '<div class="wkpick">';
@@ -2518,6 +2537,233 @@ RENDER.profdash = function(){
   });
   if($("pdBulkPdf")) $("pdBulkPdf").onclick = function(){ printBulkReports(wk); };
   if($("pdLogout")) $("pdLogout").onclick = logout;
+  bindGo(sc);
+};
+
+/* ==========================================================================
+ * 📤 출력물 — 교수용 인쇄물 5종 (window.print → 인쇄창에서 'PDF로 저장')
+ *   ① 강의소개·앱 소개 유인물  ② 주차별 계획  ③ 성적 점수표(빈 틀)
+ *   ④ 실험보고서 빈 양식        ⑤ 주차별 학습·미션 결과 집계
+ *   모두 A4 인쇄용. 실데이터 기반이며, 데이터 없는 항목은 '데이터 없음'만 안내(지어내기 없음).
+ *   강의 정보는 오리엔테이션·강의계획서(교수님 자료)에서 옮긴 실제 값이다.
+ * ========================================================================*/
+var APP_URL = "https://dmu-bio.github.io/gene-analysis-lab/";
+/* 공용 인쇄 — #printPaper 에 HTML 을 넣고 인쇄창을 연다(printReportPDF 와 동일 골격). */
+function printOut(innerHTML){
+  var pp = $("printPaper");
+  pp.innerHTML = innerHTML;
+  document.body.classList.add("printing");
+  var cleanup = function(){ document.body.classList.remove("printing"); pp.innerHTML = ""; window.onafterprint = null; };
+  window.onafterprint = cleanup;
+  setTimeout(function(){ try{ window.print(); }catch(e){ cleanup(); toast("인쇄를 열 수 없습니다."); } }, 80);
+  setTimeout(function(){ if(document.body.classList.contains("printing")) cleanup(); }, 15000);
+}
+
+/* ① 강의소개 · 앱 소개 유인물 (학생 배포용) */
+function buildIntroHandout(){
+  var h = '<div class="paper">';
+  h += '<div class="p-head"><div class="p-title">유전자분석 · 강의 안내</div>';
+  h += '<div class="p-course">동양미래대학교 바이오융합공학과 · 2026학년도 2학기</div></div>';
+  h += '<h3 class="p-sh">강의 개요</h3>';
+  h += '<table class="p-kv">';
+  h += '<tr><td class="k">교과목</td><td>유전자분석 (2026 신규 개설)</td><td class="k">이수·학점</td><td>전공선택 · 3학점(주 3시간)</td></tr>';
+  h += '<tr><td class="k">대상</td><td>바이오융합공학과 2학년 (2학기)</td><td class="k">강의시간</td><td>매주 수요일 14:00~17:00</td></tr>';
+  h += '<tr><td class="k">담당교수</td><td>곽호석 (부교수)</td><td class="k">이메일</td><td>hskwak@dongyang.ac.kr</td></tr>';
+  h += '<tr><td class="k">실습실</td><td>5호관 201호</td><td class="k">강의기간</td><td>2026.8.26 ~ 12.2 (총 15주)</td></tr>';
+  h += '<tr><td class="k">교과구분</td><td colspan="3">역량교과목 (NCS 능력단위: 유전자클로닝)</td></tr>';
+  h += '</table>';
+  h += '<div class="p-note">평가: 출석 20 · 중간고사 15 · 기말고사 10 · 실험보고서 35 · 팀프로젝트 20 (합계 100)</div>';
+  h += '<h3 class="p-sh">이 과목은 이렇게 진행됩니다</h3>';
+  h += '<div class="p-body">대장균(E. coli)과 plasmid를 재료로 「배양 → plasmid DNA 추출 → 정량·정성 분석 → PCR 증폭 → DNA fragment 회수 → 재조합 DNA 제조 → 형질전환·선별」의 유전자 클로닝 전 과정을 직접 손으로 수행하는 실습 중심 과목입니다. 앞 주차의 산출물이 다음 주차의 재료가 되어 한 학기가 하나의 파이프라인으로 이어집니다. 재조합 DNA를 다루는 생물안전 1등급(BL1) 과목이므로 1주차 실험실 안전교육 이수를 전제로 진행합니다.</div>';
+  h += '<h3 class="p-sh">학습 지원 앱 — 사용 방법</h3>';
+  h += '<div class="p-body">이 과목은 학습·복습과 실험보고서를 돕는 웹앱을 함께 씁니다. 설치 없이 아래 주소로 접속합니다(휴대폰·PC 모두 가능).</div>';
+  h += '<table class="p-kv"><tr><td class="k">앱 주소</td><td style="font-size:14px;font-weight:700">' + esc(APP_URL) + '</td></tr></table>';
+  h += '<div class="p-body"><b>① 로그인</b> — 이름과 학번(8자리)을 입력해 들어갑니다.<br>'
+     + '<b>② 실험조 구성</b> — 조원을 골라 조를 만듭니다(조당 3명).<br>'
+     + '<b>③ 학습·복습 퀴즈</b> — 문제를 풀며 예습·복습합니다. 약 30문을 풀면 미션이 열립니다.<br>'
+     + '<b>④ 미션</b> — 시간제한 8문 + 추리 2문(합 100점). 70점 이상이면 합격하고 그 주차 실험보고서 점수를 받습니다(학생마다·재도전마다 문항이 바뀝니다).<br>'
+     + '<b>⑤ 실험보고서</b> — 앱에서 보고서를 작성해 제출합니다. 제출 뒤에도 고쳐 다시 낼 수 있습니다.</div>';
+  h += '<div class="p-note">※ 휴대폰 카메라로 위 주소의 QR을 찍어 접속할 수 있습니다(QR은 별도 안내). 접속이 안 되면 주소를 브라우저에 직접 입력하세요.</div>';
+  h += '</div>';
+  return h;
+}
+
+/* ② 주차별 계획 — content.js labs 배열 그대로 */
+function buildWeekPlan(){
+  var labList = (C && Array.isArray(C.labs)) ? C.labs : [];
+  var h = '<div class="paper">';
+  h += '<div class="p-head"><div class="p-title">유전자분석 · 주차별 계획</div>';
+  h += '<div class="p-course">동양미래대학교 바이오융합공학과 · 2026-2학기 · 담당 곽호석</div></div>';
+  if(!labList.length){ h += '<div class="p-body p-empty">등록된 주차 계획이 없습니다.</div></div>'; return h; }
+  h += '<table class="p-grid"><tr><th style="width:16%">주차</th><th style="width:14%">날짜</th><th class="l">실험 주제</th><th style="width:18%">상태</th></tr>';
+  labList.forEach(function(l){
+    var status = l.ready ? '준비 완료' : '준비 예정';
+    h += '<tr><td>' + esc(l.weekLabel||l.id) + '</td><td>' + esc(l.dateLabel||'') + '</td><td class="l">' + esc(l.title||'') + '</td><td>' + status + '</td></tr>';
+  });
+  h += '</table>';
+  h += '<div class="p-note">※ 실습실 5호관 201호 · 매주 수요일 14:00~17:00. 위 표는 중간고사 전 실습 주차입니다. 중간고사 이후에는 팀 프로젝트(단기 PBL)·현장견학이 진행됩니다. 날짜·주제는 학사 일정에 따라 조정될 수 있습니다.</div>';
+  h += '</div>';
+  return h;
+}
+
+/* ③ 성적 점수표 — 배점 미정이라 「빈 틀」만. 세로=학생 명단, 가로=주차 + 합계·비고. 점수 칸은 빈칸. */
+function buildGradeSheet(){
+  var roster = getRoster();
+  var labList = (C && Array.isArray(C.labs)) ? C.labs : [];
+  var h = '<div class="paper">';
+  h += '<div class="p-head"><div class="p-title">유전자분석 · 성적 점수표</div>';
+  h += '<div class="p-course">담당 곽호석 · 배점 미정(빈 틀) — 손으로 기입하거나 배점 확정 후 사용</div></div>';
+  if(!roster.length){ h += '<div class="p-body p-empty">등록된 학생 명단이 없습니다. 「학생 명단관리」에서 명단을 등록한 뒤 출력하세요.</div></div>'; return h; }
+  var cols = labList.map(function(l){ return l.weekLabel || l.id; });
+  h += '<table class="p-grid"><tr><th style="width:6%">#</th><th style="width:14%">학번</th><th class="l" style="width:12%">이름</th>';
+  cols.forEach(function(c){ h += '<th>' + esc(c) + '</th>'; });
+  h += '<th>합계</th><th style="width:10%">비고</th></tr>';
+  roster.forEach(function(st, i){
+    h += '<tr><td>' + (i+1) + '</td><td>' + esc(st.sid) + '</td><td class="l">' + esc(st.name) + '</td>';
+    cols.forEach(function(){ h += '<td></td>'; });
+    h += '<td></td><td></td></tr>';
+  });
+  h += '</table>';
+  h += '<div class="p-note">※ 점수 칸은 비어 있습니다(배점 미정). 주차별 배점이 확정되면 채워 넣으세요. 재적 ' + roster.length + '명. 칸이 좁으면 인쇄창에서 용지 방향을 <b>가로</b>로 바꾸면 넉넉합니다.</div>';
+  h += '</div>';
+  return h;
+}
+
+/* ④ 실험보고서 — 빈 양식(학생이 작성할 양식). 선택 주차의 report 정의를 빈 A4 로. */
+function buildBlankReport(wk){
+  var pack = weekPack(wk);
+  var def = (pack && pack.report) ? pack.report : null;
+  var lab = labById(wk) || curLab();
+  var h = '<div class="paper">';
+  h += '<div class="p-head"><div class="p-title">실험 결과보고서</div>';
+  h += '<div class="p-course">' + esc((def && def.course) || (C.meta && C.meta.course) || '유전자분석') + '</div></div>';
+  if(!def){
+    h += '<div class="p-body p-empty">' + esc(lab.weekLabel || wk) + '는 아직 보고서 양식이 준비되지 않았습니다(데이터 없음). 양식이 준비된 주차를 골라 출력하세요.</div></div>';
+    return h;
+  }
+  h += '<table class="p-metatbl">';
+  h += '<tr><td class="k">과목</td><td>유전자분석</td><td class="k">주차</td><td>' + esc(lab.weekLabel || '') + '</td></tr>';
+  h += '<tr><td class="k">실험명</td><td colspan="3">' + esc(def.experimentName || lab.title || '') + '</td></tr>';
+  h += '<tr><td class="k">실험일자</td><td>&nbsp;</td><td class="k">조</td><td>&nbsp;</td></tr>';
+  h += '<tr><td class="k">학번</td><td>&nbsp;</td><td class="k">이름</td><td>&nbsp;</td></tr>';
+  h += '</table>';
+  (def.sections || []).forEach(function(s){
+    var lbl = (s.no ? s.no + '. ' : '') + s.label;
+    h += '<h3 class="p-sh">' + esc(lbl) + '</h3>';
+    if(s.hint) h += '<div class="p-note" style="margin:0 0 5px">' + esc(s.hint) + '</div>';
+    if(s.type === 'images'){
+      var conds = s.conditions || [];
+      h += '<div class="p-imgrid">';
+      conds.forEach(function(cond, i){
+        h += '<div class="p-imgcell"><div class="p-imgcap">' + (i+1) + ') ' + esc(cond) + '</div><div class="p-imgno" style="min-height:34mm">(사진 부착)</div></div>';
+      });
+      h += '</div>';
+      return;
+    }
+    h += '<div class="p-blank"></div>';
+    if(s.table){
+      var T = s.table, rows = T.rowLabels || [], cols = T.cols || [];
+      if(T.caption) h += '<div class="p-cap">' + esc(T.caption) + '</div>';
+      h += '<table class="p-dt"><tr>';
+      cols.forEach(function(c){ h += '<th>' + esc(c) + '</th>'; });
+      h += '</tr>';
+      rows.forEach(function(rl){
+        h += '<tr><td>' + esc(rl) + '</td>';
+        for(var ci = 1; ci < cols.length; ci++){ h += '<td>&nbsp;</td>'; }
+        h += '</tr>';
+      });
+      h += '</table>';
+    }
+  });
+  h += '</div>';
+  return h;
+}
+
+/* ⑤ 주차별 학습·미션 결과 — 선택 주차의 학생별 학습·미션·보고서 집계(실데이터). */
+function buildWeekResults(wk){
+  var roster = getRoster();
+  var lab = labById(wk) || curLab();
+  var prepared = weekPrepared(wk);
+  var need = UNLOCK_N();
+  var h = '<div class="paper">';
+  h += '<div class="p-head"><div class="p-title">' + esc(lab.weekLabel || '') + ' 학습·미션 결과</div>';
+  h += '<div class="p-course">유전자분석 · ' + esc(lab.title || '') + ' · 담당 곽호석</div></div>';
+  if(!roster.length){ h += '<div class="p-body p-empty">등록된 학생 명단이 없습니다.</div></div>'; return h; }
+  if(!prepared){ h += '<div class="p-body p-empty">이 주차는 아직 문항·보고서 양식이 준비되지 않아 학생 기록이 없습니다(데이터 없음). 준비된 주차만 결과가 채워집니다.</div></div>'; return h; }
+  var rows = roster.map(function(st){
+    var prog = readRawProgress(st.sid, wk);
+    var learnP = (prog && prog.lquiz && prog.lquiz.progress) || 0;
+    var passed = !!(prog && prog.mission && prog.mission.passed);
+    var best = (prog && prog.mission && prog.mission.bestScore) || 0;
+    var attempts = (prog && prog.mission && prog.mission.attempts) || 0;
+    var rep = loadReport(st.sid, wk);
+    return { st: st, early: isEarly(st.sid), learnP: learnP, learnDone: learnP >= need, passed: passed, best: best, attempts: attempts, repSub: !!(rep && rep.submitted) };
+  });
+  var nHasData = rows.filter(function(r){ return r.learnP > 0 || r.attempts > 0 || r.repSub; }).length;
+  h += '<table class="p-grid"><tr><th style="width:6%">#</th><th style="width:15%">학번</th><th class="l" style="width:13%">이름</th><th style="width:9%">면제</th><th>학습</th><th>미션</th><th>보고서</th></tr>';
+  rows.forEach(function(r, i){
+    var learn, miss, rep;
+    if(r.early){ learn = miss = rep = '면제'; }
+    else{
+      learn = r.learnDone ? '완료' : (r.learnP > 0 ? (r.learnP + '/' + need) : '—');
+      miss = r.passed ? ('합격 ' + r.best) : (r.attempts > 0 ? ('응시 ' + r.attempts) : '—');
+      rep = r.repSub ? '제출' : '—';
+    }
+    h += '<tr><td>' + (i+1) + '</td><td>' + esc(r.st.sid) + '</td><td class="l">' + esc(r.st.name) + '</td><td>' + (r.early ? '🎓' : '') + '</td><td>' + esc(learn) + '</td><td>' + esc(miss) + '</td><td>' + esc(rep) + '</td></tr>';
+  });
+  h += '</table>';
+  h += '<div class="p-note">※ 학습 완료 기준 ' + need + '문 · 미션 합격선 70점(합격 시 점수 표시) · 보고서 제출 여부. 현재 기록이 있는 학생 ' + nHasData + '명.'
+     + ((window.GLR && GLR.on) ? '' : ' (이 기기에 저장된 기록만 반영됩니다.)') + '</div>';
+  h += '</div>';
+  return h;
+}
+
+RENDER.outputs = function(){
+  var sc = $("sc-outputs");
+  var labList = (C && Array.isArray(C.labs)) ? C.labs : [];
+  if(!labById(DASH_WEEK)){ DASH_WEEK = ACTIVE_WEEK; }
+  var wk = DASH_WEEK;
+  var lab = labById(wk) || curLab();
+  var h = "";
+  h += '<button class="btn sm ghost" type="button" data-go="profdash" style="margin-bottom:10px;text-align:left">← 교수 확인 대시보드로</button>';
+  h += '<div class="hero">' + helixSVG();
+  h += '<div class="k">유전자분석 · 교수 전용</div>';
+  h += '<h1>📤 출력물</h1>';
+  h += '<div class="sub">수업·평가에 쓰는 인쇄물 5종을 A4 PDF로 내려받습니다. 버튼을 누르면 인쇄창이 열립니다 — \'대상\'을 \'PDF로 저장\'으로 고르시면 됩니다.</div>';
+  h += '</div>';
+
+  /* 주차 선택 — ③ 성적 점수표(전체 주차 열)와 무관하나, ④ 빈 보고서·⑤ 결과는 이 주차 기준. */
+  h += '<div class="card tight"><div class="small" style="margin:0 0 6px"><b>주차 선택</b> — 아래 <b>④ 빈 보고서 양식</b>과 <b>⑤ 학습·미션 결과</b>가 이 주차 기준으로 만들어집니다. (①②③은 주차와 무관)</div>';
+  h += '<div class="wkpick">';
+  labList.forEach(function(l){
+    var on = (l.id === wk);
+    var ready = weekPrepared(l.id);
+    var mark = ready ? '' : '<span class="pre">·준비전</span>';
+    h += '<button class="wkbtn' + (on ? ' on' : '') + '" type="button" data-week="' + esc(l.id) + '">' + esc(l.weekLabel || l.id) + mark + '</button>';
+  });
+  h += '</div><div class="small" style="color:var(--muted);margin-top:6px">현재 선택: <b>' + esc(lab.weekLabel || '') + ' ' + esc(lab.title || '') + '</b></div></div>';
+
+  function item(n, title, desc, id){
+    var x = '<div class="card"><h3>' + n + ' ' + esc(title) + '</h3>';
+    x += '<p class="small" style="margin:0 0 10px">' + desc + '</p>';
+    x += '<button class="btn primary" type="button" id="' + id + '">🖨 PDF로 보기 / 저장</button></div>';
+    return x;
+  }
+  h += item('①', '강의소개 · 앱 소개 유인물', '학생 배포용. 강의 개요(과목·학년·학점·담당·평가)와 학습 지원 앱 사용법(로그인·조 구성·퀴즈·미션·보고서)·앱 주소를 A4 1~2장으로.', 'outIntro');
+  h += item('②', '주차별 계획', '7개 실습의 주차·날짜·실험 주제·상태를 표로.', 'outPlan');
+  h += item('③', '성적 점수표 (빈 틀)', '세로 학생 명단 × 가로 주차 + 합계·비고의 빈 표. 배점 미정이라 점수 칸은 비어 있습니다(손으로 기입).', 'outGrade');
+  h += item('④', '실험보고서 (빈 양식)', '학생이 손으로 작성할 빈 보고서 양식(선택 주차 · <b>' + esc(lab.weekLabel || '') + '</b> 기준). 앱에서 제출된 보고서는 대시보드의 [보고서]·[이 주차 제출 보고서 전체 PDF]로 뽑습니다.', 'outBlank');
+  h += item('⑤', '주차별 학습·미션 결과', '선택 주차(<b>' + esc(lab.weekLabel || '') + '</b>)의 학생별 학습 완료·미션 점수·보고서 제출 여부 집계표.', 'outResults');
+
+  sc.innerHTML = h;
+  sc.querySelectorAll("[data-week]").forEach(function(b){
+    b.onclick = function(){ DASH_WEEK = b.getAttribute("data-week"); RENDER.outputs(); };
+  });
+  if($("outIntro")) $("outIntro").onclick = function(){ printOut(buildIntroHandout()); };
+  if($("outPlan")) $("outPlan").onclick = function(){ printOut(buildWeekPlan()); };
+  if($("outGrade")) $("outGrade").onclick = function(){ printOut(buildGradeSheet()); };
+  if($("outBlank")) $("outBlank").onclick = function(){ printOut(buildBlankReport(DASH_WEEK)); };
+  if($("outResults")) $("outResults").onclick = function(){ printOut(buildWeekResults(DASH_WEEK)); };
   bindGo(sc);
 };
 
@@ -3676,10 +3922,18 @@ var GLR = {
     else if(!this.down){ this.bar("",""); }
   },
 
-  /* ---- 출입증(access·refresh)은 sessionStorage: 탭을 닫으면 지워집니다(공용 PC 안전) ---- */
-  saveTok:function(){ try{ sessionStorage.setItem(this.TOKKEY, JSON.stringify(this.tok)); }catch(e){} },
-  loadTok:function(){ try{ this.tok=JSON.parse(sessionStorage.getItem(this.TOKKEY)||"null"); }catch(e){ this.tok=null; } },
-  clearTok:function(){ this.tok=null; try{ sessionStorage.removeItem(this.TOKKEY); }catch(e){} },
+  /* ---- 출입증(access·refresh)은 localStorage: 앱을 닫거나 새로고침해도 로그인이 유지됩니다.
+         (2026-09-02 교수님 지시로 sessionStorage→localStorage 변경 — 로그아웃 전까지 유지.
+          로그아웃 시 clearTok 이 지웁니다. 예전 sessionStorage 잔여물도 함께 정리합니다.) ---- */
+  saveTok:function(){ try{ localStorage.setItem(this.TOKKEY, JSON.stringify(this.tok)); }catch(e){} },
+  loadTok:function(){
+    try{
+      var raw = localStorage.getItem(this.TOKKEY);
+      if(!raw){ raw = sessionStorage.getItem(this.TOKKEY); if(raw){ try{ localStorage.setItem(this.TOKKEY, raw); sessionStorage.removeItem(this.TOKKEY); }catch(e2){} } }  /* 예전 세션 이관 */
+      this.tok = JSON.parse(raw||"null");
+    }catch(e){ this.tok=null; }
+  },
+  clearTok:function(){ this.tok=null; try{ localStorage.removeItem(this.TOKKEY); }catch(e){} try{ sessionStorage.removeItem(this.TOKKEY); }catch(e){} },
 
   /* ---- 저장 줄서기 ---- */
   saveQ:function(){ try{ localStorage.setItem(this.QKEY, JSON.stringify(this.q)); }catch(e){} },
