@@ -1067,6 +1067,24 @@ function reportHasContent(rep){
   if(rep.images && Object.keys(rep.images).some(function(k){ return Array.isArray(rep.images[k]) && rep.images[k].some(function(u){ return !!u; }); })) return true;
   return false;
 }
+/* 이 주차에 「보고서가 저장된 모든 학번」을 (기기/서버 미러의) localStorage 에서 훑어 모은다.
+ * 명단(gl_roster)에 없어도 형식만 맞으면 로그인·제출이 되므로(위 findStudent 규칙 ③),
+ * 교수 대시보드가 명단만 그리면 그런 「미등록 학번」의 보고서가 화면에서 사라진다.
+ * 이 함수로 그 학번들을 찾아 교수 표에 (미등록) 행으로 추가로 노출한다. */
+function reportSidsForWeek(wk){
+  var prefix = "dmu_gene_report_" + (wk || ACTIVE_WEEK) + "_";
+  var out = [], seen = {};
+  try{
+    for(var i = 0; i < localStorage.length; i++){
+      var k = localStorage.key(i);
+      if(k && k.indexOf(prefix) === 0){
+        var sid = k.slice(prefix.length);
+        if(sid && !seen[sid]){ seen[sid] = 1; out.push(sid); }
+      }
+    }
+  }catch(e){}
+  return out;
+}
 
 /* ---------- 로그인 대조 ----------
  * 명단이 코드에서 빠졌으므로(공개 배포용) 로그인 규칙을 이렇게 바꾼다:
@@ -2426,11 +2444,30 @@ RENDER.profdash = function(){
              rep: rep, repSubmitted: rep.submitted, repDraft: repHasText && !rep.submitted, hasData: !!prog || repHasText };
   });
   var nEarly = rows.filter(function(r){ return r.early; }).length;
-  var denom = roster.length - nEarly;                          /* 면제자를 뺀 분모 */
+  var denom = roster.length - nEarly;                          /* 면제자를 뺀 분모 — 집계 분모는 「명단 기준」 유지 */
   var nSub = rows.filter(function(r){ return !r.early && r.repSubmitted; }).length;
+  var nDraft = rows.filter(function(r){ return !r.early && r.repDraft; }).length;   /* 작성중(미제출·내용 있음) */
   var nLearn = rows.filter(function(r){ return !r.early && r.learnDone; }).length;
   var nPass = rows.filter(function(r){ return !r.early && r.passed; }).length;
-  var nActive = rows.filter(function(r){ return r.hasData; }).length;
+
+  /* 🔎 명단 밖(미등록) 작성자 — 이 주차에 보고서가 저장됐지만 gl_roster 에 없는 학번.
+   *    로그인 규칙 ③(명단에 없어도 형식만 맞으면 통과) 때문에 생길 수 있고,
+   *    지금까지 교수 표(명단 기준)에서 완전히 누락되던 학생들이다. 표에 추가로 노출한다. */
+  var rosterSids = {};
+  roster.forEach(function(st){ rosterSids[String(st.sid)] = 1; });
+  var extraRows = [];
+  reportSidsForWeek(wk).forEach(function(sid){
+    if(rosterSids[sid]) return;                                /* 명단에 있으면 위 rows 가 이미 그린다 */
+    var xrep = loadReport(sid, wk);
+    var xHasText = reportHasContent(xrep);
+    if(!(xrep.submitted || xHasText)) return;                 /* 빈 보고서는 제외(지어내기 없음) */
+    extraRows.push({ st:{ sid:sid, name:"(미등록)" }, early:false, unlisted:true,
+                     learnP:0, learnDone:false, passed:false, best:0, attempts:0,
+                     rep:xrep, repSubmitted:xrep.submitted, repDraft: xHasText && !xrep.submitted,
+                     hasData:true });
+  });
+  var tableRows = rows.concat(extraRows);                      /* 표는 명단 + 미등록 작성자 */
+  var nActive = rows.filter(function(r){ return r.hasData; }).length + extraRows.length;
   var lab = labById(wk) || curLab();
 
   var h = "";
@@ -2440,9 +2477,11 @@ RENDER.profdash = function(){
   h += '<div class="sub">' + esc(lab.title || "") + (lab.dateLabel ? ' · ' + esc(lab.dateLabel) : '') + ' — 학생별 보고서·학습·미션</div>';
   if(prepared){
     var exNote = nEarly ? ' <span class="chip">🎓 면제 ' + nEarly + '명</span>' : '';
-    h += '<div class="chips"><span class="chip">보고서 제출 ' + nSub + '/' + denom + '</span>';
+    var draftNote = nDraft ? ' <span class="chip">✍️ 작성중 ' + nDraft + '명</span>' : '';
+    var unlNote = extraRows.length ? ' <span class="chip amber">⚠ 미등록 작성자 ' + extraRows.length + '명</span>' : '';
+    h += '<div class="chips"><span class="chip">보고서 제출 ' + nSub + '/' + denom + '</span>' + draftNote;
     h += '<span class="chip">학습 완료 ' + nLearn + '/' + denom + '</span>';
-    h += '<span class="chip amber">미션 합격 ' + nPass + '/' + denom + '</span>' + exNote + '</div>';
+    h += '<span class="chip amber">미션 합격 ' + nPass + '/' + denom + '</span>' + exNote + unlNote + '</div>';
     if(nEarly) h += '<div class="sub" style="margin-top:6px">집계 분모 ' + denom + '명 = 재적 ' + roster.length + '명 − 조기취업 면제 ' + nEarly + '명</div>';
   }else{
     h += '<div class="chips"><span class="chip">이 주차는 아직 준비 전</span></div>';
@@ -2486,11 +2525,15 @@ RENDER.profdash = function(){
     h += '</div>';
   }
 
-  h += '<div class="card"><h3>학생별 현황 <span class="small">' + roster.length + '명</span></h3>';
+  var rosterCntLabel = roster.length + '명' + (extraRows.length ? ' + 미등록 ' + extraRows.length + '명' : '');
+  h += '<div class="card"><h3>학생별 현황 <span class="small">' + rosterCntLabel + '</span></h3>';
   h += '<p class="small" style="margin:0 0 8px"><b>조기취업(면제)</b>은 위 <b>[학생 명단관리]</b>에서 학생별로 체크합니다. 여기 표에는 <b>🎓면제</b> 여부만 표시됩니다.</p>';
+  if(extraRows.length){
+    h += '<p class="small" style="margin:0 0 8px;color:var(--amber)"><b>⚠ (미등록)</b> 행은 <b>명단에 없는 학번으로 로그인해 보고서를 낸 학생</b>입니다. 명단관리에서 이름·학번을 확인해 등록해 주세요(집계 분모에는 아직 포함되지 않습니다).</p>';
+  }
   h += '<div class="tblwrap"><table class="dash-tbl">';
   h += '<tr><th>#</th><th>학번</th><th>이름</th><th class="c">면제</th><th class="c">보고서</th><th class="c">학습</th><th class="c">미션</th><th></th></tr>';
-  rows.forEach(function(r, i){
+  tableRows.forEach(function(r, i){
     var repPill, learnPill, missPill;
     if(r.early){
       repPill = learnPill = missPill = '<span class="pill mid">면제</span>';
@@ -2500,7 +2543,8 @@ RENDER.profdash = function(){
       missPill = r.passed ? '<span class="pill ok">합격 ' + r.best + '</span>' : (r.attempts>0 ? '<span class="pill mid">응시 ' + r.attempts + '</span>' : '<span class="pill no">—</span>');
     }
     var canOpen = r.repSubmitted || r.repDraft;
-    h += '<tr' + (r.early ? ' style="background:var(--greendk)"' : '') + '><td>' + (i+1) + '</td><td>' + esc(r.st.sid) + '</td><td>' + esc(r.st.name) + '</td>';
+    var nameCell = esc(r.st.name) + (r.unlisted ? ' <span class="pill no">미등록</span>' : '');
+    h += '<tr' + (r.early ? ' style="background:var(--greendk)"' : (r.unlisted ? ' style="background:var(--amberdk)"' : '')) + '><td>' + (i+1) + '</td><td>' + esc(r.st.sid) + '</td><td>' + nameCell + '</td>';
     h += '<td class="c">' + (r.early ? '<span class="pill mid">🎓면제</span>' : '<span class="pill no">—</span>') + '</td>';
     h += '<td class="c">' + repPill + '</td><td class="c">' + learnPill + '</td><td class="c">' + missPill + '</td>';
     h += '<td class="c">' + (canOpen ? '<button class="pill mid" type="button" data-open="' + esc(r.st.sid) + '" data-name="' + esc(r.st.name) + '" style="cursor:pointer">보고서</button>' : '') + '</td></tr>';
