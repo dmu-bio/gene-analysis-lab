@@ -683,6 +683,25 @@ var AW = null;                                  /* 활성 주차 콘텐츠 (boot
 function labById(id){ var r = null; (C.labs || []).forEach(function(l){ if(l.id === id) r = l; }); return r; }
 function curLab(){ return labById(ACTIVE_WEEK) || { weekLabel:"", title:"", dateLabel:"", unlockDate:"" }; }
 
+/* ==========================================================================
+ * 결과보고서 제출 기한 — 주차별로 둔다(지금은 2주차 w02 만).
+ *   ⚠️ 오프셋 +09:00(KST)을 반드시 붙여, 학생 브라우저의 타임존과 무관하게 같은 절대 시각을 가리키게 한다.
+ *   판정은 클라이언트 현재시각(new Date()) 대비이며, 두 값 모두 절대 시각(instant)이라 타임존 영향이 없다.
+ *   문구는 한국시간 벽시계 값으로 고정 표기한다(브라우저 로컬시각으로 요일·시각을 다시 계산하지 않는다).
+ * ========================================================================*/
+var REPORT_DEADLINE = {
+  w02: {
+    at:    new Date('2026-09-08T23:59:59+09:00'),  /* 마감: KST 2026-09-08 23:59:59 */
+    label: '⏰ 제출 기한: 2026년 9월 8일(화) 23:59까지 (한국시간)',
+    over:  '제출 기한이 지났습니다 (2026-09-08 23:59 마감)'
+  }
+};
+/* 해당 주차의 기한이 지났으면 true. 기한 정보가 없는 주차는 항상 false(제한 없음). */
+function reportDeadlinePassed(weekId){
+  var dl = REPORT_DEADLINE[weekId];
+  return !!(dl && dl.at instanceof Date && new Date() > dl.at);
+}
+
 /* 교수 대시보드에서 선택한 주차 — 학생용 ACTIVE_WEEK 과 분리해, 대시보드 조회만 이 주차 키로 읽는다.
  *   이렇게 나누면 교수가 다른 주차를 골라 봐도 학생용 활성 주차(미션·로비 등)에는 영향이 없다. */
 var DASH_WEEK = ACTIVE_WEEK;
@@ -1794,13 +1813,25 @@ RENDER.lobby = function(){
   h += '<div class="hub-t">① 실험 결과보고서 작성' + exBadge + '</div>';
   h += '<div class="hub-d">A4 서식에 맞춰 작성하고 제출합니다. (A4 미리보기·워드·PDF는 교수님 확인 화면에서 내려받습니다)</div>';
   h += '<div class="hub-st">' + (rep.submitted ? '<b>제출함</b> · ' + esc(rep.submittedAt || "") : (repHasText ? '작성 중 (임시 저장됨)' : '아직 시작 안 함')) + '</div>';
-  h += '<button class="btn sm primary" type="button" id="hubReport" style="margin-top:8px">보고서 ' + (repHasText ? '이어 작성' : '작성 시작') + ' 📝</button>';
+  /* 제출 기한 문구 + 기한 경과 시 「작성 시작」 비활성화 (2주차 등 기한이 설정된 주차에만) —
+     교수 미리보기(isProf)에는 비활성화·경과 표시를 적용하지 않는다(교수는 언제나 학생 화면을 열어볼 수 있어야 함). */
+  var dlInfo = REPORT_DEADLINE[lab.id];
+  var dlOverStu = !isProf && reportDeadlinePassed(lab.id);
+  if(dlInfo){
+    h += '<div class="hub-st" style="' + (dlOverStu ? 'color:var(--red)' : 'color:var(--mint);font-weight:700') + '">'
+       + esc(dlOverStu ? dlInfo.over : dlInfo.label) + '</div>';
+  }
+  h += '<button class="btn sm primary" type="button" id="hubReport"' + (dlOverStu ? ' disabled' : '') + ' style="margin-top:8px">보고서 ' + (repHasText ? '이어 작성' : '작성 시작') + ' 📝</button>';
   h += '</div></div>';
 
   if(!hasPool()){
     h += '<div class="card"><h3>문항 풀을 읽지 못했습니다</h3><p class="muted">활성 주차 pool(timed·reason)이 없어 학습·미션을 열 수 없습니다.</p></div>';
     var sc0 = $("sc-lobby"); sc0.innerHTML = h;
-    if($("hubReport")) $("hubReport").onclick = function(){ openReportSelf(); };
+    if($("hubReport")) $("hubReport").onclick = function(){
+    /* 학생은 기한이 지나면 열 수 없다(버튼도 disabled 이지만 방어적으로 한 번 더 막는다). 교수 미리보기는 항상 허용. */
+    if(state.role !== "prof" && reportDeadlinePassed(curLab().id)){ toast("제출 기한이 지났습니다 (2026-09-08 23:59 마감)"); return; }
+    openReportSelf();
+  };
     bindGo(sc0); return;
   }
 
@@ -1851,7 +1882,11 @@ RENDER.lobby = function(){
 
   var sc = $("sc-lobby");
   sc.innerHTML = h;
-  if($("hubReport")) $("hubReport").onclick = function(){ openReportSelf(); };
+  if($("hubReport")) $("hubReport").onclick = function(){
+    /* 학생은 기한이 지나면 열 수 없다(버튼도 disabled 이지만 방어적으로 한 번 더 막는다). 교수 미리보기는 항상 허용. */
+    if(state.role !== "prof" && reportDeadlinePassed(curLab().id)){ toast("제출 기한이 지났습니다 (2026-09-08 23:59 마감)"); return; }
+    openReportSelf();
+  };
   bindGo(sc);
 };
 /* ==========================================================================
