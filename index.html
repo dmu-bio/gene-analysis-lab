@@ -2605,7 +2605,10 @@ RENDER.profdash = function(){
     h += '<p class="small" style="margin:0 0 8px;color:var(--amber)"><b>⚠ (미등록)</b> 행은 <b>명단에 없는 학번으로 로그인해 보고서를 낸 학생</b>입니다. 명단관리에서 이름·학번을 확인해 등록해 주세요(집계 분모에는 아직 포함되지 않습니다).</p>';
   }
   h += '<div class="tblwrap"><table class="dash-tbl">';
-  h += '<tr><th>#</th><th>학번</th><th>이름</th><th class="c">면제</th><th class="c">보고서</th><th class="c">학습</th><th class="c">미션</th><th></th></tr>';
+  /* 열 순서(2026-09-03 교수님 지시): # · 학번 · 이름 · 보고서(상태) · 보고서(열람 버튼) · 학습 · 미션 · 면제.
+   *   [보고서] 열람 버튼을 맨 오른쪽에서 상태 칸 바로 옆으로 당겨 오른쪽 스크롤 없이 누르게 했고, 면제 열은 맨 끝으로 보냈다.
+   *   ⚠ 아래 각 행(td)의 순서도 이 헤더와 똑같이 맞춰야 한다(헤더-셀 어긋남 주의). */
+  h += '<tr><th>#</th><th>학번</th><th>이름</th><th class="c">보고서</th><th></th><th class="c">학습</th><th class="c">미션</th><th class="c">면제</th></tr>';
   tableRows.forEach(function(r, i){
     var repPill, learnPill, missPill;
     if(r.early){
@@ -2618,9 +2621,10 @@ RENDER.profdash = function(){
     var canOpen = r.repSubmitted || r.repDraft;
     var nameCell = esc(r.st.name) + (r.unlisted ? ' <span class="pill no">미등록</span>' : '');
     h += '<tr' + (r.early ? ' style="background:var(--greendk)"' : (r.unlisted ? ' style="background:var(--amberdk)"' : '')) + '><td>' + (i+1) + '</td><td>' + esc(r.st.sid) + '</td><td>' + nameCell + '</td>';
-    h += '<td class="c">' + (r.early ? '<span class="pill mid">🎓면제</span>' : '<span class="pill no">—</span>') + '</td>';
-    h += '<td class="c">' + repPill + '</td><td class="c">' + learnPill + '</td><td class="c">' + missPill + '</td>';
-    h += '<td class="c">' + (canOpen ? '<button class="pill mid" type="button" data-open="' + esc(r.st.sid) + '" data-name="' + esc(r.st.name) + '" style="cursor:pointer">보고서</button>' : '') + '</td></tr>';
+    h += '<td class="c">' + repPill + '</td>';
+    h += '<td class="c">' + (canOpen ? '<button class="pill mid" type="button" data-open="' + esc(r.st.sid) + '" data-name="' + esc(r.st.name) + '" style="cursor:pointer">보고서</button>' : '') + '</td>';
+    h += '<td class="c">' + learnPill + '</td><td class="c">' + missPill + '</td>';
+    h += '<td class="c">' + (r.early ? '<span class="pill mid">🎓면제</span>' : '<span class="pill no">—</span>') + '</td></tr>';
   });
   h += '</table></div></div>';
 
