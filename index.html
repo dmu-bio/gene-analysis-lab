@@ -1053,11 +1053,13 @@ function loadReport(sid, wk){
   return d;
 }
 function saveReport(sid, data){
-  try{
-    localStorage.setItem(reportKey(sid), JSON.stringify(data));
-    if(window.GLR && GLR.on) GLR.syncReport(sid, data, ACTIVE_WEEK);   /* 사진은 Storage 로, 경로만 표에 */
-    return true;
-  }catch(e){ return false; }
+  var cloud = !!(window.GLR && GLR.on);
+  var localOk = false;
+  try{ localStorage.setItem(reportKey(sid), JSON.stringify(data)); localOk = true; }catch(e){ localOk = false; }
+  /* 클라우드(서버) 모드: 사진은 Storage 버킷에, 경로만 표에 올린다. 이 기기 localStorage 가 꽉 차
+   * 로컬 미러 저장이 실패해도 서버 업로드는 계속 진행해 사진이 유실되지 않게 한다(새로고침하면 서버에서 되받음). */
+  if(cloud){ try{ GLR.syncReport(sid, data, ACTIVE_WEEK); }catch(e){} return true; }
+  return localOk;   /* 로컬 전용 모드: 로컬 저장 성공 여부가 곧 결과(실패 시 호출부가 롤백) */
 }
 /* 보고서에 작성 흔적이 있는가 — 텍스트 섹션 또는 업로드한 사진 */
 function reportHasContent(rep){
@@ -2043,30 +2045,66 @@ function reportMetaMap(def, sid, name, data){
 }
 function reportFileBase(sid){ return "CellCulture_Report_" + (sid || "student"); }
 
-/* 이미지 파일 → 가로 최대 maxW 로 리사이즈 + JPEG 압축 → base64 dataURL. 순수 브라우저 API. */
-function resizeImageFile(file, maxW, cb){
+/* 이미지 파일 → 「긴 변」 최대 maxEdge 로 리사이즈 + JPEG 압축 → base64 dataURL. 순수 브라우저 API.
+ * 폰으로 찍은 수십 MB·수천만 화소 원본도 올라가게 만든 것이 핵심:
+ *  · 긴 변(가로·세로 중 큰 쪽) 기준으로 줄여 세로로 긴 사진도 확실히 축소한다(예전엔 가로만 봐서 세로 긴 사진이 안 줄었음).
+ *  · 아주 큰 원본은 절반씩 여러 번 나눠 줄인다 — 모바일 사파리/크롬에서 한 번에 크게 줄이면 뭉개지거나 실패하던 문제 방지.
+ *  · 원본은 objectURL 로 열어 메모리를 아끼고(실패 시 dataURL 로 재시도), 끝나면 해제한다.
+ *  · 변환 결과가 비면 명확히 알린다. 조용히 실패하지 않는다. */
+function resizeImageFile(file, maxEdge, cb){
   if(!file || !/^image\//.test(file.type || "")){ cb(null, "이미지 파일이 아닙니다."); return; }
-  var reader = new FileReader();
-  reader.onerror = function(){ cb(null, "파일을 읽지 못했습니다."); };
-  reader.onload = function(){
-    var img = new Image();
-    img.onerror = function(){ cb(null, "이미지를 여는 데 실패했습니다."); };
-    img.onload = function(){
-      try{
-        var w = img.naturalWidth || img.width, ht = img.naturalHeight || img.height;
-        if(!w || !ht){ cb(null, "이미지 크기를 알 수 없습니다."); return; }
-        var scale = w > maxW ? (maxW / w) : 1;
-        var cw = Math.max(1, Math.round(w * scale)), ch = Math.max(1, Math.round(ht * scale));
-        var cv = document.createElement("canvas"); cv.width = cw; cv.height = ch;
-        var g = cv.getContext("2d");
-        g.fillStyle = "#ffffff"; g.fillRect(0, 0, cw, ch);   /* 투명 PNG 대비 흰 배경 */
-        g.drawImage(img, 0, 0, cw, ch);
-        cb(cv.toDataURL("image/jpeg", 0.82), null);
-      }catch(e){ cb(null, "이미지 변환 중 오류: " + (e && e.message ? e.message : e)); }
-    };
-    img.src = reader.result;
-  };
-  reader.readAsDataURL(file);
+  maxEdge = maxEdge || 1280;
+  var url = null;
+  function cleanup(){ if(url){ try{ URL.revokeObjectURL(url); }catch(e){} url = null; } }
+  function fail(msg){ cleanup(); cb(null, msg); }
+  function draw(img){
+    try{
+      var w = img.naturalWidth || img.width, ht = img.naturalHeight || img.height;
+      if(!w || !ht){ fail("이미지 크기를 알 수 없습니다."); return; }
+      var longSide = Math.max(w, ht);
+      var scale = longSide > maxEdge ? (maxEdge / longSide) : 1;
+      var cw = Math.max(1, Math.round(w * scale)), ch = Math.max(1, Math.round(ht * scale));
+      /* 원본이 목표보다 4배 이상 크면 절반씩 단계적으로 줄여 화질을 지키고 실패를 막는다 */
+      var src = img, sw = w, sh = ht, guard = 0;
+      while((sw > cw * 2 || sh > ch * 2) && guard < 8){
+        var nw = Math.max(cw, Math.round(sw / 2)), nh = Math.max(ch, Math.round(sh / 2));
+        var tmp = document.createElement("canvas"); tmp.width = nw; tmp.height = nh;
+        var tg = tmp.getContext("2d"); if(!tg){ break; }
+        tg.drawImage(src, 0, 0, nw, nh);
+        src = tmp; sw = nw; sh = nh; guard++;
+      }
+      var cv = document.createElement("canvas"); cv.width = cw; cv.height = ch;
+      var g = cv.getContext("2d");
+      if(!g){ fail("이 브라우저에서 사진 처리를 지원하지 않습니다."); return; }
+      g.fillStyle = "#ffffff"; g.fillRect(0, 0, cw, ch);   /* 투명 PNG 대비 흰 배경 */
+      g.drawImage(src, 0, 0, cw, ch);
+      var out = "";
+      try{ out = cv.toDataURL("image/jpeg", 0.8); }catch(e){ fail("사진 형식을 변환하지 못했습니다. 다른 사진으로 시도해 주세요."); return; }
+      if(!out || out.length < 100 || out === "data:,"){ fail("사진을 변환하지 못했습니다. 다른 사진으로 시도해 주세요."); return; }
+      cleanup();
+      cb(out, null);
+    }catch(e){ fail("이미지 변환 중 오류: " + (e && e.message ? e.message : e)); }
+  }
+  function fromDataURL(){    /* objectURL 로 안 열릴 때 대비(구형 사파리 등) */
+    try{
+      var reader = new FileReader();
+      reader.onerror = function(){ fail("파일을 읽지 못했습니다."); };
+      reader.onload = function(){
+        var im2 = new Image();
+        im2.onload = function(){ draw(im2); };
+        im2.onerror = function(){ fail("이미지를 여는 데 실패했습니다. 사진이 너무 크거나 지원하지 않는 형식(예: 일부 HEIC)일 수 있어요."); };
+        im2.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    }catch(e){ fail("이미지를 여는 데 실패했습니다."); }
+  }
+  var img = new Image();
+  img.onload = function(){ draw(img); };
+  img.onerror = function(){ cleanup(); fromDataURL(); };
+  try{
+    if(window.URL && URL.createObjectURL){ url = URL.createObjectURL(file); img.src = url; }
+    else { fromDataURL(); }
+  }catch(e){ fromDataURL(); }
 }
 
 /* 이미지 업로드 섹션(배양 전/후) — 조건별 슬롯 그리드(편집 폼용) */
@@ -2091,7 +2129,7 @@ function buildImageSlots(s, data, readonly){
     h += '</div>';
   });
   h += '</div>';
-  if(!readonly) h += '<div class="img-note">사진은 자동으로 가로 최대 1000px로 줄여 저장합니다(용량 절약). 큰 원본은 그대로 저장되지 않습니다.</div>';
+  if(!readonly) h += '<div class="img-note">사진은 자동으로 긴 변 최대 1280px로 줄여 저장합니다(용량 절약·업로드 안정). 폰으로 찍은 큰 원본을 그대로 올리셔도 앱이 알아서 줄여 줍니다.</div>';
   return h;
 }
 
@@ -2361,7 +2399,7 @@ RENDER.report = function(){
         if(!file) return;
         var key = inp.getAttribute("data-imgfile"), idx = parseInt(inp.getAttribute("data-idx"), 10);
         toast("사진 처리 중…");
-        resizeImageFile(file, 1000, function(durl, err){
+        resizeImageFile(file, 1280, function(durl, err){
           if(err || !durl){ toast(err || "사진을 불러오지 못했습니다."); return; }
           collect();                               /* 고찰 등 현재 입력 보존 */
           var d = R.data;
