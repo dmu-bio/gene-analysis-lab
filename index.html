@@ -937,12 +937,13 @@ function loadTeams(){
   return [];
 }
 function saveTeams(list){
-  try{
-    var old = loadTeams();
-    localStorage.setItem(TEAMS_KEY, JSON.stringify(list));
-    if(window.GLR && GLR.on) GLR.syncTeams(list, old);
-    return true;
-  }catch(e){ return false; }
+  var old = loadTeams();                    /* 서버 diff 를 위한 이전 상태 — 로컬 저장 전에 읽는다 */
+  var localOk = true;
+  /* 🔵 로컬 저장과 서버 동기화를 분리한다: 로컬 setItem 이 (저장공간 부족 등으로) 실패해도
+     클라우드 모드에서는 서버 동기화를 반드시 진행해야 조가 유실되지 않는다(서버가 원본). */
+  try{ localStorage.setItem(TEAMS_KEY, JSON.stringify(list)); }catch(e){ localOk = false; }
+  if(window.GLR && GLR.on){ try{ GLR.syncTeams(list, old); }catch(e){} return true; }
+  return localOk;
 }
 /* 조 해체 — 해당 번호의 조를 명단에서 제거한다(조원 전원이 다시 미배정 상태가 된다).
    남은 조의 번호는 그대로 유지되고, 새로 만드는 조는 makeTeam 이 최대번호+1 을 부여한다. */
@@ -986,9 +987,12 @@ function saveRoster(list){
       if(seen[sid]) return; seen[sid] = true;
       clean.push({ sid: sid, name: name });
     });
-    localStorage.setItem(ROSTER_KEY, JSON.stringify(clean));
-    if(window.GLR && GLR.on) GLR.syncRoster(clean, old);
-    return true;
+    var localOk = true;
+    /* 🔵 로컬 저장과 서버 동기화를 분리한다(saveTeams 와 동일 원칙): 로컬 setItem 이 실패해도
+       클라우드 모드에서는 명단을 서버에 반드시 반영한다(서버가 원본). */
+    try{ localStorage.setItem(ROSTER_KEY, JSON.stringify(clean)); }catch(e){ localOk = false; }
+    if(window.GLR && GLR.on){ try{ GLR.syncRoster(clean, old); }catch(e){} return true; }
+    return localOk;
   }catch(e){ return false; }
 }
 /* 현재 유효한 명단(단일 조회 지점) — 모든 화면이 이걸 통해 명단을 읽는다. */
@@ -1071,12 +1075,36 @@ function loadReport(sid, wk){
   }catch(e){}
   return d;
 }
+/* 🔵 클라우드 모드에서 이 기기(localStorage)에 남길 '가벼운' 보고서 사본을 만든다.
+ *   사진 base64(data:…)는 로컬에 저장하지 않고 '서버 경로'만 남긴다 — loadAll 미러와 똑같은 규칙.
+ *   이유: 사진 base64 를 로컬에 쌓으면(주차가 늘수록 누적) 폰 한도(~5MB)를 넘겨,
+ *         그 뒤의 setItem(진도·조편성·전송큐 등)까지 조용히 실패하는 옛 버그가 학생 기기에서 재발한다.
+ *   원본 사진은 서버 버킷에 그대로 올라가고(syncReport→pump), 열람할 때 resolveReportPhotos 로 다시 받아온다.
+ *   경로 형식은 pump 이 실제로 올리는 경로("주차/학번/키_번호.jpg")와 동일해야 지연 로드가 맞아떨어진다. */
+function reportLocalCopy(sid, data){
+  if(!(window.GLR && GLR.on) || !data) return data;   /* 로컬 전용 모드는 서버가 없으므로 base64 를 그대로 보관 */
+  var lite = { meta:data.meta||{}, sections:data.sections||{}, tables:data.tables||{},
+               submitted:!!data.submitted, savedAt:data.savedAt||"", submittedAt:data.submittedAt||"", images:{} };
+  var imgs = data.images || {}, wk = ACTIVE_WEEK, s = String(sid);
+  Object.keys(imgs).forEach(function(key){
+    var arr = imgs[key]; if(!Array.isArray(arr)) return;
+    lite.images[key] = arr.map(function(val, idx){
+      if(val && typeof val === "string" && val.indexOf("data:") === 0){
+        return wk + "/" + s + "/" + key + "_" + idx + ".jpg";   /* pump 이 올릴 경로와 동일 */
+      }
+      return val || "";
+    });
+  });
+  return lite;
+}
 function saveReport(sid, data){
   var cloud = !!(window.GLR && GLR.on);
   var localOk = false;
-  try{ localStorage.setItem(reportKey(sid), JSON.stringify(data)); localOk = true; }catch(e){ localOk = false; }
-  /* 클라우드(서버) 모드: 사진은 Storage 버킷에, 경로만 표에 올린다. 이 기기 localStorage 가 꽉 차
-   * 로컬 미러 저장이 실패해도 서버 업로드는 계속 진행해 사진이 유실되지 않게 한다(새로고침하면 서버에서 되받음). */
+  /* 클라우드 모드: 로컬에는 '가벼운 사본'(사진=경로)만 저장한다(base64 누적으로 기기가 꽉 차는 것을 막는다). */
+  try{ localStorage.setItem(reportKey(sid), JSON.stringify(cloud ? reportLocalCopy(sid, data) : data)); localOk = true; }catch(e){ localOk = false; }
+  /* 클라우드(서버) 모드: 사진은 Storage 버킷에, 경로만 표에 올린다. 서버로는 base64 를 그대로 보낸다(syncReport).
+   * 이 기기 localStorage 가 꽉 차 로컬 사본 저장이 실패해도 서버 업로드는 계속 진행해 사진이 유실되지 않게 한다
+   * (새로고침하면 서버에서 되받는다). */
   if(cloud){ try{ GLR.syncReport(sid, data, ACTIVE_WEEK); }catch(e){} return true; }
   return localOk;   /* 로컬 전용 모드: 로컬 저장 성공 여부가 곧 결과(실패 시 호출부가 롤백) */
 }
@@ -4074,7 +4102,7 @@ function glBlobToDataUrl(blob){
 }
 
 var GLR = {
-  on:false, ready:false, tok:null, _acc:null, q:[], failed:[], down:false, busy:false,
+  on:false, ready:false, tok:null, _acc:null, q:[], failed:[], down:false, busy:false, qPersistFailed:false,
   MSG_DOWN:"지금 접속이 되지 않습니다. 잠시 뒤 다시 시도해 주세요.",
   QKEY:"gl_db_queue_v1", TOKKEY:"gl_db_tok_v1", SNAPKEY:"gl_premigrate_snapshot_v1",
 
@@ -4112,9 +4140,11 @@ var GLR = {
   down_:function(){ this.down=true; this.bar("⚠ "+this.MSG_DOWN+' <span style="font-weight:400">새로 저장한 것은 보관해 두었다가 접속이 돌아오면 자동으로 보냅니다.</span>',"red"); if(window.toast) toast("⚠ "+this.MSG_DOWN); },
   up:function(){ if(this.down){ this.down=false; this.bar("",""); if(window.toast) toast("접속이 돌아왔습니다."); } this.showQ(); },
   showQ:function(){
-    if(this.failed.length){ this.bar('🔴 서버가 저장을 거부한 것이 <b>'+this.failed.length+'건</b> 있습니다. <span style="font-weight:400">소장에게 알려 주세요.</span>',"red"); }
-    else if(this.q.length && !this.down){ this.bar("서버로 보내는 중… <b>"+this.q.length+"건</b>","amber"); }
-    else if(!this.down){ this.bar("",""); }
+    if(this.failed.length){ this.bar('🔴 서버가 저장을 거부한 것이 <b>'+this.failed.length+'건</b> 있습니다. <span style="font-weight:400">소장에게 알려 주세요.</span>',"red"); return; }
+    /* 🔵 전송 대기 자료를 이 기기에 임시 보관조차 못 한 경우(저장공간 부족) — 조용히 넘기지 않고 알린다. */
+    if(this.qPersistFailed && this.q.length){ this.bar('🔴 이 기기 저장공간이 부족해 <b>전송 대기 자료를 임시 보관하지 못했습니다.</b> <span style="font-weight:400">전송이 끝날 때까지(위 “보내는 중” 표시가 사라질 때까지) 창을 닫지 마세요.</span>',"red"); return; }
+    if(this.q.length && !this.down){ this.bar("서버로 보내는 중… <b>"+this.q.length+"건</b>","amber"); return; }
+    if(!this.down){ this.bar("",""); }
   },
 
   /* ---- 출입증(access·refresh)은 localStorage: 앱을 닫거나 새로고침해도 로그인이 유지됩니다.
@@ -4131,7 +4161,7 @@ var GLR = {
   clearTok:function(){ this.tok=null; try{ localStorage.removeItem(this.TOKKEY); }catch(e){} try{ sessionStorage.removeItem(this.TOKKEY); }catch(e){} },
 
   /* ---- 저장 줄서기 ---- */
-  saveQ:function(){ try{ localStorage.setItem(this.QKEY, JSON.stringify(this.q)); }catch(e){} },
+  saveQ:function(){ try{ localStorage.setItem(this.QKEY, JSON.stringify(this.q)); this.qPersistFailed=false; }catch(e){ this.qPersistFailed=true; if(window.toast) toast("⚠ 저장공간 부족 — 전송이 끝날 때까지 창을 닫지 마세요."); } },
   loadQ:function(){ try{ this.q=JSON.parse(localStorage.getItem(this.QKEY)||"[]")||[]; }catch(e){ this.q=[]; } },
 
   /* ---- 로그인: gene-login → verify → access_token ---- */
