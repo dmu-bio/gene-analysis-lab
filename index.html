@@ -2280,23 +2280,30 @@ function printBulkReports(wk){
     if(rep && rep.submitted) subs.push({ st: st, rep: rep });
   });
   if(subs.length === 0){ toast("이 주차에 제출된 보고서가 없습니다."); return; }
-  var parts = "";
-  subs.forEach(function(o){
-    var tm = teamOf(o.st.sid);
-    var teamLbl = tm ? (tm.no + "조") : ((o.rep.meta && o.rep.meta.team) || "");
-    var head = '<div class="p-bulkhead">' + esc(o.st.sid) + ' · ' + esc(o.st.name)
-      + (teamLbl ? '<span class="sub">' + esc(teamLbl) + '</span>' : '')
-      + '<span class="sub">' + esc(lab.weekLabel || "") + ' ' + esc(lab.title || "") + '</span></div>';
-    parts += '<div class="paper p-studentblock">' + head + buildReportHTML(o.st.sid, o.st.name, o.rep) + '</div>';
-  });
-  var pp = $("printPaper");
-  pp.innerHTML = parts;
-  document.body.classList.add("printing");
-  var cleanup = function(){ document.body.classList.remove("printing"); pp.innerHTML = ""; window.onafterprint = null; };
-  window.onafterprint = cleanup;
-  toast("제출 보고서 " + subs.length + "건을 인쇄 준비했습니다.");
-  setTimeout(function(){ try{ window.print(); }catch(e){ cleanup(); toast("인쇄를 열 수 없습니다."); } }, 80);
-  setTimeout(function(){ if(document.body.classList.contains("printing")) cleanup(); }, 15000);
+  var doPrint = function(){
+    var parts = "";
+    subs.forEach(function(o){
+      var tm = teamOf(o.st.sid);
+      var teamLbl = tm ? (tm.no + "조") : ((o.rep.meta && o.rep.meta.team) || "");
+      var head = '<div class="p-bulkhead">' + esc(o.st.sid) + ' · ' + esc(o.st.name)
+        + (teamLbl ? '<span class="sub">' + esc(teamLbl) + '</span>' : '')
+        + '<span class="sub">' + esc(lab.weekLabel || "") + ' ' + esc(lab.title || "") + '</span></div>';
+      parts += '<div class="paper p-studentblock">' + head + buildReportHTML(o.st.sid, o.st.name, o.rep) + '</div>';
+    });
+    var pp = $("printPaper");
+    pp.innerHTML = parts;
+    document.body.classList.add("printing");
+    var cleanup = function(){ document.body.classList.remove("printing"); pp.innerHTML = ""; window.onafterprint = null; };
+    window.onafterprint = cleanup;
+    toast("제출 보고서 " + subs.length + "건을 인쇄 준비했습니다.");
+    setTimeout(function(){ try{ window.print(); }catch(e){ cleanup(); toast("인쇄를 열 수 없습니다."); } }, 80);
+    setTimeout(function(){ if(document.body.classList.contains("printing")) cleanup(); }, 15000);
+  };
+  /* 🔵 미러에는 사진 경로만 있으므로, 인쇄 전에 제출본들의 사진을 먼저 받아 온다(교수의 명시적 동작이라 잠시 기다림 허용). */
+  if(window.GLR && GLR.on){
+    toast("사진을 불러오는 중… 잠시만 기다려 주세요.");
+    Promise.all(subs.map(function(o){ return GLR.resolveReportPhotos(o.rep); })).then(doPrint, doPrint);
+  } else { doPrint(); }
 }
 
 RENDER.report = function(){
@@ -2304,7 +2311,15 @@ RENDER.report = function(){
   var sc = $("sc-report");
   if(!ctx.report){ ctx.report = { sid: state.studentId, name: state.studentName, readonly: state.role === "prof", view: "edit" }; }
   var R = ctx.report;
-  if(!R.data){ R.data = loadReport(R.sid); }
+  if(!R.data){ R.data = loadReport(R.sid, R.week); }
+  /* 🔵 사진 지연 로드: 미러에는 경로만 있으므로, 이 보고서를 실제로 여는 지금 사진을 받아 온다.
+     상태·집계 표는 사진 없이도 정확했고(그 덕에 폰에서도 전량 표시), 사진 다운로드는 지금 보는 이 한 건에만 든다. */
+  if(window.GLR && GLR.on && R.data && !R.data._photosResolved && !R._resolving){
+    R._resolving = true;
+    sc.innerHTML = '<div class="card"><p class="muted">📷 사진을 불러오는 중입니다…</p></div>';
+    GLR.resolveReportPhotos(R.data).then(function(){ R._resolving=false; RENDER.report(); }, function(){ R._resolving=false; RENDER.report(); });
+    return;
+  }
   var data = R.data;
   var readonly = !!R.readonly;
 
@@ -4137,7 +4152,20 @@ var GLR = {
   },
 
   /* ---- 통째로 받아 localStorage 에 미러링 (기존 읽기 함수가 그대로 읽게) ---- */
-  loadTable:function(t){ return this.call("/rest/v1/"+GLTBL[t].db+"?select=*&order=id.asc", { headers:this.hdr(false) }); },
+  /* 🔵 전량 순회 로드 — PostgREST 는 한 번에 최대 1000행만 준다. Range 헤더로 1000행씩 끝까지 이어 받아
+     학생 수·주차가 늘어 1000행을 넘겨도 일부만 받고 멈추는 일이 없게 한다(읽기 안정화). */
+  loadTable:function(t){
+    var self=this, base="/rest/v1/"+GLTBL[t].db+"?select=*&order=id.asc", PAGE=1000;
+    function page(from, acc){
+      return self.call(base, { headers:self.mix(self.hdr(false), {"Range-Unit":"items", "Range":from+"-"+(from+PAGE-1)}) })
+        .then(function(rows){
+          rows=rows||[]; acc=acc.concat(rows);
+          if(rows.length < PAGE) return acc;       /* 마지막 페이지(받은 게 한 페이지보다 적음) */
+          return page(from+PAGE, acc);
+        });
+    }
+    return page(0, []);
+  },
   clearMirror:function(){
     try{
       localStorage.removeItem(ROSTER_KEY); localStorage.removeItem(TEAMS_KEY); localStorage.removeItem(EARLY_KEY);
@@ -4174,6 +4202,23 @@ var GLR = {
   uploadPhoto:function(path, durl){
     return this.call("/storage/v1/object/"+GLCONF.bucket+"/"+path, { method:"POST", headers:this.mix(this.hdr(false), {"x-upsert":"true","Content-Type":"image/jpeg"}), body:glDataUrlToBlob(durl) });
   },
+  /* 🔵 사진 지연 로드 — 미러에는 사진 '경로'만 있으므로, 이 보고서를 실제로 열 때만 원본을 받아
+     data.images 안의 경로를 dataURL 로 바꿔 준다(제자리 치환). 이미 dataURL 이면 그대로 둔다.
+     한 건만 받으므로 폰에서도 가볍고, 실패한 사진은 조용히 건너뛰되 나머지는 정상 표시된다. */
+  resolveReportPhotos:function(data){
+    var self=this;
+    if(!this.on || !data || data._photosResolved) return Promise.resolve(data);
+    var imgs=data.images||{}, tasks=[];
+    Object.keys(imgs).forEach(function(key){
+      var arr=imgs[key]; if(!Array.isArray(arr)) return;
+      arr.forEach(function(val, idx){
+        if(val && typeof val==="string" && val.indexOf("data:")!==0 && val.indexOf("/")!==-1){
+          tasks.push(self.fetchPhoto(val).then(function(d){ arr[idx]=d; }, function(){}));
+        }
+      });
+    });
+    return Promise.all(tasks).then(function(){ data._photosResolved=true; return data; });
+  },
 
   loadAll:function(){
     var self=this;
@@ -4185,20 +4230,22 @@ var GLR = {
       try{ localStorage.setItem(TEAMS_KEY, JSON.stringify((res[1]||[]).map(function(t){ return {id:t.id, no:t.no, members:((t.data&&t.data.members)||[]).map(String)}; }))); }catch(e){}
       try{ localStorage.setItem(EARLY_KEY, JSON.stringify((res[2]||[]).map(function(e){ return String(e.sid); }))); }catch(e){}
       (res[3]||[]).forEach(function(r){ try{ localStorage.setItem("dmu_gene_lab_"+r.week+"_"+r.sid, JSON.stringify(r.data||{})); }catch(e){} });
-      /* 보고서 사진: 경로 → dataURL 로 되살려 미러에 넣습니다(화면은 그대로 <img src> 로 그림) */
-      var reps=res[4]||[];
-      return Promise.all(reps.map(function(r){
-        var data=r.data||{}, imgs=data.images||{}, tasks=[];
-        Object.keys(imgs).forEach(function(key){
-          var arr=imgs[key]; if(!Array.isArray(arr)) return;
-          arr.forEach(function(val, idx){
-            if(val && typeof val==="string" && val.indexOf("data:")!==0 && val.indexOf("/")!==-1){
-              tasks.push(self.fetchPhoto(val).then(function(d){ arr[idx]=d; }, function(){}));
-            }
-          });
-        });
-        return Promise.all(tasks).then(function(){ try{ localStorage.setItem("dmu_gene_report_"+r.week+"_"+r.sid, JSON.stringify(data)); }catch(e){} });
-      }));
+      /* 🔵 보고서: 사진(base64)은 미러에 넣지 않는다 — 경로만 담아 '가볍게' 저장한다.
+       *   예전에는 여기서 사진을 전부 dataURL 로 받아 localStorage 에 통째로 넣었는데,
+       *   폰(iOS 사파리 등)은 localStorage 한도가 작아 보고서가 몇 건만 차도 넘쳐 버리고,
+       *   그 뒤부터의 setItem 이 조용히 실패해 교수 표에서 보고서가 '—'(미작성)로 사라졌다.
+       *   (진도 gl_progress 는 사진이 없어 늘 먼저·가볍게 저장되므로 정상이었다 — 그래서 보고서만 누락됐다.)
+       *   이제 상태·메타·경로만 담으므로 학생 수와 무관하게 25건이든 전량 안정적으로 미러된다.
+       *   사진은 교수/학생이 그 보고서를 '열 때'만 resolveReportPhotos 로 지연 로드한다. */
+      var reps=res[4]||[], repFail=0;
+      reps.forEach(function(r){
+        try{ localStorage.setItem("dmu_gene_report_"+r.week+"_"+r.sid, JSON.stringify(r.data||{})); }
+        catch(e){ repFail++; }   /* 경로만 담아도 넘칠 만큼 기기 저장공간이 부족한 예외 상황 */
+      });
+      if(repFail){   /* 조용히 삼키지 않는다 — 화면 위에 명확히 알린다 */
+        self.bar('🔴 이 기기 저장공간이 부족해 보고서 <b>'+repFail+'건</b>을 담지 못했습니다. <span style="font-weight:400">다른 브라우저나 PC 에서 확인해 주세요.</span>',"red");
+      }
+      return null;
     }).then(function(){ self.ready=true; self.up(); });
   },
 
