@@ -676,7 +676,10 @@ function weekPack(id){
     var w = C.byWeek.w02;
     return { learn: w.learn, pool: w.pool, cases: w.cases || [], report: w.report, summaryCard: w.summaryCard || null };
   }
-  if(id === "w03"){ return { learn: C.learn, pool: C.pool, cases: C.cases || [], report: null, summaryCard: C.summaryCard || null }; }
+  if(id === "w03" && C.byWeek && C.byWeek.w03){
+    var w3 = C.byWeek.w03;
+    return { learn: w3.learn, pool: w3.pool, cases: w3.cases || [], report: w3.report, summaryCard: w3.summaryCard || null };
+  }
   return null;
 }
 var AW = null;                                  /* 활성 주차 콘텐츠 (boot 에서 설정) */
@@ -1690,7 +1693,7 @@ function labList(){ return (C && Array.isArray(C.labs)) ? C.labs : []; }
  *     2) 그 lab 의 미션 콘텐츠를 붙이고(byWeek.wNN 또는 weekPack()에 연결), 로비/미션이 읽게 한다.
  *     3) 이 배열에 그 id 를 추가한다(예: ["w02","w03"]).  ← 이 줄을 빠뜨리면
  *        ready:true 로 바꿔도 labEnterable() 이 계속 false 라 못 들어간다. */
-var LABS_WITH_CONTENT = ["w02"];
+var LABS_WITH_CONTENT = ["w02","w03"];
 
 /* 눌러서 실제로 들어갈 수 있는가 — 콘텐츠가 붙어 있고, 교수이거나 학생이면 날짜가 됐을 때 */
 function labEnterable(lab){
