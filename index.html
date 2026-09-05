@@ -2234,6 +2234,28 @@ function buildImageSlots(s, data, readonly){
   return h;
 }
 
+/* 섹션 안 소표(小表) — type:"text"·type:"images" 공용. s.table 이 있으면 입력칸이 있는 작은 표를 그린다
+   (편집 폼용). data-tbl 바인딩은 기존 자동저장 로직과 동일하게 동작한다(섹션 타입 무관하게 셀렉터로 잡음). */
+function buildSectionTable(s, data, readonly){
+  if(!s.table) return "";
+  var T = s.table, cols = T.cols || [], rows = T.rowLabels || [];
+  var h = (T.caption ? '<div class="rf-hint" style="margin-top:8px">' + esc(T.caption) + '</div>' : '');
+  h += '<table class="rf-tbl"><tr>';
+  cols.forEach(function(c){ h += '<th>' + esc(c) + '</th>'; });
+  h += '</tr>';
+  rows.forEach(function(rl, ri){
+    h += '<tr><td class="rowlbl">' + esc(rl) + '</td>';
+    var rowvals = (data.tables && data.tables[s.key] && data.tables[s.key][ri]) || [];
+    for(var ci = 1; ci < cols.length; ci++){
+      var cv = rowvals[ci - 1] || "";
+      h += '<td><input type="text" data-tbl="' + esc(s.key) + '" data-r="' + ri + '" data-c="' + (ci - 1) + '" value="' + esc(cv) + '"' + (readonly?" readonly":"") + '></td>';
+    }
+    h += '</tr>';
+  });
+  h += '</table>';
+  return h;
+}
+
 /* A4 보고서 본문 HTML — 미리보기·인쇄·워드에서 공용 */
 function buildReportHTML(sid, name, data){
   var def = reportDef();
@@ -2257,22 +2279,8 @@ function buildReportHTML(sid, name, data){
   (def.sections || []).forEach(function(s){
     var lbl = (s.no ? s.no + '. ' : '') + s.label;
     h += '<h3 class="p-sh">' + esc(lbl) + '</h3>';
-    if(s.type === "images"){
-      var conds = s.conditions || [];
-      var arr = (data.images && data.images[s.key]) || [];
-      h += '<div class="p-imgrid">';
-      conds.forEach(function(cond, i){
-        var durl = arr[i] || "";
-        h += '<div class="p-imgcell"><div class="p-imgcap">' + (i + 1) + ') ' + esc(cond) + '</div>';
-        h += durl ? '<img src="' + durl + '" alt="' + esc(cond) + '">' : '<div class="p-imgno">(미첨부)</div>';
-        h += '</div>';
-      });
-      h += '</div>';
-      return;
-    }
-    var txt = String(sec[s.key] || "").trim();
-    h += '<div class="p-body' + (txt ? '' : ' p-empty') + '">' + (txt ? esc(txt) : "(미작성)") + '</div>';
-    if(s.table){
+    function renderTbl(){
+      if(!s.table) return;
       var T = s.table, rows = T.rowLabels || [], cols = T.cols || [];
       h += (T.caption ? '<div class="p-cap">' + esc(T.caption) + '</div>' : '');
       h += '<table class="p-dt"><tr>';
@@ -2288,6 +2296,34 @@ function buildReportHTML(sid, name, data){
         h += '</tr>';
       });
       h += '</table>';
+    }
+    if(s.type === "images"){
+      var conds = s.conditions || [];
+      var arr = (data.images && data.images[s.key]) || [];
+      h += '<div class="p-imgrid">';
+      conds.forEach(function(cond, i){
+        var durl = arr[i] || "";
+        h += '<div class="p-imgcell"><div class="p-imgcap">' + (i + 1) + ') ' + esc(cond) + '</div>';
+        h += durl ? '<img src="' + durl + '" alt="' + esc(cond) + '">' : '<div class="p-imgno">(미첨부)</div>';
+        h += '</div>';
+      });
+      h += '</div>';
+      renderTbl();
+      return;
+    }
+    var txt = String(sec[s.key] || "").trim();
+    h += '<div class="p-body' + (txt ? '' : ' p-empty') + '">' + (txt ? esc(txt) : "(미작성)") + '</div>';
+    renderTbl();
+    if(s.conditions && s.conditions.length){
+      var conds2 = s.conditions, arr2 = (data.images && data.images[s.key]) || [];
+      h += '<div class="p-imgrid">';
+      conds2.forEach(function(cond, i){
+        var durl = arr2[i] || "";
+        h += '<div class="p-imgcell"><div class="p-imgcap">' + (i + 1) + ') ' + esc(cond) + '</div>';
+        h += durl ? '<img src="' + durl + '" alt="' + esc(cond) + '">' : '<div class="p-imgno">(미첨부)</div>';
+        h += '</div>';
+      });
+      h += '</div>';
     }
   });
   return h;
@@ -2426,26 +2462,15 @@ RENDER.report = function(){
     if(s.hint) h += '<div class="rf-hint">' + esc(s.hint) + '</div>';
     if(s.type === "images"){
       h += buildImageSlots(s, data, readonly);
+      h += buildSectionTable(s, data, readonly);
       h += '</div></div>';
       return;
     }
     var v = (data.sections && data.sections[s.key]) || "";
     h += '<textarea data-sec="' + esc(s.key) + '" rows="' + (s.rows || 4) + '"' + (readonly?" readonly":"") + ' placeholder="여기에 작성하세요">' + esc(v) + '</textarea>';
-    if(s.table){
-      var T = s.table, cols = T.cols || [], rows = T.rowLabels || [];
-      h += '<table class="rf-tbl"><tr>';
-      cols.forEach(function(c){ h += '<th>' + esc(c) + '</th>'; });
-      h += '</tr>';
-      rows.forEach(function(rl, ri){
-        h += '<tr><td class="rowlbl">' + esc(rl) + '</td>';
-        var rowvals = (data.tables && data.tables[s.key] && data.tables[s.key][ri]) || [];
-        for(var ci = 1; ci < cols.length; ci++){
-          var cv = rowvals[ci - 1] || "";
-          h += '<td><input type="text" data-tbl="' + esc(s.key) + '" data-r="' + ri + '" data-c="' + (ci - 1) + '" value="' + esc(cv) + '"' + (readonly?" readonly":"") + '></td>';
-        }
-        h += '</tr>';
-      });
-      h += '</table>';
+    h += buildSectionTable(s, data, readonly);
+    if(s.conditions && s.conditions.length){
+      h += buildImageSlots(s, data, readonly);
     }
     h += '</div></div>';
   });
@@ -2887,17 +2912,8 @@ function buildBlankReport(wk){
     var lbl = (s.no ? s.no + '. ' : '') + s.label;
     h += '<h3 class="p-sh">' + esc(lbl) + '</h3>';
     if(s.hint) h += '<div class="p-note" style="margin:0 0 5px">' + esc(s.hint) + '</div>';
-    if(s.type === 'images'){
-      var conds = s.conditions || [];
-      h += '<div class="p-imgrid">';
-      conds.forEach(function(cond, i){
-        h += '<div class="p-imgcell"><div class="p-imgcap">' + (i+1) + ') ' + esc(cond) + '</div><div class="p-imgno" style="min-height:34mm">(사진 부착)</div></div>';
-      });
-      h += '</div>';
-      return;
-    }
-    h += '<div class="p-blank"></div>';
-    if(s.table){
+    function renderBlankTbl(){
+      if(!s.table) return;
       var T = s.table, rows = T.rowLabels || [], cols = T.cols || [];
       if(T.caption) h += '<div class="p-cap">' + esc(T.caption) + '</div>';
       h += '<table class="p-dt"><tr>';
@@ -2909,6 +2925,25 @@ function buildBlankReport(wk){
         h += '</tr>';
       });
       h += '</table>';
+    }
+    if(s.type === 'images'){
+      var conds = s.conditions || [];
+      h += '<div class="p-imgrid">';
+      conds.forEach(function(cond, i){
+        h += '<div class="p-imgcell"><div class="p-imgcap">' + (i+1) + ') ' + esc(cond) + '</div><div class="p-imgno" style="min-height:34mm">(사진 부착)</div></div>';
+      });
+      h += '</div>';
+      renderBlankTbl();
+      return;
+    }
+    h += '<div class="p-blank"></div>';
+    renderBlankTbl();
+    if(s.conditions && s.conditions.length){
+      h += '<div class="p-imgrid">';
+      s.conditions.forEach(function(cond, i){
+        h += '<div class="p-imgcell"><div class="p-imgcap">' + (i+1) + ') ' + esc(cond) + '</div><div class="p-imgno" style="min-height:34mm">(사진 부착)</div></div>';
+      });
+      h += '</div>';
     }
   });
   h += '</div>';

@@ -5492,20 +5492,28 @@ window.GAME_CONTENT = {
             key: "quant", no: 1, label: "정량 결과 — NanoDrop 측정",
             type: "text",
             rows: 4,
-            hint: "두 시료의 NanoDrop 측정값을 아래 표에 적는다(농도 ng/µL · A260/A280 · A260/A230). 이 칸에는 순도 판정(A260/A280 1.8~2.0·A260/A230 2.0~2.2 기준으로 합격 여부·재실험 필요 여부)과 관찰 메모를 적는다.",
+            hint: "두 시료의 NanoDrop 측정값을 아래 표에 적는다(농도 ng/µL · A260/A280 · A260/A230). 이 칸에는 순도 판정(A260/A280 1.8~2.0·A260/A230 2.0~2.2 기준으로 합격 여부·재실험 필요 여부)과 관찰 메모를 적는다. 표 아래에는 NanoDrop 측정 화면(또는 출력물) 사진을 1장 올린다.",
             table: {
               caption: "NanoDrop 정량 결과 (blank = 증류수 2 µL · 시료 각 2 µL)",
               cols: ["시료", "농도 (ng/µL)", "A260/A280", "A260/A230"],
               rowLabels: ["pBI5ΔRTD", "pUC19"]
-            }
+            },
+            conditions: [
+              "NanoDrop 측정 결과 사진 (기기 화면 또는 출력물)"
+            ]
           },
           {
             key: "gel", no: 2, label: "정성 결과 — 전기영동 겔 사진",
             type: "images",
-            hint: "전기영동(135 V·20분) 후 UV 장치로 찍은 겔 사진을 올린다. 1 kb·100 bp ladder와 두 시료(pBI5ΔRTD·pUC19)의 밴드가 함께 보이게 한 장.",
+            hint: "전기영동(135 V·20분) 후 UV 장치로 찍은 겔 사진을 올린다. 1 kb·100 bp ladder와 두 시료(pBI5ΔRTD·pUC19)의 밴드가 함께 보이게 한 장. 사진 아래 표에는 겔에서 확인한 두 플라스미드의 밴드 크기를 ladder와 비교해 bp 단위로 추정해 적는다.",
             conditions: [
               "전기영동 겔 UV 사진 — ladder(1 kb·100 bp) + pBI5ΔRTD + pUC19 (135 V·20분)"
-            ]
+            ],
+            table: {
+              caption: "겔에서 추정한 플라스미드 크기 (bp)",
+              cols: ["플라스미드", "사이즈 (bp)"],
+              rowLabels: ["pBI5ΔRTD", "pUC19"]
+            }
           },
           {
             key: "discussion", no: 3, label: "고찰",
