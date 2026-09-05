@@ -51,7 +51,7 @@ window.GAME_CONTENT = {
     },
     {
       id: "w05", no: 4, weekLabel: "5주차", title: "PCR을 통한 DNA 증폭",
-      dateLabel: "9/23", unlockDate: "2026-09-23", ready: false,
+      dateLabel: "9/23", unlockDate: "2026-09-23", ready: true,
       desc: "표적 DNA 구간을 PCR로 증폭한다"
     },
     {
@@ -5535,6 +5535,1064 @@ window.GAME_CONTENT = {
           }
         ],
         source: "강의 이론 슬라이드 4·5·11·12·14~17·19 · 실험방법 [1][2] · (초안 — 교수님 보고서 구성 미지정)"
+      }
+
+    },
+
+    w05: {
+
+      /* ------------------------------------------------------------------
+       * learn(w05) — PCR을 통한 DNA 증폭 학습 카드
+       *   모든 수치·시약명·온도·조건은 강의 이론 PDF(5주차 PCR을 통한 DNA 증폭) 슬라이드 1~23,
+       *   (실험방법)·(실험준비) 05. PCR을 통한 DNA 증폭 PDF 그대로. 지어낸 값 없음.
+       * ----------------------------------------------------------------*/
+      learn: {
+        stageId: "w05",
+        intro: {
+          oneLiner:
+            "온도를 세 번 바꿔 반복하면서, 원하는 DNA 부위만 골라 대량으로 복제한다.",
+          bigQuestion: "미량의 DNA에서 내가 원하는 구간만 어떻게 골라 수십억 배로 늘리나",
+          note:
+            "이 한 질문에 스스로 답할 수 있게 되는 것이 오늘 학습의 목표입니다. PCR은 세포 안에서 일어나는 DNA 복제를 " +
+            "시험관(PCR tube)에서 재현하는 기술로, 변성(95℃)·어닐링(40~60℃)·신장(72℃) 세 온도를 한 사이클로 반복합니다. " +
+            "한 사이클마다 표적이 두 배로 늘어(2ⁿ) 25~40 사이클이면 수십억 배가 됩니다. 오늘은 3주차에 뽑은 플라스미드 " +
+            "(pBI5ΔRTD·pUC19)를 주형으로 M13F·M13RV 프라이머 사이 구간을 증폭하고, 전기영동·UV로 밴드를 확인합니다.",
+          source: "강의 이론 슬라이드 1·3·4·5(핵심 한 문장·오늘 할 일·PCR이란·세포내 복제 vs PCR)"
+        },
+        cards: [
+          {
+            id: "L1", title: "오늘 무엇을 하나 — 특정 DNA 부위를 대량 복제", kind: "내용",
+            body:
+              "오늘은 3주차에 뽑은 플라스미드 2종(pBI5ΔRTD·pUC19)을 주형으로 삼아, 원하는 구간만 PCR로 증폭합니다. " +
+              "PCR(Polymerase Chain Reaction·중합효소연쇄반응)은 미량의 DNA에서 특정 부위를 짧은 시간에 대량으로 복제하는 " +
+              "기술입니다. 흐름은 ① 반응액 조제(7종 용액을 PCR tube에) → ② 혼합·PCR 증폭(약 90분) → ③ 전기영동 → ④ UV 판독 " +
+              "입니다. 오늘의 핵심 한 문장은 '온도를 세 번 바꿔, 원하는 부위만 대량으로'입니다. 이론 30분·실험 130분·정리 20분으로 " +
+              "진행합니다.",
+            keyNumbers: ["PCR = Polymerase Chain Reaction(중합효소연쇄반응)", "주형 = 3주차 추출 플라스미드 2종(pBI5ΔRTD·pUC19)", "흐름 = 조제→PCR(약 90분)→전기영동→UV", "이론 30분 · 실험 130분 · 정리 20분"],
+            source: "강의 이론 슬라이드 1·3·4 · 실험방법 [전 과정]"
+          },
+          {
+            id: "L2", title: "세포내 DNA 복제 vs PCR — 원리를 시험관에서 재현", kind: "원리",
+            body:
+              "PCR은 살아 있는 세포 안에서 일어나는 DNA 복제 원리를 시험관에서 그대로 재현한 것입니다. 두 가지를 비교하면 " +
+              "이해가 쉽습니다. 첫째, 가닥 풀기 — 세포 안에서는 헬리케이스라는 효소가 이중가닥을 풀지만, PCR에서는 열(95℃)로 " +
+              "두 가닥을 분리합니다. 둘째, 시작점 지정 — 세포 안에서는 복제원점에서 복제가 시작되지만, PCR에서는 사람이 합성해 " +
+              "넣은 프라이머 2종이 증폭할 구간의 시작점을 정합니다. 그래서 PCR은 세포 없이도, 원하는 부위만 골라 복제할 수 " +
+              "있습니다.",
+            keyNumbers: ["가닥 풀기: 세포=헬리케이스 / PCR=열(95℃)", "시작점: 세포=복제원점 / PCR=프라이머 2종", "장소: 세포 안 / 시험관(PCR tube)", "PCR = 세포내 복제 원리의 시험관 재현"],
+            source: "강의 이론 슬라이드 5(세포내 DNA 복제 vs PCR)"
+          },
+          {
+            id: "L3", title: "PCR 3단계 — 변성·어닐링·신장", kind: "원리",
+            body:
+              "PCR은 온도를 바꿔 세 단계를 반복합니다. ① 변성(Denaturation·95℃) — 높은 열로 수소결합을 끊어 이중가닥(dsDNA)을 " +
+              "단일가닥(ssDNA)으로 분리합니다. ② 어닐링(Annealing·40~60℃) — 온도를 낮추면 프라이머가 단일가닥의 3′ 말단에 " +
+              "상보결합합니다. 서로 다른 2종(M13F·M13RV)이 각 가닥에 붙습니다. ③ 신장(Extension·72℃) — Taq polymerase가 프라이머를 " +
+              "출발점으로 삼아 5′→3′ 방향으로 새 가닥을 합성합니다(속도 약 1 kb/min). 이 세 단계가 한 사이클이며, 온도만 바꿔 " +
+              "계속 반복합니다.",
+            keyNumbers: ["① 변성 95℃ — dsDNA → ssDNA", "② 어닐링 40~60℃ — 프라이머가 3′ 말단에 상보결합", "③ 신장 72℃ — Taq가 5′→3′ 합성(1 kb/min)", "세 단계 = 한 사이클(온도만 바꿔 반복)"],
+            source: "강의 이론 슬라이드 7·8·9·10(3단계·변성·어닐링·신장)"
+          },
+          {
+            id: "L4", title: "온도 프로그램과 PCR 장치(Thermal cycler)", kind: "내용",
+            body:
+              "실제 실험에서는 온도를 정해진 순서대로 자동 반복하도록 프로그램을 짭니다. 예비변성 94℃ 5분(처음에 충분히 " +
+              "분리) → 3단계 반복 94 / 55 / 72℃를 25회 → 최종신장 72℃ 7분 → 4℃ 보관(마무리 후 차게)입니다. 이 온도 반복을 " +
+              "자동으로 수행하는 장치가 PCR 장치(Thermal cycler)입니다. 튜브당 반응 용량은 50 µL이며, 뚜껑을 105℃로 가열해 " +
+              "반응액이 증발하는 것을 막습니다(Cover). 뚜껑과 블록이 매우 뜨거우므로 맨손 접촉은 금지입니다.",
+            keyNumbers: ["예비변성 94℃ 5분 → (94/55/72℃) 25회 → 최종신장 72℃ 7분 → 4℃", "Thermal cycler = 온도 자동 반복 장치", "반응 용량 = 튜브당 50 µL", "뚜껑 105℃ 가열 = 증발 방지(맨손 금지)"],
+            source: "강의 이론 슬라이드 12·13(온도 프로그램·Thermal cycler)"
+          },
+          {
+            id: "L5", title: "지수적 증폭 — 한 사이클마다 두 배(2ⁿ)", kind: "핵심",
+            body:
+              "PCR의 힘은 반복에 있습니다. 한 사이클이 끝날 때마다 표적 DNA는 두 배가 됩니다. 1 사이클이면 2배, 2 사이클이면 " +
+              "4배, 3 사이클이면 8배, n 사이클이면 2ⁿ배로 늘어납니다. 그래서 보통 25~40 사이클을 돌리면 원하는 구간이 수십억 배로 " +
+              "증폭됩니다. 이렇게 특정 부위만 골라(프라이머가 구간을 지정) 지수적으로 늘리기 때문에, 미량의 DNA에서도 전기영동으로 " +
+              "볼 수 있을 만큼 충분한 양을 얻을 수 있습니다.",
+            keyNumbers: ["1 사이클 = 2배 · 2 사이클 = 4배 · 3 사이클 = 8배", "n 사이클 = 2ⁿ배 (지수적)", "보통 25~40 사이클 → 수십억 배", "프라이머가 구간 지정 → 특정 부위만 증폭"],
+            source: "강의 이론 슬라이드 4·11(지수적 증폭·2ⁿ)"
+          },
+          {
+            id: "L6", title: "반응 재료 다섯 — 주형·프라이머·Taq·dNTP·buffer", kind: "핵심",
+            body:
+              "PCR 반응액에는 다섯 종류의 재료가 들어갑니다. ① 주형(Template) — 증폭할 원본 DNA로, 오늘은 3주차 플라스미드입니다. " +
+              "② 프라이머(Primer) — 16~40 bp의 짧은 단일가닥 DNA로, 새 가닥의 출발점입니다. Forward·Reverse 2종이 한 쌍이며 " +
+              "오늘은 M13F·M13RV를 씁니다. ③ Taq polymerase — 온천에 사는 호열균(Thermus aquaticus)에서 얻는 내열성 효소로, " +
+              "변성 온도(94℃)에도 견디며 새 가닥을 합성합니다. ④ dNTP mixture — 새 가닥의 벽돌인 뉴클레오타이드 4종(dATP·dGTP·" +
+              "dCTP·dTTP)입니다. ⑤ 10X Reaction buffer — MgCl₂가 들어 있어 Mg²⁺를 공급하며, 넣을 때 1/10로 희석되어 1X가 됩니다. " +
+              "Mg²⁺는 Taq 활성에 필수라, 없으면 합성이 안 되고 너무 높으면 엉뚱한 산물이 생깁니다.",
+            keyNumbers: ["주형 = 3주차 플라스미드 · 프라이머 = M13F·M13RV(16~40 bp, 2종 한 쌍)", "Taq = Thermus aquaticus 유래, 94℃에도 활성(내열성)", "dNTP 4종 = dATP·dGTP·dCTP·dTTP(합성 재료)", "10X buffer = MgCl₂(Mg²⁺) · 1/10 희석 → 1X · Mg²⁺는 Taq 활성 필수"],
+            source: "강의 이론 슬라이드 14·15·16·17(프라이머·Taq·dNTP·buffer)"
+          },
+          {
+            id: "L7", title: "조성·절차·주의·예상 산물 — 실제 실험", kind: "핵심",
+            body:
+              "반응액은 튜브당 50 µL로, 표 순서대로(1→7) 넣습니다 — 멸균증류수 37.5 · 플라스미드 DNA 1 · 프라이머 M13F 1 · " +
+              "프라이머 M13RV 1 · 10X Reaction buffer 5 · dNTP mixture 4 · Taq polymerase 0.5 µL(합계 50). 효소는 온도 변화에 " +
+              "약하므로 얼음에 두고 필요량만 빠르게 채취하며, 세게 섞지 말고 살살 섞습니다. 조제한 반응액은 Thermal cycler에서 " +
+              "약 90분간 증폭한 뒤, 각 시료 5 µL에 6X Loading buffer 1 µL를 섞어 전기영동하고 UV로 판독합니다. 예상 산물은 두 " +
+              "종 — pBI5ΔRTD는 1,291 bp, pUC19는 103 bp입니다. 밴드가 있으면 성공, 없거나 흐리면 재실험합니다. 주의 — 뚜껑·" +
+              "블록(105℃) 화상, UV 노출 금지(눈·피부 차단), 멸균 팁 사용, 라벨 표시입니다.",
+            keyNumbers: ["조성(50 µL): 멸균수 37.5·주형 1·M13F 1·M13RV 1·10X buffer 5·dNTP 4·Taq 0.5", "효소는 얼음 보관·표 순서대로(1→7)·살살 섞기", "전기영동 = 시료 5 µL + 6X Loading buffer 1 µL → UV 판독", "예상 산물: pBI5ΔRTD 1,291 bp · pUC19 103 bp(없으면 재실험)"],
+            source: "강의 이론 슬라이드 18·19·20·21·22 · 실험방법·실험준비 05"
+          }
+        ],
+        takeaways: [
+          "PCR은 세포내 DNA 복제 원리를 시험관에서 재현한다 — 세포는 헬리케이스로 가닥을 풀고 복제원점에서 시작하지만, PCR은 열(95℃)로 풀고 프라이머 2종(M13F·M13RV)이 시작점을 정한다.",
+          "온도 세 단계를 반복한다 — 변성(95℃·dsDNA→ssDNA) → 어닐링(40~60℃·프라이머 상보결합) → 신장(72℃·Taq가 5′→3′ 합성, 1 kb/min). 실제 프로그램은 예비변성 94℃ 5분 → (94/55/72℃) 25회 → 최종신장 72℃ 7분 → 4℃다.",
+          "한 사이클마다 2배(2ⁿ)로 늘어 25~40 사이클이면 수십억 배가 된다. 반응액 50 µL(멸균수 37.5·주형 1·프라이머 각 1·10X buffer 5·dNTP 4·Taq 0.5)를 표 순서대로 넣고, 전기영동·UV로 pBI5ΔRTD 1,291 bp·pUC19 103 bp 밴드를 확인한다."
+        ],
+        source: "강의 이론 PDF(5주차 PCR을 통한 DNA 증폭) 슬라이드 1~23 · (실험방법)·(실험준비) 05. PCR을 통한 DNA 증폭 전문"
+      },
+
+      /* ------------------------------------------------------------------
+       * summaryCard(w05) — 5주차 요약 카드 (게임을 안 해도 이것만 보면 복습이 되게)
+       *   모든 수치·시약명·온도는 위 learn(w05)·강의 이론·실험방법 PDF 그대로. 지어낸 값 없음.
+       * ----------------------------------------------------------------*/
+      summaryCard: {
+        stageId: "w05",
+        title: "5주차 요약 카드 — PCR을 통한 DNA 증폭",
+        oneLiner: "온도를 세 번 바꿔, 원하는 부위만 대량으로",
+        hook: "미량의 DNA에서 내가 원하는 구간만 어떻게 골라 수십억 배로 늘리나",
+        pipeline: "한 학기 흐름 중 ⑤ PCR 증폭 (3주차에 뽑고 4주차에 확인한 DNA를 주형으로 특정 구간 증폭)",
+
+        concepts: [
+          { h: "PCR이란", d: "Polymerase Chain Reaction(중합효소연쇄반응) — 미량 DNA의 특정 부위를 짧은 시간에 대량으로 복제하는 기술. 프라이머가 구간을 지정한다" },
+          { h: "세포내 복제 vs PCR", d: "가닥 풀기: 세포=헬리케이스 / PCR=열(95℃). 시작점: 세포=복제원점 / PCR=프라이머 2종(M13F·M13RV). 장소: 세포 안 / 시험관(PCR tube)" },
+          { h: "3단계 온도", d: "변성(95℃·dsDNA→ssDNA) → 어닐링(40~60℃·프라이머 상보결합) → 신장(72℃·Taq가 5′→3′ 합성, 1 kb/min). 세 단계 = 한 사이클" },
+          { h: "지수적 증폭", d: "한 사이클마다 2배 — 1회 2배·2회 4배·3회 8배·n회 2ⁿ배. 25~40 사이클이면 수십억 배" },
+          { h: "반응 재료 다섯", d: "주형(3주차 플라스미드)·프라이머(M13F·M13RV, 16~40 bp)·Taq(Thermus aquaticus·내열성)·dNTP(dATP·dGTP·dCTP·dTTP 4종)·10X buffer(Mg²⁺)" },
+          { h: "Mg²⁺의 역할", d: "10X buffer의 MgCl₂에서 나오는 Mg²⁺는 Taq 활성에 필수 — 없으면 합성이 안 되고, 너무 높으면 엉뚱한 산물이 생긴다" }
+        ],
+
+        numbers: [
+          { step: "반응 총 부피", value: "튜브당 50 µL" },
+          { step: "멸균증류수", value: "37.5 µL" },
+          { step: "플라스미드 DNA(주형)", value: "1 µL" },
+          { step: "프라이머 M13F · M13RV", value: "각 1 µL (합 2 µL)" },
+          { step: "10X Reaction buffer", value: "5 µL (Mg²⁺ 공급)" },
+          { step: "dNTP mixture", value: "4 µL" },
+          { step: "Taq polymerase", value: "0.5 µL (얼음 보관)" },
+          { step: "온도 프로그램", value: "예비변성 94℃ 5분 → (94/55/72℃) 25회 → 최종신장 72℃ 7분 → 4℃" },
+          { step: "Thermal cycler 뚜껑", value: "105℃ 가열(증발 방지)" },
+          { step: "전기영동 로딩", value: "시료 5 µL + 6X Loading buffer 1 µL" },
+          { step: "예상 산물", value: "pBI5ΔRTD 1,291 bp · pUC19 103 bp" }
+        ],
+
+        cautions: [
+          "효소(Taq)는 얼음에 — 필요량만 빠르게 채취 후 곧바로 얼음",
+          "표 순서대로 조제(1→7), 세게 섞지 말고 살살 섞기",
+          "라벨 표시 — 조·시료 이름을 튜브에 적기",
+          "PCR 장치 화상 — 뚜껑·블록(105℃) 고온, 맨손 접촉 금지",
+          "UV 노출 금지 — 눈·피부 차단, 차단창으로만 관찰",
+          "멸균 팁 사용 — 옐로우·화이트 팁 멸균 확인",
+          "밴드가 없거나 흐리면 재실험"
+        ],
+
+        expected: {
+          good: [
+            "전기영동 후 UV → pBI5ΔRTD 1,291 bp 밴드가 보임",
+            "pUC19 103 bp 밴드가 보임 — ladder와 높이 비교로 크기 확인",
+            "예상 두 산물 위치에 뚜렷한 밴드 → PCR 성공",
+            "1 kb·100 bp DNA ladder로 크기를 읽는다"
+          ],
+          suspect: [
+            "밴드가 아예 안 보인다 → Taq 누락·어닐링 온도 과다·변성 안 됨·사이클 부족 의심",
+            "엉뚱한 크기·여러 밴드 → Mg²⁺ 농도 과다(비특이 증폭) 의심",
+            "밴드가 약하다·흐리다 → 사이클 수 부족 의심",
+            "산물이 안 나오면 조성·온도프로그램을 점검해 재실험"
+          ]
+        },
+
+        closing: "온도를 세 번 바꿔 원하는 부위만 대량으로 — 예상 산물(pBI5ΔRTD 1,291 bp·pUC19 103 bp) 밴드가 나오면 성공, 없으면 조성·온도를 점검해 재실험한다. 오늘 얻은 PCR product는 6주차 DNA fragment 회수의 재료가 된다",
+        report: "PCR tube를 Thermal cycler에 넣은 사진과 전기영동 결과 사진을 찍고, 예상 산물이 나왔는지 고찰과 함께 보고서에 남긴다 (다음 실험 시작 전 제출)",
+        source: "강의 이론 PDF(5주차 PCR을 통한 DNA 증폭) 슬라이드 1~23 · (실험방법)·(실험준비) 05. PCR을 통한 DNA 증폭"
+      },
+
+      /* ------------------------------------------------------------------
+       * pool(w05) — 학습·복습 퀴즈 풀 + 미션 문항 풀 (기존 엔진 재활용)
+       *   flow: 학습 약 30문(정오 무관 다 풀면 미션 해금) → 미션 10문(시간제한 8 + 추리 2)
+       *   timed 50문(mc 26 · ox 12 · num 6 · order 6) · reason 6건
+       *   모든 문항 근거 = 강의 이론·실험방법·실험준비 PDF. 지어낸 값 없음.
+       * ----------------------------------------------------------------*/
+      pool: {
+        stageId: "w05",
+
+        info: {
+          purpose: "실습 보고서 제출을 대체·보완하는 평가 도구 — 미션 통과 시 보고서 점수를 부여한다(성적 반영).",
+          gradeNotice: "이 미션은 성적에 반영되는 평가 도구입니다. 통과해야 보고서 점수를 받습니다.",
+          flow: "① 학습·복습 퀴즈 약 30문(정답·오답 무관 다 풀면 미션 해금) → ② 미션 10문(시간제한 8 + 추리 2) 평가",
+          learnUnlockCount: 30,
+          mission: {
+            timedCount: 8,
+            reasonCount: 2,
+            totalItems: 10,
+            totalPoints: 100,
+            passPoints: 70,
+            passPercent: 70,
+            perStudentRandom: true,
+            reshuffleOnRetry: true,
+            note:
+              "학생마다·재도전마다 시간제한 8문과 추리 2문을 풀에서 무작위로 다시 뽑는다(직전 회차 문항은 제외). " +
+              "배점은 뽑힌 문항의 원점수(시간제한 Lv1 7 · Lv2 9 · Lv3 11 · 추리 15)를 100점에 비례 정규화해 " +
+              "합을 정확히 100으로 맞춘다(buildMission의 roundToSum). 합격선은 70점(70%)이다."
+          },
+          points: { timedLv1: 7, timedLv2: 9, timedLv3: 11, reason: 15 },
+          limits: { mc: 20, ox: 8, num: 30, order: 45 },
+          orderAnswerConvention:
+            "type=order 문항의 answer는 steps 배열의 인덱스(0부터)를 올바른 순서대로 나열한 배열이다. " +
+            "steps는 화면에 섞어서 보여주고, 학생이 맞춘 순서를 answer와 비교한다.",
+          resultScreen: {
+            showScore: true,
+            showPerItem: true,
+            showCertificate: true,
+            certificatePassText: "합격 — 5주차 PCR을 통한 DNA 증폭 미션 통과",
+            certificateFailText: "재도전 — 문항이 바뀌어 다시 출제됩니다",
+            note: "미션 결과 화면과 합격증 표시까지는 이번 시제품에 포함. 서버 자동집계는 운영본 단계."
+          },
+          source: "교수님 지시(미션 방식) · 모든 수치 근거 = 강의 이론·실험방법·실험준비 PDF"
+        },
+
+        /* ---- pool.timed — 시간제한형 50문 (mc 26 · ox 12 · num 6 · order 6) ---- */
+        timed: [
+
+          /* ===== mc (4지선다 · 20초) 26문 ===== */
+          {
+            qid: "w05p_m01", type: "mc", level: 1, points: 7, limitSec: 20,
+            q: "PCR의 정식 명칭으로 옳은 것은?",
+            choices: ["Protein Chain Reaction", "Polymerase Chain Reaction", "Plasmid Copy Reaction", "Primer Cloning Reaction"],
+            answer: 1,
+            explain: "PCR = Polymerase Chain Reaction(중합효소연쇄반응)입니다.",
+            source: "강의 이론 슬라이드 4",
+            tags: ["PCR","명칭","Polymerase Chain Reaction"]
+          },
+          {
+            qid: "w05p_m02", type: "mc", level: 1, points: 7, limitSec: 20,
+            q: "PCR이 하는 일로 가장 알맞은 것은?",
+            choices: ["DNA를 잘게 자른다", "미량의 DNA 특정 부위를 대량으로 복제한다", "단백질을 합성한다", "세포를 배양한다"],
+            answer: 1,
+            explain: "PCR은 미량의 DNA에서 특정 부위를 짧은 시간에 대량으로 복제하는 기술입니다.",
+            source: "강의 이론 슬라이드 4",
+            tags: ["PCR","정의","대량 복제"]
+          },
+          {
+            qid: "w05p_m03", type: "mc", level: 1, points: 7, limitSec: 20,
+            q: "PCR에서 증폭할 구간(부위)을 지정하는 것은?",
+            choices: ["Taq polymerase", "dNTP", "프라이머 2종", "Mg²⁺"],
+            answer: 2,
+            explain: "프라이머 2종이 증폭할 구간의 양 끝을 지정합니다 — 그 사이 구간만 대량 복제됩니다.",
+            source: "강의 이론 슬라이드 4·6",
+            tags: ["프라이머","구간 지정"]
+          },
+          {
+            qid: "w05p_m04", type: "mc", level: 1, points: 7, limitSec: 20,
+            q: "오늘 PCR의 주형(template)으로 쓰는 것은?",
+            choices: ["새로 산 유전자", "3주차에 추출한 플라스미드(pBI5ΔRTD·pUC19)", "사람의 혈액", "합성한 프라이머"],
+            answer: 1,
+            explain: "3주차에 뽑아 4주차에 품질을 확인한 플라스미드 2종(pBI5ΔRTD·pUC19)을 주형으로 씁니다.",
+            source: "강의 이론 슬라이드 6 · 실험준비 05",
+            tags: ["주형","플라스미드","pBI5ΔRTD","pUC19"]
+          },
+          {
+            qid: "w05p_m05", type: "mc", level: 2, points: 9, limitSec: 20,
+            q: "세포 안 DNA 복제에서 이중가닥을 푸는 것은?",
+            choices: ["헬리케이스(효소)", "열(95℃)", "프라이머", "원심분리"],
+            answer: 0,
+            explain: "세포 안에서는 헬리케이스가 가닥을 풉니다. PCR에서는 대신 열(95℃)로 분리합니다.",
+            source: "강의 이론 슬라이드 5",
+            tags: ["세포내 복제","헬리케이스"]
+          },
+          {
+            qid: "w05p_m06", type: "mc", level: 1, points: 7, limitSec: 20,
+            q: "PCR에서 이중가닥을 단일가닥으로 분리하는 방법은?",
+            choices: ["헬리케이스 효소로", "열(95℃)로", "원심분리로", "빛(UV)으로"],
+            answer: 1,
+            explain: "PCR은 세포 없이 시험관에서 하므로, 열(95℃)로 두 가닥을 분리합니다.",
+            source: "강의 이론 슬라이드 5·8",
+            tags: ["변성","열","95℃"]
+          },
+          {
+            qid: "w05p_m07", type: "mc", level: 1, points: 7, limitSec: 20,
+            q: "PCR 한 사이클의 3단계를 순서대로 옳게 나열한 것은?",
+            choices: ["어닐링 → 변성 → 신장", "변성 → 어닐링 → 신장", "신장 → 변성 → 어닐링", "변성 → 신장 → 어닐링"],
+            answer: 1,
+            explain: "변성(Denaturation) → 어닐링(Annealing) → 신장(Extension) 순서입니다.",
+            source: "강의 이론 슬라이드 7",
+            tags: ["3단계","순서"]
+          },
+          {
+            qid: "w05p_m08", type: "mc", level: 1, points: 7, limitSec: 20,
+            q: "변성(Denaturation) 단계의 온도는?",
+            choices: ["40~60℃", "72℃", "95℃", "4℃"],
+            answer: 2,
+            explain: "변성 단계는 95℃로, 높은 열로 이중가닥을 단일가닥으로 분리합니다.",
+            source: "강의 이론 슬라이드 7·8",
+            tags: ["변성","95℃"]
+          },
+          {
+            qid: "w05p_m09", type: "mc", level: 1, points: 7, limitSec: 20,
+            q: "어닐링(Annealing) 단계의 온도 범위는?",
+            choices: ["40~60℃", "72℃", "95℃", "105℃"],
+            answer: 0,
+            explain: "어닐링 단계는 40~60℃로, 온도를 낮춰 프라이머가 상보결합하게 합니다.",
+            source: "강의 이론 슬라이드 7·9",
+            tags: ["어닐링","40~60℃"]
+          },
+          {
+            qid: "w05p_m10", type: "mc", level: 1, points: 7, limitSec: 20,
+            q: "신장(Extension) 단계의 온도는?",
+            choices: ["40~60℃", "72℃", "95℃", "37℃"],
+            answer: 1,
+            explain: "신장 단계는 72℃로, Taq polymerase가 새 가닥을 합성하는 최적 온도입니다.",
+            source: "강의 이론 슬라이드 7·10",
+            tags: ["신장","72℃"]
+          },
+          {
+            qid: "w05p_m11", type: "mc", level: 2, points: 9, limitSec: 20,
+            q: "변성 단계에서 일어나는 일로 옳은 것은?",
+            choices: ["프라이머가 결합한다", "이중가닥(dsDNA)이 단일가닥(ssDNA)으로 분리된다", "새 가닥이 합성된다", "DNA가 잘린다"],
+            answer: 1,
+            explain: "변성은 높은 열로 수소결합을 끊어 dsDNA를 ssDNA로 분리하는 단계입니다.",
+            source: "강의 이론 슬라이드 8",
+            tags: ["변성","dsDNA","ssDNA"]
+          },
+          {
+            qid: "w05p_m12", type: "mc", level: 2, points: 9, limitSec: 20,
+            q: "어닐링 단계에서 일어나는 일로 옳은 것은?",
+            choices: ["두 가닥이 분리된다", "프라이머가 단일가닥 3′ 말단에 상보결합한다", "Taq가 가닥을 합성한다", "DNA가 4℃로 보관된다"],
+            answer: 1,
+            explain: "어닐링은 온도를 낮춰 프라이머(M13F·M13RV)가 분리된 가닥의 3′ 말단에 상보결합하는 단계입니다.",
+            source: "강의 이론 슬라이드 9",
+            tags: ["어닐링","프라이머","상보결합"]
+          },
+          {
+            qid: "w05p_m13", type: "mc", level: 2, points: 9, limitSec: 20,
+            q: "신장 단계에서 Taq polymerase가 하는 일은?",
+            choices: ["가닥을 분리한다", "프라이머를 출발점으로 새 가닥을 합성한다", "프라이머를 만든다", "온도를 올린다"],
+            answer: 1,
+            explain: "신장 단계에서 Taq polymerase는 프라이머를 출발점으로 삼아 새 DNA 가닥을 합성합니다.",
+            source: "강의 이론 슬라이드 10",
+            tags: ["신장","Taq","합성"]
+          },
+          {
+            qid: "w05p_m14", type: "mc", level: 1, points: 7, limitSec: 20,
+            q: "신장 단계에서 새 가닥이 합성되는 방향은?",
+            choices: ["3′ → 5′", "5′ → 3′", "양방향 동시", "무작위"],
+            answer: 1,
+            explain: "Taq polymerase는 5′ → 3′ 방향으로 새 가닥을 이어 붙입니다.",
+            source: "강의 이론 슬라이드 10",
+            tags: ["신장","5′→3′","방향"]
+          },
+          {
+            qid: "w05p_m15", type: "mc", level: 2, points: 9, limitSec: 20,
+            q: "Taq polymerase의 합성 속도로 옳은 것은?",
+            choices: ["약 1 kb/min", "약 1 bp/min", "약 1 kb/sec", "약 1 Mb/min"],
+            answer: 0,
+            explain: "Taq polymerase의 합성 속도는 약 1 kb/min입니다.",
+            source: "강의 이론 슬라이드 7·10",
+            tags: ["Taq","속도","1 kb/min"]
+          },
+          {
+            qid: "w05p_m16", type: "mc", level: 2, points: 9, limitSec: 20,
+            q: "한 사이클이 끝날 때마다 표적 DNA의 양은?",
+            choices: ["그대로", "2배", "3배", "10배"],
+            answer: 1,
+            explain: "한 사이클마다 표적 DNA는 2배로 늘어나며, n 사이클이면 2ⁿ배가 됩니다.",
+            source: "강의 이론 슬라이드 11",
+            tags: ["사이클","2배","지수"]
+          },
+          {
+            qid: "w05p_m17", type: "mc", level: 2, points: 9, limitSec: 20,
+            q: "n 사이클 후 이론상 증폭 배수로 옳은 것은?",
+            choices: ["2n배", "n²배", "2ⁿ배", "10ⁿ배"],
+            answer: 2,
+            explain: "한 사이클마다 2배이므로 n 사이클 후에는 2ⁿ배가 됩니다(25~40 사이클이면 수십억 배).",
+            source: "강의 이론 슬라이드 11",
+            tags: ["2ⁿ","지수적 증폭"]
+          },
+          {
+            qid: "w05p_m18", type: "mc", level: 1, points: 7, limitSec: 20,
+            q: "PCR의 온도 반복을 자동으로 수행하는 장치는?",
+            choices: ["원심분리기", "Thermal cycler(PCR 장치)", "NanoDrop", "전기영동 장치"],
+            answer: 1,
+            explain: "Thermal cycler(PCR 장치)가 설정한 프로그램대로 온도를 자동 반복합니다.",
+            source: "강의 이론 슬라이드 13",
+            tags: ["Thermal cycler","PCR 장치"]
+          },
+          {
+            qid: "w05p_m19", type: "mc", level: 2, points: 9, limitSec: 20,
+            q: "Thermal cycler의 뚜껑을 105℃로 가열하는 이유는?",
+            choices: ["반응을 빠르게 하려고", "반응액의 증발을 막으려고", "효소를 죽이려고", "DNA를 자르려고"],
+            answer: 1,
+            explain: "뚜껑(Cover)을 105℃로 가열해 반응 중 반응액이 증발하는 것을 막습니다.",
+            source: "강의 이론 슬라이드 13",
+            tags: ["뚜껑","105℃","증발 방지"]
+          },
+          {
+            qid: "w05p_m20", type: "mc", level: 1, points: 7, limitSec: 20,
+            q: "프라이머(Primer)의 길이 범위로 옳은 것은?",
+            choices: ["16~40 bp", "100~200 bp", "1~5 bp", "1,000 bp 이상"],
+            answer: 0,
+            explain: "프라이머는 16~40 bp 길이의 짧은 단일가닥 DNA로, 새 가닥 합성의 출발점입니다.",
+            source: "강의 이론 슬라이드 14",
+            tags: ["프라이머","16~40 bp"]
+          },
+          {
+            qid: "w05p_m21", type: "mc", level: 1, points: 7, limitSec: 20,
+            q: "오늘 실험에서 쓰는 프라이머 2종은?",
+            choices: ["T7·SP6", "M13F·M13RV", "dATP·dTTP", "TAE·TBE"],
+            answer: 1,
+            explain: "오늘은 M13F·M13RV 프라이머 2종(Forward·Reverse 한 쌍)을 씁니다.",
+            source: "강의 이론 슬라이드 6·14",
+            tags: ["프라이머","M13F","M13RV"]
+          },
+          {
+            qid: "w05p_m22", type: "mc", level: 2, points: 9, limitSec: 20,
+            q: "Taq polymerase의 특징으로 옳은 것은?",
+            choices: ["높은 열(94℃)에 변성돼 못 쓴다", "호열균(Thermus aquaticus)에서 얻어 94℃에도 활성을 유지한다", "저온에서만 작동한다", "DNA를 자르는 효소다"],
+            answer: 1,
+            explain: "Taq polymerase는 온천에 사는 호열균(Thermus aquaticus)에서 얻는 내열성 효소로, 변성 온도(94℃)에도 견딥니다.",
+            source: "강의 이론 슬라이드 15",
+            tags: ["Taq","Thermus aquaticus","내열성"]
+          },
+          {
+            qid: "w05p_m23", type: "mc", level: 2, points: 9, limitSec: 20,
+            q: "dNTP mixture를 구성하는 4종은?",
+            choices: ["dATP·dGTP·dCTP·dTTP", "A·B·C·D", "Mg·Ca·Na·K", "TAE·TBE·SDS·EDTA"],
+            answer: 0,
+            explain: "dNTP는 새 가닥의 재료(뉴클레오타이드)로, dATP·dGTP·dCTP·dTTP 4종을 섞어 씁니다.",
+            source: "강의 이론 슬라이드 16",
+            tags: ["dNTP","4종"]
+          },
+          {
+            qid: "w05p_m24", type: "mc", level: 2, points: 9, limitSec: 20,
+            q: "10X Reaction buffer가 공급하는, Taq 활성에 필수인 이온은?",
+            choices: ["Na⁺", "Mg²⁺", "K⁺", "Cl⁻"],
+            answer: 1,
+            explain: "10X Reaction buffer에는 MgCl₂가 들어 있어 Mg²⁺를 공급합니다. Mg²⁺는 Taq 활성에 필수입니다.",
+            source: "강의 이론 슬라이드 17",
+            tags: ["10X buffer","Mg²⁺","MgCl₂"]
+          },
+          {
+            qid: "w05p_m25", type: "mc", level: 2, points: 9, limitSec: 20,
+            q: "10X Reaction buffer를 반응액에 넣으면 최종적으로 몇 배 농도가 되는가?",
+            choices: ["1X (1/10로 희석)", "10X 그대로", "100X", "0.1X"],
+            answer: 0,
+            explain: "10배 농축액이라, 반응액에 넣으면 1/10로 희석되어 1X 농도가 됩니다.",
+            source: "강의 이론 슬라이드 17",
+            tags: ["10X buffer","1X","희석"]
+          },
+          {
+            qid: "w05p_m26", type: "mc", level: 3, points: 11, limitSec: 20,
+            q: "pBI5ΔRTD의 예상 PCR 산물(밴드) 크기는?",
+            choices: ["103 bp", "500 bp", "1,291 bp", "10 kb"],
+            answer: 2,
+            explain: "pBI5ΔRTD의 M13F/M13RV 프라이머 사이 예상 산물은 1,291 bp입니다(pUC19는 103 bp).",
+            source: "강의 이론 슬라이드 6·21",
+            tags: ["pBI5ΔRTD","1291 bp","예상 산물"]
+          },
+
+          /* ===== ox (O/X · 8초) 12문 ===== */
+          {
+            qid: "w05p_x01", type: "ox", level: 1, points: 7, limitSec: 8,
+            q: "PCR은 Polymerase Chain Reaction의 약자다.",
+            answer: true,
+            explain: "맞습니다. PCR = Polymerase Chain Reaction(중합효소연쇄반응)입니다.",
+            source: "강의 이론 슬라이드 4",
+            tags: ["PCR","명칭"]
+          },
+          {
+            qid: "w05p_x02", type: "ox", level: 1, points: 7, limitSec: 8,
+            q: "PCR은 살아 있는 세포 안에서 일어나는 반응이다.",
+            answer: false,
+            explain: "아닙니다. PCR은 세포 없이 시험관(PCR tube) 안에서 하는 반응입니다.",
+            source: "강의 이론 슬라이드 5",
+            tags: ["PCR","시험관"]
+          },
+          {
+            qid: "w05p_x03", type: "ox", level: 1, points: 7, limitSec: 8,
+            q: "변성 단계는 95℃에서 이중가닥을 단일가닥으로 분리한다.",
+            answer: true,
+            explain: "맞습니다. 변성(Denaturation)은 95℃로 dsDNA를 ssDNA로 분리합니다.",
+            source: "강의 이론 슬라이드 8",
+            tags: ["변성","95℃"]
+          },
+          {
+            qid: "w05p_x04", type: "ox", level: 1, points: 7, limitSec: 8,
+            q: "어닐링 단계의 온도는 항상 95℃이다.",
+            answer: false,
+            explain: "아닙니다. 어닐링 온도는 40~60℃입니다(95℃는 변성 온도).",
+            source: "강의 이론 슬라이드 7·9",
+            tags: ["어닐링","40~60℃"]
+          },
+          {
+            qid: "w05p_x05", type: "ox", level: 2, points: 9, limitSec: 8,
+            q: "Taq polymerase는 높은 열(94℃)에 변성돼 못 쓴다.",
+            answer: false,
+            explain: "아닙니다. Taq는 호열균 유래 내열성 효소라 94℃에도 견디며 활성을 유지합니다.",
+            source: "강의 이론 슬라이드 15",
+            tags: ["Taq","내열성"]
+          },
+          {
+            qid: "w05p_x06", type: "ox", level: 1, points: 7, limitSec: 8,
+            q: "프라이머는 Forward·Reverse 2종이 한 쌍으로 쓰인다.",
+            answer: true,
+            explain: "맞습니다. 프라이머는 2종(Forward·Reverse)이 한 쌍이며, 오늘은 M13F·M13RV를 씁니다.",
+            source: "강의 이론 슬라이드 14",
+            tags: ["프라이머","2종","한 쌍"]
+          },
+          {
+            qid: "w05p_x07", type: "ox", level: 1, points: 7, limitSec: 8,
+            q: "dNTP는 새 가닥을 만드는 재료(뉴클레오타이드)다.",
+            answer: true,
+            explain: "맞습니다. dNTP(dATP·dGTP·dCTP·dTTP)는 새 DNA 가닥을 이루는 벽돌(재료)입니다.",
+            source: "강의 이론 슬라이드 16",
+            tags: ["dNTP","재료"]
+          },
+          {
+            qid: "w05p_x08", type: "ox", level: 2, points: 9, limitSec: 8,
+            q: "10X Reaction buffer에는 Mg²⁺(MgCl₂)가 들어 있다.",
+            answer: true,
+            explain: "맞습니다. 10X buffer의 MgCl₂에서 Mg²⁺가 공급되며, 이는 Taq 활성에 필수입니다.",
+            source: "강의 이론 슬라이드 17",
+            tags: ["10X buffer","Mg²⁺"]
+          },
+          {
+            qid: "w05p_x09", type: "ox", level: 1, points: 7, limitSec: 8,
+            q: "한 사이클마다 표적 DNA는 3배로 늘어난다.",
+            answer: false,
+            explain: "아닙니다. 한 사이클마다 2배로 늘어나며, n 사이클이면 2ⁿ배가 됩니다.",
+            source: "강의 이론 슬라이드 11",
+            tags: ["사이클","2배"]
+          },
+          {
+            qid: "w05p_x10", type: "ox", level: 2, points: 9, limitSec: 8,
+            q: "신장 단계에서 새 가닥은 3′ → 5′ 방향으로 합성된다.",
+            answer: false,
+            explain: "아닙니다. 새 가닥은 5′ → 3′ 방향으로 합성됩니다.",
+            source: "강의 이론 슬라이드 10",
+            tags: ["신장","방향"]
+          },
+          {
+            qid: "w05p_x11", type: "ox", level: 1, points: 7, limitSec: 8,
+            q: "PCR 반응액의 총 부피는 튜브당 50 µL이다.",
+            answer: true,
+            explain: "맞습니다. 반응액은 튜브당 총 50 µL로 조제합니다.",
+            source: "강의 이론 슬라이드 13·18",
+            tags: ["반응액","50 µL"]
+          },
+          {
+            qid: "w05p_x12", type: "ox", level: 2, points: 9, limitSec: 8,
+            q: "Taq 같은 효소는 실온에 오래 두어도 괜찮으므로 천천히 넣어도 된다.",
+            answer: false,
+            explain: "아닙니다. 효소는 온도 변화에 약해 얼음에 보관하고, 필요량만 빠르게 채취해야 합니다.",
+            source: "강의 이론 슬라이드 18·22",
+            tags: ["효소","얼음 보관"]
+          },
+
+          /* ===== num (숫자 입력 · 30초) 6문 ===== */
+          {
+            qid: "w05p_n01", type: "num", level: 1, points: 7, limitSec: 30,
+            q: "PCR 반응액은 튜브당 총 몇 µL로 조제하는가?",
+            answer: 50, unit: "µL", tolerance: 0,
+            explain: "반응액은 튜브당 총 50 µL로 조제합니다(표 1~7의 합).",
+            source: "강의 이론 슬라이드 13·18",
+            tags: ["반응액","50","µL"]
+          },
+          {
+            qid: "w05p_n02", type: "num", level: 2, points: 9, limitSec: 30,
+            q: "반응액에 넣는 멸균증류수는 몇 µL인가?",
+            answer: 37.5, unit: "µL", tolerance: 0,
+            explain: "멸균증류수 37.5 µL를 가장 먼저 넣어 총 부피 50 µL를 맞춥니다.",
+            source: "강의 이론 슬라이드 18",
+            tags: ["멸균증류수","37.5","조성"]
+          },
+          {
+            qid: "w05p_n03", type: "num", level: 2, points: 9, limitSec: 30,
+            q: "프라이머 M13F 1 µL와 M13RV 1 µL를 넣으면 프라이머로 넣는 총 부피는 몇 µL인가?",
+            answer: 2, unit: "µL", tolerance: 0,
+            explain: "M13F 1 µL + M13RV 1 µL = 2 µL. 두 프라이머를 각 1 µL씩 넣습니다.",
+            source: "강의 이론 슬라이드 18",
+            tags: ["프라이머","2","계산"]
+          },
+          {
+            qid: "w05p_n04", type: "num", level: 1, points: 7, limitSec: 30,
+            q: "실제 온도 프로그램에서 예비변성 온도는 몇 ℃인가?",
+            answer: 94, unit: "℃", tolerance: 0,
+            explain: "예비변성은 94℃에서 5분간 진행해 처음에 이중가닥을 충분히 분리합니다.",
+            source: "강의 이론 슬라이드 12",
+            tags: ["예비변성","94","온도 프로그램"]
+          },
+          {
+            qid: "w05p_n05", type: "num", level: 2, points: 9, limitSec: 30,
+            q: "실제 온도 프로그램에서 3단계(94/55/72℃)를 몇 회 반복하는가?",
+            answer: 25, unit: "회", tolerance: 0,
+            explain: "3단계(변성·어닐링·신장)를 25회 반복해 증폭 구간을 늘립니다.",
+            source: "강의 이론 슬라이드 12",
+            tags: ["반복","25","사이클"]
+          },
+          {
+            qid: "w05p_n06", type: "num", level: 3, points: 11, limitSec: 30,
+            q: "pUC19의 예상 PCR 산물(밴드) 크기는 몇 bp인가?",
+            answer: 103, unit: "bp", tolerance: 0,
+            explain: "pUC19의 예상 산물은 103 bp입니다(pBI5ΔRTD는 1,291 bp).",
+            source: "강의 이론 슬라이드 21",
+            tags: ["pUC19","103","예상 산물"]
+          },
+
+          /* ===== order (순서 배열 · 45초) 6문
+           *   answer = steps 배열의 인덱스(0부터)를 올바른 순서대로 나열한 배열
+           * ===== */
+          {
+            qid: "w05p_o01", type: "order", level: 1, points: 7, limitSec: 45,
+            q: "오늘 실험의 큰 흐름을 순서대로 배열하시오.",
+            steps: ["UV 판독", "반응액 조제", "전기영동", "혼합·PCR 증폭"],
+            answer: [1, 3, 2, 0],
+            explain: "반응액 조제 → 혼합·PCR 증폭(약 90분) → 전기영동 → UV 판독 순서입니다.",
+            source: "강의 이론 슬라이드 20",
+            tags: ["순서","실험 흐름"]
+          },
+          {
+            qid: "w05p_o02", type: "order", level: 1, points: 7, limitSec: 45,
+            q: "PCR 한 사이클의 3단계를 순서대로 배열하시오.",
+            steps: ["신장(Extension)", "변성(Denaturation)", "어닐링(Annealing)"],
+            answer: [1, 2, 0],
+            explain: "변성(95℃) → 어닐링(40~60℃) → 신장(72℃) 순서입니다.",
+            source: "강의 이론 슬라이드 7",
+            tags: ["순서","3단계"]
+          },
+          {
+            qid: "w05p_o03", type: "order", level: 2, points: 9, limitSec: 45,
+            q: "실제 온도 프로그램의 전체 순서를 배열하시오.",
+            steps: ["4℃ 보관", "예비변성 94℃ 5분", "3단계 반복 (94/55/72℃) 25회", "최종신장 72℃ 7분"],
+            answer: [1, 2, 3, 0],
+            explain: "예비변성(94℃ 5분) → 3단계 반복(94/55/72℃ 25회) → 최종신장(72℃ 7분) → 4℃ 보관 순서입니다.",
+            source: "강의 이론 슬라이드 12",
+            tags: ["순서","온도 프로그램"]
+          },
+          {
+            qid: "w05p_o04", type: "order", level: 2, points: 9, limitSec: 45,
+            q: "다음 반응액 용액들을 조제 표(1→7)의 순서대로 배열하시오.",
+            steps: ["dNTP mixture", "멸균증류수", "Taq polymerase", "10X Reaction buffer"],
+            answer: [1, 3, 0, 2],
+            explain: "표 순서상 멸균증류수(1) → 10X Reaction buffer(5) → dNTP mixture(6) → Taq polymerase(7) 순으로 넣습니다. 효소(Taq)는 마지막에 넣습니다.",
+            source: "강의 이론 슬라이드 18",
+            tags: ["순서","조제","조성표"]
+          },
+          {
+            qid: "w05p_o05", type: "order", level: 2, points: 9, limitSec: 45,
+            q: "다음 온도들을 낮은 것부터 높은 순으로 배열하시오.",
+            steps: ["신장 72℃", "어닐링 55℃", "예비변성 94℃", "4℃ 보관"],
+            answer: [3, 1, 0, 2],
+            explain: "낮은 것부터 → 4℃ 보관 → 어닐링 55℃ → 신장 72℃ → 예비변성 94℃ 순입니다.",
+            source: "강의 이론 슬라이드 12",
+            tags: ["순서","온도 비교"]
+          },
+          {
+            qid: "w05p_o06", type: "order", level: 3, points: 11, limitSec: 45,
+            q: "사이클 수와 증폭 배수를 사이클이 적은 것부터 순서대로 배열하시오.",
+            steps: ["3 사이클 = 8배", "1 사이클 = 2배", "4 사이클 = 16배", "2 사이클 = 4배"],
+            answer: [1, 3, 0, 2],
+            explain: "1 사이클(2배) → 2 사이클(4배) → 3 사이클(8배) → 4 사이클(16배). 한 사이클마다 2배이므로 2ⁿ배입니다.",
+            source: "강의 이론 슬라이드 11",
+            tags: ["순서","2ⁿ","증폭 배수"]
+          }
+        ],
+
+        /* ---- pool.reason — 추리형 사건 6건 (PCR 실패·비특이 증폭·안전 시나리오) ----
+         *   각 사건 points = 15. 근거 = 강의 이론(조성·온도·Mg²⁺·주의사항)·실험방법.
+         * ---------------------------------------------------------------*/
+        reason: [
+          {
+            caseId: "w05_r01",
+            no: "Case 01",
+            title: "밴드가 하나도 안 나온다 — Taq를 빠뜨렸다",
+            subtitle: "5주차 PCR — 전기영동을 해도 산물 밴드가 전혀 보이지 않았다",
+            weeks: "5주차",
+            points: 15,
+            brief:
+              "한 조가 PCR과 전기영동을 정상적으로 끝냈는데 예상 산물(pBI5ΔRTD 1,291 bp·pUC19 103 bp) 밴드가 전혀 " +
+              "보이지 않았습니다. 옆 조는 뚜렷했습니다. 반응액 조제 과정에서 무엇이 빠졌는지 밝히세요.",
+            freeClues: 3,
+            extraClueCostXp: 20,
+            clues: [
+              { id: "k1", order: 1, label: "단서 ① — 조성 기록",
+                body: "조성 기록에 Taq polymerase 0.5 µL를 넣는 칸이 비어 있고, 총 부피가 50 µL가 아닌 49.5 µL로 적혀 있음.",
+                readingHint: "Taq가 없으면 새 가닥을 합성할 효소가 없다 — 증폭 자체가 일어나지 않는다. 결정타일 수 있다.",
+                isEvidence: true, decisive: true,
+                source: "강의 이론 슬라이드 15·18" },
+              { id: "k2", order: 2, label: "단서 ② — 온도 프로그램",
+                body: "예비변성 94℃ 5분, 3단계(94/55/72℃) 25회, 최종신장 72℃ 7분으로 규정대로였음.",
+                readingHint: "온도 프로그램은 정상이다 → 온도 문제는 아니다.",
+                isEvidence: false,
+                source: "강의 이론 슬라이드 12" },
+              { id: "k3", order: 3, label: "단서 ③ — 옆 조 비교",
+                body: "같은 주형·프라이머를 쓴 옆 조는 Taq를 넣었고 두 밴드가 뚜렷했음.",
+                readingHint: "차이는 'Taq를 넣었느냐'뿐이다.",
+                isEvidence: true,
+                source: "강의 이론 슬라이드 15" },
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+                body: "Taq를 얼음에서 꺼내다가 깜빡하고 안 넣었어요. 그래서 아무 밴드도 안 나온 것 같아요.",
+                readingHint: "확정타. Taq 누락으로 합성이 진행되지 못했다.",
+                isEvidence: true, decisive: true,
+                source: "강의 이론 슬라이드 15·18" }
+            ],
+            suspects: [
+              { id: "s1", mark: "ㄱ", label: "반응액에 Taq polymerase를 넣지 않아 새 가닥 합성이 일어나지 못했다", correct: true },
+              { id: "s2", mark: "ㄴ", label: "전기영동 전압을 낮게 걸었다", correct: false,
+                debrief: "전압이 낮았다면 밴드가 덜 이동했을 뿐, 아예 안 보이지는 않습니다. 증폭이 됐다면 밴드는 나타납니다." },
+              { id: "s3", mark: "ㄷ", label: "프라이머를 2종 다 넣었다", correct: false,
+                debrief: "프라이머 2종을 다 넣은 것은 정상 조건입니다 — 실패 원인이 아닙니다." },
+              { id: "s4", mark: "ㄹ", label: "온도 프로그램을 25회로 설정했다", correct: false,
+                debrief: "25회는 규정된 정상 반복 횟수입니다(단서 ②). 실패 원인이 아닙니다." }
+            ],
+            answer: { suspect: "s1", evidence: ["k1", "k4"] },
+            debrief:
+              "Taq polymerase는 프라이머를 출발점으로 새 DNA 가닥을 합성하는 효소입니다. Taq가 없으면 온도·프라이머·dNTP가 " +
+              "모두 정상이어도 새 가닥이 만들어지지 않아 증폭이 전혀 일어나지 않습니다. 밴드가 하나도 안 보이면 조성 기록에서 " +
+              "Taq 누락을 가장 먼저 의심해야 합니다.",
+            prescription: [
+              "조성표(1→7)를 확인해 Taq polymerase 0.5 µL가 들어갔는지 점검한다",
+              "총 부피가 50 µL가 맞는지 확인한다(49.5 µL면 무언가 빠진 것)",
+              "효소는 얼음에서 필요량만 빠르게 채취해 마지막에 넣고, 넣었는지 표시한다"
+            ],
+            source: "강의 이론 슬라이드 15·18",
+            tags: ["Taq 누락","밴드 안 나옴","조성"]
+          },
+          {
+            caseId: "w05_r02",
+            no: "Case 02",
+            title: "밴드가 안 나온다 — 어닐링 온도를 너무 높게 걸었다",
+            subtitle: "5주차 PCR — 프라이머가 붙지 못해 증폭이 안 됐다",
+            weeks: "5주차",
+            points: 15,
+            brief:
+              "한 조가 조성은 표대로 했는데 산물 밴드가 나오지 않았습니다. 온도 프로그램을 확인하니 어닐링 온도가 이상했습니다. " +
+              "무엇이 잘못됐는지 밝히세요.",
+            freeClues: 3,
+            extraClueCostXp: 20,
+            clues: [
+              { id: "k1", order: 1, label: "단서 ① — 온도 프로그램 기록",
+                body: "어닐링 온도를 55℃가 아니라 72℃로 입력함(어닐링 규정 범위는 40~60℃).",
+                readingHint: "어닐링 온도가 너무 높으면 프라이머가 가닥에 상보결합하지 못한다 — 결정타일 수 있다.",
+                isEvidence: true, decisive: true,
+                source: "강의 이론 슬라이드 9·12" },
+              { id: "k2", order: 2, label: "단서 ② — 반응액 조성",
+                body: "멸균증류수 37.5·주형 1·프라이머 각 1·10X buffer 5·dNTP 4·Taq 0.5 µL로 조성은 정상이었음.",
+                readingHint: "조성은 정상이다 → 재료 누락 문제는 아니다.",
+                isEvidence: false,
+                source: "강의 이론 슬라이드 18" },
+              { id: "k3", order: 3, label: "단서 ③ — 재실험 결과",
+                body: "어닐링을 55℃로 다시 맞춘 재실험에서는 예상 두 밴드가 나왔음.",
+                readingHint: "어닐링 온도만 바꿨더니 성공했다 → 원인은 어닐링 온도다.",
+                isEvidence: true,
+                source: "강의 이론 슬라이드 9" },
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+                body: "어닐링 온도를 신장이랑 같은 72℃로 잘못 입력했어요. 프라이머가 안 붙었나 봐요.",
+                readingHint: "확정타. 어닐링 온도 과다로 프라이머가 결합하지 못했다.",
+                isEvidence: true, decisive: true,
+                source: "강의 이론 슬라이드 9" }
+            ],
+            suspects: [
+              { id: "s1", mark: "ㄱ", label: "어닐링 온도를 규정(40~60℃)보다 너무 높게 걸어 프라이머가 결합하지 못했다", correct: true },
+              { id: "s2", mark: "ㄴ", label: "dNTP를 넣지 않았다", correct: false,
+                debrief: "조성은 정상이었습니다(단서 ②). dNTP 누락은 아닙니다." },
+              { id: "s3", mark: "ㄷ", label: "사이클을 25회 돌렸다", correct: false,
+                debrief: "25회는 정상 반복 횟수입니다 — 실패 원인이 아닙니다." },
+              { id: "s4", mark: "ㄹ", label: "Taq를 0.5 µL 넣었다", correct: false,
+                debrief: "Taq 0.5 µL는 규정량입니다 — 정상 조건입니다." }
+            ],
+            answer: { suspect: "s1", evidence: ["k1", "k4"] },
+            debrief:
+              "어닐링은 온도를 40~60℃로 낮춰 프라이머가 단일가닥에 상보결합하게 하는 단계입니다. 어닐링 온도를 신장 온도(72℃)만큼 " +
+              "높이면 프라이머가 붙지 못해, 이후 신장이 시작될 출발점이 없어 증폭이 일어나지 않습니다. 밴드가 안 나오면 조성뿐 " +
+              "아니라 어닐링 온도 설정도 함께 점검해야 합니다.",
+            prescription: [
+              "어닐링 온도를 40~60℃(실제조건 55℃) 범위로 설정한다",
+              "온도 프로그램 입력값(변성 94·어닐링 55·신장 72℃)을 다시 확인한다",
+              "밴드가 안 나오면 조성과 어닐링 온도를 함께 점검한다"
+            ],
+            source: "강의 이론 슬라이드 9·12",
+            tags: ["어닐링 온도","프라이머 결합","밴드 안 나옴"]
+          },
+          {
+            caseId: "w05_r03",
+            no: "Case 03",
+            title: "엉뚱한 밴드가 여러 개 — Mg²⁺가 과했다",
+            subtitle: "5주차 PCR — 비특이 산물이 잔뜩 생겼다",
+            weeks: "5주차",
+            points: 15,
+            brief:
+              "한 조의 전기영동에서 예상 산물(1,291 bp·103 bp) 말고도 엉뚱한 크기의 밴드가 여러 개 나왔습니다. " +
+              "buffer 취급에서 무엇이 잘못됐는지 밝히세요.",
+            freeClues: 3,
+            extraClueCostXp: 20,
+            clues: [
+              { id: "k1", order: 1, label: "단서 ① — buffer 취급 기록",
+                body: "10X Reaction buffer 규정량(5 µL) 외에 MgCl₂를 추가로 더 넣어 Mg²⁺ 농도가 규정보다 높아짐.",
+                readingHint: "Mg²⁺가 너무 높으면 엉뚱한 산물(비특이 증폭)이 생긴다 — 결정타일 수 있다.",
+                isEvidence: true, decisive: true,
+                source: "강의 이론 슬라이드 17" },
+              { id: "k2", order: 2, label: "단서 ② — 프라이머·주형",
+                body: "프라이머 M13F·M13RV와 주형은 규정대로였음.",
+                readingHint: "프라이머·주형은 정상이다 → 그쪽 문제는 아니다.",
+                isEvidence: false,
+                source: "강의 이론 슬라이드 18" },
+              { id: "k3", order: 3, label: "단서 ③ — 재실험 결과",
+                body: "Mg²⁺를 규정량대로만 넣은 재실험에서는 예상 두 밴드만 깔끔하게 나왔음.",
+                readingHint: "Mg²⁺ 양만 정상으로 돌렸더니 깨끗해졌다 → 원인은 Mg²⁺ 과다다.",
+                isEvidence: true,
+                source: "강의 이론 슬라이드 17" },
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+                body: "buffer가 부족한 것 같아서 MgCl₂를 한 번 더 넣었어요. 그래서 이상한 밴드가 많이 나온 것 같아요.",
+                readingHint: "확정타. Mg²⁺ 과다로 비특이 증폭이 일어났다.",
+                isEvidence: true, decisive: true,
+                source: "강의 이론 슬라이드 17" }
+            ],
+            suspects: [
+              { id: "s1", mark: "ㄱ", label: "Mg²⁺(MgCl₂)를 규정보다 과하게 넣어 비특이 증폭이 일어났다", correct: true },
+              { id: "s2", mark: "ㄴ", label: "어닐링 온도를 55℃로 맞췄다", correct: false,
+                debrief: "55℃는 정상 어닐링 온도입니다 — 원인이 아닙니다." },
+              { id: "s3", mark: "ㄷ", label: "Taq를 넣지 않았다", correct: false,
+                debrief: "Taq를 안 넣었다면 밴드가 아예 안 나옵니다. 여러 밴드가 나온 것과는 다릅니다." },
+              { id: "s4", mark: "ㄹ", label: "멸균증류수를 37.5 µL 넣었다", correct: false,
+                debrief: "37.5 µL는 규정량입니다 — 정상 조건입니다." }
+            ],
+            answer: { suspect: "s1", evidence: ["k1", "k4"] },
+            debrief:
+              "Mg²⁺는 Taq 활성에 필수지만, 농도가 정해진 양보다 높으면 프라이머가 엉뚱한 자리에도 결합해 비특이 산물(원치 않는 " +
+              "밴드)이 생깁니다. 강의에서도 'Mg²⁺가 너무 높으면 엉뚱한 산물'이라 배웠습니다. 그래서 10X buffer는 정해진 양(5 µL)만 " +
+              "정확히 넣고 MgCl₂를 임의로 더 넣지 않아야 합니다.",
+            prescription: [
+              "10X Reaction buffer는 규정량 5 µL만 넣고 MgCl₂를 임의로 추가하지 않는다",
+              "엉뚱한 밴드가 여러 개면 Mg²⁺ 농도 과다를 의심한다",
+              "조성은 표대로 정확한 양을 지킨다"
+            ],
+            source: "강의 이론 슬라이드 17",
+            tags: ["Mg2+ 과다","비특이 증폭","여러 밴드"]
+          },
+          {
+            caseId: "w05_r04",
+            no: "Case 04",
+            title: "밴드가 흐리다 — 사이클 수가 너무 적었다",
+            subtitle: "5주차 PCR — 증폭이 부족해 밴드가 약하게 나왔다",
+            weeks: "5주차",
+            points: 15,
+            brief:
+              "한 조의 밴드가 예상 위치에 나오긴 했지만 매우 흐릿했습니다. 온도 프로그램의 반복 횟수를 확인하세요.",
+            freeClues: 3,
+            extraClueCostXp: 20,
+            clues: [
+              { id: "k1", order: 1, label: "단서 ① — 반복 횟수 기록",
+                body: "3단계 반복을 25회가 아니라 5회만 설정함(2⁵=32배에 그침).",
+                readingHint: "사이클이 너무 적으면 증폭량이 부족해 밴드가 약하게 나온다 — 결정타일 수 있다.",
+                isEvidence: true, decisive: true,
+                source: "강의 이론 슬라이드 11·12" },
+              { id: "k2", order: 2, label: "단서 ② — 온도값",
+                body: "변성 94·어닐링 55·신장 72℃로 각 단계 온도는 정상이었음.",
+                readingHint: "온도값은 정상이다 → 온도 설정 문제는 아니다.",
+                isEvidence: false,
+                source: "강의 이론 슬라이드 12" },
+              { id: "k3", order: 3, label: "단서 ③ — 옆 조 비교",
+                body: "25회로 돌린 옆 조는 같은 위치에 밴드가 진하게 나왔음.",
+                readingHint: "차이는 반복 횟수뿐이다 → 원인은 사이클 수다.",
+                isEvidence: true,
+                source: "강의 이론 슬라이드 11" },
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+                body: "시간을 아끼려고 반복을 5회로 줄였어요. 그래서 밴드가 흐리게 나온 것 같아요.",
+                readingHint: "확정타. 사이클 부족으로 증폭량이 모자랐다.",
+                isEvidence: true, decisive: true,
+                source: "강의 이론 슬라이드 11" }
+            ],
+            suspects: [
+              { id: "s1", mark: "ㄱ", label: "3단계 반복 횟수를 규정(25회)보다 적게 돌려 증폭량이 부족했다", correct: true },
+              { id: "s2", mark: "ㄴ", label: "Mg²⁺를 규정량대로 넣었다", correct: false,
+                debrief: "규정량 Mg²⁺는 정상 조건입니다 — 원인이 아닙니다." },
+              { id: "s3", mark: "ㄷ", label: "신장 온도를 72℃로 맞췄다", correct: false,
+                debrief: "72℃는 정상 신장 온도입니다 — 원인이 아닙니다." },
+              { id: "s4", mark: "ㄹ", label: "프라이머를 M13F·M13RV 2종 넣었다", correct: false,
+                debrief: "프라이머 2종은 정상 조건입니다 — 원인이 아닙니다." }
+            ],
+            answer: { suspect: "s1", evidence: ["k1", "k4"] },
+            debrief:
+              "한 사이클마다 표적은 2배(2ⁿ)로 늘어납니다. 25회를 돌리면 매우 많은 양이 되지만 5회만 돌리면 32배에 그쳐 " +
+              "전기영동으로 보기에 밴드가 흐릿합니다. 밴드가 약하면 조성보다 반복 횟수(사이클 수)를 먼저 점검하세요.",
+            prescription: [
+              "3단계 반복을 규정된 25회로 설정한다",
+              "밴드가 흐리면 사이클 수 부족을 먼저 의심한다",
+              "시간을 아끼려 반복을 임의로 줄이지 않는다"
+            ],
+            source: "강의 이론 슬라이드 11·12",
+            tags: ["사이클 부족","흐린 밴드","증폭량"]
+          },
+          {
+            caseId: "w05_r05",
+            no: "Case 05",
+            title: "산물이 안 나온다 — 변성 온도를 낮게 걸었다",
+            subtitle: "5주차 PCR — 이중가닥이 안 풀려 증폭이 시작되지 못했다",
+            weeks: "5주차",
+            points: 15,
+            brief:
+              "한 조가 조성은 정상이었는데 산물 밴드가 나오지 않았습니다. 온도 프로그램에서 변성 온도가 이상했습니다. " +
+              "무엇이 잘못됐는지 밝히세요.",
+            freeClues: 3,
+            extraClueCostXp: 20,
+            clues: [
+              { id: "k1", order: 1, label: "단서 ① — 온도 프로그램 기록",
+                body: "예비변성·변성 온도를 94℃가 아니라 50℃로 입력함 — 이중가닥이 단일가닥으로 분리되지 못함.",
+                readingHint: "변성 온도가 낮으면 두 가닥이 안 풀려 프라이머 결합·합성이 시작될 수 없다 — 결정타일 수 있다.",
+                isEvidence: true, decisive: true,
+                source: "강의 이론 슬라이드 8·12" },
+              { id: "k2", order: 2, label: "단서 ② — 반응액 조성",
+                body: "조성은 표대로(멸균수 37.5·주형 1·프라이머 각 1·buffer 5·dNTP 4·Taq 0.5 µL) 정상이었음.",
+                readingHint: "조성은 정상이다 → 재료 문제는 아니다.",
+                isEvidence: false,
+                source: "강의 이론 슬라이드 18" },
+              { id: "k3", order: 3, label: "단서 ③ — 재실험 결과",
+                body: "변성을 94℃로 다시 맞춘 재실험에서는 예상 두 밴드가 나왔음.",
+                readingHint: "변성 온도만 바꿨더니 성공했다 → 원인은 변성 온도다.",
+                isEvidence: true,
+                source: "강의 이론 슬라이드 8" },
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+                body: "변성 온도를 실수로 50℃로 낮게 넣었어요. 가닥이 안 풀려서 아무것도 안 나온 것 같아요.",
+                readingHint: "확정타. 변성 온도가 낮아 이중가닥이 분리되지 못했다.",
+                isEvidence: true, decisive: true,
+                source: "강의 이론 슬라이드 8" }
+            ],
+            suspects: [
+              { id: "s1", mark: "ㄱ", label: "변성 온도를 너무 낮게 걸어 이중가닥이 단일가닥으로 분리되지 못했다", correct: true },
+              { id: "s2", mark: "ㄴ", label: "dNTP 4종을 다 넣었다", correct: false,
+                debrief: "dNTP 4종을 다 넣은 것은 정상 조건입니다 — 원인이 아닙니다." },
+              { id: "s3", mark: "ㄷ", label: "전기영동 시료를 5 µL 로딩했다", correct: false,
+                debrief: "시료 5 µL 로딩은 규정대로입니다 — 증폭 실패 원인이 아닙니다." },
+              { id: "s4", mark: "ㄹ", label: "최종신장을 72℃로 했다", correct: false,
+                debrief: "최종신장 72℃는 정상 조건입니다 — 원인이 아닙니다." }
+            ],
+            answer: { suspect: "s1", evidence: ["k1", "k4"] },
+            debrief:
+              "변성은 높은 열(94~95℃)로 이중가닥을 단일가닥으로 분리하는 단계로, 여기서 가닥이 풀려야 프라이머가 붙고 신장이 " +
+              "시작됩니다. 변성 온도를 너무 낮게 걸면 가닥이 풀리지 않아 이후 단계가 진행되지 못하고 산물이 나오지 않습니다. " +
+              "밴드가 안 나오면 변성 온도(94℃) 설정도 반드시 점검해야 합니다.",
+            prescription: [
+              "예비변성·변성 온도를 94℃로 설정한다(초기 5분·반복 시 94℃)",
+              "밴드가 안 나오면 변성 온도가 충분히 높은지 확인한다",
+              "온도 프로그램 입력값을 조제 전에 다시 검토한다"
+            ],
+            source: "강의 이론 슬라이드 8·12",
+            tags: ["변성 온도","가닥 분리","밴드 안 나옴"]
+          },
+          {
+            caseId: "w05_r06",
+            no: "Case 06",
+            title: "실험 중 화상 — 뜨거운 뚜껑에 손을 데었다",
+            subtitle: "5주차 안전 — PCR 장치 뚜껑(105℃)에 맨손이 닿았다",
+            weeks: "5주차",
+            points: 15,
+            brief:
+              "한 학생이 PCR 장치에서 튜브를 꺼내다가 손을 데었습니다. 반응은 정상 진행됐습니다. 어떤 안전 수칙을 어겼는지 " +
+              "밝히세요.",
+            freeClues: 3,
+            extraClueCostXp: 20,
+            clues: [
+              { id: "k1", order: 1, label: "단서 ① — 사고 상황",
+                body: "가열된 Thermal cycler 뚜껑(105℃)에 맨손이 닿아 손가락에 화상을 입음.",
+                readingHint: "뚜껑은 증발 방지를 위해 105℃로 가열된다 — 맨손 접촉은 화상 위험이다. 결정타일 수 있다.",
+                isEvidence: true, decisive: true,
+                source: "강의 이론 슬라이드 13·22" },
+              { id: "k2", order: 2, label: "단서 ② — 반응 결과",
+                body: "PCR 반응 자체는 정상 진행돼 예상 밴드가 나왔음.",
+                readingHint: "반응은 정상이다 → 조성·온도 문제는 아니다. 안전 문제다.",
+                isEvidence: false,
+                source: "강의 이론 슬라이드 20" },
+              { id: "k3", order: 3, label: "단서 ③ — 안내문",
+                body: "실험 안내문에 '뚜껑·블록은 고온이므로 맨손 접촉 금지'라고 명시돼 있었음.",
+                readingHint: "안내문이 맨손 접촉을 금지하고 있었다 → 수칙 위반이다.",
+                isEvidence: true,
+                source: "강의 이론 슬라이드 22" },
+              { id: "k4", order: 4, label: "단서 ④ — 학생 진술 (확정타)",
+                body: "뚜껑이 그렇게 뜨거운 줄 모르고 맨손으로 만졌어요.",
+                readingHint: "확정타. 고온 뚜껑에 맨손이 닿아 화상을 입었다.",
+                isEvidence: true, decisive: true,
+                source: "강의 이론 슬라이드 13·22" }
+            ],
+            suspects: [
+              { id: "s1", mark: "ㄱ", label: "고온(105℃)으로 가열된 뚜껑·블록에 맨손이 닿아 화상을 입었다", correct: true },
+              { id: "s2", mark: "ㄴ", label: "UV 장치를 차단창 없이 봐서 다쳤다", correct: false,
+                debrief: "UV 노출도 위험하지만, 이 사고는 뜨거운 뚜껑에 손을 댄 화상입니다." },
+              { id: "s3", mark: "ㄷ", label: "전기영동 장치에 감전됐다", correct: false,
+                debrief: "감전이 아니라 고온 뚜껑에 의한 화상입니다(단서 ①·④)." },
+              { id: "s4", mark: "ㄹ", label: "멸균 팁을 쓰지 않아 다쳤다", correct: false,
+                debrief: "멸균 팁은 오염 방지 수칙이지 화상과는 관련이 없습니다." }
+            ],
+            answer: { suspect: "s1", evidence: ["k1", "k4"] },
+            debrief:
+              "Thermal cycler는 반응액 증발을 막기 위해 뚜껑(Cover)을 105℃로 가열합니다. 뚜껑과 블록이 매우 뜨거우므로 맨손 접촉은 " +
+              "화상 위험이 있어 금지입니다. 장치를 다룰 때는 고온 부위에 맨손을 대지 말고, 안내문의 안전 수칙을 지켜야 합니다.",
+            prescription: [
+              "PCR 장치의 뚜껑·블록은 고온이므로 맨손으로 만지지 않는다",
+              "튜브를 넣고 뺄 때 고온 부위 접촉에 주의한다",
+              "화상·UV 노출·감전 등 안전 수칙을 실험 전에 확인한다"
+            ],
+            source: "강의 이론 슬라이드 13·22",
+            tags: ["화상","뚜껑 105℃","안전"]
+          }
+        ],
+
+        source: "강의 이론 PDF(5주차 PCR을 통한 DNA 증폭) 슬라이드 1~23 · (실험방법)·(실험준비) 05. PCR을 통한 DNA 증폭 · 교수님 지시(미션 방식)"
+      },
+
+      /* ------------------------------------------------------------------
+       * report(w05) — 실험보고서 (교수님 직접 지정 구조: 사진2 + 고찰)
+       *   ① PCR tube를 Thermal cycler에 넣은 사진  ② 전기영동 결과 사진  ③ 고찰
+       *   정량표·사이즈 입력칸 없음. 사진칸은 w03·w04와 동일한 이미지 업로드 엔진.
+       * ----------------------------------------------------------------*/
+      report: {
+        stageId: "w05",
+        title: "PCR을 통한 DNA 증폭",
+        course: "유전자분석 (동양미래대학교 바이오융합공학과 2학년 · 2026-2학기)",
+        weekLabel: "5주차",
+        experimentNo: "실험 4",
+        experimentName: "PCR을 통한 DNA 증폭 (pBI5ΔRTD · pUC19)",
+        dateLabel: "2026-09-23",
+        paper: "A4",
+        gradeNote: "실험보고서 — 다음 실험 시작 전 제출",
+        meta: [
+          { key: "course", label: "과목", value: "유전자분석", fixed: true },
+          { key: "week", label: "주차", value: "5주차", fixed: true },
+          { key: "expName", label: "실험명", value: "PCR을 통한 DNA 증폭 (pBI5ΔRTD · pUC19)", fixed: true },
+          { key: "date", label: "실험일자", value: "2026-09-23", fixed: false },
+          { key: "team", label: "조", value: "", fixed: false, hint: "예: 3조" },
+          { key: "sid", label: "학번", value: "", fixed: false, hint: "로그인 학번" },
+          { key: "name", label: "이름", value: "", fixed: false, hint: "로그인 이름" }
+        ],
+        /* 교수님 지정: 딱 3가지 — 사진①(PCR tube+장치) · 사진②(전기영동 결과) · 고찰.
+         * type:"images"는 conditions 개수만큼 이미지 업로드 슬롯을 그린다(w03·w04와 동일 엔진). */
+        sections: [
+          {
+            key: "pcrtube", no: 1, label: "사진 ① — PCR tube를 PCR 장치에 넣은 사진",
+            type: "images",
+            hint: "PCR tube에 7종 용액(멸균증류수·주형·프라이머 2종·10X buffer·dNTP·Taq)을 모두 넣은 뒤, PCR 장치(Thermal cycler)에 넣은 모습을 사진으로 1장 올린다.",
+            conditions: [
+              "PCR tube에 모든 용액을 넣은 후, PCR 장치(thermal cycler)에 넣은 사진"
+            ]
+          },
+          {
+            key: "gel", no: 2, label: "사진 ② — 전기영동 결과 사진",
+            type: "images",
+            hint: "PCR 산물을 전기영동(시료 5 µL + 6X Loading buffer 1 µL)한 뒤 UV로 확인한 결과를 사진으로 1장 올린다. 예상 산물은 pBI5ΔRTD 1,291 bp · pUC19 103 bp.",
+            conditions: [
+              "전기영동 결과 사진"
+            ]
+          },
+          {
+            key: "discussion", no: 3, label: "고찰",
+            type: "text",
+            rows: 8,
+            hint: "예상 산물(pBI5ΔRTD 1,291 bp·pUC19 103 bp) 밴드가 나왔는지 ladder와 비교해 판정하고, PCR 3단계(변성·어닐링·신장)와 반응 재료(주형·프라이머·Taq·dNTP·Mg²⁺)의 원리와 연결해 결과를 해석하세요. 밴드가 없거나 흐리면 그 원인(Taq 누락·어닐링 온도·Mg²⁺·사이클 수 등)을 추정해 적습니다."
+          }
+        ],
+        source: "강의 이론 슬라이드 18·20·21·22 · 실험방법 05 · 교수님 지시(사진② + 고찰: ①PCR tube+장치 ②전기영동 결과)"
       }
 
     }
