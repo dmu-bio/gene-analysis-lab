@@ -1854,7 +1854,7 @@ RENDER.labs = function(){
       var id = bt.getAttribute("data-lab"), lab = null;
       labs.forEach(function(l){ if(l.id === id) lab = l; });
       if(!lab) return;
-      if(labEnterable(lab)){ ACTIVE_WEEK = lab.id; AW = weekPack(ACTIVE_WEEK); buildDerived(); go("lobby"); return; }
+      if(labEnterable(lab)){ ACTIVE_WEEK = lab.id; AW = weekPack(ACTIVE_WEEK); buildDerived(); state = loadProgress(state.role, state.studentId, state.studentName); ctx = {}; go("lobby"); return; }
       if(!lab.ready){ toast("이 실습의 문항은 준비 중입니다."); return; }
       if(state.role !== "prof" && !TEST_OPEN_ALL && !weekIsOpen(lab.id)){ toast("아직 시작 전입니다. 교수님이 시작하면 열립니다."); return; }
       toast("이 실습의 문항은 준비 중입니다.");
