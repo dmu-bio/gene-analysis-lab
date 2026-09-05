@@ -22,7 +22,7 @@
 window.GAME_CONTENT = {
 
   schemaVersion: 1,
-  contentVersion: "2026-09-05-w03",
+  contentVersion: "2026-09-05-w04",
 
   /* ==========================================================================
    * labs — 7개 실습 메뉴 (2주차~8주차, 중간고사 전 완료)
@@ -46,7 +46,7 @@ window.GAME_CONTENT = {
     },
     {
       id: "w04", no: 3, weekLabel: "4주차", title: "DNA 정량·정성 분석",
-      dateLabel: "9/16", unlockDate: "2026-09-16", ready: false,
+      dateLabel: "9/16", unlockDate: "2026-09-16", ready: true,
       desc: "뽑은 DNA의 농도와 순도를 Nanodrop·전기영동으로 확인한다"
     },
     {
@@ -4457,6 +4457,1064 @@ window.GAME_CONTENT = {
           }
         ],
         source: "강의 이론 슬라이드 9·10·11·13·14~17 · 실험방법 ①~⑬ · 교수님 지시(프로세스별 사진 + 최종 2종 + 고찰)"
+      }
+
+    },
+
+    w04: {
+
+      /* ------------------------------------------------------------------
+       * learn(w04) — DNA 정량·정성 분석 학습 카드
+       *   모든 수치·시약명·조건은 강의 이론 PDF(4주차 DNA 정량정성 분석) 슬라이드 1~19,
+       *   (실험방법)·(실험준비) 04. DNA 정량정성 분석 PDF 그대로. 지어낸 값 없음.
+       * ----------------------------------------------------------------*/
+      learn: {
+        stageId: "w04",
+        intro: {
+          oneLiner:
+            "지난주 뽑은 DNA를, 사진으로 온전한지 보고(정성) 숫자로 얼마나·순수한지 잰다(정량).",
+          bigQuestion: "내 DNA는 PCR에 넣어도 될 만큼 온전하고·충분하고·순수한가",
+          note:
+            "이 한 질문에 스스로 답할 수 있게 되는 것이 오늘 학습의 목표입니다. 정성(아가로스겔 전기영동)은 밴드로 " +
+            "'온전한가(모양·크기)'를, 정량(NanoDrop)은 '얼마나 있고 얼마나 순수한가(농도·순도비)'를 봅니다. " +
+            "오늘 확인한 DNA가 곧 5주차 PCR의 재료이며, 품질이 나쁘면 3주차 추출을 재실험합니다.",
+          source: "강의 이론 슬라이드 1·3·4·5(핵심 한 문장·오늘 할 일·왜 확인·정성vs정량)"
+        },
+        cards: [
+          {
+            id: "L1", title: "오늘 무엇을 하나 — 두 DNA를 정성·정량으로 확인", kind: "내용",
+            body:
+              "오늘은 3주차에 뽑은 플라스미드 2종(pBI5ΔRTD·pUC19)이 제대로 나왔는지 두 방법으로 확인합니다. " +
+              "먼저 정성 분석 — 아가로스겔 전기영동으로 밴드를 만들어 모양·크기가 온전한지 봅니다. 이어 정량 분석 — " +
+              "NanoDrop 분광광도계로 두 시료의 농도와 순도비를 잽니다. 정성은 겔 제조→로딩→135 V·20분 전개→UV 판독으로, " +
+              "정량은 증류수 blank→시료 각 2 µL 측정→판단으로 이어집니다. 오늘의 핵심 한 문장은 '사진으로 온전한지 보고, " +
+              "숫자로 얼마나·순수한지 잰다'입니다.",
+            keyNumbers: ["시료 2종 = pBI5ΔRTD · pUC19", "정성 = 아가로스겔 전기영동(135 V·20분)", "정량 = NanoDrop(농도·순도비)", "이론 30분 · 실험 130분 · 정리 20분"],
+            source: "강의 이론 슬라이드 1·3 · 실험방법 [1]·[2]"
+          },
+          {
+            id: "L2", title: "정성 vs 정량 — 묻는 질문이 다르다", kind: "원리",
+            body:
+              "두 분석은 서로 다른 질문에 답합니다. 정성 분석은 '온전한가'를 묻고, 아가로스겔 전기영동으로 밴드 사진을 얻어 " +
+              "모양·크기·오염을 봅니다 — 다만 정확한 농도는 알 수 없다는 한계가 있습니다. 정량 분석은 '얼마나 있고 얼마나 " +
+              "순수한가'를 묻고, NanoDrop으로 농도(ng/µL)와 순도비(A260/A280·A260/A230)를 얻습니다 — 다만 DNA가 조각나 있어도 " +
+              "숫자는 같게 나올 수 있다는 한계가 있습니다. 그래서 두 방법을 함께 써서 '온전하면서도 충분하고 순수한지'를 봅니다.",
+            keyNumbers: ["정성 = 온전한가 / 전기영동 밴드 / 정확한 농도는 모름", "정량 = 얼마나·순수한가 / NanoDrop 농도·순도비 / 조각나도 숫자는 같음", "두 방법을 함께 써야 완전한 판정"],
+            source: "강의 이론 슬라이드 4·5(왜 확인하나·정성vs정량)"
+          },
+          {
+            id: "L3", title: "전기영동은 왜 크기로 나뉘나", kind: "원리",
+            body:
+              "아가로스겔 전기영동은 DNA를 크기별로 나눕니다. 원리는 두 가지입니다. 첫째, DNA는 인산기 때문에 늘 음전하(−)를 " +
+              "띠므로 전기장에서 (−)극에서 (+)극 쪽으로 이동합니다. 이때 전하/질량비가 크기와 무관하게 일정해서, 이동 속도를 " +
+              "가르는 변수는 오직 '크기'뿐입니다. 둘째, 아가로스 겔은 그물(체) 역할을 해서 작은 DNA는 그물을 빠르게 통과해 " +
+              "아래로 멀리 가고, 큰 DNA는 느려 위쪽에 남습니다. 위쪽 우물(웰)이 출발점이며, 아래로 갈수록 작은 DNA입니다.",
+            keyNumbers: ["DNA = 음전하(인산기) → (−)극에서 (+)극으로", "전하/질량비 일정 → 크기만이 변수", "gel = 체 · 작을수록 멀리(빠름) · 큰 것은 위에", "우물(웰) = 출발점"],
+            source: "강의 이론 슬라이드 6·7(왜 움직이나·왜 나뉘나·겔 위에서 일어나는 일)"
+          },
+          {
+            id: "L4", title: "ladder·RedSafe·UV — 크기를 읽고 밴드를 보이게", kind: "내용",
+            body:
+              "밴드를 읽으려면 세 가지 장치가 필요합니다. DNA ladder는 크기를 미리 아는 조각 묶음(기준자)으로, 옆 레인의 " +
+              "시료 밴드와 높이를 비교해 크기를 읽습니다 — 오늘은 1 kb ladder와 100 bp ladder를 각 5 µL씩 씁니다. RedSafe는 " +
+              "형광 염색 시약으로, DNA 이중나선 사이에 끼어들어 겔 속 DNA에 달라붙습니다. UV 장치로 자외선을 쬐면 끼어든 " +
+              "RedSafe가 빛을 내어 밴드가 밝게 발색해 판독됩니다. RedSafe 없이는 밴드가 보이지 않습니다.",
+            keyNumbers: ["ladder = 크기 기준자 · 1 kb·100 bp 각 5 µL", "옆 레인과 높이 비교로 크기 읽음", "RedSafe = 이중나선에 끼어드는 형광 염색", "UV로 자외선 → 밴드 발색·판독"],
+            source: "강의 이론 슬라이드 8·9(DNA ladder·RedSafe와 UV)"
+          },
+          {
+            id: "L5", title: "밴드가 여러 개 — 플라스미드의 세 형태", kind: "핵심",
+            body:
+              "플라스미드는 한 종인데도 겔에서 밴드가 여러 개로 보일 수 있습니다. 같은 플라스미드가 세 가지 형태로 존재하며 " +
+              "이동 속도가 다르기 때문입니다. supercoiled(초나선)는 작게 뭉쳐 있어 가장 빠르게 이동하고, linear(선형, 한 곳 " +
+              "잘림)는 중간 속도이며, nicked/open(열린 원형, 한 가닥 끊김)은 가장 느립니다. 그래서 온전한 플라스미드도 여러 " +
+              "밴드로 보일 수 있으니, 밴드 개수만으로 오염이라 단정하지 말고 형태를 함께 이해해야 합니다.",
+            keyNumbers: ["supercoiled(초나선) = 가장 빠름", "linear(선형·한 곳 잘림) = 중간", "nicked/open(열린 원형·한 가닥 끊김) = 가장 느림", "한 플라스미드도 여러 밴드로 보일 수 있음"],
+            source: "강의 이론 슬라이드 10(밴드가 여러 개 — 플라스미드의 형태)"
+          },
+          {
+            id: "L6", title: "NanoDrop — 흡광도로 농도와 순도를 잰다", kind: "핵심",
+            body:
+              "정량은 NanoDrop 분광광도계로 흡광도를 읽습니다. DNA는 260 nm에서 흡광이 최대라, 이 A260으로 농도를 계산합니다 — " +
+              "A260 = 1이면 이중가닥 DNA(dsDNA) 50 µg/mL에 해당합니다. 순도는 두 비율로 봅니다. A260/A280은 단백질 오염을 " +
+              "보는 값으로, 순수 DNA는 약 1.8~2.0입니다(낮으면 단백질 잔류=정제 부족, 높으면 RNA 혼입 의심). A260/A230은 " +
+              "염·유기물 오염을 보는 값으로, 정상은 약 2.0~2.2입니다(낮으면 염·에탄올·유기용매 잔류 — 세척·건조 부족).",
+            keyNumbers: ["A260(260 nm) 최대 흡광 → 농도", "A260 = 1 → dsDNA 50 µg/mL", "A260/A280 = 단백질 · 순수 1.8~2.0", "A260/A230 = 염·유기물 · 정상 2.0~2.2"],
+            source: "강의 이론 슬라이드 11·12·14(NanoDrop·순도 두 비율·숫자표)"
+          },
+          {
+            id: "L7", title: "절차·주의·판단 — 안전하게 재고, 나쁘면 재실험", kind: "핵심",
+            body:
+              "정성은 1X TAE로 Agarose 0.5 g을 50 mL에 녹이고 RedSafe 2.5 µL를 섞어 큰 웰(콤)의 겔을 만든 뒤, ladder 각 5 µL와 " +
+              "'6X Loading dye 2 µL + DNA 10 µL'를 로딩해 135 V에서 20분 전개하고 UV로 판독합니다. 정량은 증류수 2 µL로 blank를 " +
+              "잡고 두 시료를 각 2 µL 측정합니다. 주의 여섯 가지 — ① 겔 끓일 때 화상(내열장갑) ② 전기영동 감전(뚜껑 닫고·물기 " +
+              "주의) ③ UV 노출 금지(눈·피부 차단·차단창) ④ 멸균 팁 ⑤ 겔 구멍은 큰 것 ⑥ blank·측정 창 세척 확실히. 정성·정량이 " +
+              "둘 다 좋아야 통과하고, 농도·순도가 낮으면 3주차 DNA 추출을 재실험합니다.",
+            keyNumbers: ["정성 = Agarose 0.5 g·TAE 50 mL·RedSafe 2.5 µL·135 V 20분", "로딩 = ladder 5 µL / 6X dye 2 µL + DNA 10 µL", "정량 = blank 증류수 2 µL · 시료 각 2 µL", "둘 다 좋아야 통과 / 나쁘면 3주차 재실험"],
+            source: "강의 이론 슬라이드 13·14·15·16·17·18·19 · 실험방법 [1]①~⑦·[2]①~③"
+          }
+        ],
+        takeaways: [
+          "사진으로 온전한지 보고(정성·전기영동 밴드), 숫자로 얼마나·순수한지 잰다(정량·NanoDrop) — 오늘 확인한 DNA가 5주차 PCR의 재료다.",
+          "전기영동은 크기로 나눈다 — DNA는 음전하라 (+)극으로 가고, 전하/질량비가 일정해 크기만이 변수다. 작을수록 멀리 가며, 플라스미드는 형태(supercoiled·linear·nicked)에 따라 여러 밴드로 보일 수 있다.",
+          "순도는 두 비율로 본다 — A260/A280(단백질·순수 1.8~2.0)과 A260/A230(염·유기물·정상 2.0~2.2). A260=1이면 dsDNA 50 µg/mL. 둘 다 좋아야 통과, 나쁘면 3주차 추출을 재실험한다."
+        ],
+        source: "강의 이론 PDF(4주차 DNA 정량정성 분석) 슬라이드 1~19 · (실험방법)·(실험준비) 04. DNA 정량정성 분석 전문"
+      },
+
+      /* ------------------------------------------------------------------
+       * summaryCard(w04) — 4주차 요약 카드 (게임을 안 해도 이것만 보면 복습이 되게)
+       *   모든 수치·시약명·조건은 위 learn(w04)·강의 이론·실험방법 PDF 그대로. 지어낸 값 없음.
+       * ----------------------------------------------------------------*/
+      summaryCard: {
+        stageId: "w04",
+        title: "4주차 요약 카드 — DNA 정량·정성 분석",
+        oneLiner: "사진으로 온전한지 보고, 숫자로 얼마나·순수한지 잰다",
+        hook: "내 DNA는 PCR에 넣어도 될 만큼 온전하고·충분하고·순수한가",
+        pipeline: "한 학기 흐름 중 ④ 정량·정성 분석 (오늘 확인한 DNA = 5주차 PCR의 재료)",
+
+        concepts: [
+          { h: "오늘의 목표 — 두 DNA 확인", d: "3주차에 뽑은 플라스미드 2종(pBI5ΔRTD·pUC19)을 정성(전기영동)·정량(NanoDrop)으로 확인한다" },
+          { h: "정성 vs 정량", d: "정성 = 온전한가(전기영동 밴드·모양/크기, 농도는 모름) / 정량 = 얼마나·순수한가(NanoDrop 농도·순도비, 조각나도 숫자는 같음)" },
+          { h: "전기영동은 왜 나뉘나", d: "DNA는 음전하(인산기)라 (−)→(+)로 이동. 전하/질량비가 일정해 크기만이 변수. gel은 체 — 작을수록 멀리(빠름), 큰 것은 위에 남는다" },
+          { h: "ladder·RedSafe·UV", d: "ladder(1 kb·100 bp)는 크기 기준자로 옆 레인과 높이 비교. RedSafe는 이중나선에 끼어드는 형광 염색 → UV로 밴드 발색" },
+          { h: "플라스미드 세 형태", d: "supercoiled(초나선·가장 빠름) · linear(선형·중간) · nicked/open(열린 원형·가장 느림). 한 플라스미드도 여러 밴드로 보일 수 있다" },
+          { h: "NanoDrop 농도·순도", d: "A260 최대 흡광 → 농도(A260=1 → dsDNA 50 µg/mL). A260/A280=단백질(순수 1.8~2.0) · A260/A230=염·유기물(정상 2.0~2.2)" }
+        ],
+
+        numbers: [
+          { step: "1X TAE 제조", value: "1 L — 50X TAE를 증류수로 희석" },
+          { step: "Agarose 칭량·용해", value: "0.5 g + 1X TAE 50 mL → 전자레인지로 녹임" },
+          { step: "RedSafe", value: "2.5 µL — 녹은 겔에 혼합 후 큰 웰(콤)로 캐스팅" },
+          { step: "DNA ladder", value: "1 kb·100 bp 각 5 µL 로딩" },
+          { step: "샘플 로딩", value: "6X Loading dye 2 µL + Plasmid DNA 10 µL" },
+          { step: "전기영동", value: "135 V · 20분 → UV 판독" },
+          { step: "NanoDrop blank", value: "증류수 2 µL로 blank 설정" },
+          { step: "시료 채취", value: "pBI5ΔRTD·pUC19 각 2 µL 측정" },
+          { step: "농도 환산", value: "A260 = 1 → dsDNA 50 µg/mL" },
+          { step: "순도 기준", value: "A260/A280 ≈ 1.8~2.0 · A260/A230 ≈ 2.0~2.2" }
+        ],
+
+        cautions: [
+          "겔 끓일 때 화상 — 내열장갑 착용, 끓어 넘침 주의",
+          "전기영동 감전 — 반드시 뚜껑을 닫고 전원, 물기 주의",
+          "UV 노출 금지 — 눈·피부 차단, 차단창으로만 관찰",
+          "멸균 팁 사용 — 블루·옐로우·화이트 팁 멸균 확인",
+          "gel 구멍은 큰 것(콤) — 큰 웰이라야 로딩이 쉽다",
+          "NanoDrop blank·세척 확실히 — 증류수 blank, 측정 창을 매번 닦는다",
+          "농도·순도가 낮으면 3주차(DNA 추출) 재실험"
+        ],
+
+        expected: {
+          good: [
+            "전기영동 후 UV → 뚜렷한 밴드, ladder와 비교해 크기 확인",
+            "플라스미드 밴드 → 형태에 따라 여러 개(supercoiled 빠름·nicked 느림)로 보일 수 있음",
+            "A260/A280 ≈ 1.8~2.0 → 단백질 오염이 적음",
+            "A260/A230 ≈ 2.0~2.2 → 염·유기물 오염이 적음"
+          ],
+          suspect: [
+            "밴드가 아예 안 보인다 → RedSafe 누락·UV 판독 문제 의심",
+            "A260/A280이 낮다 → 단백질 잔류(정제 부족) 의심 / 너무 높으면 RNA 혼입 의심",
+            "A260/A230이 낮다 → 염·에탄올·유기용매 잔류(세척·건조 부족) 의심",
+            "농도·순도가 낮다 → 3주차 추출 재실험이 필요"
+          ]
+        },
+
+        closing: "둘 다 좋아야 다음으로 간다 — 정성(온전한 밴드)과 정량(충분한 농도·A260/A280 1.8~2.0)이 합격이면 5주차 PCR로, 나쁘면 3주차 추출 재실험이다",
+        report: "정량 결과(농도·A260/A280·A260/A230)를 표에 적고, 전기영동 겔 사진과 고찰을 함께 남긴다 (다음 실험 시작 전 제출)",
+        source: "강의 이론 PDF(4주차 DNA 정량정성 분석) 슬라이드 1~19 · (실험방법)·(실험준비) 04. DNA 정량정성 분석"
+      },
+
+      /* ------------------------------------------------------------------
+       * pool(w04) — 학습·복습 퀴즈 풀 + 미션 문항 풀 (기존 엔진 재활용)
+       *   flow: 학습 약 30문(정오 무관 다 풀면 미션 해금) → 미션 10문(시간제한 8 + 추리 2)
+       *   timed 50문(mc 26 · ox 12 · num 6 · order 6) · reason 6건
+       *   모든 문항 근거 = 강의 이론·실험방법·실험준비 PDF. 지어낸 값 없음.
+       * ----------------------------------------------------------------*/
+      pool: {
+        stageId: "w04",
+
+        info: {
+          purpose: "실습 보고서 제출을 대체·보완하는 평가 도구 — 미션 통과 시 보고서 점수를 부여한다(성적 반영).",
+          gradeNotice: "이 미션은 성적에 반영되는 평가 도구입니다. 통과해야 보고서 점수를 받습니다.",
+          flow: "① 학습·복습 퀴즈 약 30문(정답·오답 무관 다 풀면 미션 해금) → ② 미션 10문(시간제한 8 + 추리 2) 평가",
+          learnUnlockCount: 30,
+          mission: {
+            timedCount: 8,
+            reasonCount: 2,
+            totalItems: 10,
+            totalPoints: 100,
+            passPoints: 70,
+            passPercent: 70,
+            perStudentRandom: true,
+            reshuffleOnRetry: true,
+            note:
+              "학생마다·재도전마다 시간제한 8문과 추리 2문을 풀에서 무작위로 다시 뽑는다(직전 회차 문항은 제외). " +
+              "배점은 뽑힌 문항의 원점수(시간제한 Lv1 7 · Lv2 9 · Lv3 11 · 추리 15)를 100점에 비례 정규화해 " +
+              "합을 정확히 100으로 맞춘다(buildMission의 roundToSum). 합격선은 70점(70%)이다."
+          },
+          points: { timedLv1: 7, timedLv2: 9, timedLv3: 11, reason: 15 },
+          limits: { mc: 20, ox: 8, num: 30, order: 45 },
+          orderAnswerConvention:
+            "type=order 문항의 answer는 steps 배열의 인덱스(0부터)를 올바른 순서대로 나열한 배열이다. " +
+            "steps는 화면에 섞어서 보여주고, 학생이 맞춘 순서를 answer와 비교한다.",
+          resultScreen: {
+            showScore: true,
+            showPerItem: true,
+            showCertificate: true,
+            certificatePassText: "합격 — 4주차 DNA 정량·정성 분석 미션 통과",
+            certificateFailText: "재도전 — 문항이 바뀌어 다시 출제됩니다",
+            note: "미션 결과 화면과 합격증 표시까지는 이번 시제품에 포함. 서버 자동집계는 운영본 단계."
+          },
+          source: "교수님 지시(미션 방식) · 모든 수치 근거 = 강의 이론·실험방법·실험준비 PDF"
+        },
+
+        /* ---- pool.timed — 시간제한형 50문 (mc 26 · ox 12 · num 6 · order 6) ---- */
+        timed: [
+
+          /* ===== mc (4지선다 · 20초) 26문 ===== */
+          {
+            qid: "w04p_m01", type: "mc", level: 1, points: 7, limitSec: 20,
+            q: "오늘 정성·정량으로 품질을 확인하는 시료(추출 DNA)는 몇 종인가?",
+            choices: ["1종", "2종", "3종", "4종"],
+            answer: 1,
+            explain: "3주차에 뽑은 플라스미드 2종(pBI5ΔRTD·pUC19)을 각각 확인합니다.",
+            source: "강의 이론 슬라이드 1·13 · 실험방법 [2]②",
+            tags: ["시료","2종","pBI5ΔRTD","pUC19"]
+          },
+          {
+            qid: "w04p_m02", type: "mc", level: 1, points: 7, limitSec: 20,
+            q: "정성 분석이 답하는 질문으로 옳은 것은?",
+            choices: ["얼마나 있는가(농도)", "온전한가(모양·크기)", "얼마나 순수한가(순도비)", "몇 개의 세포인가"],
+            answer: 1,
+            explain: "정성 분석은 '온전한가'를 묻습니다. 전기영동 밴드로 모양·크기를 보며, 정확한 농도는 알 수 없습니다.",
+            source: "강의 이론 슬라이드 4·5",
+            tags: ["정성","온전한가","전기영동"]
+          },
+          {
+            qid: "w04p_m03", type: "mc", level: 1, points: 7, limitSec: 20,
+            q: "정량 분석이 답하는 질문으로 옳은 것은?",
+            choices: ["온전한가(모양)", "얼마나 있고 얼마나 순수한가", "몇 개의 밴드인가", "어떤 색인가"],
+            answer: 1,
+            explain: "정량 분석은 '얼마나 있고(농도) 얼마나 순수한가(순도비)'를 묻습니다. 다만 DNA가 조각나도 숫자는 같게 나올 수 있습니다.",
+            source: "강의 이론 슬라이드 4·5",
+            tags: ["정량","농도","순도"]
+          },
+          {
+            qid: "w04p_m04", type: "mc", level: 1, points: 7, limitSec: 20,
+            q: "정성 분석에 사용하는 도구는?",
+            choices: ["NanoDrop 분광광도계", "아가로스겔 전기영동", "원심분리기", "PCR 기계"],
+            answer: 1,
+            explain: "정성 분석은 아가로스겔 전기영동으로 밴드를 얻어 모양·크기를 봅니다.",
+            source: "강의 이론 슬라이드 5",
+            tags: ["정성","도구","전기영동"]
+          },
+          {
+            qid: "w04p_m05", type: "mc", level: 1, points: 7, limitSec: 20,
+            q: "정량 분석에 사용하는 장치는?",
+            choices: ["UV 장치", "NanoDrop 분광광도계", "전기영동 장치", "전자레인지"],
+            answer: 1,
+            explain: "정량 분석은 NanoDrop 분광광도계로 흡광도를 읽어 농도와 순도비를 측정합니다.",
+            source: "강의 이론 슬라이드 5·11",
+            tags: ["정량","NanoDrop","도구"]
+          },
+          {
+            qid: "w04p_m06", type: "mc", level: 2, points: 9, limitSec: 20,
+            q: "전기영동에서 DNA가 (+)극 쪽으로 이동하는 이유는?",
+            choices: ["DNA가 양전하를 띠어서", "DNA가 인산기 때문에 음전하를 띠어서", "DNA가 전하가 없어서", "겔이 DNA를 밀어내서"],
+            answer: 1,
+            explain: "DNA는 인산기 때문에 늘 음전하(−)를 띠므로, 전기장에서 (−)극에서 (+)극 쪽으로 이동합니다.",
+            source: "강의 이론 슬라이드 6",
+            tags: ["전기영동","음전하","인산기"]
+          },
+          {
+            qid: "w04p_m07", type: "mc", level: 2, points: 9, limitSec: 20,
+            q: "전기영동에서 DNA의 이동 속도를 결정하는 주된 변수는?",
+            choices: ["DNA의 크기", "DNA의 색깔", "DNA의 전하량", "튜브의 무게"],
+            answer: 0,
+            explain: "전하/질량비가 크기와 무관하게 일정하므로, 이동 속도를 가르는 변수는 오직 '크기'뿐입니다.",
+            source: "강의 이론 슬라이드 6",
+            tags: ["전기영동","크기","전하질량비"]
+          },
+          {
+            qid: "w04p_m08", type: "mc", level: 1, points: 7, limitSec: 20,
+            q: "아가로스겔 전기영동에서 더 작은 DNA는 어떻게 이동하는가?",
+            choices: ["위쪽(우물 근처)에 남는다", "아래로 더 멀리(빠르게) 이동한다", "옆으로만 퍼진다", "이동하지 않는다"],
+            answer: 1,
+            explain: "겔은 그물(체) 역할을 해서 작은 DNA는 빠르게 통과해 아래로 멀리 가고, 큰 DNA는 느려 위쪽에 남습니다.",
+            source: "강의 이론 슬라이드 6·7",
+            tags: ["전기영동","작을수록 멀리","체"]
+          },
+          {
+            qid: "w04p_m09", type: "mc", level: 1, points: 7, limitSec: 20,
+            q: "겔 제조 시 칭량하는 Agarose의 양은?",
+            choices: ["0.5 g", "1 g", "5 g", "50 g"],
+            answer: 0,
+            explain: "Agarose 0.5 g을 1X TAE 50 mL에 넣고 전자레인지로 완전히 녹입니다.",
+            source: "강의 이론 슬라이드 14 · 실험방법 [1]②",
+            tags: ["Agarose","0.5 g","겔 제조"]
+          },
+          {
+            qid: "w04p_m10", type: "mc", level: 2, points: 9, limitSec: 20,
+            q: "Agarose를 녹일 때 넣는 1X TAE buffer의 양은?",
+            choices: ["5 mL", "50 mL", "500 mL", "1 L"],
+            answer: 1,
+            explain: "겔용으로 Agarose 0.5 g에 1X TAE 50 mL를 넣어 녹입니다. 1X TAE 자체는 총 1 L를 제조하고, 남은 것은 전기영동 장치에 붓습니다.",
+            source: "강의 이론 슬라이드 14 · 실험방법 [1]②④",
+            tags: ["1X TAE","50 mL","겔 제조"]
+          },
+          {
+            qid: "w04p_m11", type: "mc", level: 1, points: 7, limitSec: 20,
+            q: "녹은 겔에 넣는 RedSafe의 양은?",
+            choices: ["2.5 µL", "5 µL", "10 µL", "50 µL"],
+            answer: 0,
+            explain: "완전히 녹은 겔을 조금 식힌 뒤 RedSafe 2.5 µL를 넣고 잘 섞어 형성판에 붓습니다.",
+            source: "강의 이론 슬라이드 14 · 실험방법 [1]③",
+            tags: ["RedSafe","2.5 µL","염색"]
+          },
+          {
+            qid: "w04p_m12", type: "mc", level: 2, points: 9, limitSec: 20,
+            q: "RedSafe가 DNA 밴드를 눈에 보이게 하는 방식은?",
+            choices: ["DNA를 잘라 색을 낸다", "이중나선 사이에 끼어들어 UV에서 빛을 낸다", "DNA를 녹여 형광을 만든다", "전류를 흘려 발열시킨다"],
+            answer: 1,
+            explain: "RedSafe는 형광 염색 시약으로 DNA 이중나선 사이에 끼어들고, UV를 쬐면 끼어든 RedSafe가 빛을 내어 밴드가 발색·판독됩니다.",
+            source: "강의 이론 슬라이드 9",
+            tags: ["RedSafe","형광","UV"]
+          },
+          {
+            qid: "w04p_m13", type: "mc", level: 1, points: 7, limitSec: 20,
+            q: "DNA ladder의 역할로 옳은 것은?",
+            choices: ["DNA를 증폭한다", "크기를 아는 기준자로 시료 밴드의 크기를 읽게 한다", "DNA를 염색한다", "전압을 높인다"],
+            answer: 1,
+            explain: "DNA ladder는 크기를 미리 아는 조각 묶음(기준자)으로, 옆 레인의 시료 밴드와 높이를 비교해 크기를 읽습니다.",
+            source: "강의 이론 슬라이드 8",
+            tags: ["ladder","기준자","크기"]
+          },
+          {
+            qid: "w04p_m14", type: "mc", level: 2, points: 9, limitSec: 20,
+            q: "오늘 쓰는 DNA ladder(1 kb·100 bp)는 각각 몇 µL씩 로딩하는가?",
+            choices: ["2 µL", "5 µL", "10 µL", "20 µL"],
+            answer: 1,
+            explain: "1 kb ladder와 100 bp ladder를 각각 5 µL씩 로딩합니다.",
+            source: "강의 이론 슬라이드 8·14 · 실험방법 [1]⑤",
+            tags: ["ladder","5 µL","로딩"]
+          },
+          {
+            qid: "w04p_m15", type: "mc", level: 2, points: 9, limitSec: 20,
+            q: "샘플 로딩 시 섞는 6X Loading dye와 Plasmid DNA의 양으로 옳은 것은?",
+            choices: ["dye 10 µL + DNA 2 µL", "dye 2 µL + DNA 10 µL", "dye 5 µL + DNA 5 µL", "dye 2 µL + DNA 2 µL"],
+            answer: 1,
+            explain: "파라필름 위에서 6X Loading dye 2 µL와 Plasmid DNA 10 µL를 섞어 겔에 로딩합니다.",
+            source: "강의 이론 슬라이드 14 · 실험방법 [1]⑥",
+            tags: ["Loading dye","2 µL","DNA 10 µL"]
+          },
+          {
+            qid: "w04p_m16", type: "mc", level: 1, points: 7, limitSec: 20,
+            q: "전기영동을 실시하는 전압은?",
+            choices: ["50 V", "100 V", "135 V", "300 V"],
+            answer: 2,
+            explain: "전기영동은 135 V에서 실시합니다.",
+            source: "강의 이론 슬라이드 14 · 실험방법 [1]⑥",
+            tags: ["전기영동","135 V","전압"]
+          },
+          {
+            qid: "w04p_m17", type: "mc", level: 1, points: 7, limitSec: 20,
+            q: "전기영동을 실시하는 시간은?",
+            choices: ["5분", "20분", "1시간", "2시간"],
+            answer: 1,
+            explain: "135 V에서 20분간 전기영동합니다.",
+            source: "강의 이론 슬라이드 14 · 실험방법 [1]⑥",
+            tags: ["전기영동","20분","시간"]
+          },
+          {
+            qid: "w04p_m18", type: "mc", level: 1, points: 7, limitSec: 20,
+            q: "전기영동이 끝난 뒤 밴드를 관찰하는 장치는?",
+            choices: ["현미경", "UV 장치", "원심분리기", "NanoDrop"],
+            answer: 1,
+            explain: "전기영동 후 UV 장치로 자외선을 쬐어 RedSafe가 발색한 밴드를 판독합니다(크기·모양·오염 확인).",
+            source: "강의 이론 슬라이드 9 · 실험방법 [1]⑦",
+            tags: ["UV 장치","판독","밴드"]
+          },
+          {
+            qid: "w04p_m19", type: "mc", level: 2, points: 9, limitSec: 20,
+            q: "플라스미드 형태 중 겔에서 가장 빠르게 이동하는 것은?",
+            choices: ["supercoiled(초나선)", "linear(선형)", "nicked/open(열린 원형)", "셋 다 같다"],
+            answer: 0,
+            explain: "supercoiled(초나선)는 작게 뭉쳐 있어 가장 빠르게 이동합니다. linear는 중간, nicked/open은 가장 느립니다.",
+            source: "강의 이론 슬라이드 10",
+            tags: ["supercoiled","가장 빠름","형태"]
+          },
+          {
+            qid: "w04p_m20", type: "mc", level: 2, points: 9, limitSec: 20,
+            q: "플라스미드 형태 중 겔에서 가장 느리게 이동하는 것은?",
+            choices: ["supercoiled(초나선)", "linear(선형)", "nicked/open(열린 원형)", "셋 다 같다"],
+            answer: 2,
+            explain: "nicked/open(열린 원형, 한 가닥 끊김)은 가장 느립니다. supercoiled가 가장 빠르고 linear가 중간입니다.",
+            source: "강의 이론 슬라이드 10",
+            tags: ["nicked","가장 느림","형태"]
+          },
+          {
+            qid: "w04p_m21", type: "mc", level: 2, points: 9, limitSec: 20,
+            q: "NanoDrop에서 DNA 농도를 재는 데 쓰는 흡광 파장은?",
+            choices: ["230 nm", "260 nm", "280 nm", "600 nm"],
+            answer: 1,
+            explain: "DNA는 260 nm에서 흡광이 최대라, 이 A260으로 농도를 계산합니다.",
+            source: "강의 이론 슬라이드 11",
+            tags: ["NanoDrop","260 nm","농도"]
+          },
+          {
+            qid: "w04p_m22", type: "mc", level: 3, points: 11, limitSec: 20,
+            q: "A260 흡광도가 1일 때, 이중가닥 DNA(dsDNA)의 농도는?",
+            choices: ["5 µg/mL", "50 µg/mL", "100 µg/mL", "500 µg/mL"],
+            answer: 1,
+            explain: "A260 = 1은 dsDNA 50 µg/mL에 해당합니다. 이 환산으로 흡광도에서 농도를 계산합니다.",
+            source: "강의 이론 슬라이드 11",
+            tags: ["A260","50 µg/mL","농도 환산"]
+          },
+          {
+            qid: "w04p_m23", type: "mc", level: 2, points: 9, limitSec: 20,
+            q: "순수한 DNA의 A260/A280 값의 범위는?",
+            choices: ["약 0.5~1.0", "약 1.8~2.0", "약 3.0~4.0", "약 5.0 이상"],
+            answer: 1,
+            explain: "순수 DNA의 A260/A280은 약 1.8~2.0입니다. 이 값으로 단백질 오염 정도를 봅니다.",
+            source: "강의 이론 슬라이드 11·12·14",
+            tags: ["A260/A280","1.8~2.0","순도"]
+          },
+          {
+            qid: "w04p_m24", type: "mc", level: 3, points: 11, limitSec: 20,
+            q: "A260/A280 값이 기준보다 낮게 나왔다면 무엇을 의심하는가?",
+            choices: ["단백질 잔류(정제 부족)", "염 잔류", "DNA 과다", "온도가 낮음"],
+            answer: 0,
+            explain: "A260/A280은 단백질 오염을 보는 값으로, 낮으면 단백질 잔류(정제 부족)를 의미합니다. 반대로 너무 높으면 RNA 혼입을 의심합니다.",
+            source: "강의 이론 슬라이드 12",
+            tags: ["A260/A280","단백질","정제 부족"]
+          },
+          {
+            qid: "w04p_m25", type: "mc", level: 2, points: 9, limitSec: 20,
+            q: "A260/A230 비율이 주로 보는 오염은?",
+            choices: ["단백질 오염", "염·유기물 오염", "RNA 오염", "세균 오염"],
+            answer: 1,
+            explain: "A260/A230은 염·유기물 오염을 보는 값으로 정상 범위는 약 2.0~2.2입니다. 낮으면 염·에탄올·유기용매 잔류(세척·건조 부족)를 의심합니다.",
+            source: "강의 이론 슬라이드 11·12",
+            tags: ["A260/A230","염·유기물","순도"]
+          },
+          {
+            qid: "w04p_m26", type: "mc", level: 1, points: 7, limitSec: 20,
+            q: "NanoDrop 측정 전 blank는 무엇으로 잡는가?",
+            choices: ["에탄올 2 µL", "증류수 2 µL", "시료 2 µL", "TAE buffer 2 µL"],
+            answer: 1,
+            explain: "증류수 2 µL로 NanoDrop의 blank를 설정한 뒤, 두 시료를 각 2 µL씩 측정합니다.",
+            source: "강의 이론 슬라이드 14·17 · 실험방법 [2]①",
+            tags: ["blank","증류수","2 µL"]
+          },
+
+          /* ===== ox (참·거짓 · 8초) 12문 ===== */
+          {
+            qid: "w04p_x01", type: "ox", level: 1, points: 7, limitSec: 8,
+            q: "오늘 정성·정량으로 확인하는 두 시료는 pBI5ΔRTD와 pUC19이다.",
+            answer: true,
+            explain: "맞습니다. 3주차에 뽑은 두 플라스미드(pBI5ΔRTD·pUC19)의 품질을 확인합니다.",
+            source: "강의 이론 슬라이드 13 · 실험방법 [2]②",
+            tags: ["2종","pBI5ΔRTD","pUC19"]
+          },
+          {
+            qid: "w04p_x02", type: "ox", level: 2, points: 9, limitSec: 8,
+            q: "정성 분석(전기영동)만으로 DNA의 정확한 농도를 알 수 있다.",
+            answer: false,
+            explain: "아닙니다. 정성 분석은 온전한가(모양·크기)를 보지만 정확한 농도는 알 수 없습니다. 농도는 정량(NanoDrop)으로 잽니다.",
+            source: "강의 이론 슬라이드 5",
+            tags: ["정성","한계","농도"]
+          },
+          {
+            qid: "w04p_x03", type: "ox", level: 2, points: 9, limitSec: 8,
+            q: "DNA는 양전하를 띠어 전기영동에서 (−)극 쪽으로 이동한다.",
+            answer: false,
+            explain: "아닙니다. DNA는 인산기 때문에 음전하(−)를 띠므로 (+)극 쪽으로 이동합니다.",
+            source: "강의 이론 슬라이드 6",
+            tags: ["음전하","이동 방향","오개념"]
+          },
+          {
+            qid: "w04p_x04", type: "ox", level: 2, points: 9, limitSec: 8,
+            q: "전기영동에서 큰 DNA일수록 겔 아래쪽까지 더 멀리 이동한다.",
+            answer: false,
+            explain: "아닙니다. 작은 DNA가 그물을 빠르게 통과해 아래로 멀리 가고, 큰 DNA는 느려 위쪽에 남습니다.",
+            source: "강의 이론 슬라이드 6·7",
+            tags: ["크기","이동 거리","오개념"]
+          },
+          {
+            qid: "w04p_x05", type: "ox", level: 1, points: 7, limitSec: 8,
+            q: "RedSafe는 DNA 이중나선 사이에 끼어들어 UV에서 밴드를 발색시킨다.",
+            answer: true,
+            explain: "맞습니다. RedSafe가 이중나선에 끼어들고 UV를 쬐면 빛을 내어 밴드가 밝게 발색·판독됩니다.",
+            source: "강의 이론 슬라이드 9",
+            tags: ["RedSafe","UV","발색"]
+          },
+          {
+            qid: "w04p_x06", type: "ox", level: 2, points: 9, limitSec: 8,
+            q: "supercoiled(초나선) 플라스미드는 nicked/open(열린 원형)보다 빠르게 이동한다.",
+            answer: true,
+            explain: "맞습니다. supercoiled가 가장 빠르고, nicked/open이 가장 느립니다(linear는 중간).",
+            source: "강의 이론 슬라이드 10",
+            tags: ["supercoiled","nicked","이동 속도"]
+          },
+          {
+            qid: "w04p_x07", type: "ox", level: 1, points: 7, limitSec: 8,
+            q: "A260 흡광도가 1이면 dsDNA 농도는 50 µg/mL이다.",
+            answer: true,
+            explain: "맞습니다. A260 = 1은 이중가닥 DNA 50 µg/mL에 해당합니다.",
+            source: "강의 이론 슬라이드 11",
+            tags: ["A260","50 µg/mL","농도"]
+          },
+          {
+            qid: "w04p_x08", type: "ox", level: 1, points: 7, limitSec: 8,
+            q: "순수한 DNA의 A260/A280은 약 1.8~2.0이다.",
+            answer: true,
+            explain: "맞습니다. A260/A280은 단백질 오염을 보는 값으로, 순수 DNA는 약 1.8~2.0입니다.",
+            source: "강의 이론 슬라이드 11·12",
+            tags: ["A260/A280","1.8~2.0","순도"]
+          },
+          {
+            qid: "w04p_x09", type: "ox", level: 2, points: 9, limitSec: 8,
+            q: "A260/A230이 낮으면 염·에탄올 등 유기물이 남아 있을 수 있다.",
+            answer: true,
+            explain: "맞습니다. A260/A230이 낮으면 염·에탄올·유기용매 잔류(세척·건조 부족)를 의심합니다.",
+            source: "강의 이론 슬라이드 12",
+            tags: ["A260/A230","염·유기물","세척 부족"]
+          },
+          {
+            qid: "w04p_x10", type: "ox", level: 1, points: 7, limitSec: 8,
+            q: "NanoDrop 측정 전에는 증류수로 blank를 잡는다.",
+            answer: true,
+            explain: "맞습니다. 증류수 2 µL로 blank를 설정한 뒤 시료를 측정하고, 측정 창은 매번 닦습니다.",
+            source: "강의 이론 슬라이드 17·18 · 실험방법 [2]①",
+            tags: ["blank","증류수","NanoDrop"]
+          },
+          {
+            qid: "w04p_x11", type: "ox", level: 2, points: 9, limitSec: 8,
+            q: "전기영동 장치는 뚜껑을 열어 둔 채로 전원을 켠다.",
+            answer: false,
+            explain: "아닙니다. 감전 위험이 있어 반드시 뚜껑을 닫고 전원을 켜며, 물기에 주의합니다.",
+            source: "강의 이론 슬라이드 18(주의사항)",
+            tags: ["전기영동","감전","안전"]
+          },
+          {
+            qid: "w04p_x12", type: "ox", level: 1, points: 7, limitSec: 8,
+            q: "UV 장치의 빛은 눈·피부에 직접 쬐어도 안전하다.",
+            answer: false,
+            explain: "아닙니다. UV 노출은 금지입니다. 눈·피부를 차단하고 차단창으로만 관찰합니다.",
+            source: "강의 이론 슬라이드 18(주의사항)",
+            tags: ["UV","노출 금지","안전"]
+          },
+
+          /* ===== num (숫자 입력 · 30초) 6문 ===== */
+          {
+            qid: "w04p_n01", type: "num", level: 1, points: 7, limitSec: 30,
+            q: "겔 제조 시 칭량하는 Agarose는 몇 g인가?",
+            answer: 0.5, unit: "g", tolerance: 0,
+            explain: "Agarose 0.5 g을 1X TAE 50 mL에 넣어 녹입니다.",
+            source: "강의 이론 슬라이드 14 · 실험방법 [1]②",
+            tags: ["Agarose","0.5","g"]
+          },
+          {
+            qid: "w04p_n02", type: "num", level: 1, points: 7, limitSec: 30,
+            q: "전기영동을 실시하는 전압은 몇 V인가?",
+            answer: 135, unit: "V", tolerance: 0,
+            explain: "전기영동은 135 V에서 20분간 실시합니다.",
+            source: "강의 이론 슬라이드 14 · 실험방법 [1]⑥",
+            tags: ["전기영동","135","V"]
+          },
+          {
+            qid: "w04p_n03", type: "num", level: 1, points: 7, limitSec: 30,
+            q: "전기영동을 실시하는 시간은 몇 분인가?",
+            answer: 20, unit: "분", tolerance: 0,
+            explain: "135 V에서 20분간 전기영동합니다.",
+            source: "강의 이론 슬라이드 14 · 실험방법 [1]⑥",
+            tags: ["전기영동","20","분"]
+          },
+          {
+            qid: "w04p_n04", type: "num", level: 2, points: 9, limitSec: 30,
+            q: "A260 흡광도가 1일 때 이중가닥 DNA의 농도는 몇 µg/mL인가?",
+            answer: 50, unit: "µg/mL", tolerance: 0,
+            explain: "A260 = 1은 dsDNA 50 µg/mL에 해당합니다.",
+            source: "강의 이론 슬라이드 11",
+            tags: ["A260","50","농도 환산"]
+          },
+          {
+            qid: "w04p_n05", type: "num", level: 2, points: 9, limitSec: 30,
+            q: "6X Loading dye 2 µL와 Plasmid DNA 10 µL를 섞으면 로딩하는 총 부피는 몇 µL인가?",
+            answer: 12, unit: "µL", tolerance: 0,
+            explain: "2 + 10 = 12 µL. 6X dye 2 µL와 DNA 10 µL를 섞어 총 12 µL를 로딩합니다.",
+            source: "강의 이론 슬라이드 14 · 실험방법 [1]⑥",
+            tags: ["로딩","12","계산"]
+          },
+          {
+            qid: "w04p_n06", type: "num", level: 1, points: 7, limitSec: 30,
+            q: "녹은 겔에 넣는 RedSafe는 몇 µL인가?",
+            answer: 2.5, unit: "µL", tolerance: 0,
+            explain: "RedSafe 2.5 µL를 녹은 겔에 넣고 섞어 캐스팅합니다.",
+            source: "강의 이론 슬라이드 14 · 실험방법 [1]③",
+            tags: ["RedSafe","2.5","µL"]
+          },
+
+          /* ===== order (순서 배열 · 45초) 6문
+           *   answer = steps 배열의 인덱스(0부터)를 올바른 순서대로 나열한 배열
+           * ===== */
+          {
+            qid: "w04p_o01", type: "order", level: 1, points: 7, limitSec: 45,
+            q: "오늘 실험의 큰 흐름을 순서대로 배열하시오.",
+            steps: ["UV 판독", "겔 제조", "NanoDrop 측정", "전기영동 135 V·20분"],
+            answer: [1, 3, 0, 2],
+            explain: "겔 제조 → 전기영동(135 V·20분) → UV 판독 → NanoDrop 측정 순서입니다. 정성(겔~UV) 뒤에 정량(NanoDrop)을 합니다.",
+            source: "강의 이론 슬라이드 1·3 · 실험방법 [1][2]",
+            tags: ["순서","전체 흐름","정성·정량"]
+          },
+          {
+            qid: "w04p_o02", type: "order", level: 2, points: 9, limitSec: 45,
+            q: "아가로스겔 제조 단계를 순서대로 배열하시오.",
+            steps: ["RedSafe 2.5 µL 혼합·형성판에 붓기", "1X TAE 제조(50X 희석)", "남은 1X TAE를 전기영동 장치에 붓기", "Agarose 0.5 g을 1X TAE 50 mL에 녹이기"],
+            answer: [1, 3, 0, 2],
+            explain: "1X TAE 제조 → Agarose 용해 → RedSafe 혼합·캐스팅 → 전기영동 장치에 남은 TAE 붓기 순서입니다.",
+            source: "강의 이론 슬라이드 15 · 실험방법 [1]①②③④",
+            tags: ["순서","겔 제조","RedSafe","TAE"]
+          },
+          {
+            qid: "w04p_o03", type: "order", level: 2, points: 9, limitSec: 45,
+            q: "로딩·전개·판독 단계를 순서대로 배열하시오.",
+            steps: ["UV 장치로 결과 판독", "겔 장착 후 ladder(각 5 µL) 로딩", "6X dye 2 µL + DNA 10 µL 로딩 후 135 V·20분 전개"],
+            answer: [1, 2, 0],
+            explain: "겔 장착·ladder 로딩 → 샘플 로딩·135 V 20분 전개 → UV 판독 순서입니다.",
+            source: "강의 이론 슬라이드 16 · 실험방법 [1]⑤⑥⑦",
+            tags: ["순서","로딩","전개","판독"]
+          },
+          {
+            qid: "w04p_o04", type: "order", level: 1, points: 7, limitSec: 45,
+            q: "NanoDrop 정량 측정 단계를 순서대로 배열하시오.",
+            steps: ["농도·순도비 기록 후 판단(낮으면 재실험)", "증류수 2 µL로 blank 설정", "시료 각 2 µL 채취해 측정"],
+            answer: [1, 2, 0],
+            explain: "blank 설정(증류수 2 µL) → 시료 각 2 µL 측정 → 결과 분석·판단 순서입니다.",
+            source: "강의 이론 슬라이드 17 · 실험방법 [2]①②③",
+            tags: ["순서","NanoDrop","blank","측정"]
+          },
+          {
+            qid: "w04p_o05", type: "order", level: 2, points: 9, limitSec: 45,
+            q: "플라스미드 형태를 겔에서 이동 속도가 느린 것부터 빠른 순으로 배열하시오.",
+            steps: ["supercoiled(초나선)", "nicked/open(열린 원형)", "linear(선형)"],
+            answer: [1, 2, 0],
+            explain: "느린 순 → nicked/open(가장 느림) → linear(중간) → supercoiled(가장 빠름)입니다.",
+            source: "강의 이론 슬라이드 10",
+            tags: ["순서","플라스미드 형태","이동 속도"]
+          },
+          {
+            qid: "w04p_o06", type: "order", level: 3, points: 11, limitSec: 45,
+            q: "DNA ladder의 밴드를 큰 것(위)부터 작은 것(아래) 순으로 배열하시오.",
+            steps: ["500 bp", "10 kb", "100 bp", "1 kb"],
+            answer: [1, 3, 0, 2],
+            explain: "큰 것부터 → 10 kb → 1 kb → 500 bp → 100 bp 순입니다. 큰 DNA는 위쪽, 작은 DNA는 아래쪽에 위치합니다.",
+            source: "강의 이론 슬라이드 8(DNA ladder)",
+            tags: ["순서","ladder","크기"]
+          }
+        ],
+
+        /* ---- pool.reason — 추리형 사건 6건 (정량·정성 분석 실패·오염·안전 시나리오) ----
+         *   각 사건 points = 15. 근거 = 강의 이론(순도 지표·주의사항)·실험방법.
+         * ---------------------------------------------------------------*/
+        reason: [
+          {
+            caseId: "w04_r01",
+            no: "Case 01",
+            title: "밴드가 하나도 안 보인다 — 겔에 염색약이 없었다",
+            subtitle: "4주차 정성 — UV를 켜도 아무 밴드도 보이지 않았다",
+            weeks: "4주차",
+            points: 15,
+            brief:
+              "한 조가 전기영동을 정상적으로 끝내고 UV 장치로 봤는데 ladder도 시료도 밴드가 전혀 보이지 않았습니다. " +
+              "옆 조는 밴드가 뚜렷했습니다. 겔 제조 구간에서 무엇이 빠졌는지 밝히세요.",
+            freeClues: 3,
+            extraClueCostXp: 20,
+            clues: [
+              { id: "k1", order: 1, label: "단서 ① — 겔 제조 기록",
+                body: "Agarose를 녹인 뒤 RedSafe 2.5 µL를 넣는 단계를 건너뛰고 바로 형성판에 부었다고 기록됨.",
+                readingHint: "RedSafe는 DNA에 끼어들어 UV에서 빛을 내는 형광 염색이다 — 없으면 밴드가 안 보인다. 결정타일 수 있다.",
+                isEvidence: true, decisive: true,
+                source: "강의 이론 슬라이드 9(RedSafe와 UV) · 실험방법 [1]③" },
+              { id: "k2", order: 2, label: "단서 ② — 전기영동 조건",
+                body: "135 V·20분, ladder 각 5 µL, 6X dye 2 µL + DNA 10 µL 로딩은 모두 규정대로였음.",
+                readingHint: "전개 조건·로딩은 정상이다 → 전기영동 자체 문제는 아니다.",
+                isEvidence: false,
+                source: "실험방법 [1]⑤⑥" },
+              { id: "k3", order: 3, label: "단서 ③ — 옆 조 비교",
+                body: "같은 시료·같은 장치를 쓴 옆 조는 RedSafe를 넣었고 밴드가 뚜렷했음.",
+                readingHint: "차이는 'RedSafe를 넣었느냐'뿐이다.",
+                isEvidence: true,
+                source: "강의 이론 슬라이드 9" },
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+                body: "겔을 빨리 굳히려고 RedSafe 넣는 걸 깜빡하고 바로 부었어요. 그래서 UV에서 아무것도 안 보인 것 같아요.",
+                readingHint: "확정타. RedSafe 누락으로 DNA가 발색하지 못했다.",
+                isEvidence: true, decisive: true,
+                source: "강의 이론 슬라이드 9(끼어든 RedSafe가 빛을 낸다)" }
+            ],
+            suspects: [
+              { id: "s1", mark: "ㄱ", label: "겔 제조 시 RedSafe(형광 염색)를 넣지 않아 밴드가 발색하지 못했다", correct: true },
+              { id: "s2", mark: "ㄴ", label: "전압을 135 V보다 낮게 걸었다", correct: false,
+                debrief: "전압이 낮았다면 밴드가 덜 이동했을 뿐, 아예 안 보이지는 않습니다. 전개 조건은 정상이었습니다(단서 ②)." },
+              { id: "s3", mark: "ㄷ", label: "DNA를 로딩하지 않았다", correct: false,
+                debrief: "DNA를 안 넣었어도 ladder는 보여야 합니다. ladder까지 전부 안 보인 것은 염색약 누락을 가리킵니다." },
+              { id: "s4", mark: "ㄹ", label: "전기영동 시간을 20분이 아니라 5분만 했다", correct: false,
+                debrief: "시간이 짧으면 이동 거리가 줄 뿐 발색은 됩니다. 밴드가 전혀 안 보인 것과는 다릅니다." }
+            ],
+            answer: { suspect: "s1", evidence: ["k1", "k4"] },
+            debrief:
+              "RedSafe는 DNA 이중나선 사이에 끼어들어 UV를 쬐면 빛을 내는 형광 염색 시약입니다. 겔에 RedSafe가 없으면 " +
+              "DNA가 있어도 UV에서 발색하지 못해 밴드가 전혀 보이지 않습니다. ladder까지 모두 안 보인다면 전개·로딩 문제가 " +
+              "아니라 염색약(RedSafe) 누락을 가장 먼저 의심해야 합니다.",
+            prescription: [
+              "Agarose를 녹인 뒤 RedSafe 2.5 µL를 반드시 넣고 잘 섞어 캐스팅한다",
+              "ladder까지 전부 안 보이면 전개가 아니라 RedSafe 누락을 먼저 의심한다",
+              "UV 판독 전에 겔 제조 기록에서 RedSafe 첨가 여부를 확인한다"
+            ],
+            source: "강의 이론 슬라이드 9 · 실험방법 [1]③",
+            tags: ["RedSafe","밴드 안 보임","염색","정성"]
+          },
+          {
+            caseId: "w04_r02",
+            no: "Case 02",
+            title: "순도가 낮다 — A260/A280이 1.4로 떨어졌다",
+            subtitle: "4주차 정량 — 단백질이 남아 있는 신호",
+            weeks: "4주차",
+            points: 15,
+            brief:
+              "한 조의 NanoDrop 측정에서 농도는 나왔지만 A260/A280이 1.4로 기준(1.8~2.0)보다 크게 낮았습니다. " +
+              "무엇이 남아 순도를 떨어뜨렸는지 밝히세요.",
+            freeClues: 3,
+            extraClueCostXp: 20,
+            clues: [
+              { id: "k1", order: 1, label: "단서 ① — 순도비 결과",
+                body: "A260/A280 = 1.4로 낮게 측정됨. A260/A230은 정상 범위였음.",
+                readingHint: "A260/A280은 단백질 오염을 보는 값이다. 낮다는 것은 단백질 잔류 신호다 — 결정타일 수 있다.",
+                isEvidence: true, decisive: true,
+                source: "강의 이론 슬라이드 12(A260/A280 — 낮으면 단백질 잔류)" },
+              { id: "k2", order: 2, label: "단서 ② — 측정 절차",
+                body: "증류수 blank를 잡고 측정 창을 매번 닦았으며, 시료 2 µL 채취도 규정대로였음.",
+                readingHint: "측정 절차 자체는 정상이다 → 측정 오류가 아니라 시료에 무언가 남아 있다.",
+                isEvidence: false,
+                source: "실험방법 [2]①②" },
+              { id: "k3", order: 3, label: "단서 ③ — A260/A230",
+                body: "A260/A230은 약 2.1로 정상이라, 염·유기물 잔류는 아니었음.",
+                readingHint: "염·유기물이 아니라면 남은 오염원은 단백질 쪽이다.",
+                isEvidence: true,
+                source: "강의 이론 슬라이드 12(A260/A230 — 염·유기물)" },
+              { id: "k4", order: 4, label: "단서 ④ — 추출 회고 (확정타)",
+                body: "3주차 추출 때 단백질을 씻어 내는 과정이 부족했던 것 같다고 함(정제가 덜 됨).",
+                readingHint: "확정타. 단백질이 잔류해 A260/A280이 낮아졌다.",
+                isEvidence: true, decisive: true,
+                source: "강의 이론 슬라이드 12(낮으면 단백질 잔류 — 정제 부족)" }
+            ],
+            suspects: [
+              { id: "s1", mark: "ㄱ", label: "단백질이 잔류해(정제 부족) A260/A280이 낮아졌다", correct: true },
+              { id: "s2", mark: "ㄴ", label: "염·에탄올이 남아 있었다", correct: false,
+                debrief: "염·유기물이라면 A260/A230이 낮아야 하는데, 이 값은 정상(2.1)이었습니다(단서 ③)." },
+              { id: "s3", mark: "ㄷ", label: "blank를 잡지 않아 측정이 틀렸다", correct: false,
+                debrief: "blank·세척은 규정대로였습니다(단서 ②). 측정 오류가 아니라 시료 순도 문제입니다." },
+              { id: "s4", mark: "ㄹ", label: "RNA가 혼입되었다", correct: false,
+                debrief: "RNA 혼입은 A260/A280이 오히려 높게 나옵니다. 여기서는 값이 낮으므로 단백질 잔류입니다." }
+            ],
+            answer: { suspect: "s1", evidence: ["k1", "k4"] },
+            debrief:
+              "A260/A280은 단백질 오염을 보는 순도 지표로, 순수 DNA는 약 1.8~2.0입니다. 값이 이보다 낮으면 단백질이 남아 " +
+              "있다는(정제가 덜 됐다는) 신호입니다. 반대로 값이 너무 높으면 RNA 혼입을 의심합니다. A260/A230이 정상인데 " +
+              "A260/A280만 낮다면 염·유기물이 아니라 단백질 쪽 오염으로 좁혀집니다.",
+            prescription: [
+              "A260/A280이 낮으면 단백질 잔류(정제 부족)를 의심한다",
+              "값이 낮으면 3주차 추출의 정제 단계를 보완해 재실험한다",
+              "A260/A280(단백질)과 A260/A230(염·유기물)을 함께 읽어 오염원을 좁힌다"
+            ],
+            source: "강의 이론 슬라이드 11·12 · 실험방법 [2]②③",
+            tags: ["A260/A280","단백질","순도","정량"]
+          },
+          {
+            caseId: "w04_r03",
+            no: "Case 03",
+            title: "A260/A230이 낮다 — 염·에탄올이 남았다",
+            subtitle: "4주차 정량 — 세척·건조가 부족했던 신호",
+            weeks: "4주차",
+            points: 15,
+            brief:
+              "한 조의 시료는 A260/A280은 정상(1.9)인데 A260/A230이 0.8로 크게 낮게 나왔습니다. 어떤 오염이 " +
+              "남았고 원인이 무엇인지 밝히세요.",
+            freeClues: 3,
+            extraClueCostXp: 20,
+            clues: [
+              { id: "k1", order: 1, label: "단서 ① — 순도비 결과",
+                body: "A260/A230 = 0.8로 정상(약 2.0~2.2)보다 크게 낮음. A260/A280은 1.9로 정상이었음.",
+                readingHint: "A260/A230은 염·유기물 오염을 본다. 낮으면 염·에탄올·유기용매 잔류 신호다 — 결정타일 수 있다.",
+                isEvidence: true, decisive: true,
+                source: "강의 이론 슬라이드 12(A260/A230 — 낮으면 염·에탄올·유기용매 잔류)" },
+              { id: "k2", order: 2, label: "단서 ② — 단백질 지표",
+                body: "A260/A280은 1.9로 정상이라 단백질 잔류는 아니었음.",
+                readingHint: "단백질이 아니라면 남은 오염원은 염·유기물 쪽이다.",
+                isEvidence: false,
+                source: "강의 이론 슬라이드 12(A260/A280 — 단백질)" },
+              { id: "k3", order: 3, label: "단서 ③ — NanoDrop 절차",
+                body: "증류수 blank·측정 창 세척은 규정대로였고, 측정은 안정적이었음.",
+                readingHint: "측정 자체는 정상이다 → 시료에 무언가 남아 있는 것이다.",
+                isEvidence: true,
+                source: "실험방법 [2]①" },
+              { id: "k4", order: 4, label: "단서 ④ — 추출 회고 (확정타)",
+                body: "3주차 추출에서 세척·건조 과정을 서둘러 마쳐 에탄올·염이 덜 날아간 것 같다고 함.",
+                readingHint: "확정타. 세척·건조 부족으로 염·유기물이 남아 A260/A230이 낮아졌다.",
+                isEvidence: true, decisive: true,
+                source: "강의 이론 슬라이드 12(원인 — 세척 부족·건조 부족)" }
+            ],
+            suspects: [
+              { id: "s1", mark: "ㄱ", label: "세척·건조 부족으로 염·에탄올·유기용매가 잔류했다", correct: true },
+              { id: "s2", mark: "ㄴ", label: "단백질이 잔류했다", correct: false,
+                debrief: "단백질 잔류라면 A260/A280이 낮아야 하는데, 이 값은 정상(1.9)이었습니다(단서 ②)." },
+              { id: "s3", mark: "ㄷ", label: "DNA 농도가 너무 높았다", correct: false,
+                debrief: "농도가 높다고 A260/A230이 낮아지지는 않습니다. 낮은 A260/A230은 염·유기물 잔류의 신호입니다." },
+              { id: "s4", mark: "ㄹ", label: "측정 창을 안 닦아 측정이 틀렸다", correct: false,
+                debrief: "측정 창 세척·blank는 규정대로였습니다(단서 ③). 측정 오류가 아니라 시료 순도 문제입니다." }
+            ],
+            answer: { suspect: "s1", evidence: ["k1", "k4"] },
+            debrief:
+              "A260/A230은 염·유기물 오염을 보는 순도 지표로 정상은 약 2.0~2.2입니다. 값이 낮으면 염·에탄올·유기용매가 " +
+              "남아 있다는 신호이며, 원인은 대개 세척 부족이나 건조 부족입니다. A260/A280(단백질)이 정상인데 A260/A230만 " +
+              "낮다면 오염원은 염·유기물 쪽으로 좁혀집니다.",
+            prescription: [
+              "A260/A230이 낮으면 염·에탄올·유기용매 잔류(세척·건조 부족)를 의심한다",
+              "3주차 추출의 세척·건조 단계를 충분히 거쳐 재실험한다",
+              "두 순도비를 함께 읽어 단백질(280)인지 염·유기물(230)인지 구분한다"
+            ],
+            source: "강의 이론 슬라이드 12 · 실험방법 [2]②③",
+            tags: ["A260/A230","염·유기물","세척·건조","순도"]
+          },
+          {
+            caseId: "w04_r04",
+            no: "Case 04",
+            title: "NanoDrop 값이 계속 튄다 — blank를 안 잡았다",
+            subtitle: "4주차 정량 — 같은 시료인데 값이 제각각이었다",
+            weeks: "4주차",
+            points: 15,
+            brief:
+              "한 조가 같은 시료를 여러 번 쟀는데 농도·순도비가 잴 때마다 크게 달라 믿을 수 없었습니다. 측정 " +
+              "준비에서 무엇이 잘못됐는지 밝히세요.",
+            freeClues: 3,
+            extraClueCostXp: 20,
+            clues: [
+              { id: "k1", order: 1, label: "단서 ① — 측정 준비 기록",
+                body: "증류수로 blank를 잡는 단계를 건너뛰고 바로 시료를 측정했으며, 측정 창도 닦지 않았음.",
+                readingHint: "blank는 기준값이다. 안 잡으면 측정이 기준을 잃어 값이 튄다 — 결정타일 수 있다.",
+                isEvidence: true, decisive: true,
+                source: "강의 이론 슬라이드 18(blank·세척 확실히) · 실험방법 [2]①" },
+              { id: "k2", order: 2, label: "단서 ② — 시료 상태",
+                body: "같은 튜브의 시료를 나눠 쟀고, 시료 자체는 침전 없이 균일했음.",
+                readingHint: "시료는 문제가 없다 → 값이 튀는 건 측정 준비 쪽이다.",
+                isEvidence: false,
+                source: "실험방법 [2]②" },
+              { id: "k3", order: 3, label: "단서 ③ — 측정값 패턴",
+                body: "같은 시료인데 잴 때마다 농도·순도비가 크게 달라 재현이 안 됨.",
+                readingHint: "기준(blank)이 없거나 창 오염이 있을 때 나타나는 전형적 신호다.",
+                isEvidence: true,
+                source: "강의 이론 슬라이드 18" },
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+                body: "시간이 없어서 증류수 blank를 안 잡고 바로 쟀어요. 측정 창도 한 번도 안 닦았어요.",
+                readingHint: "확정타. blank 미설정·창 미세척으로 측정이 기준을 잃어 값이 튀었다.",
+                isEvidence: true, decisive: true,
+                source: "강의 이론 슬라이드 18(증류수 blank·측정 창 매번 닦기)" }
+            ],
+            suspects: [
+              { id: "s1", mark: "ㄱ", label: "증류수 blank를 잡지 않고(측정 창도 안 닦고) 측정해 값이 튀었다", correct: true },
+              { id: "s2", mark: "ㄴ", label: "시료가 오염되어 있었다", correct: false,
+                debrief: "시료는 균일했고 침전이 없었습니다(단서 ②). 문제는 시료가 아니라 측정 준비였습니다." },
+              { id: "s3", mark: "ㄷ", label: "전기영동을 하지 않았다", correct: false,
+                debrief: "전기영동은 정성 분석이고, 여기서는 NanoDrop 정량 측정값이 튀는 문제입니다. 무관합니다." },
+              { id: "s4", mark: "ㄹ", label: "시료를 2 µL가 아니라 10 µL 올렸다", correct: false,
+                debrief: "채취량 차이보다, 기준(blank)이 없고 창을 안 닦아 재현이 안 되는 것이 값이 튄 직접 원인입니다." }
+            ],
+            answer: { suspect: "s1", evidence: ["k1", "k4"] },
+            debrief:
+              "NanoDrop은 증류수로 blank(기준값)를 먼저 잡아야 그 기준에 대비해 시료의 흡광도를 정확히 읽습니다. blank를 " +
+              "건너뛰거나 측정 창을 닦지 않으면 기준이 흔들려 같은 시료도 값이 제각각으로 나옵니다. 그래서 강의안은 " +
+              "'증류수 blank·측정 창 매번 닦기'를 강조합니다.",
+            prescription: [
+              "측정 전 반드시 증류수 2 µL로 blank를 잡는다",
+              "시료를 바꿀 때마다 측정 창을 킴테크 등으로 닦는다",
+              "같은 시료 값이 재현되지 않으면 blank·세척부터 다시 점검한다"
+            ],
+            source: "강의 이론 슬라이드 17·18 · 실험방법 [2]①",
+            tags: ["blank","측정 창","재현성","정량"]
+          },
+          {
+            caseId: "w04_r05",
+            no: "Case 05",
+            title: "눈이 시리고 아팠다 — UV를 맨눈으로 봤다",
+            subtitle: "4주차 안전 — 차단창 없이 자외선에 노출됐다",
+            weeks: "4주차",
+            points: 15,
+            brief:
+              "한 조원이 전기영동 결과를 보다가 눈이 시리고 피부가 따가웠습니다. UV 판독 과정에서 무엇을 " +
+              "지키지 않았는지 밝히세요.",
+            freeClues: 3,
+            extraClueCostXp: 20,
+            clues: [
+              { id: "k1", order: 1, label: "단서 ① — 관찰 방법",
+                body: "UV 장치의 차단창(보호 커버)을 열고 자외선을 맨눈·맨피부로 직접 보며 밴드를 확인함.",
+                readingHint: "UV 노출은 금지다. 눈·피부를 차단하고 차단창으로만 봐야 한다 — 결정타일 수 있다.",
+                isEvidence: true, decisive: true,
+                source: "강의 이론 슬라이드 18(UV 노출 금지 — 차단창으로만 관찰)" },
+              { id: "k2", order: 2, label: "단서 ② — 전기영동 조건",
+                body: "135 V·20분 전개와 겔 제조(RedSafe 포함)는 모두 정상이었음.",
+                readingHint: "실험 자체는 정상이다 → 문제는 UV를 '보는 방법'이다.",
+                isEvidence: false,
+                source: "실험방법 [1]⑥⑦" },
+              { id: "k3", order: 3, label: "단서 ③ — 증상",
+                body: "관찰 직후 눈이 시리고 피부가 따가웠음(자외선 노출의 전형적 증상).",
+                readingHint: "자외선을 직접 쬐었을 때 나타나는 증상이다.",
+                isEvidence: true,
+                source: "강의 이론 슬라이드 18" },
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+                body: "밴드를 더 잘 보려고 차단창을 열고 그냥 눈으로 봤어요. 보호 장구도 안 했어요.",
+                readingHint: "확정타. 차단창을 열고 UV에 직접 노출됐다.",
+                isEvidence: true, decisive: true,
+                source: "강의 이론 슬라이드 18(눈·피부 차단)" }
+            ],
+            suspects: [
+              { id: "s1", mark: "ㄱ", label: "UV 차단창을 열고 자외선을 눈·피부에 직접 노출했다", correct: true },
+              { id: "s2", mark: "ㄴ", label: "겔을 끓일 때 화상을 입었다", correct: false,
+                debrief: "화상은 겔 용해 단계의 위험이지, 여기서는 UV 판독 중 눈·피부 증상이 났으므로 UV 노출입니다." },
+              { id: "s3", mark: "ㄷ", label: "전기영동 장치에서 감전됐다", correct: false,
+                debrief: "감전은 뚜껑·물기와 관련되며, 눈이 시리고 피부가 따가운 것은 자외선 노출의 신호입니다." },
+              { id: "s4", mark: "ㄹ", label: "RedSafe가 피부에 묻었다", correct: false,
+                debrief: "증상이 관찰 직후 눈·피부에 동시에 온 것은 자외선 직접 노출의 전형적 패턴입니다." }
+            ],
+            answer: { suspect: "s1", evidence: ["k1", "k4"] },
+            debrief:
+              "UV(자외선)는 눈·피부에 해로워 노출이 금지됩니다. 반드시 눈·피부를 차단하고 UV 장치의 차단창(보호 커버)을 " +
+              "통해서만 밴드를 관찰해야 합니다. 밴드를 더 잘 보려고 차단창을 열고 맨눈으로 보는 것이 가장 흔한 안전사고 " +
+              "원인입니다. 사고가 나면 혼자 처리하지 말고 즉시 보고합니다.",
+            prescription: [
+              "UV 판독은 반드시 차단창(보호 커버)을 통해서만 한다",
+              "눈·피부를 자외선에 직접 노출하지 않는다",
+              "안전사고가 생기면 즉시 보고하고 임의로 처리하지 않는다"
+            ],
+            source: "강의 이론 슬라이드 18(주의사항)",
+            tags: ["UV","차단창","안전","노출 금지"]
+          },
+          {
+            caseId: "w04_r06",
+            no: "Case 06",
+            title: "로딩할 때 시료가 넘쳤다 — 웰이 너무 작았다",
+            subtitle: "4주차 정성 — 콤을 작은 것으로 써 웰이 좁았다",
+            weeks: "4주차",
+            points: 15,
+            brief:
+              "한 조가 6X dye + DNA 12 µL를 로딩하려는데 웰이 너무 작아 시료가 옆으로 넘쳐 레인이 섞였습니다. " +
+              "겔 제조에서 무엇을 잘못 골랐는지 밝히세요.",
+            freeClues: 3,
+            extraClueCostXp: 20,
+            clues: [
+              { id: "k1", order: 1, label: "단서 ① — 겔 제작 선택",
+                body: "겔 형성판에 콤(comb)을 꽂을 때 '큰 웰'이 아니라 '작은 웰' 콤을 골라 제작함.",
+                readingHint: "강의안은 gel 구멍(웰)을 큰 것으로 만들라고 한다 — 작으면 로딩이 어렵다. 결정타일 수 있다.",
+                isEvidence: true, decisive: true,
+                source: "강의 이론 슬라이드 18(gel 구멍은 큰 것) · 실험방법 [1]③" },
+              { id: "k2", order: 2, label: "단서 ② — 로딩량",
+                body: "6X dye 2 µL + DNA 10 µL = 12 µL로 로딩량 자체는 규정대로였음.",
+                readingHint: "로딩량은 정상이다 → 넘친 원인은 부피가 아니라 웰 크기다.",
+                isEvidence: false,
+                source: "실험방법 [1]⑥" },
+              { id: "k3", order: 3, label: "단서 ③ — 옆 조 비교",
+                body: "큰 웰 콤으로 만든 옆 조는 같은 12 µL를 넘침 없이 깔끔하게 로딩했음.",
+                readingHint: "차이는 '웰을 큰 것으로 만들었느냐'뿐이다.",
+                isEvidence: true,
+                source: "강의 이론 슬라이드 18" },
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+                body: "콤을 큰 걸 써야 하는 줄 모르고 작은 웰로 만들었어요. 그래서 시료가 다 안 들어가고 넘쳤어요.",
+                readingHint: "확정타. 작은 웰 콤을 써서 로딩이 넘쳤다.",
+                isEvidence: true, decisive: true,
+                source: "강의 이론 슬라이드 18(콤은 큰 웰로 — 로딩이 쉽다)" }
+            ],
+            suspects: [
+              { id: "s1", mark: "ㄱ", label: "겔 구멍(웰)을 큰 것이 아니라 작은 콤으로 만들어 로딩이 넘쳤다", correct: true },
+              { id: "s2", mark: "ㄴ", label: "로딩량을 12 µL보다 훨씬 많이 넣었다", correct: false,
+                debrief: "로딩량은 규정대로 12 µL였습니다(단서 ②). 넘친 원인은 부피가 아니라 좁은 웰입니다." },
+              { id: "s3", mark: "ㄷ", label: "RedSafe를 넣지 않았다", correct: false,
+                debrief: "RedSafe 누락은 밴드가 안 보이는 문제이지, 로딩이 넘치는 것과는 무관합니다." },
+              { id: "s4", mark: "ㄹ", label: "전압을 너무 높게 걸었다", correct: false,
+                debrief: "전압 문제는 이동·발열과 관련되며, 로딩 순간 시료가 웰에서 넘친 것은 웰 크기 문제입니다." }
+            ],
+            answer: { suspect: "s1", evidence: ["k1", "k4"] },
+            debrief:
+              "실험방법과 주의사항은 겔 구멍(웰)을 '큰 것'으로 만들라고 합니다. 콤을 큰 웰로 꽂아야 6X dye + DNA를 넉넉히 " +
+              "로딩할 수 있고, 작은 웰이면 같은 부피도 넘쳐 옆 레인과 섞입니다. 로딩이 자꾸 넘친다면 부피보다 먼저 웰 크기를 " +
+              "확인해야 합니다.",
+            prescription: [
+              "겔 제작 시 콤은 큰 웰로 꽂아 로딩 공간을 넉넉히 확보한다",
+              "로딩이 넘치면 부피보다 웰 크기를 먼저 점검한다",
+              "옆 레인과 섞이지 않도록 천천히 웰 안으로 로딩한다"
+            ],
+            source: "강의 이론 슬라이드 18 · 실험방법 [1]③⑥",
+            tags: ["웰","콤","로딩","정성"]
+          }
+        ]
+      },
+
+      /* ------------------------------------------------------------------
+       * report(w04) — DNA 정량·정성 분석 실험보고서 양식 (초안)
+       *   ⚠️ 교수님이 4주차 보고서 구성을 아직 지정하지 않으셨다. 아래는 강의자료
+       *      (정량 = NanoDrop 농도·순도비 / 정성 = 전기영동 겔 사진)에 맞춘 합리적 초안이며,
+       *      교수님 확인 후 확정한다.
+       *   구성: ① 정량 결과표(농도·A260/A280·A260/A230, 두 시료) + ② 정성 겔 사진 + ③ 고찰.
+       *   type:"text"+table = 표 입력칸(w02·w03 report와 동일 엔진), type:"images" = 사진 슬롯.
+       *   (index.html이 사진을 긴 변 최대 1280px로 리사이즈 후 저장 — w02·w03과 동일 방식)
+       * ----------------------------------------------------------------*/
+      report: {
+        stageId: "w04",
+        title: "DNA 정량·정성 분석",
+        course: "유전자분석 (동양미래대학교 바이오융합공학과 2학년 · 2026-2학기)",
+        weekLabel: "4주차",
+        experimentNo: "실험 3",
+        experimentName: "DNA 정량·정성 분석 (pBI5ΔRTD · pUC19)",
+        dateLabel: "2026-09-16",
+        paper: "A4",
+        gradeNote: "실험보고서 — 다음 실험 시작 전 제출",
+        draftNotice: "⚠️ 4주차 보고서 구성은 교수님 미지정 상태의 초안입니다 — 확정 시 조정될 수 있습니다.",
+        meta: [
+          { key: "course", label: "과목", value: "유전자분석", fixed: true },
+          { key: "week", label: "주차", value: "4주차", fixed: true },
+          { key: "expName", label: "실험명", value: "DNA 정량·정성 분석 (pBI5ΔRTD · pUC19)", fixed: true },
+          { key: "date", label: "실험일자", value: "2026-09-16", fixed: false },
+          { key: "team", label: "조", value: "", fixed: false, hint: "예: 3조" },
+          { key: "sid", label: "학번", value: "", fixed: false, hint: "로그인 학번" },
+          { key: "name", label: "이름", value: "", fixed: false, hint: "로그인 이름" }
+        ],
+        sections: [
+          {
+            key: "quant", no: 1, label: "정량 결과 — NanoDrop 측정",
+            type: "text",
+            rows: 4,
+            hint: "두 시료의 NanoDrop 측정값을 아래 표에 적는다(농도 ng/µL · A260/A280 · A260/A230). 이 칸에는 순도 판정(A260/A280 1.8~2.0·A260/A230 2.0~2.2 기준으로 합격 여부·재실험 필요 여부)과 관찰 메모를 적는다.",
+            table: {
+              caption: "NanoDrop 정량 결과 (blank = 증류수 2 µL · 시료 각 2 µL)",
+              cols: ["시료", "농도 (ng/µL)", "A260/A280", "A260/A230"],
+              rowLabels: ["pBI5ΔRTD", "pUC19"]
+            }
+          },
+          {
+            key: "gel", no: 2, label: "정성 결과 — 전기영동 겔 사진",
+            type: "images",
+            hint: "전기영동(135 V·20분) 후 UV 장치로 찍은 겔 사진을 올린다. 1 kb·100 bp ladder와 두 시료(pBI5ΔRTD·pUC19)의 밴드가 함께 보이게 한 장.",
+            conditions: [
+              "전기영동 겔 UV 사진 — ladder(1 kb·100 bp) + pBI5ΔRTD + pUC19 (135 V·20분)"
+            ]
+          },
+          {
+            key: "discussion", no: 3, label: "고찰",
+            type: "text",
+            rows: 8,
+            hint: "정량 결과(농도·A260/A280·A260/A230)로 순도를 판정하고(순수 DNA A260/A280 1.8~2.0, A260/A230 2.0~2.2), 전기영동 밴드의 모양·크기와 함께 두 DNA가 5주차 PCR 재료로 적합한지 해석하세요. 품질이 낮으면 3주차 추출 재실험이 필요합니다."
+          }
+        ],
+        source: "강의 이론 슬라이드 4·5·11·12·14~17·19 · 실험방법 [1][2] · (초안 — 교수님 보고서 구성 미지정)"
       }
 
     }

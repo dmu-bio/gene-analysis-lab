@@ -680,6 +680,10 @@ function weekPack(id){
     var w3 = C.byWeek.w03;
     return { learn: w3.learn, pool: w3.pool, cases: w3.cases || [], report: w3.report, summaryCard: w3.summaryCard || null };
   }
+  if(id === "w04" && C.byWeek && C.byWeek.w04){
+    var w4 = C.byWeek.w04;
+    return { learn: w4.learn, pool: w4.pool, cases: w4.cases || [], report: w4.report, summaryCard: w4.summaryCard || null };
+  }
   return null;
 }
 var AW = null;                                  /* 활성 주차 콘텐츠 (boot 에서 설정) */
@@ -725,6 +729,31 @@ var EARLY_KEY = "dmu_gene_lab_early";           /* 조기 취업자(과제 면�
 var TEAMS_KEY = "dmu_gene_lab_teams";           /* 실험조 편성 — 이 기기 로컬 저장 [{no,members:[sid,sid,sid]}] */
 var TEAM_MAX = 9;                               /* 최대 조 수 */
 var TEAM_SIZE = 3;                              /* 조당 인원 */
+
+/* ==========================================================================
+ * 🚦 주차 수동 활성화(2026-09-05) — 날짜 자동열림 대신 「교수가 시작을 눌러야 학생에게 열림」.
+ *   · 저장: 서버 gl_app_meta 의 k='week_open' 한 줄(v = {"w03":true,...})에 담는다.
+ *           (RLS: 전원 읽기 가능 + 교수만 쓰기 → 별도 스키마 추가 없이 그대로 쓴다.)
+ *   · loadAll 이 이 값을 아래 localStorage 키로 미러링하고, weekIsOpen() 이 그걸 읽는다.
+ *   · 기본값: w02 는 이미 학생들이 쓰고 있으므로 '열림', 그 밖의 주차는 '닫힘'.
+ *     (서버에 아직 아무 값도 없어도 이 기본값 덕분에 w02 는 열려 있고 w03·w04 는 닫혀 있다.) */
+var WEEKOPEN_KEY = "dmu_gene_week_open";        /* week_open 미러(서버 gl_app_meta.week_open 사본) */
+function loadWeekOpen(){
+  try{ var o = JSON.parse(localStorage.getItem(WEEKOPEN_KEY) || "{}"); return (o && typeof o === "object") ? o : {}; }
+  catch(e){ return {}; }
+}
+/* 그 주차가 학생에게 열려 있는가 — 교수가 명시적으로 정한 값이 있으면 그것을, 없으면 기본값(w02만 열림). */
+function weekIsOpen(id){
+  var m = loadWeekOpen();
+  if(Object.prototype.hasOwnProperty.call(m, id)) return !!m[id];
+  return id === "w02";
+}
+/* 교수가 열기/닫기 → 이 기기 미러를 갱신하고 전체 맵을 돌려준다(서버 전송은 GLR.syncWeekOpen 이 맡는다). */
+function setWeekOpenLocal(id, on){
+  var m = loadWeekOpen(); m[id] = !!on;
+  try{ localStorage.setItem(WEEKOPEN_KEY, JSON.stringify(m)); }catch(e){}
+  return m;
+}
 
 var storageOk = true;
 var state = null;
@@ -1698,21 +1727,22 @@ function labList(){ return (C && Array.isArray(C.labs)) ? C.labs : []; }
  *     2) 그 lab 의 미션 콘텐츠를 붙이고(byWeek.wNN 또는 weekPack()에 연결), 로비/미션이 읽게 한다.
  *     3) 이 배열에 그 id 를 추가한다(예: ["w02","w03"]).  ← 이 줄을 빠뜨리면
  *        ready:true 로 바꿔도 labEnterable() 이 계속 false 라 못 들어간다. */
-var LABS_WITH_CONTENT = ["w02","w03"];
+var LABS_WITH_CONTENT = ["w02","w03","w04"];
 
-/* 눌러서 실제로 들어갈 수 있는가 — 콘텐츠가 붙어 있고, 교수이거나 학생이면 날짜가 됐을 때 */
+/* 눌러서 실제로 들어갈 수 있는가 — 콘텐츠가 붙어 있고, 교수(미리보기)는 항상, 학생은 교수가 연 주차만.
+ *   (2026-09-05 변경: 날짜(unlockDate) 자동열림 → 교수가 「주차 시작」을 눌러 서버에 연 주차만 열림.) */
 function labEnterable(lab){
   if(!lab || LABS_WITH_CONTENT.indexOf(lab.id) === -1) return false;   /* 콘텐츠가 붙은 실습만 */
-  if(state.role === "prof") return true;
-  return !!lab.ready && (TEST_OPEN_ALL || today() >= lab.unlockDate);
+  if(state.role === "prof") return true;                               /* 교수 미리보기: 열림 상태와 무관하게 항상 진입 */
+  return !!lab.ready && (TEST_OPEN_ALL || weekIsOpen(lab.id));         /* 학생: 준비됐고 + 교수가 연 주차만 */
 }
 /* 카드에 표시할 상태 뱃지 */
 function labBadge(lab){
   if(!lab.ready) return { t: "문항 준비 중", cls: "" };
-  if(state.role === "prof") return { t: "열람 가능", cls: "on" };
-  if(today() >= lab.unlockDate) return { t: "열림", cls: "on" };
+  if(state.role === "prof") return weekIsOpen(lab.id) ? { t: "열림(학생공개)", cls: "on" } : { t: "닫힘(미공개)", cls: "" };
   if(TEST_OPEN_ALL) return { t: "열림(테스트)", cls: "on" };
-  return { t: "🔒 " + (lab.dateLabel || "") + " 열림", cls: "" };
+  if(weekIsOpen(lab.id)) return { t: "열림", cls: "on" };
+  return { t: "🔒 아직 시작 전", cls: "" };
 }
 var CIRC = ["①","②","③","④","⑤","⑥","⑦","⑧","⑨"];
 RENDER.labs = function(){
@@ -1737,7 +1767,7 @@ RENDER.labs = function(){
   h += '<div class="greet">' + coli(isProf ? "explain" : "idle", "static") + '<div class="speech">' +
     (isProf
       ? "교수 화면이에요. 아래는 학생이 보는 실습 목록 미리보기예요. 지금 열린 실습은 " + esc(actLab.weekLabel || "2주차") + "(" + esc(actLab.title || "세포배양") + ")뿐이에요."
-      : "실습 제목을 눌러 들어가요. 각 실습은 <b>해당 날짜</b>가 되면 열려요. 지금은 " + esc(actLab.weekLabel || "2주차") + "(" + esc(actLab.title || "세포배양") + ")만 열려 있어요.") +
+      : "실습 제목을 눌러 들어가요. 각 실습은 <b>교수님이 시작</b>하면 열려요. 아직 시작 전인 실습은 눌러도 들어갈 수 없어요.") +
     '</div></div>';
 
   h += testModeNote();
@@ -1784,7 +1814,7 @@ RENDER.labs = function(){
 
   h += '<button class="btn sm ghost center" type="button" id="logoutBtn" style="margin-top:12px">🚪 로그아웃</button>';
   h += '<p class="small" style="margin-top:10px">' + esc(C.meta.storageNote || "") + '</p>';
-  h += '<p class="small">※ 열림 여부는 오늘 날짜로 판단합니다.' + ((window.GLR&&GLR.on) ? ' 학습·미션·보고서는 서버에 저장돼 기기가 바뀌어도 이어집니다.' : ' (이 기기 저장 모드 — 기록이 이 기기에만 남습니다.)') + '</p>';
+  h += '<p class="small">※ 열림 여부는 교수님의 「주차 시작」 여부로 정해집니다(날짜가 지나도 교수님이 시작해야 열립니다).' + ((window.GLR&&GLR.on) ? ' 학습·미션·보고서는 서버에 저장돼 기기가 바뀌어도 이어집니다.' : ' (이 기기 저장 모드 — 기록이 이 기기에만 남습니다.)') + '</p>';
 
   var sc = $("sc-labs"); sc.innerHTML = h;
   sc.querySelectorAll("[data-lab]").forEach(function(bt){
@@ -1794,7 +1824,7 @@ RENDER.labs = function(){
       if(!lab) return;
       if(labEnterable(lab)){ ACTIVE_WEEK = lab.id; AW = weekPack(ACTIVE_WEEK); buildDerived(); go("lobby"); return; }
       if(!lab.ready){ toast("이 실습의 문항은 준비 중입니다."); return; }
-      if(state.role !== "prof" && !TEST_OPEN_ALL && today() < lab.unlockDate){ toast((lab.dateLabel || "") + " 부터 열립니다. 아직 잠겨 있어요."); return; }
+      if(state.role !== "prof" && !TEST_OPEN_ALL && !weekIsOpen(lab.id)){ toast("아직 시작 전입니다. 교수님이 시작하면 열립니다."); return; }
       toast("이 실습의 문항은 준비 중입니다.");
     };
   });
@@ -2629,6 +2659,22 @@ RENDER.profdash = function(){
   });
   h += '</div></div>';
 
+  /* 🚦 주차 공개 관리 — 교수가 각 주차를 학생에게 열고/닫는다. 날짜가 지나도 여기서 열어야 학생이 들어온다.
+   *   상태는 서버(gl_app_meta.week_open)에 저장돼 모든 학생 기기에 반영된다. */
+  h += '<div class="card tight" style="border-color:#f0c9a8;background:#fdf3ea">';
+  h += '<div class="small" style="margin:0 0 8px"><b>🚦 주차 공개 관리</b> — <b>「시작(열기)」을 눌러야 학생이 그 주차에 들어갈 수 있습니다.</b> 날짜가 지나도 자동으로 열리지 않습니다. 실수로 열었으면 「닫기」로 되돌릴 수 있습니다(저장된 학생 자료는 지워지지 않습니다).</div>';
+  LABS_WITH_CONTENT.forEach(function(wid){
+    var l = labById(wid); if(!l) return;
+    var isOpen = weekIsOpen(wid);
+    h += '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0;padding:6px 0;border-top:1px solid #f0dcc6">';
+    h += '<span style="min-width:170px;font-weight:700">' + esc(l.weekLabel || wid) + ' · ' + esc(l.title || "") + '</span>';
+    h += '<span class="pill ' + (isOpen ? "ok" : "no") + '">' + (isOpen ? "열림(학생공개)" : "닫힘(미공개)") + '</span>';
+    h += '<button class="btn sm ' + (isOpen ? "ghost" : "primary") + '" type="button" data-weekopen="' + esc(wid) + '" data-to="' + (isOpen ? "0" : "1") + '">' + (isOpen ? "닫기" : "시작(열기)") + '</button>';
+    h += '</div>';
+  });
+  h += '<div class="small" style="color:var(--muted);margin-top:6px">' + ((window.GLR && GLR.on) ? '여기서 연 주차는 서버에 저장돼 <b>모든 학생 기기</b>에 반영됩니다.' : '⚠ 지금은 이 기기 저장 모드 — 서버에 반영되지 않아 <b>이 기기에서만</b> 적용됩니다(실제 수업은 서버 방식에서 여세요).') + '</div>';
+  h += '</div>';
+
   if(!prepared){
     /* 미준비 주차 — 콘텐츠(문항·보고서 양식)가 아직 없어 학생 기록이 생길 수 없다. */
     h += '<div class="card tight" style="border-color:#e6d9b8;background:#fbf6e7"><div class="small" style="color:#8a6d1a">📭 <b>이 주차는 아직 문항이 준비되지 않았습니다(데이터 없음).</b><br>학생이 수행할 학습·미션·보고서 양식이 준비되면, 이 화면에 그 주차의 현황이 채워집니다. 현재는 <b>2주차(세포배양)</b>만 실제 데이터가 있습니다.</div></div>';
@@ -2706,6 +2752,24 @@ RENDER.profdash = function(){
   /* 📅 주차 전환 — 대시보드 조회 주차만 바꾼다(학생용 ACTIVE_WEEK 은 그대로). */
   sc.querySelectorAll("[data-week]").forEach(function(b){
     b.onclick = function(){ DASH_WEEK = b.getAttribute("data-week"); RENDER.profdash(); };
+  });
+  /* 🚦 주차 열기/닫기 — 인앱 확인모달(askConfirm) 뒤 이 기기 미러 갱신 + 서버 저장(교수만 쓰기). */
+  sc.querySelectorAll("[data-weekopen]").forEach(function(b){
+    b.onclick = function(){
+      var wid = b.getAttribute("data-weekopen");
+      var to = b.getAttribute("data-to") === "1";       /* true=열기, false=닫기 */
+      var l = labById(wid);
+      var wlabel = (l && (l.weekLabel || wid)) || wid;
+      var msg = to
+        ? wlabel + " 을(를) 지금 학생에게 엽니다.\n학생이 이 주차에 들어올 수 있게 됩니다. 여시겠습니까?"
+        : wlabel + " 을(를) 닫습니다(비공개).\n학생이 이 주차에 들어올 수 없게 됩니다. 이미 저장된 학생 자료(보고서·진도)는 지워지지 않습니다. 닫으시겠습니까?";
+      askConfirm(msg, function(){
+        var m = setWeekOpenLocal(wid, to);
+        if(window.GLR && GLR.on) GLR.syncWeekOpen(m);
+        toast(wlabel + (to ? " 을 열었습니다." : " 을 닫았습니다."));
+        RENDER.profdash();
+      }, { yes: to ? "열기" : "닫기" });
+    };
   });
   if($("pdBulkPdf")) $("pdBulkPdf").onclick = function(){ printBulkReports(wk); };
   if($("pdLogout")) $("pdLogout").onclick = logout;
@@ -4258,12 +4322,26 @@ var GLR = {
     return Promise.all(tasks).then(function(){ data._photosResolved=true; return data; });
   },
 
+  /* 🚦 주차 공개 상태 읽기 — gl_app_meta 의 week_open 한 줄(v=jsonb 맵)을 받아 로컬 미러로 옮긴다.
+     RLS 로 누구나(학생 포함) 읽을 수 있으므로 교수가 연 주차가 모든 기기에 반영된다.
+     실패(네트워크 등)해도 마지막으로 받아둔 미러를 그대로 두어(덮지 않아) 학생이 갑자기 잠기지 않게 한다. */
+  loadMeta:function(){
+    return this.call("/rest/v1/gl_app_meta?k=eq.week_open&select=v", { headers:this.hdr(false) })
+      .then(function(rows){
+        var v = (rows && rows[0] && rows[0].v) || null;
+        try{
+          if(v && typeof v==="object") localStorage.setItem(WEEKOPEN_KEY, JSON.stringify(v));
+          else localStorage.removeItem(WEEKOPEN_KEY);   /* 서버에 아직 값이 없으면 기본값(w02만 열림)으로 */
+        }catch(e){}
+      }, function(){ /* 조용히 실패 — 기존 미러 유지(마지막으로 알려진 열림 상태 보존) */ });
+  },
+
   loadAll:function(){
     var self=this;
     this.snapshotPreMigrate();
     this.clearMirror();
     var names=["roster","teams","early","progress","reports"];
-    return Promise.all(names.map(function(t){ return self.loadTable(t); })).then(function(res){
+    return Promise.all(names.map(function(t){ return self.loadTable(t); }).concat([self.loadMeta()])).then(function(res){
       try{ localStorage.setItem(ROSTER_KEY, JSON.stringify((res[0]||[]).map(function(r){ return {sid:r.sid, name:r.name}; }))); }catch(e){}
       try{ localStorage.setItem(TEAMS_KEY, JSON.stringify((res[1]||[]).map(function(t){ return {id:t.id, no:t.no, members:((t.data&&t.data.members)||[]).map(String)}; }))); }catch(e){}
       try{ localStorage.setItem(EARLY_KEY, JSON.stringify((res[2]||[]).map(function(e){ return String(e.sid); }))); }catch(e){}
@@ -4376,6 +4454,12 @@ var GLR = {
     else   this.q.push({op:"delete", t:"early", id:"e_"+s});
     this.saveQ(); this.showQ(); this.pump();
   },
+  /* 🚦 주차 공개 맵 전체를 gl_app_meta.week_open 에 upsert(교수만 쓰기 가능 — RLS). 큐에 얹어 재시도·오프라인 보관까지 그대로 탄다. */
+  syncWeekOpen:function(map){
+    if(!this.on) return;
+    this.q.push({op:"meta", k:"week_open", v:JSON.parse(JSON.stringify(map||{}))});
+    this.saveQ(); this.showQ(); this.pump();
+  },
   syncProgress:function(st){
     if(!this.on || !st || st.role!=="student" || !st.studentId) return;
     var sid=String(st.studentId), wk=ACTIVE_WEEK, m=st.mission||{};
@@ -4425,6 +4509,8 @@ var GLR = {
       });
     }else if(job.op==="team_create"){
       p=this._createTeam(job, 0);
+    }else if(job.op==="meta"){
+      p=this.call("/rest/v1/gl_app_meta", { method:"POST", headers:this.mix(this.hdr(true), {Prefer:"return=minimal,resolution=merge-duplicates"}), body:JSON.stringify({k:job.k, v:job.v}) });
     }else if(job.op==="delete"){
       p=this.call("/rest/v1/"+GLTBL[job.t].db+"?id=eq."+encodeURIComponent(job.id), { method:"DELETE", headers:this.hdr(false) });
     }else{
