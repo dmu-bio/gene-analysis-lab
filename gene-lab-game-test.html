@@ -9831,12 +9831,13 @@ function openReportSelf(){
  *   ctx.report = { sid, name, readonly, view("edit"|"preview"), data }
  *   저장: localStorage reportKey(sid). 외부 라이브러리 없이 Blob(.doc)·window.print(PDF).
  * ========================================================================*/
-function reportDef(){ return (AW && AW.report) ? AW.report : null; }
-function reportMetaMap(def, sid, name, data){
+function reportDef(wk){ var p = weekPack(wk || ACTIVE_WEEK); return (p && p.report) ? p.report : null; }
+function reportMetaMap(def, sid, name, data, wk){
   /* 화면·출력에 쓸 머리말 값 표(고정값 + 학생 입력 date/team + 로그인 sid/name) */
   var m = {};
   (def.meta || []).forEach(function(f){ m[f.key] = { label: f.label, value: f.value || "", fixed: !!f.fixed }; });
-  if(m.date) m.date.value = (data.meta && data.meta.date) || m.date.value || curLab().unlockDate || "";
+  var mlab = labById(wk || ACTIVE_WEEK) || curLab();
+  if(m.date) m.date.value = (data.meta && data.meta.date) || m.date.value || mlab.unlockDate || "";
   if(m.team){ var tm = teamOf(sid); m.team.value = (data.meta && data.meta.team) || (tm ? tm.no + "조" : "") || ""; }
   if(m.sid)  m.sid.value = sid || "";
   if(m.name) m.name.value = name || "";
@@ -9955,11 +9956,12 @@ function buildSectionTable(s, data, readonly){
 }
 
 /* A4 보고서 본문 HTML — 미리보기·인쇄·워드에서 공용 */
-function buildReportHTML(sid, name, data){
-  var def = reportDef();
+function buildReportHTML(sid, name, data, wk){
+  wk = wk || ACTIVE_WEEK;
+  var def = reportDef(wk);
   if(!def) return '<div class="p-body p-empty">보고서 양식이 없습니다.</div>';
-  var lab = curLab();
-  var m = reportMetaMap(def, sid, name, data);
+  var lab = labById(wk) || curLab();
+  var m = reportMetaMap(def, sid, name, data, wk);
   var sec = data.sections || {};
   var tbl = data.tables || {};
   function val(k){ return (m[k] && m[k].value) ? esc(m[k].value) : "—"; }
@@ -10028,8 +10030,8 @@ function buildReportHTML(sid, name, data){
 }
 
 /* 워드(.doc) 다운로드 — application/msword Blob (외부 라이브러리 없음) */
-function downloadReportWord(sid, name, data){
-  var body = buildReportHTML(sid, name, data);
+function downloadReportWord(sid, name, data, wk){
+  var body = buildReportHTML(sid, name, data, wk);
   var css = "@page{size:A4;margin:20mm} body{font-family:'Malgun Gothic','맑은 고딕',sans-serif;font-size:11pt;line-height:1.7;color:#000}"
     + " .p-head{text-align:center;border-bottom:2px solid #000;padding-bottom:8px;margin-bottom:12px}"
     + " .p-title{font-size:16pt;font-weight:bold} .p-course{font-size:10.5pt;color:#333;margin-top:4px}"
@@ -10059,9 +10061,9 @@ function downloadReportWord(sid, name, data){
   }
 }
 /* PDF — 인쇄 대화상자에서 'PDF로 저장' */
-function printReportPDF(sid, name, data){
+function printReportPDF(sid, name, data, wk){
   var pp = $("printPaper");
-  pp.innerHTML = '<div class="paper">' + buildReportHTML(sid, name, data) + '</div>';
+  pp.innerHTML = '<div class="paper">' + buildReportHTML(sid, name, data, wk) + '</div>';
   document.body.classList.add("printing");
   var cleanup = function(){ document.body.classList.remove("printing"); pp.innerHTML = ""; window.onafterprint = null; };
   window.onafterprint = cleanup;
@@ -10075,9 +10077,16 @@ function printBulkReports(wk){
   var roster = getRoster();
   var lab = labById(wk) || curLab();
   var subs = [];
+  var seenB = {};
   roster.forEach(function(st){
     var rep = loadReport(st.sid, wk);
-    if(rep && rep.submitted) subs.push({ st: st, rep: rep });
+    if(rep && rep.submitted){ subs.push({ st: st, rep: rep }); seenB[String(st.sid)] = 1; }
+  });
+  /* 명단에 없는 학번으로 제출한 학생도 포함한다 — 개별 [보고서] 열람과 같은 소스(reportSidsForWeek). */
+  reportSidsForWeek(wk).forEach(function(sid){
+    if(seenB[String(sid)]) return;
+    var xrep = loadReport(sid, wk);
+    if(xrep && xrep.submitted){ subs.push({ st: { sid: sid, name: "(미등록)" }, rep: xrep }); seenB[String(sid)] = 1; }
   });
   if(subs.length === 0){ toast("이 주차에 제출된 보고서가 없습니다."); return; }
   var doPrint = function(){
@@ -10088,7 +10097,7 @@ function printBulkReports(wk){
       var head = '<div class="p-bulkhead">' + esc(o.st.sid) + ' · ' + esc(o.st.name)
         + (teamLbl ? '<span class="sub">' + esc(teamLbl) + '</span>' : '')
         + '<span class="sub">' + esc(lab.weekLabel || "") + ' ' + esc(lab.title || "") + '</span></div>';
-      parts += '<div class="paper p-studentblock">' + head + buildReportHTML(o.st.sid, o.st.name, o.rep) + '</div>';
+      parts += '<div class="paper p-studentblock">' + head + buildReportHTML(o.st.sid, o.st.name, o.rep, wk) + '</div>';
     });
     var pp = $("printPaper");
     pp.innerHTML = parts;
@@ -10107,10 +10116,10 @@ function printBulkReports(wk){
 }
 
 RENDER.report = function(){
-  var def = reportDef();
   var sc = $("sc-report");
   if(!ctx.report){ ctx.report = { sid: state.studentId, name: state.studentName, readonly: state.role === "prof", view: "edit" }; }
   var R = ctx.report;
+  var def = reportDef(R.week);   /* 양식은 「지금 여는 보고서의 주차」를 따른다(교수=DASH_WEEK, 학생=미지정→ACTIVE_WEEK) */
   if(!R.data){ R.data = loadReport(R.sid, R.week); }
   /* 🔵 사진 지연 로드: 미러에는 경로만 있으므로, 이 보고서를 실제로 여는 지금 사진을 받아 온다.
      상태·집계 표는 사진 없이도 정확했고(그 덕에 폰에서도 전량 표시), 사진 다운로드는 지금 보는 이 한 건에만 든다. */
@@ -10132,8 +10141,8 @@ RENDER.report = function(){
   if(R.view === "preview"){ renderReportPreview(sc, R, def); return; }
 
   /* ---------- 편집 폼 ---------- */
-  var lab = curLab();
-  var m = reportMetaMap(def, R.sid, R.name, data);
+  var lab = labById(R.week) || curLab();
+  var m = reportMetaMap(def, R.sid, R.name, data, R.week);
   var h = "";
   h += '<button class="btn sm ghost" type="button" id="rpBack" style="margin-bottom:10px;text-align:left">← ' + (state.role==="prof"?"확인 대시보드로":"실습 허브로") + '</button>';
   h += '<h2 class="sc-h">📝 실험 결과보고서 — ' + esc(def.title || lab.title || "") + '</h2>';
@@ -10213,8 +10222,8 @@ RENDER.report = function(){
   if($("rpBack")) $("rpBack").onclick = function(){ if(!readonly) persist(true); go(state.role==="prof"?"profdash":"lobby"); };
   if($("rfSave")) $("rfSave").onclick = function(){ persist(false); };
   if($("rfPreview")) $("rfPreview").onclick = function(){ R.data = readonly ? data : persist(true); R.view = "preview"; RENDER.report(); };
-  if($("rfWord")) $("rfWord").onclick = function(){ var d = readonly ? data : persist(true); downloadReportWord(R.sid, R.name, d); };
-  if($("rfPdf")) $("rfPdf").onclick = function(){ var d = readonly ? data : persist(true); printReportPDF(R.sid, R.name, d); };
+  if($("rfWord")) $("rfWord").onclick = function(){ var d = readonly ? data : persist(true); downloadReportWord(R.sid, R.name, d, R.week); };
+  if($("rfPdf")) $("rfPdf").onclick = function(){ var d = readonly ? data : persist(true); printReportPDF(R.sid, R.name, d, R.week); };
   if($("rfSubmit")) $("rfSubmit").onclick = function(){
     var d = collect(); d.submitted = true; d.submittedAt = today(); d.savedAt = today();
     saveReport(R.sid, d); R.data = d;
@@ -10273,21 +10282,21 @@ RENDER.report = function(){
   }
 };
 function renderReportPreview(sc, R, def){
-  var data = R.data || loadReport(R.sid);
+  var data = R.data || loadReport(R.sid, R.week);
   var readonly = !!R.readonly;
   var h = "";
   h += '<button class="btn sm ghost" type="button" id="rvBack" style="margin-bottom:10px;text-align:left">← ' + (readonly ? "열람으로" : "편집으로") + '</button>';
   h += '<h2 class="sc-h">👁 A4 미리보기</h2>';
   h += '<p class="sc-p">아래 모양으로 인쇄·저장됩니다. 워드(.doc)·PDF로 내려받으세요.</p>';
-  h += '<div class="paper">' + buildReportHTML(R.sid, R.name, data) + '</div>';
+  h += '<div class="paper">' + buildReportHTML(R.sid, R.name, data, R.week) + '</div>';
   h += '<div class="row" style="margin-top:12px"><button class="btn sm primary" type="button" id="rvWord">📄 워드(.doc)</button>';
   h += '<button class="btn sm" type="button" id="rvPdf">🖨 PDF로 저장</button></div>';
   if(!readonly) h += '<button class="btn ' + (data.submitted ? '' : 'primary') + ' center" type="button" id="rvSubmit">' + (data.submitted ? '✅ 제출됨 — 다시 제출' : '보고서 제출') + '</button>';
   h += '<button class="btn ghost center" type="button" id="rvHub">' + (state.role==="prof"?"확인 대시보드로":"실습 허브로") + '</button>';
   sc.innerHTML = h;
   $("rvBack").onclick = function(){ R.view = "edit"; RENDER.report(); };
-  $("rvWord").onclick = function(){ downloadReportWord(R.sid, R.name, data); };
-  $("rvPdf").onclick = function(){ printReportPDF(R.sid, R.name, data); };
+  $("rvWord").onclick = function(){ downloadReportWord(R.sid, R.name, data, R.week); };
+  $("rvPdf").onclick = function(){ printReportPDF(R.sid, R.name, data, R.week); };
   if($("rvSubmit")) $("rvSubmit").onclick = function(){
     data.submitted = true; data.submittedAt = today(); data.savedAt = today();
     saveReport(R.sid, data); toast("보고서를 제출했습니다.");
@@ -10344,6 +10353,8 @@ RENDER.profdash = function(){
                      hasData:true });
   });
   var tableRows = rows.concat(extraRows);                      /* 표는 명단 + 미등록 작성자 */
+  var nSubExtra = extraRows.filter(function(r){ return r.repSubmitted; }).length;   /* 미등록 학번 제출본 수 */
+  var nSubAll = nSub + nSubExtra;                              /* 전체 PDF에 실제로 담기는 제출본 수(명단+미등록) */
   var nActive = rows.filter(function(r){ return r.hasData; }).length + extraRows.length;
   var lab = labById(wk) || curLab();
 
@@ -10412,9 +10423,9 @@ RENDER.profdash = function(){
   /* 📄 주차별 제출 보고서 일괄 PDF — 그 주차의 '제출'본 전체를 한 번의 인쇄로 내려받는다. */
   if(prepared){
     h += '<div class="card tight" style="border-color:#cbb8e0;background:#f6f1fb">';
-    h += '<div class="small" style="margin:0 0 8px"><b>📄 이 주차 제출 보고서 전체 PDF</b> — ' + esc(lab.weekLabel || "") + ' <b>제출 ' + nSub + '건</b>을 한 문서로 이어서 인쇄합니다(학생마다 새 페이지, 작성 중·미작성 제외).</div>';
-    h += '<button class="btn sm primary" type="button" id="pdBulkPdf"' + (nSub ? '' : ' disabled') + '>📄 이 주차 제출 보고서 전체 PDF</button>';
-    h += '<div class="small" style="color:var(--muted);margin-top:6px">브라우저 인쇄창에서 \'대상\'을 \'PDF로 저장\'으로 고르시면 됩니다.' + (nSub ? '' : ' (현재 제출된 보고서가 없습니다.)') + '</div>';
+    h += '<div class="small" style="margin:0 0 8px"><b>📄 이 주차 제출 보고서 전체 PDF</b> — ' + esc(lab.weekLabel || "") + ' <b>제출 ' + nSubAll + '건</b>' + (nSubExtra ? '(명단 ' + nSub + '건 + 미등록 ' + nSubExtra + '건)' : '') + '을 한 문서로 이어서 인쇄합니다(학생마다 새 페이지, 작성 중·미작성 제외).</div>';
+    h += '<button class="btn sm primary" type="button" id="pdBulkPdf"' + (nSubAll ? '' : ' disabled') + '>📄 이 주차 제출 보고서 전체 PDF</button>';
+    h += '<div class="small" style="color:var(--muted);margin-top:6px">브라우저 인쇄창에서 \'대상\'을 \'PDF로 저장\'으로 고르시면 됩니다.' + (nSubAll ? '' : ' (현재 제출된 보고서가 없습니다.)') + '</div>';
     h += '</div>';
   }
 
