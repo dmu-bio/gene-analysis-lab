@@ -4397,6 +4397,63 @@ var GLR = {
      (loadAll 이 서버 기록으로 채우고, 업로드 성공 때마다 pump 이 한 건씩 추가한다.) */
   isPhotoConfirmed:function(p){ return !!(p && this.okPhoto[p]); },
   markPhotoOk:function(p){ if(p) this.okPhoto[p]=1; },
+  /* 🔴 사진 유실 방지(2026-09-09 2차): 이 보고서에 '아직 서버에 못 올린' base64 사진이 남아 있는가.
+     reportLocalCopy 규칙상 로컬 사본의 사진 슬롯에 data: 가 남았다는 것은 = 서버 확인 전(미전송)이라는 뜻이다.
+     (서버가 받은 것은 pump/ loadAll 이 경로로 내려 놓으므로 base64 가 남지 않는다.) */
+  _reportHasBase64:function(data){
+    try{
+      var im = data && data.images; if(!im || typeof im!=="object") return false;
+      return Object.keys(im).some(function(k){
+        var a=im[k]; return Array.isArray(a) && a.some(function(v){ return v && typeof v==="string" && v.indexOf("data:")===0; });
+      });
+    }catch(e){ return false; }
+  },
+  /* 서버본을 기준으로, 서버가 그 사진 슬롯을 갖고 있지 않은(빈칸) 곳에만 로컬 base64 를 되메운다.
+     서버가 값(경로 또는 data:)을 가진 슬롯은 '서버가 진실' — 로컬 base64 로 덮지 않는다(정상 제출 회귀 방지).
+     로컬에 살릴 base64 가 없으면 서버본을 그대로 돌려준다(정상 케이스는 손대지 않는다). */
+  _mergeServerReport:function(sdata, localRaw){
+    sdata = sdata || {};
+    var local=null; try{ local = localRaw ? JSON.parse(localRaw) : null; }catch(e){ local=null; }
+    if(!local || !this._reportHasBase64(local)) return sdata;
+    var out={}; for(var k in sdata) if(sdata.hasOwnProperty(k)) out[k]=sdata[k];
+    var sImg=(sdata.images&&typeof sdata.images==="object")?sdata.images:{}, lImg=(local.images&&typeof local.images==="object")?local.images:{}, mImg={}, keys={};
+    Object.keys(sImg).forEach(function(kk){ keys[kk]=1; }); Object.keys(lImg).forEach(function(kk){ keys[kk]=1; });
+    Object.keys(keys).forEach(function(key){
+      var sa=Array.isArray(sImg[key])?sImg[key]:[], la=Array.isArray(lImg[key])?lImg[key]:[];
+      var n=Math.max(sa.length, la.length), a=[];
+      for(var i=0;i<n;i++){
+        var sv=sa[i], lv=la[i];
+        if(sv && typeof sv==="string" && (sv.indexOf("data:")===0 || sv.indexOf("/")!==-1)){ a[i]=sv; }      /* 서버가 가진 값 = 진실 */
+        else if(lv && typeof lv==="string" && lv.indexOf("data:")===0){ a[i]=lv; }                          /* 서버에 없고 로컬 base64 있음 → 살린다 */
+        else { a[i]=sv || lv || ""; }
+      }
+      mImg[key]=a;
+    });
+    out.images=mImg;
+    return out;
+  },
+  /* 재접속(loadAll) 뒤, 이 기기에 남아 있는 '미전송 base64' 보고서를 전송 큐에 다시 얹어 연결되면 자동 업로드되게 한다.
+     - clearMirror 가 살려 둔(서버에 없는) 보고서와, 서버본과 병합해 base64 가 남은 보고서를 모두 포함한다.
+     - 같은 학생·주차 잡이 이미 큐에 있으면 새로 쌓지 않는다(중복 방지). 업로드가 성공하면 base64→경로로 내려가
+       다음 재접속부터는 스스로 걸러지므로 무한 재업로드가 되지 않는다(폭주 방지). */
+  _requeueUnsentReports:function(){
+    if(!this.on) return;
+    var self=this, found=0;
+    try{
+      var keys=[], i;
+      for(i=0;i<localStorage.length;i++){ var kk=localStorage.key(i); if(kk && /^dmu_gene_report_w\d+_\d{4,}$/.test(kk)) keys.push(kk); }
+      keys.forEach(function(k){
+        var m=k.match(/^dmu_gene_report_(w\d+)_(\d{4,})$/); if(!m) return;
+        var data=null; try{ data=JSON.parse(localStorage.getItem(k)||"null"); }catch(e){ return; }
+        if(!data || !self._reportHasBase64(data)) return;
+        var wk=m[1], sid=m[2];
+        if(self.q.some(function(j){ return j && j.op==="report" && j.sid===sid && j.week===wk; })) return;
+        self.q.push({op:"report", sid:sid, week:wk, data:JSON.parse(JSON.stringify(data))});
+        found++;
+      });
+    }catch(e){}
+    if(found){ this.saveQ(); this.showQ(); this.pump(); }
+  },
 
   mix:function(a,b){ for(var k in b) if(b.hasOwnProperty(k)) a[k]=b[k]; return a; },
   hdr:function(json){
@@ -4489,8 +4546,21 @@ var GLR = {
   clearMirror:function(){
     try{
       localStorage.removeItem(ROSTER_KEY); localStorage.removeItem(TEAMS_KEY); localStorage.removeItem(EARLY_KEY);
-      var kill=[], i;
-      for(i=0;i<localStorage.length;i++){ var k=localStorage.key(i); if(k && (k.indexOf("dmu_gene_lab_")===0 || k.indexOf("dmu_gene_report_")===0)) kill.push(k); }
+      var kill=[], i, self=this;
+      for(i=0;i<localStorage.length;i++){
+        var k=localStorage.key(i); if(!k) continue;
+        if(k.indexOf("dmu_gene_lab_")===0){ kill.push(k); continue; }   /* 진도 미러 — 사진 없음, 늘 서버본으로 재구성 */
+        if(k.indexOf("dmu_gene_report_")===0){
+          /* 🔴 사진 유실 방지(2026-09-09 2차): 서버에 아직 못 올린 base64 사진이 든 보고서 키는 지우지 않고 남긴다.
+             (예전엔 여기서 무조건 지운 뒤 서버 경로본으로만 재구성 → 업로드 실패/미완료분이 통째로 사라졌다.)
+             남긴 base64 는 바로 뒤 loadAll 이 서버본과 병합할 때 '서버에 없는 슬롯'에만 되메워지고,
+             _requeueUnsentReports 가 전송 큐에 다시 얹어 연결되면 자동 업로드된다. */
+          var keep=false;
+          try{ keep = self._reportHasBase64(JSON.parse(localStorage.getItem(k)||"null")); }catch(e){ keep=false; }
+          if(!keep) kill.push(k);
+          continue;
+        }
+      }
       for(i=0;i<kill.length;i++){ localStorage.removeItem(kill[i]); }
     }catch(e){}
   },
@@ -4582,12 +4652,20 @@ var GLR = {
       reps.forEach(function(r){
         /* 🔴 서버가 이미 가진 사진 경로는 '확인됨'으로 표시 — 다음 저장부터 이 기기 base64 를 경로로 내려 용량을 아끼고 재업로드를 막는다. */
         try{ var ph=r.photos; if(ph && typeof ph==="object"){ Object.keys(ph).forEach(function(k){ (ph[k]||[]).forEach(function(pp){ if(pp && typeof pp==="string" && pp.indexOf("/")!==-1) self.markPhotoOk(pp); }); }); } }catch(e){}
-        try{ localStorage.setItem("dmu_gene_report_"+r.week+"_"+r.sid, JSON.stringify(r.data||{})); }
+        /* 🔴 사진 유실 방지(2026-09-09 2차): 서버본으로 덮기 전에, 이 기기에 살아남은(clearMirror 가 남긴) 미전송 base64 를 병합한다.
+           서버가 가진 사진 슬롯은 서버본(경로)이 이기고, 서버에 없는 슬롯만 로컬 base64 를 유지한다 → 정상 제출본은 그대로, 미전송분만 보존. */
+        try{
+          var rk="dmu_gene_report_"+r.week+"_"+r.sid;
+          var merged=self._mergeServerReport(r.data||{}, localStorage.getItem(rk));
+          localStorage.setItem(rk, JSON.stringify(merged));
+        }
         catch(e){ repFail++; }   /* 경로만 담아도 넘칠 만큼 기기 저장공간이 부족한 예외 상황 */
       });
       if(repFail){   /* 조용히 삼키지 않는다 — 화면 위에 명확히 알린다 */
         self.bar('🔴 이 기기 저장공간이 부족해 보고서 <b>'+repFail+'건</b>을 담지 못했습니다. <span style="font-weight:400">다른 브라우저나 PC 에서 확인해 주세요.</span>',"red");
       }
+      /* 서버에 아직 못 올린 base64 보고서(서버본 없음 + 병합 뒤 base64 남음)를 전송 큐에 다시 얹어, 연결되면 자동 업로드되게 한다. */
+      try{ self._requeueUnsentReports(); }catch(e){}
       return null;
     }).then(function(){ self.ready=true; self.up(); });
   },
