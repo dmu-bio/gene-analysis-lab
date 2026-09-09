@@ -4487,7 +4487,14 @@ var GLR = {
   down_:function(){ this.down=true; this.bar("⚠ "+this.MSG_DOWN+' <span style="font-weight:400">새로 저장한 것은 보관해 두었다가 접속이 돌아오면 자동으로 보냅니다.</span>',"red"); if(window.toast) toast("⚠ "+this.MSG_DOWN); },
   up:function(){ if(this.down){ this.down=false; this.bar("",""); if(window.toast) toast("접속이 돌아왔습니다."); } this.showQ(); },
   showQ:function(){
-    if(this.failed.length){ this.bar('🔴 서버가 저장을 거부한 것이 <b>'+this.failed.length+'건</b> 있습니다. <span style="font-weight:400">소장에게 알려 주세요.</span>',"red"); return; }
+    var self=this;
+    if(this.failed.length){
+      /* 🔴 사진 유실 방지(2026-09-10): 영구 실패한 보고서 중 '아직 서버에 못 올린 base64 사진'이 든 것이 있으면
+         사진 전용 경고를 우선 띄운다 — 사진은 이 기기에 보관돼 있어 다시 임시저장하면 재전송된다(유실 아님). */
+      var photoFail = this.failed.some(function(j){ return j && j.op==="report" && self._reportHasBase64(j.data); });
+      if(photoFail){ this.bar('🔴 사진 전송에 실패했습니다. <span style="font-weight:400">네트워크를 확인한 뒤 사진을 다시 임시저장해 주세요. 작성 내용과 사진은 이 기기에 안전하게 보관돼 있어 다시 저장하면 재전송됩니다.</span>',"red"); return; }
+      this.bar('🔴 서버가 저장을 거부한 것이 <b>'+this.failed.length+'건</b> 있습니다. <span style="font-weight:400">소장에게 알려 주세요.</span>',"red"); return;
+    }
     /* 🔵 전송 대기 자료를 이 기기에 임시 보관조차 못 한 경우(저장공간 부족) — 조용히 넘기지 않고 알린다. */
     if(this.qPersistFailed && this.q.length){ this.bar('🔴 이 기기 저장공간이 부족해 <b>전송 대기 자료를 임시 보관하지 못했습니다.</b> <span style="font-weight:400">전송이 끝날 때까지(위 “보내는 중” 표시가 사라질 때까지) 창을 닫지 마세요.</span>',"red"); return; }
     if(this.q.length && !this.down){ this.bar("서버로 보내는 중… <b>"+this.q.length+"건</b>","amber"); return; }
@@ -4811,19 +4818,32 @@ var GLR = {
     var job=this.q[0], p;
 
     if(job.op==="report"){
-      var data=job.data, imgs=data.images||{}, ups=[], photos={};
+      var data=job.data, imgs=data.images||{}, ups=[], photos={}, slotMap=[];
       Object.keys(imgs).forEach(function(key){
         var arr=imgs[key]; if(!Array.isArray(arr)) return; photos[key]=[];
         arr.forEach(function(val, idx){
           if(val && typeof val==="string" && val.indexOf("data:")===0){
             var path=job.week+"/"+job.sid+"/"+key+"_"+idx+".jpg";
-            photos[key][idx]=path; ups.push(self.uploadPhoto(path, val)); arr[idx]=path;
+            photos[key][idx]=path; ups.push(self.uploadPhoto(path, val));
+            /* 🔴 사진 유실 완전수정(2026-09-10): 여기서 arr[idx]=path 로 '즉시' 치환하지 않는다.
+               예전엔 업로드 성공을 확인하기 전에 슬롯 base64 를 경로로 덮어써,
+               그 업로드가 실패하면(폰 網 순간 끊김 등) 자동 재시도 때 슬롯이 이미 경로라
+               data: 조건에 안 걸려 '실제 업로드를 건너뛴 채' gl_reports 만 경로로 저장(=팬텀 성공)돼
+               파일 없는 404·사진 영구 유실이 났다(경고도 0). okPhoto 도 실패인데 성공으로 찍혔다.
+               → 이제 업로드가 전부 2xx 로 성공한 뒤(.then)에만 경로로 내린다. 실패 시 base64 를
+               슬롯·큐·로컬에 그대로 유지 → 자동/수동 재전송이 실제 업로드를 다시 수행한다. */
+            slotMap.push({key:key, idx:idx, path:path});
           }else{ photos[key][idx]=(val||""); }
         });
       });
       job._okPaths = [];   /* 이 작업이 서버에 올린(=확실히 받은) 사진 경로들 — 성공 시 okPhoto 장부에 넣는다 */
       Object.keys(photos).forEach(function(k){ (photos[k]||[]).forEach(function(pp){ if(pp && typeof pp==="string" && pp.indexOf("/")!==-1) job._okPaths.push(pp); }); });
       p=Promise.all(ups).then(function(){
+        /* 업로드가 모두 성공한 뒤에만: ① 슬롯 base64→경로로 내리고 ② 그 경로로 gl_reports 를 upsert 한다.
+           업로드가 하나라도 실패하면 여기 도달하지 못하므로, 파일 없는 경로가 gl_reports 에 절대 들어가지 않는다.
+           (부분 실패 3장 중 1장 실패 시: Promise.all 이 거부→아무 슬롯도 안 내리고 upsert 도 안 함→재시도 때 3장 모두 재업로드,
+            x-upsert:true 라 이미 올라간 2장은 멱등 덮어쓰기로 무해.) */
+        slotMap.forEach(function(m){ if(Array.isArray(imgs[m.key])) imgs[m.key][m.idx]=m.path; });
         var row={ id:"rp_"+job.week+"_"+job.sid, sid:job.sid, week:job.week, submitted:!!data.submitted, photos:photos, data:data };
         return self.call("/rest/v1/gl_reports", { method:"POST", headers:self.mix(self.hdr(true), {Prefer:"return=minimal,resolution=merge-duplicates"}), body:JSON.stringify(row) });
       });
@@ -4847,6 +4867,12 @@ var GLR = {
           var cur = localStorage.getItem(rk);
           if(cur){ localStorage.setItem(rk, JSON.stringify(reportLocalCopy(job.sid, JSON.parse(cur), job.week))); }
         }catch(e){}
+      }
+      /* 🔴 사진 유실 방지(2026-09-10): 이 보고서가 방금 성공적으로 올라갔으면,
+         같은 학생·주차의 '예전에 실패로 남아 있던' 항목을 실패 목록에서 지운다.
+         (학생이 실패 뒤 다시 임시저장→성공했는데도 붉은 '실패' 경고가 남아 오해를 주는 것을 막는다.) */
+      if(job.op==="report" && self.failed.length){
+        self.failed = self.failed.filter(function(j){ return !(j && j.op==="report" && j.sid===job.sid && j.week===job.week); });
       }
       self.q.shift(); self.saveQ(); self.busy=false; self.showQ(); if(self.q.length) self.pump();
     }, function(err){ self.busy=false; self.onJobErr(job, err); });
