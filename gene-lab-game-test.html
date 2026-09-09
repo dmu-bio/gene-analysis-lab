@@ -8875,16 +8875,23 @@ function loadReport(sid, wk){
  *         그 뒤의 setItem(진도·조편성·전송큐 등)까지 조용히 실패하는 옛 버그가 학생 기기에서 재발한다.
  *   원본 사진은 서버 버킷에 그대로 올라가고(syncReport→pump), 열람할 때 resolveReportPhotos 로 다시 받아온다.
  *   경로 형식은 pump 이 실제로 올리는 경로("주차/학번/키_번호.jpg")와 동일해야 지연 로드가 맞아떨어진다. */
-function reportLocalCopy(sid, data){
+function reportLocalCopy(sid, data, wk){
   if(!(window.GLR && GLR.on) || !data) return data;   /* 로컬 전용 모드는 서버가 없으므로 base64 를 그대로 보관 */
   var lite = { meta:data.meta||{}, sections:data.sections||{}, tables:data.tables||{},
                submitted:!!data.submitted, savedAt:data.savedAt||"", submittedAt:data.submittedAt||"", images:{} };
-  var imgs = data.images || {}, wk = ACTIVE_WEEK, s = String(sid);
+  var imgs = data.images || {}, s = String(sid);
+  wk = wk || ACTIVE_WEEK;
   Object.keys(imgs).forEach(function(key){
     var arr = imgs[key]; if(!Array.isArray(arr)) return;
     lite.images[key] = arr.map(function(val, idx){
       if(val && typeof val === "string" && val.indexOf("data:") === 0){
-        return wk + "/" + s + "/" + key + "_" + idx + ".jpg";   /* pump 이 올릴 경로와 동일 */
+        var path = wk + "/" + s + "/" + key + "_" + idx + ".jpg";   /* pump 이 올릴 경로와 동일 */
+        /* 🔴 사진 유실 방지(2026-09-09): 서버가 이 사진을 확실히 받았을 때(okPhoto)만 base64 를 버리고 경로로 바꾼다.
+           아직 업로드가 확인되지 않았으면 base64 를 이 기기에 그대로 남겨 둔다 — 업로드가 실패해도
+           (폰 용량·네트워크·앱을 닫음) 새로고침·재로그인 뒤에도 사진이 사라지지 않는다.
+           서버 확인이 된 뒤에는(pump 성공/ loadAll 미러) 경로로 내려가 용량을 되돌려 받는다. */
+        if(GLR.isPhotoConfirmed(path)) return path;
+        return val;
       }
       return val || "";
     });
@@ -12041,11 +12048,15 @@ function glBlobToDataUrl(blob){
 }
 
 var GLR = {
-  on:false, ready:false, tok:null, _acc:null, q:[], failed:[], down:false, busy:false, qPersistFailed:false,
+  on:false, ready:false, tok:null, _acc:null, q:[], failed:[], down:false, busy:false, qPersistFailed:false, okPhoto:{},
   MSG_DOWN:"지금 접속이 되지 않습니다. 잠시 뒤 다시 시도해 주세요.",
   QKEY:"gl_db_queue_v1", TOKKEY:"gl_db_tok_v1", SNAPKEY:"gl_premigrate_snapshot_v1",
 
   init:function(){ this.on = (GLCONF.mode === "remote" && !!GLCONF.url && !!GLCONF.key); return this.on; },
+  /* 🔴 서버가 '확실히 받은' 사진 경로 장부 — 이 경로가 여기 있어야만 이 기기 저장에서 base64 를 버리고 경로로 바꾼다.
+     (loadAll 이 서버 기록으로 채우고, 업로드 성공 때마다 pump 이 한 건씩 추가한다.) */
+  isPhotoConfirmed:function(p){ return !!(p && this.okPhoto[p]); },
+  markPhotoOk:function(p){ if(p) this.okPhoto[p]=1; },
 
   mix:function(a,b){ for(var k in b) if(b.hasOwnProperty(k)) a[k]=b[k]; return a; },
   hdr:function(json){
@@ -12229,6 +12240,8 @@ var GLR = {
        *   사진은 교수/학생이 그 보고서를 '열 때'만 resolveReportPhotos 로 지연 로드한다. */
       var reps=res[4]||[], repFail=0;
       reps.forEach(function(r){
+        /* 🔴 서버가 이미 가진 사진 경로는 '확인됨'으로 표시 — 다음 저장부터 이 기기 base64 를 경로로 내려 용량을 아끼고 재업로드를 막는다. */
+        try{ var ph=r.photos; if(ph && typeof ph==="object"){ Object.keys(ph).forEach(function(k){ (ph[k]||[]).forEach(function(pp){ if(pp && typeof pp==="string" && pp.indexOf("/")!==-1) self.markPhotoOk(pp); }); }); } }catch(e){}
         try{ localStorage.setItem("dmu_gene_report_"+r.week+"_"+r.sid, JSON.stringify(r.data||{})); }
         catch(e){ repFail++; }   /* 경로만 담아도 넘칠 만큼 기기 저장공간이 부족한 예외 상황 */
       });
@@ -12348,7 +12361,14 @@ var GLR = {
   },
   syncReport:function(sid, data, week){
     if(!this.on) return;
-    this.q.push({op:"report", sid:String(sid), week:week||ACTIVE_WEEK, data:JSON.parse(JSON.stringify(data||{}))});
+    var wk = week||ACTIVE_WEEK, s = String(sid);
+    /* 같은 학생·같은 주차의 '아직 안 보낸' 예전 보고서 작업은 지운다 — 자동저장이 700ms마다 돌아
+       큐에 base64 가 여러 겹 쌓이면 폰 저장공간(전송큐)이 넘쳐 사진 유실·오류로 이어졌다.
+       보고서 저장은 통째 upsert(merge-duplicates)라 마지막 것 하나만 보내면 충분하다.
+       단 지금 전송 중인 맨 앞 작업(busy)은 건드리지 않는다. */
+    var startIdx = this.busy ? 1 : 0;
+    for(var i=this.q.length-1; i>=startIdx; i--){ var j=this.q[i]; if(j && j.op==="report" && j.sid===s && j.week===wk) this.q.splice(i,1); }
+    this.q.push({op:"report", sid:s, week:wk, data:JSON.parse(JSON.stringify(data||{}))});
     this.saveQ(); this.showQ(); this.pump();
   },
   /* 「이 기기 데이터를 서버로 올리기」 — 덮어쓰기 없이 upsert 만 */
@@ -12383,6 +12403,8 @@ var GLR = {
           }else{ photos[key][idx]=(val||""); }
         });
       });
+      job._okPaths = [];   /* 이 작업이 서버에 올린(=확실히 받은) 사진 경로들 — 성공 시 okPhoto 장부에 넣는다 */
+      Object.keys(photos).forEach(function(k){ (photos[k]||[]).forEach(function(pp){ if(pp && typeof pp==="string" && pp.indexOf("/")!==-1) job._okPaths.push(pp); }); });
       p=Promise.all(ups).then(function(){
         var row={ id:"rp_"+job.week+"_"+job.sid, sid:job.sid, week:job.week, submitted:!!data.submitted, photos:photos, data:data };
         return self.call("/rest/v1/gl_reports", { method:"POST", headers:self.mix(self.hdr(true), {Prefer:"return=minimal,resolution=merge-duplicates"}), body:JSON.stringify(row) });
@@ -12397,8 +12419,19 @@ var GLR = {
       p=this.call("/rest/v1/"+GLTBL[job.t].db, { method:"POST", headers:this.mix(this.hdr(true), {Prefer:"return=minimal,resolution=merge-duplicates"}), body:JSON.stringify(job.row) });
     }
 
-    p.then(function(){ self.q.shift(); self.saveQ(); self.busy=false; self.showQ(); if(self.q.length) self.pump(); },
-      function(err){ self.busy=false; self.onJobErr(job, err); });
+    p.then(function(){
+      /* 🔴 사진 유실 방지(2026-09-09): 서버가 확실히 받은 뒤에만 이 기기의 base64 를 경로로 내려 용량을 되돌린다.
+         지금 저장돼 있는 사본을 다시 읽어(그 사이 새로 추가된 사진의 base64 는 건드리지 않고) 확인된 슬롯만 경로로 바꾼다. */
+      if(job.op==="report" && job._okPaths && job._okPaths.length){
+        job._okPaths.forEach(function(pp){ self.markPhotoOk(pp); });
+        try{
+          var rk = "dmu_gene_report_" + job.week + "_" + job.sid;
+          var cur = localStorage.getItem(rk);
+          if(cur){ localStorage.setItem(rk, JSON.stringify(reportLocalCopy(job.sid, JSON.parse(cur), job.week))); }
+        }catch(e){}
+      }
+      self.q.shift(); self.saveQ(); self.busy=false; self.showQ(); if(self.q.length) self.pump();
+    }, function(err){ self.busy=false; self.onJobErr(job, err); });
   },
   onJobErr:function(job, err){
     var self=this;
