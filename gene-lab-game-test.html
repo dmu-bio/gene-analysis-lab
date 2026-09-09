@@ -8391,10 +8391,84 @@ var REPORT_DEADLINE = {
     over:  '제출 기한이 지났습니다 (2026-10-06 23:59 마감)'
   }
 };
-/* 해당 주차의 기한이 지났으면 true. 기한 정보가 없는 주차는 항상 false(제한 없음). */
-function reportDeadlinePassed(weekId){
+/* ==========================================================================
+ * 📅 교수 지정 제출기한(2026-09-09) — 코드 수정 없이 교수가 대시보드에서 마감을 직접 정하거나 연장한다.
+ *   · 저장: 서버 gl_app_meta 의 k='report_deadline' 한 줄(v = {"w03":"2026-09-15T23:59:59+09:00", ...}).
+ *           (week_open 과 완전히 같은 패턴 — RLS: 전원 읽기 + 교수만 쓰기. 스키마 추가 없음.)
+ *   · loadMeta 가 이 값을 아래 localStorage 키로 미러링하고, effectiveDeadline() 이 그걸 읽는다.
+ *   · 우선순위: 교수 지정값(서버/미러) > 코드 기본값 REPORT_DEADLINE[wk].at(fallback). 둘 다 없으면 null(제한 없음). */
+var REPORTDL_KEY = "dmu_gene_report_deadline";   /* report_deadline 미러(서버 gl_app_meta.report_deadline 사본) */
+function loadReportDeadlineMap(){
+  try{ var o = JSON.parse(localStorage.getItem(REPORTDL_KEY) || "{}"); return (o && typeof o === "object") ? o : {}; }
+  catch(e){ return {}; }
+}
+/* 그 주차에 교수가 지정한(서버) 유효한 마감값이 있는가 — 있으면 문구를 동적 생성, 없으면 하드코딩 fallback. */
+function hasServerDeadline(weekId){
+  var m = loadReportDeadlineMap();
+  if(!(Object.prototype.hasOwnProperty.call(m, weekId) && m[weekId])) return false;
+  var d = new Date(m[weekId]); return (d instanceof Date) && !isNaN(d.getTime());
+}
+/* 그 주차의 「유효 마감」 Date — 교수 지정값이 있으면 그것, 없으면 코드 기본값(fallback). 둘 다 없으면 null. */
+function effectiveDeadline(weekId){
+  var m = loadReportDeadlineMap();
+  if(Object.prototype.hasOwnProperty.call(m, weekId) && m[weekId]){
+    var d = new Date(m[weekId]);
+    if((d instanceof Date) && !isNaN(d.getTime())) return d;
+  }
   var dl = REPORT_DEADLINE[weekId];
-  return !!(dl && dl.at instanceof Date && new Date() > dl.at);
+  return (dl && dl.at instanceof Date) ? dl.at : null;
+}
+/* 교수가 마감을 이 기기 미러에 반영하고 전체 맵을 돌려준다(서버 전송은 GLR.syncReportDeadline 이 맡는다). */
+function setReportDeadlineLocal(id, iso){
+  var m = loadReportDeadlineMap();
+  if(iso) m[id] = iso; else delete m[id];
+  try{ localStorage.setItem(REPORTDL_KEY, JSON.stringify(m)); }catch(e){}
+  return m;
+}
+/* ---- KST(한국시간) 벽시계 유틸 — 브라우저 타임존과 무관하게 같은 절대 시각을 한국시간으로 표기 ---- */
+var DOW_KR = ["일","월","화","수","목","금","토"];
+function pad2(n){ return (n<10?"0":"")+n; }
+function kstParts(date){
+  var k = new Date(date.getTime() + 9*3600*1000);   /* UTC 성분으로 읽으면 KST 벽시계 값 */
+  return { y:k.getUTCFullYear(), mo:k.getUTCMonth()+1, d:k.getUTCDate(), dow:k.getUTCDay(), h:k.getUTCHours(), mi:k.getUTCMinutes() };
+}
+/* 마감 Date → "⏰ 제출 기한: 2026년 9월 9일(수) 23:59까지 (한국시간)" (요일 자동 계산·KST) */
+function deadlineLabel(date){
+  var p = kstParts(date);
+  return '⏰ 제출 기한: ' + p.y + '년 ' + p.mo + '월 ' + p.d + '일(' + DOW_KR[p.dow] + ') ' + pad2(p.h) + ':' + pad2(p.mi) + '까지 (한국시간)';
+}
+/* 마감 Date → "제출 기한이 지났습니다 (2026-09-09 23:59 마감)" (KST) */
+function deadlineOver(date){
+  var p = kstParts(date);
+  return '제출 기한이 지났습니다 (' + p.y + '-' + pad2(p.mo) + '-' + pad2(p.d) + ' ' + pad2(p.h) + ':' + pad2(p.mi) + ' 마감)';
+}
+/* datetime-local 입력값 채우기용 "YYYY-MM-DDTHH:MM"(KST 벽시계) */
+function dtLocalValue(date){
+  if(!date) return "";
+  var p = kstParts(date);
+  return p.y + '-' + pad2(p.mo) + '-' + pad2(p.d) + 'T' + pad2(p.h) + ':' + pad2(p.mi);
+}
+/* datetime-local 입력값(교수 PC 로컬시간=KST) → +09:00 붙인 ISO 절대 시각 문자열 */
+function dtLocalToISO(val){
+  if(!val) return "";
+  var m = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})(?::(\d{2}))?$/.exec(String(val));
+  if(!m) return "";
+  return m[1]+'-'+m[2]+'-'+m[3]+'T'+m[4]+':'+m[5]+':'+(m[6]||'00')+'+09:00';
+}
+/* 화면에 쓸 기한 문구 — 교수 지정값이 있으면 동적 생성, 없으면 기존 하드코딩 문구(fallback). */
+function deadlineLabelFor(weekId){
+  if(hasServerDeadline(weekId)){ var d=effectiveDeadline(weekId); return d?deadlineLabel(d):""; }
+  var dl=REPORT_DEADLINE[weekId]; return (dl&&dl.label)||"";
+}
+function deadlineOverFor(weekId){
+  if(hasServerDeadline(weekId)){ var d=effectiveDeadline(weekId); return d?deadlineOver(d):"제출 기한이 지났습니다"; }
+  var dl=REPORT_DEADLINE[weekId]; return (dl&&dl.over)||"제출 기한이 지났습니다";
+}
+
+/* 해당 주차의 기한이 지났으면 true. 유효 마감(교수 지정값 우선, 없으면 코드 기본값)이 없는 주차는 항상 false(제한 없음). */
+function reportDeadlinePassed(weekId){
+  var dl = effectiveDeadline(weekId);
+  return !!(dl && (dl instanceof Date) && new Date() > dl);
 }
 
 /* 교수 대시보드에서 선택한 주차 — 학생용 ACTIVE_WEEK 과 분리해, 대시보드 조회만 이 주차 키로 읽는다.
@@ -9573,11 +9647,11 @@ RENDER.lobby = function(){
   h += '<div class="hub-st">' + (rep.submitted ? '<b>제출함</b> · ' + esc(rep.submittedAt || "") : (repHasText ? '작성 중 (임시 저장됨)' : '아직 시작 안 함')) + '</div>';
   /* 제출 기한 문구 + 기한 경과 시 「작성 시작」 비활성화 (2주차 등 기한이 설정된 주차에만) —
      교수 미리보기(isProf)에는 비활성화·경과 표시를 적용하지 않는다(교수는 언제나 학생 화면을 열어볼 수 있어야 함). */
-  var dlInfo = REPORT_DEADLINE[lab.id];
+  var dlEff = effectiveDeadline(lab.id);
   var dlOverStu = !isProf && reportDeadlinePassed(lab.id);
-  if(dlInfo){
+  if(dlEff){
     h += '<div class="hub-st" style="' + (dlOverStu ? 'color:var(--red)' : 'color:var(--mint);font-weight:700') + '">'
-       + esc(dlOverStu ? dlInfo.over : dlInfo.label) + '</div>';
+       + esc(dlOverStu ? deadlineOverFor(lab.id) : deadlineLabelFor(lab.id)) + '</div>';
   }
   h += '<button class="btn sm primary" type="button" id="hubReport"' + (dlOverStu ? ' disabled' : '') + ' style="margin-top:8px">보고서 ' + (repHasText ? '이어 작성' : '작성 시작') + ' 📝</button>';
   h += '</div></div>';
@@ -9587,7 +9661,7 @@ RENDER.lobby = function(){
     var sc0 = $("sc-lobby"); sc0.innerHTML = h;
     if($("hubReport")) $("hubReport").onclick = function(){
     /* 학생은 기한이 지나면 열 수 없다(버튼도 disabled 이지만 방어적으로 한 번 더 막는다). 교수 미리보기는 항상 허용. */
-    if(state.role !== "prof" && reportDeadlinePassed(curLab().id)){ toast((REPORT_DEADLINE[curLab().id] && REPORT_DEADLINE[curLab().id].over) || "제출 기한이 지났습니다"); return; }
+    if(state.role !== "prof" && reportDeadlinePassed(curLab().id)){ toast(deadlineOverFor(curLab().id)); return; }
     openReportSelf();
   };
     bindGo(sc0); return;
@@ -9648,7 +9722,7 @@ RENDER.lobby = function(){
   sc.innerHTML = h;
   if($("hubReport")) $("hubReport").onclick = function(){
     /* 학생은 기한이 지나면 열 수 없다(버튼도 disabled 이지만 방어적으로 한 번 더 막는다). 교수 미리보기는 항상 허용. */
-    if(state.role !== "prof" && reportDeadlinePassed(curLab().id)){ toast((REPORT_DEADLINE[curLab().id] && REPORT_DEADLINE[curLab().id].over) || "제출 기한이 지났습니다"); return; }
+    if(state.role !== "prof" && reportDeadlinePassed(curLab().id)){ toast(deadlineOverFor(curLab().id)); return; }
     openReportSelf();
   };
   bindGo(sc);
@@ -10409,6 +10483,25 @@ RENDER.profdash = function(){
   h += '<div class="small" style="color:var(--muted);margin-top:6px">' + ((window.GLR && GLR.on) ? '여기서 연 주차는 서버에 저장돼 <b>모든 학생 기기</b>에 반영됩니다.' : '⚠ 지금은 이 기기 저장 모드 — 서버에 반영되지 않아 <b>이 기기에서만</b> 적용됩니다(실제 수업은 서버 방식에서 여세요).') + '</div>';
   h += '</div>';
 
+  /* 📅 제출기한 설정 — 교수가 각 주차의 보고서 마감을 직접 정하거나 연장한다(서버 gl_app_meta.report_deadline). */
+  h += '<div class="card tight" style="border-color:#a8c8ec;background:#eaf2fc">';
+  h += '<div class="small" style="margin:0 0 8px"><b>📅 제출기한 설정</b> — 각 주차 보고서 <b>마감 날짜·시간을 직접 정하거나 연장</b>할 수 있습니다. 달력에서 날짜와 시간을 고르고 <b>[저장]</b>을 누르세요. 기한이 지나면 학생은 보고서를 <b>새로 쓰거나 이어 쓸 수 없습니다.</b></div>';
+  LABS_WITH_CONTENT.forEach(function(wid){
+    var l = labById(wid); if(!l) return;
+    var eff = effectiveDeadline(wid);
+    var srv = hasServerDeadline(wid);
+    var curTxt = eff ? (deadlineLabel(eff).replace('⏰ 제출 기한: ','').replace(' (한국시간)','')) : '설정 안 됨(제한 없음)';
+    h += '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0;padding:8px 0;border-top:1px solid #cfe0f4">';
+    h += '<span style="min-width:120px;font-weight:700">' + esc(l.weekLabel || wid) + '</span>';
+    h += '<span class="small" style="min-width:230px">현재 마감: <b>' + esc(curTxt) + '</b> ' + (srv ? '<span class="pill ok">교수지정</span>' : '<span class="pill mid">기본값</span>') + '</span>';
+    h += '<input type="datetime-local" data-dlweek="' + esc(wid) + '" value="' + esc(dtLocalValue(eff)) + '" style="padding:5px 6px;border:1px solid #9bbce0;border-radius:6px;font-size:14px">';
+    h += '<button class="btn sm primary" type="button" data-dlsave="' + esc(wid) + '">저장</button>';
+    h += '<button class="btn sm ghost" type="button" data-dltoday="' + esc(wid) + '">오늘 자정까지</button>';
+    h += '</div>';
+  });
+  h += '<div class="small" style="color:var(--muted);margin-top:6px">' + ((window.GLR && GLR.on) ? '여기서 정한 기한은 서버에 저장돼 <b>모든 학생 기기</b>에 반영됩니다. <b>학생 화면은 새로고침(재접속) 후 반영</b>됩니다.' : '⚠ 지금은 이 기기 저장 모드 — 서버에 반영되지 않아 <b>이 기기에서만</b> 적용됩니다(실제 수업은 서버 방식에서 정하세요).') + '</div>';
+  h += '</div>';
+
   if(!prepared){
     /* 미준비 주차 — 콘텐츠(문항·보고서 양식)가 아직 없어 학생 기록이 생길 수 없다. */
     h += '<div class="card tight" style="border-color:#e6d9b8;background:#fbf6e7"><div class="small" style="color:#8a6d1a">📭 <b>이 주차는 아직 문항이 준비되지 않았습니다(데이터 없음).</b><br>학생이 수행할 학습·미션·보고서 양식이 준비되면, 이 화면에 그 주차의 현황이 채워집니다. 현재는 <b>2주차(세포배양)</b>만 실제 데이터가 있습니다.</div></div>';
@@ -10503,6 +10596,36 @@ RENDER.profdash = function(){
         toast(wlabel + (to ? " 을 열었습니다." : " 을 닫았습니다."));
         RENDER.profdash();
       }, { yes: to ? "열기" : "닫기" });
+    };
+  });
+  /* 📅 제출기한 저장 — 교수가 고른 datetime-local(KST) 을 +09:00 ISO 로 바꿔 미러+서버 저장. */
+  sc.querySelectorAll("[data-dlsave]").forEach(function(b){
+    b.onclick = function(){
+      var wid = b.getAttribute("data-dlsave");
+      var inp = sc.querySelector('[data-dlweek="' + wid + '"]');
+      var val = inp ? inp.value : "";
+      if(!val){ toast("먼저 날짜와 시간을 고르세요."); return; }
+      var iso = dtLocalToISO(val);
+      var d = iso ? new Date(iso) : null;
+      if(!iso || !d || isNaN(d.getTime())){ toast("올바른 날짜·시간이 아닙니다."); return; }
+      var l = labById(wid); var wlabel = (l && (l.weekLabel || wid)) || wid;
+      var m = setReportDeadlineLocal(wid, iso);
+      if(window.GLR && GLR.on) GLR.syncReportDeadline(m);
+      toast(wlabel + " 마감을 " + deadlineLabel(d).replace('⏰ 제출 기한: ','').replace(' (한국시간)','') + "로 변경했습니다.");
+      RENDER.profdash();
+    };
+  });
+  /* 📅 오늘 자정(23:59:59)까지 — 빠른 편의 버튼. 오늘(KST) 23:59:59 로 세팅. */
+  sc.querySelectorAll("[data-dltoday]").forEach(function(b){
+    b.onclick = function(){
+      var wid = b.getAttribute("data-dltoday");
+      var t = kstParts(new Date());
+      var iso = t.y + '-' + pad2(t.mo) + '-' + pad2(t.d) + 'T23:59:59+09:00';
+      var l = labById(wid); var wlabel = (l && (l.weekLabel || wid)) || wid;
+      var m = setReportDeadlineLocal(wid, iso);
+      if(window.GLR && GLR.on) GLR.syncReportDeadline(m);
+      toast(wlabel + " 마감을 오늘(" + t.y + '-' + pad2(t.mo) + '-' + pad2(t.d) + ") 23:59로 설정했습니다.");
+      RENDER.profdash();
     };
   });
   if($("pdBulkPdf")) $("pdBulkPdf").onclick = function(){ printBulkReports(wk); };
@@ -12070,14 +12193,21 @@ var GLR = {
      RLS 로 누구나(학생 포함) 읽을 수 있으므로 교수가 연 주차가 모든 기기에 반영된다.
      실패(네트워크 등)해도 마지막으로 받아둔 미러를 그대로 두어(덮지 않아) 학생이 갑자기 잠기지 않게 한다. */
   loadMeta:function(){
-    return this.call("/rest/v1/gl_app_meta?k=eq.week_open&select=v", { headers:this.hdr(false) })
+    /* week_open 과 report_deadline 두 줄을 한 번에 받아 각각 로컬 미러로 옮긴다. */
+    return this.call("/rest/v1/gl_app_meta?k=in.(week_open,report_deadline)&select=k,v", { headers:this.hdr(false) })
       .then(function(rows){
-        var v = (rows && rows[0] && rows[0].v) || null;
+        var byk={}; (rows||[]).forEach(function(r){ byk[r.k]=r.v; });
         try{
-          if(v && typeof v==="object") localStorage.setItem(WEEKOPEN_KEY, JSON.stringify(v));
+          var wo = byk.week_open;
+          if(wo && typeof wo==="object") localStorage.setItem(WEEKOPEN_KEY, JSON.stringify(wo));
           else localStorage.removeItem(WEEKOPEN_KEY);   /* 서버에 아직 값이 없으면 기본값(w02만 열림)으로 */
         }catch(e){}
-      }, function(){ /* 조용히 실패 — 기존 미러 유지(마지막으로 알려진 열림 상태 보존) */ });
+        try{
+          var rd = byk.report_deadline;
+          if(rd && typeof rd==="object") localStorage.setItem(REPORTDL_KEY, JSON.stringify(rd));
+          else localStorage.removeItem(REPORTDL_KEY);    /* 서버에 값이 없으면 코드 기본값(REPORT_DEADLINE) fallback */
+        }catch(e){}
+      }, function(){ /* 조용히 실패 — 기존 미러 유지(마지막으로 알려진 상태 보존) */ });
   },
 
   loadAll:function(){
@@ -12202,6 +12332,12 @@ var GLR = {
   syncWeekOpen:function(map){
     if(!this.on) return;
     this.q.push({op:"meta", k:"week_open", v:JSON.parse(JSON.stringify(map||{}))});
+    this.saveQ(); this.showQ(); this.pump();
+  },
+  /* 📅 제출기한 맵 전체를 gl_app_meta.report_deadline 에 upsert(교수만 쓰기 — RLS). week_open 과 동일 경로. */
+  syncReportDeadline:function(map){
+    if(!this.on) return;
+    this.q.push({op:"meta", k:"report_deadline", v:JSON.parse(JSON.stringify(map||{}))});
     this.saveQ(); this.showQ(); this.pump();
   },
   syncProgress:function(st){
