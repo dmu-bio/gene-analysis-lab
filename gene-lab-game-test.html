@@ -492,6 +492,11 @@ th.nw{white-space:nowrap}
 .img-slot .is-btns{display:flex;gap:7px;margin-top:8px}
 .img-slot .is-btns .btn{flex:1 1 0}
 .img-slot input[type=file]{display:none}
+/* 🔴 사진 슬롯별 저장 상태(2026-09-10): 학생이 임시저장을 누르지 않아도 사진이 서버에 저장됐음을 슬롯마다 보여 안심시킨다 */
+.img-slot .is-stat{font-size:12px;font-weight:800;margin-top:7px;line-height:1.4;min-height:1px}
+.img-slot .is-stat.ok{color:#166534}
+.img-slot .is-stat.pend{color:#92600a}
+.img-slot .is-stat.bad{color:#b42318}
 .img-note{font-size:12px;color:var(--tx3);margin:8px 0 0;line-height:1.5}
 /* A4 미리보기·출력의 이미지 격자 */
 .paper .p-imgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0 4px}
@@ -10006,13 +10011,44 @@ function buildImageSlots(s, data, readonly){
       h += '<div class="is-btns"><button class="btn sm" type="button" data-imgpick="' + iid + '">' + (durl ? '📷 사진 바꾸기' : '📷 사진 올리기') + '</button>';
       if(durl) h += '<button class="btn sm ghost" type="button" data-imgdel="' + esc(s.key) + '" data-idx="' + i + '" style="flex:0 0 auto">삭제</button>';
       h += '</div>';
+      h += '<div class="is-stat" data-statkey="' + esc(s.key) + '" data-statidx="' + i + '"></div>';
     }
     h += '</div>';
   });
   h += '</div>';
-  if(!readonly) h += '<div class="img-note">사진은 자동으로 긴 변 최대 1280px로 줄여 저장합니다(용량 절약·업로드 안정). 폰으로 찍은 큰 원본을 그대로 올리셔도 앱이 알아서 줄여 줍니다.</div>';
+  if(!readonly) h += '<div class="img-note">사진은 자동으로 긴 변 최대 1280px로 줄여 저장합니다(용량 절약·업로드 안정). 폰으로 찍은 큰 원본을 그대로 올리셔도 앱이 알아서 줄여 줍니다. 사진을 고르면 <b>임시저장을 누르지 않아도</b> 곧바로 서버에 저장되며, 슬롯마다 “✓ 서버에 저장됨” 표시로 확인할 수 있습니다.</div>';
   return h;
 }
+/* 🔴 사진 슬롯별 저장 상태 갱신(2026-09-10)
+ *  화면에 열린 보고서 편집폼의 각 사진 슬롯에 "저장 중… / ✓ 서버에 저장됨 / ⚠ 전송 실패"를 표시한다.
+ *  - 학생이 사진을 고르면(임시저장을 누르지 않아도) 곧바로 서버 업로드가 시작되므로 "저장 중…"을 즉시 보인다.
+ *  - GLR.pump 이 그 사진의 서버 업로드(2xx)를 확인(okPhoto)하면 이 함수를 다시 불러 "✓ 서버에 저장됨"으로 바꾼다.
+ *  - 경로 계산은 pump/reportLocalCopy 과 동일한 "주차/학번/키_번호.jpg" 를 써야 okPhoto 조회가 맞아떨어진다(ACTIVE_WEEK 기준).
+ *  화면에 슬롯이 없으면(다른 화면) 조용히 아무것도 하지 않는다. */
+function glUpdateSlotStat(){
+  try{
+    var els = document.querySelectorAll(".is-stat[data-statkey]");
+    if(!els.length) return;
+    var sid = String((typeof state!=="undefined" && state.studentId) || "");
+    var wk  = (typeof ACTIVE_WEEK!=="undefined") ? ACTIVE_WEEK : "";
+    var cloud = !!(window.GLR && GLR.on);
+    var anyFailed = cloud && GLR.failed && GLR.failed.some(function(j){ return j && j.op==="report" && j.sid===sid && j.week===wk; });
+    els.forEach(function(el){
+      var key = el.getAttribute("data-statkey"), idx = el.getAttribute("data-statidx");
+      var slot = el.closest ? el.closest(".img-slot") : null;
+      var hasImg = !!(slot && slot.querySelector(".is-box img"));
+      if(!hasImg){ el.textContent=""; el.className="is-stat"; return; }
+      if(!cloud){ el.textContent="이 기기에 저장됨"; el.className="is-stat ok"; return; }
+      var path = wk + "/" + sid + "/" + key + "_" + idx + ".jpg";
+      if(GLR.isPhotoConfirmed(path)){ el.textContent="✓ 서버에 저장됨"; el.className="is-stat ok"; return; }
+      if(anyFailed){ el.textContent="⚠ 전송 실패 — 사진을 다시 올려 주세요"; el.className="is-stat bad"; return; }
+      el.textContent="⏳ 저장 중…"; el.className="is-stat pend";
+    });
+  }catch(e){}
+}
+window.glUpdateSlotStat = glUpdateSlotStat;
+
+/* 섹션 안 소표(小表) — type:"text"·type:"images" 공용. s.table 이 있으면 입력칸이 있는 작은 표를 그린다
 
 /* 섹션 안 소표(小表) — type:"text"·type:"images" 공용. s.table 이 있으면 입력칸이 있는 작은 표를 그린다
    (편집 폼용). data-tbl 바인딩은 기존 자동저장 로직과 동일하게 동작한다(섹션 타입 무관하게 셀렉터로 잡음). */
@@ -10343,8 +10379,8 @@ RENDER.report = function(){
             toast("사진이 너무 커 저장하지 못했습니다. 더 작은 사진(또는 더 적은 장수)으로 올려 주세요.");
             return;
           }
-          toast("사진을 올렸습니다.");
-          RENDER.report();                          /* 미리보기 갱신 */
+          toast("사진 추가됨 — 서버에 저장 중…");
+          RENDER.report();                          /* 미리보기 갱신 (슬롯 상태 "저장 중…" 즉시 표시) */
         });
       };
     });
@@ -10360,6 +10396,8 @@ RENDER.report = function(){
         RENDER.report();
       };
     });
+    /* 🔴 슬롯별 저장 상태 초기 표시(2026-09-10) — 이미 서버에 저장된 사진은 "✓ 서버에 저장됨", 방금 올려 아직 전송 중인 사진은 "저장 중…" */
+    try{ glUpdateSlotStat(); }catch(e){}
   }
 };
 function renderReportPreview(sc, R, def){
@@ -12478,32 +12516,40 @@ var GLR = {
     var job=this.q[0], p;
 
     if(job.op==="report"){
-      var data=job.data, imgs=data.images||{}, ups=[], photos={}, slotMap=[];
+      /* 🔴 각 사진 '독립' 업로드·확정(2026-09-10, 교수님 지시)
+         ─ 사진 한 장씩(tasks) 올린다. Promise.allSettled 로 한 장의 실패가 다른 장을 막지 않게 한다.
+         ─ 성공한 장 → 그 슬롯만 경로로 내리고(imgs·photos) okPhoto 확정. 실패한 장 → base64 를 슬롯(imgs)·로컬에 그대로 유지(재전송 대상),
+           photos 인덱스는 비워 둔다(파일 없는 경로를 gl_reports.photos 에 절대 넣지 않는다 — 팬텀 방지).
+         ─ 성공분이 하나라도(또는 텍스트만이라도) 있으면 gl_reports 를 upsert 해, 여러 장 중 '이미 올라간 것'은 서버에 확정된다.
+           실패분 base64 는 data.images 안에 남아 서버 DB(gl_reports.data)에도 보존되므로 유실이 아니다.
+         ─ 이전(9b59eda)의 Promise.all all-or-nothing: 8장 중 1장만 실패해도 보고서 전체가 gl_reports 에 못 들어가
+           교수 화면에 안 뜨고, 기기가 죽으면 나머지 7장+본문까지 로컬에만 남아 사라질 위험이 있었다. → 부분 확정으로 그 창을 없앤다. */
+      var data=job.data, imgs=data.images||{}, tasks=[], photos={};
       Object.keys(imgs).forEach(function(key){
         var arr=imgs[key]; if(!Array.isArray(arr)) return; photos[key]=[];
         arr.forEach(function(val, idx){
           if(val && typeof val==="string" && val.indexOf("data:")===0){
             var path=job.week+"/"+job.sid+"/"+key+"_"+idx+".jpg";
-            photos[key][idx]=path; ups.push(self.uploadPhoto(path, val));
-            /* 🔴 사진 유실 완전수정(2026-09-10): 여기서 arr[idx]=path 로 '즉시' 치환하지 않는다.
-               예전엔 업로드 성공을 확인하기 전에 슬롯 base64 를 경로로 덮어써,
-               그 업로드가 실패하면(폰 網 순간 끊김 등) 자동 재시도 때 슬롯이 이미 경로라
-               data: 조건에 안 걸려 '실제 업로드를 건너뛴 채' gl_reports 만 경로로 저장(=팬텀 성공)돼
-               파일 없는 404·사진 영구 유실이 났다(경고도 0). okPhoto 도 실패인데 성공으로 찍혔다.
-               → 이제 업로드가 전부 2xx 로 성공한 뒤(.then)에만 경로로 내린다. 실패 시 base64 를
-               슬롯·큐·로컬에 그대로 유지 → 자동/수동 재전송이 실제 업로드를 다시 수행한다. */
-            slotMap.push({key:key, idx:idx, path:path});
+            photos[key][idx]="";   /* 성공하면 경로로, 실패하면 빈칸으로 남긴다(경로는 2xx 성공 뒤에만) */
+            tasks.push({key:key, idx:idx, path:path, durl:val});
           }else{ photos[key][idx]=(val||""); }
         });
       });
-      job._okPaths = [];   /* 이 작업이 서버에 올린(=확실히 받은) 사진 경로들 — 성공 시 okPhoto 장부에 넣는다 */
-      Object.keys(photos).forEach(function(k){ (photos[k]||[]).forEach(function(pp){ if(pp && typeof pp==="string" && pp.indexOf("/")!==-1) job._okPaths.push(pp); }); });
-      p=Promise.all(ups).then(function(){
-        /* 업로드가 모두 성공한 뒤에만: ① 슬롯 base64→경로로 내리고 ② 그 경로로 gl_reports 를 upsert 한다.
-           업로드가 하나라도 실패하면 여기 도달하지 못하므로, 파일 없는 경로가 gl_reports 에 절대 들어가지 않는다.
-           (부분 실패 3장 중 1장 실패 시: Promise.all 이 거부→아무 슬롯도 안 내리고 upsert 도 안 함→재시도 때 3장 모두 재업로드,
-            x-upsert:true 라 이미 올라간 2장은 멱등 덮어쓰기로 무해.) */
-        slotMap.forEach(function(m){ if(Array.isArray(imgs[m.key])) imgs[m.key][m.idx]=m.path; });
+      job._okPaths = [];   /* 이 작업으로 서버에 확정된 사진 경로들 — 성공 시 okPhoto 장부에 넣는다 */
+      /* 이미 경로로 내려가 있던(예전에 서버가 받은) 슬롯도 확인 장부에 포함(base64 는 제외) */
+      Object.keys(photos).forEach(function(k){ (photos[k]||[]).forEach(function(pp){ if(pp && typeof pp==="string" && pp.indexOf("data:")!==0 && pp.indexOf("/")!==-1) job._okPaths.push(pp); }); });
+      job._failCount = 0;
+      p=Promise.allSettled(tasks.map(function(t){ return self.uploadPhoto(t.path, t.durl); })).then(function(results){
+        results.forEach(function(r, i){
+          var t=tasks[i];
+          if(r && r.status==="fulfilled"){
+            if(Array.isArray(imgs[t.key])) imgs[t.key][t.idx]=t.path;   /* 이 슬롯만 경로로 내림 → 다음 재시도 때 재업로드 안 함 */
+            photos[t.key][t.idx]=t.path;
+            job._okPaths.push(t.path);
+          }else{
+            job._failCount++;   /* 실패: imgs 슬롯은 base64 그대로(재전송 대상), photos 는 빈칸 유지 */
+          }
+        });
         var row={ id:"rp_"+job.week+"_"+job.sid, sid:job.sid, week:job.week, submitted:!!data.submitted, photos:photos, data:data };
         return self.call("/rest/v1/gl_reports", { method:"POST", headers:self.mix(self.hdr(true), {Prefer:"return=minimal,resolution=merge-duplicates"}), body:JSON.stringify(row) });
       });
@@ -12534,7 +12580,31 @@ var GLR = {
       if(job.op==="report" && self.failed.length){
         self.failed = self.failed.filter(function(j){ return !(j && j.op==="report" && j.sid===job.sid && j.week===job.week); });
       }
-      self.q.shift(); self.saveQ(); self.busy=false; self.showQ(); if(self.q.length) self.pump();
+      /* 🔴 부분 실패 자동 재전송(2026-09-10): gl_reports upsert 는 성공했으나 사진 중 일부가 아직 못 올라갔다.
+         성공분은 방금 서버에 확정됐고(위에서 okPhoto·로컬 경로화 완료), 실패분 base64 는 슬롯(job.data.images)·로컬에 그대로 있다.
+         이 작업을 큐에 남겨 5초 뒤 '실패분만' 다시 올린다(성공 슬롯은 이미 경로라 재업로드 안 함). 몇 번 시도해도 안 되면 붉은 경고로 넘긴다. */
+      if(job.op==="report" && job._failCount>0){
+        job._photoTries = (job._photoTries||0) + 1;
+        if(job._photoTries < 6){
+          self.saveQ();          /* 성공분이 경로로 내려간 job.data 를 큐에 반영(재시도 시 재업로드 방지) */
+          self.busy=false;
+          self.bar('🟠 사진 <b>'+job._failCount+'장</b>이 아직 전송되지 않아 다시 보내는 중입니다. <span style="font-weight:400">작성 내용과 이미 올라간 사진은 서버에 안전하게 저장됐습니다. 잠시 창을 닫지 말고 기다려 주세요.</span>',"amber");
+          try{ glUpdateSlotStat(); }catch(e){}
+          setTimeout(function(){ self.pump(); }, 5000);
+          return;
+        }
+        /* 여러 번 시도해도 안 올라감 — 큐에서 내리고 '실패'로 표시한다. base64 는 로컬·서버 data 에 남아 유실이 아니며,
+           학생이 그 사진을 다시 올리면(또는 재접속하면) 재전송된다. showQ 의 사진 실패 경고가 뜬다. */
+        var stuck=self.q.shift(); self.saveQ(); stuck.why="photo upload failed after retries";
+        self.failed.push(stuck); self.busy=false; self.showQ();
+        if(window.toast) toast("🔴 사진 일부가 전송되지 않았습니다. 화면 위 안내를 봐 주세요.");
+        try{ glUpdateSlotStat(); }catch(e){}
+        if(self.q.length) self.pump();
+        return;
+      }
+      self.q.shift(); self.saveQ(); self.busy=false; self.showQ();
+      try{ glUpdateSlotStat(); }catch(e){}
+      if(self.q.length) self.pump();
     }, function(err){ self.busy=false; self.onJobErr(job, err); });
   },
   onJobErr:function(job, err){
@@ -12550,6 +12620,7 @@ var GLR = {
     bad.why=(err.status||"")+" "+String(err.msg||"").slice(0,200);
     this.failed.push(bad); this.showQ();
     if(window.toast) toast("🔴 저장이 거부되었습니다. 화면 위 안내를 봐 주세요.");
+    try{ glUpdateSlotStat(); }catch(e){}
     this.pump();
   },
 
