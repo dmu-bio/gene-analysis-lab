@@ -479,6 +479,7 @@ th.nw{white-space:nowrap}
 .pill.ok{background:var(--greendk);border-color:#bfe2cd;color:var(--green)}
 .pill.mid{background:var(--mintdk);border-color:#c3ddf5;color:var(--mint)}
 .pill.no{background:var(--card3);border-color:var(--line);color:var(--tx3)}
+.pill.amber{background:var(--amberdk);border-color:#e6d3a8;color:var(--amber)}
 
 /* ---------- 실험보고서 이미지 업로드 슬롯 ---------- */
 .img-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0 0}
@@ -1202,7 +1203,7 @@ function earlyBanner(){
 }
 
 /* ---------- 실험 결과보고서 저장/조회 ---------- */
-function emptyReport(){ return { meta: {}, sections: {}, tables: {}, images: {}, submitted: false, savedAt: "", submittedAt: "" }; }
+function emptyReport(){ return { meta: {}, sections: {}, tables: {}, images: {}, submitted: false, savedAt: "", submittedAt: "", profMark: "" }; }
 function loadReport(sid, wk){
   var d = emptyReport();
   try{
@@ -1210,6 +1211,7 @@ function loadReport(sid, wk){
     if(r){ var o = JSON.parse(r); if(o && typeof o === "object"){
       d.meta = o.meta || {}; d.sections = o.sections || {}; d.tables = o.tables || {}; d.images = o.images || {};
       d.submitted = !!o.submitted; d.savedAt = o.savedAt || ""; d.submittedAt = o.submittedAt || "";
+      d.profMark = o.profMark || "";   /* 교수 미완성 표시 플래그 보존(허현강 등) — 상태 판정에 쓰인다 */
     } }
   }catch(e){}
   return d;
@@ -1262,6 +1264,27 @@ function reportHasContent(rep){
   if(rep.images && Object.keys(rep.images).some(function(k){ return Array.isArray(rep.images[k]) && rep.images[k].some(function(u){ return !!u; }); })) return true;
   return false;
 }
+/* ─── 보고서 상태 단일 판정 (2026-09-11) ──────────────────────────────────
+ * 각 주차 마감(effectiveDeadline)이 지난 뒤, 내용은 있는데 제출 안 된 보고서를
+ * 화면·집계에서 "제출(미완성)"으로 계산해 보여 준다.
+ *   ⚠️ 실제 DB(submitted)는 바꾸지 않는다 — 순수 표시상(계산) 처리. 학생 원본은 보존한다.
+ * 반환값 4가지:
+ *   · '제출'         = 제출됨 & 교수 미완성 표시(profMark) 없음        → 정상 제출
+ *   · '제출(미완성)'  = (제출됨 & profMark==='미완성')  또는
+ *                       (마감 경과 & 미제출 & 내용 있음)               → 미완성 제출
+ *   · '작성중'       = 마감 전 & 미제출 & 내용 있음
+ *   · '미작성'       = 내용 없음(row 없음·사진0·글0의 빈 껍데기 포함)  → 안 낸 사실이 드러나야 함
+ * "내용 있음" = 사진 1장 이상 또는 텍스트(고찰 등) 1자 이상(reportHasContent 와 동일 기준).
+ * 마감 전 주차는 이 규칙이 발동하지 않는다(진행 중 주차 오판 금지 — 마감 전이면 '작성중' 유지). */
+function reportStatusOf(rep, wk){
+  if(!rep) return "미작성";
+  if(rep.submitted) return (rep.profMark === "미완성") ? "제출(미완성)" : "제출";
+  if(!reportHasContent(rep)) return "미작성";
+  return reportDeadlinePassed(wk) ? "제출(미완성)" : "작성중";
+}
+function reportStatus(sid, wk){ return reportStatusOf(loadReport(sid, wk), wk); }
+/* 제출류(정상+미완성)인가 — 전체 PDF 포함 여부·제출 집계 등에 쓴다. */
+function isSubmittedStatus(s){ return s === "제출" || s === "제출(미완성)"; }
 /* 이 주차에 「보고서가 저장된 모든 학번」을 (기기/서버 미러의) localStorage 에서 훑어 모은다.
  * 명단(gl_roster)에 없어도 형식만 맞으면 로그인·제출이 되므로(위 findStudent 규칙 ③),
  * 교수 대시보드가 명단만 그리면 그런 「미등록 학번」의 보고서가 화면에서 사라진다.
@@ -2421,7 +2444,8 @@ function buildReportHTML(sid, name, data, wk){
   var tbl = data.tables || {};
   function val(k){ return (m[k] && m[k].value) ? esc(m[k].value) : "—"; }
   var h = "";
-  h += '<div class="p-head"><div class="p-title">실험 결과보고서</div>';
+  var _incomplete = (reportStatusOf(data, wk) === "제출(미완성)");
+  h += '<div class="p-head"><div class="p-title">실험 결과보고서' + (_incomplete ? ' <span style="font-size:11pt;color:#8a5a00">(미완성)</span>' : '') + '</div>';
   h += '<div class="p-course">' + esc(def.course || C.meta.course || "유전자분석") + '</div></div>';
   /* 머리말 표 */
   h += '<table class="p-metatbl">';
@@ -2535,13 +2559,13 @@ function printBulkReports(wk){
   var seenB = {};
   roster.forEach(function(st){
     var rep = loadReport(st.sid, wk);
-    if(rep && rep.submitted){ subs.push({ st: st, rep: rep }); seenB[String(st.sid)] = 1; }
+    if(rep && isSubmittedStatus(reportStatusOf(rep, wk))){ subs.push({ st: st, rep: rep }); seenB[String(st.sid)] = 1; }
   });
   /* 명단에 없는 학번으로 제출한 학생도 포함한다 — 개별 [보고서] 열람과 같은 소스(reportSidsForWeek). */
   reportSidsForWeek(wk).forEach(function(sid){
     if(seenB[String(sid)]) return;
     var xrep = loadReport(sid, wk);
-    if(xrep && xrep.submitted){ subs.push({ st: { sid: sid, name: "(미등록)" }, rep: xrep }); seenB[String(sid)] = 1; }
+    if(xrep && isSubmittedStatus(reportStatusOf(xrep, wk))){ subs.push({ st: { sid: sid, name: "(미등록)" }, rep: xrep }); seenB[String(sid)] = 1; }
   });
   if(subs.length === 0){ toast("이 주차에 제출된 보고서가 없습니다."); return; }
   var doPrint = function(){
@@ -2549,7 +2573,9 @@ function printBulkReports(wk){
     subs.forEach(function(o){
       var tm = teamOf(o.st.sid);
       var teamLbl = tm ? (tm.no + "조") : ((o.rep.meta && o.rep.meta.team) || "");
+      var _bst = reportStatusOf(o.rep, wk);
       var head = '<div class="p-bulkhead">' + esc(o.st.sid) + ' · ' + esc(o.st.name)
+        + (_bst === "제출(미완성)" ? ' <span style="color:#8a5a00;font-weight:700">(미완성)</span>' : '')
         + (teamLbl ? '<span class="sub">' + esc(teamLbl) + '</span>' : '')
         + '<span class="sub">' + esc(lab.weekLabel || "") + ' ' + esc(lab.title || "") + '</span></div>';
       parts += '<div class="paper p-studentblock">' + head + buildReportHTML(o.st.sid, o.st.name, o.rep, wk) + '</div>';
@@ -2602,7 +2628,14 @@ RENDER.report = function(){
   h += '<button class="btn sm ghost" type="button" id="rpBack" style="margin-bottom:10px;text-align:left">← ' + (state.role==="prof"?"확인 대시보드로":"실습 허브로") + '</button>';
   h += '<h2 class="sc-h">📝 실험 결과보고서 — ' + esc(def.title || lab.title || "") + '</h2>';
   h += '<p class="sc-p">' + esc(def.gradeNote || "") + (readonly ? ' · A4 미리보기·워드·PDF로 내려받을 수 있어요.' : ' · 작성한 뒤 [보고서 제출]을 눌러 주세요.') + '</p>';
-  if(readonly) h += '<div class="card tight"><div class="small" style="color:var(--amber)">👀 교수 열람 모드 — 이 보고서는 ' + esc(R.name || R.sid) + ' 학생의 제출본입니다. 내용은 수정할 수 없고 내려받기만 됩니다.</div></div>';
+  if(readonly){
+    var _rst = reportStatusOf(data, R.week);
+    var _rstBadge = (_rst === "제출(미완성)") ? ' <span class="pill amber">제출(미완성)</span>'
+                  : (_rst === "제출") ? ' <span class="pill ok">제출</span>'
+                  : (_rst === "작성중") ? ' <span class="pill mid">작성중</span>'
+                  : ' <span class="pill no">미작성</span>';
+    h += '<div class="card tight"><div class="small" style="color:var(--amber)">👀 교수 열람 모드 — 이 보고서는 ' + esc(R.name || R.sid) + ' 학생의 것입니다' + _rstBadge + '. 내용은 수정할 수 없고 내려받기만 됩니다.</div></div>';
+  }
   if(!readonly && data.submitted) h += '<div class="card tight" style="border-color:#bcd6f0;background:var(--mintdk)"><div class="small" style="color:var(--green)">✅ <b>제출 완료</b>' + (data.submittedAt ? ' (' + esc(data.submittedAt) + ')' : '') + ' — 제출 뒤에도 <b>내용을 고쳐 [다시 제출]</b>할 수 있어요. 고친 내용은 교수님 확인 화면에 새로 반영됩니다.</div></div>';
 
   /* 머리말 */
@@ -2784,12 +2817,15 @@ RENDER.profdash = function(){
     var rep = loadReport(st.sid, wk);
     var repHasText = reportHasContent(rep);
     return { st: st, early: isEarly(st.sid), learnP: learnP, learnDone: learnP >= need, passed: passed, best: best, attempts: attempts,
-             rep: rep, repSubmitted: rep.submitted, repDraft: repHasText && !rep.submitted, hasData: !!prog || repHasText };
+             rep: rep, repStatus: reportStatusOf(rep, wk), repSubmitted: rep.submitted, repDraft: repHasText && !rep.submitted, hasData: !!prog || repHasText };
   });
   var nEarly = rows.filter(function(r){ return r.early; }).length;
   var denom = roster.length - nEarly;                          /* 면제자를 뺀 분모 — 집계 분모는 「명단 기준」 유지 */
-  var nSub = rows.filter(function(r){ return !r.early && r.repSubmitted; }).length;
-  var nDraft = rows.filter(function(r){ return !r.early && r.repDraft; }).length;   /* 작성중(미제출·내용 있음) */
+  /* 제출 집계 = 정상 제출 + 미완성 제출(마감 경과 후 미제출·내용 있음 포함). 참여율 부풀림 방지를 위해 둘을 구분해 센다. */
+  var nSubNormal = rows.filter(function(r){ return !r.early && r.repStatus === "제출"; }).length;
+  var nSubIncomplete = rows.filter(function(r){ return !r.early && r.repStatus === "제출(미완성)"; }).length;
+  var nSub = nSubNormal + nSubIncomplete;                      /* 제출(정상+미완성) 합계 */
+  var nDraft = rows.filter(function(r){ return !r.early && r.repStatus === "작성중"; }).length;   /* 작성중(마감 전·미제출·내용 있음) */
   var nLearn = rows.filter(function(r){ return !r.early && r.learnDone; }).length;
   var nPass = rows.filter(function(r){ return !r.early && r.passed; }).length;
 
@@ -2806,11 +2842,11 @@ RENDER.profdash = function(){
     if(!(xrep.submitted || xHasText)) return;                 /* 빈 보고서는 제외(지어내기 없음) */
     extraRows.push({ st:{ sid:sid, name:"(미등록)" }, early:false, unlisted:true,
                      learnP:0, learnDone:false, passed:false, best:0, attempts:0,
-                     rep:xrep, repSubmitted:xrep.submitted, repDraft: xHasText && !xrep.submitted,
+                     rep:xrep, repStatus: reportStatusOf(xrep, wk), repSubmitted:xrep.submitted, repDraft: xHasText && !xrep.submitted,
                      hasData:true });
   });
   var tableRows = rows.concat(extraRows);                      /* 표는 명단 + 미등록 작성자 */
-  var nSubExtra = extraRows.filter(function(r){ return r.repSubmitted; }).length;   /* 미등록 학번 제출본 수 */
+  var nSubExtra = extraRows.filter(function(r){ return isSubmittedStatus(r.repStatus); }).length;   /* 미등록 학번 제출본 수(정상+미완성) */
   var nSubAll = nSub + nSubExtra;                              /* 전체 PDF에 실제로 담기는 제출본 수(명단+미등록) */
   var nActive = rows.filter(function(r){ return r.hasData; }).length + extraRows.length;
   var lab = labById(wk) || curLab();
@@ -2824,7 +2860,8 @@ RENDER.profdash = function(){
     var exNote = nEarly ? ' <span class="chip">🎓 면제 ' + nEarly + '명</span>' : '';
     var draftNote = nDraft ? ' <span class="chip">✍️ 작성중 ' + nDraft + '명</span>' : '';
     var unlNote = extraRows.length ? ' <span class="chip amber">⚠ 미등록 작성자 ' + extraRows.length + '명</span>' : '';
-    h += '<div class="chips"><span class="chip">보고서 제출 ' + nSub + '/' + denom + '</span>' + draftNote;
+    var subTxt = '보고서 제출 ' + nSub + '/' + denom + (nSubIncomplete ? ' (정상 ' + nSubNormal + ' · 미완성 ' + nSubIncomplete + ')' : '');
+    h += '<div class="chips"><span class="chip">' + subTxt + '</span>' + draftNote;
     h += '<span class="chip">학습 완료 ' + nLearn + '/' + denom + '</span>';
     h += '<span class="chip amber">미션 합격 ' + nPass + '/' + denom + '</span>' + exNote + unlNote + '</div>';
     if(nEarly) h += '<div class="sub" style="margin-top:6px">집계 분모 ' + denom + '명 = 재적 ' + roster.length + '명 − 조기취업 면제 ' + nEarly + '명</div>';
@@ -2899,7 +2936,8 @@ RENDER.profdash = function(){
   /* 📄 주차별 제출 보고서 일괄 PDF — 그 주차의 '제출'본 전체를 한 번의 인쇄로 내려받는다. */
   if(prepared){
     h += '<div class="card tight" style="border-color:#cbb8e0;background:#f6f1fb">';
-    h += '<div class="small" style="margin:0 0 8px"><b>📄 이 주차 제출 보고서 전체 PDF</b> — ' + esc(lab.weekLabel || "") + ' <b>제출 ' + nSubAll + '건</b>' + (nSubExtra ? '(명단 ' + nSub + '건 + 미등록 ' + nSubExtra + '건)' : '') + '을 한 문서로 이어서 인쇄합니다(학생마다 새 페이지, 작성 중·미작성 제외).</div>';
+    var _bulkIncNote = (nSubIncomplete ? ' · 미완성 제출본은 제목에 (미완성) 표시' : '');
+    h += '<div class="small" style="margin:0 0 8px"><b>📄 이 주차 제출 보고서 전체 PDF</b> — ' + esc(lab.weekLabel || "") + ' <b>제출 ' + nSubAll + '건</b>' + (nSubExtra ? '(명단 ' + nSub + '건 + 미등록 ' + nSubExtra + '건)' : '') + '을 한 문서로 이어서 인쇄합니다(학생마다 새 페이지, 작성 중·미작성 제외' + _bulkIncNote + ').</div>';
     h += '<button class="btn sm primary" type="button" id="pdBulkPdf"' + (nSubAll ? '' : ' disabled') + '>📄 이 주차 제출 보고서 전체 PDF</button>';
     h += '<div class="small" style="color:var(--muted);margin-top:6px">브라우저 인쇄창에서 \'대상\'을 \'PDF로 저장\'으로 고르시면 됩니다.' + (nSubAll ? '' : ' (현재 제출된 보고서가 없습니다.)') + '</div>';
     h += '</div>';
@@ -2921,7 +2959,10 @@ RENDER.profdash = function(){
     if(r.early){
       repPill = learnPill = missPill = '<span class="pill mid">면제</span>';
     }else{
-      repPill = r.repSubmitted ? '<span class="pill ok">제출</span>' : (r.repDraft ? '<span class="pill mid">작성중</span>' : '<span class="pill no">—</span>');
+      repPill = (r.repStatus === "제출") ? '<span class="pill ok">제출</span>'
+              : (r.repStatus === "제출(미완성)") ? '<span class="pill amber">제출(미완성)</span>'
+              : (r.repStatus === "작성중") ? '<span class="pill mid">작성중</span>'
+              : '<span class="pill no">—</span>';
       learnPill = r.learnDone ? '<span class="pill ok">완료</span>' : (r.learnP>0 ? '<span class="pill mid">' + r.learnP + '/' + need + '</span>' : '<span class="pill no">—</span>');
       missPill = r.passed ? '<span class="pill ok">합격 ' + r.best + '</span>' : (r.attempts>0 ? '<span class="pill mid">응시 ' + r.attempts + '</span>' : '<span class="pill no">—</span>');
     }
