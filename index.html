@@ -716,9 +716,9 @@ var REPORT_DEADLINE = {
     over:  '제출 기한이 지났습니다 (2026-09-09 23:59 마감)'
   },
   w03: {
-    at:    new Date('2026-09-15T23:59:59+09:00'),  /* 마감: KST 2026-09-15 23:59:59 */
-    label: '⏰ 제출 기한: 2026년 9월 15일(화) 23:59까지 (한국시간)',
-    over:  '제출 기한이 지났습니다 (2026-09-15 23:59 마감)'
+    at:    new Date('2026-09-16T23:59:59+09:00'),  /* 마감: KST 2026-09-16 23:59:59 */
+    label: '⏰ 제출 기한: 2026년 9월 16일(수) 23:59까지 (한국시간)',
+    over:  '제출 기한이 지났습니다 (2026-09-16 23:59 마감)'
   },
   w04: {
     at:    new Date('2026-09-23T23:59:59+09:00'),  /* 마감: KST 2026-09-23 23:59:59 */
@@ -2347,7 +2347,7 @@ function buildImageSlots(s, data, readonly){
         ? '<img src="' + durl + '" alt="' + esc(cond) + '">'
         : '<div class="is-ph">사진 없음<br>' + (readonly ? '(미첨부)' : '아래 버튼으로 올려요') + '</div>') + '</div>';
     if(!readonly){
-      h += '<input type="file" accept="image/*" id="' + iid + '" data-imgfile="' + esc(s.key) + '" data-idx="' + i + '">';
+      h += '<input type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,image/gif,image/bmp,.jpg,.jpeg,.png,.webp,.heic,.heif,.gif,.bmp" id="' + iid + '" data-imgfile="' + esc(s.key) + '" data-idx="' + i + '">';
       h += '<div class="is-btns"><button class="btn sm" type="button" data-imgpick="' + iid + '">' + (durl ? '📷 사진 바꾸기' : '📷 사진 올리기') + '</button>';
       if(durl) h += '<button class="btn sm ghost" type="button" data-imgdel="' + esc(s.key) + '" data-idx="' + i + '" style="flex:0 0 auto">삭제</button>';
       h += '</div>';
@@ -2356,7 +2356,7 @@ function buildImageSlots(s, data, readonly){
     h += '</div>';
   });
   h += '</div>';
-  if(!readonly) h += '<div class="img-note">사진은 자동으로 긴 변 최대 1280px로 줄여 저장합니다(용량 절약·업로드 안정). 폰으로 찍은 큰 원본을 그대로 올리셔도 앱이 알아서 줄여 줍니다. 사진을 고르면 <b>임시저장을 누르지 않아도</b> 곧바로 서버에 저장되며, 슬롯마다 “✓ 서버에 저장됨” 표시로 확인할 수 있습니다.</div>';
+  if(!readonly) h += '<div class="img-note">📷 <b>카메라로 바로 찍지 말고, 먼저 폰에 저장한 사진(갤러리)을 골라 주세요.</b> 앱에서 바로 촬영한 사진은 폰에 남지 않아, 혹시 전송이 끊기면 다시 올릴 수 없습니다. — 사진은 자동으로 긴 변 최대 1280px로 줄여 저장합니다(용량 절약·업로드 안정). 폰으로 찍은 큰 원본을 그대로 올리셔도 앱이 알아서 줄여 줍니다. 사진을 고르면 <b>임시저장을 누르지 않아도</b> 곧바로 서버에 저장되며, 슬롯마다 “✓ 서버에 저장됨” 표시로 확인할 수 있습니다.</div>';
   return h;
 }
 /* 🔴 사진 슬롯별 저장 상태 갱신(2026-09-10)
