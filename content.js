@@ -7710,12 +7710,12 @@ window.GAME_CONTENT = {
           {
             id: "L4", title: "TOPO Vector의 구조 — ori · lac operon · 항생제 저항", kind: "내용",
             body:
-              "이번에 쓰는 TOPO TA cloning vector는 크기가 3.519 kb(3,519 bp)이며, 몇 가지 중요한 부위를 가집니다. ① ori(복제원점) " +
+              "이번에 쓰는 TOPO TA cloning vector는 크기가 약 3.9 kb이며, 몇 가지 중요한 부위를 가집니다. ① ori(복제원점) " +
               "— 숙주 세포 안에서 vector가 스스로 복제되게 하는 부위, ② MCS(다중클로닝부위) — 목적 DNA를 끼워 넣는 cloning 부위로 " +
               "lac operon(lacZ) 안에 있습니다, ③ 항생제 저항 유전자 — Kanamycin 저항 유전자가 있어, 이 vector를 받은 세포만 " +
               "항생제 배지에서 살아남게 하는 선별 표지입니다. 목적 DNA가 MCS(lac operon)에 끼워지면 lacZ가 망가지는데, 이것이 다음 주 " +
               "Blue/White 선별의 바탕이 됩니다.",
-            keyNumbers: ["TOPO vector 크기 = 3.519 kb (3,519 bp)", "ori = 숙주 안에서 복제되게 하는 부위", "MCS(cloning 부위) = lac operon(lacZ) 안", "항생제 저항 유전자 = Kanamycin(선별 표지)"],
+            keyNumbers: ["TOPO vector 크기 = 약 3.9 kb", "ori = 숙주 안에서 복제되게 하는 부위", "MCS(cloning 부위) = lac operon(lacZ) 안", "항생제 저항 유전자 = Kanamycin(선별 표지)"],
             source: "강의 이론(재조합 및 형질전환) — TOPO TA cloning vector"
           },
           {
@@ -7754,7 +7754,7 @@ window.GAME_CONTENT = {
         ],
         takeaways: [
           "오늘은 다음 주 형질전환을 위해 두 가지를 만든다 — ① 재조합 DNA(Vector): 6주차에 회수한 목적 fragment(PCR product)를 TOPO Vector에 붙인 DNA(표적 유전자 + Vector). ② Competent cell: 이 재조합 DNA를 받아줄 대장균 TOP10F를 CaCl₂로 처리한 세포.",
-          "재조합 DNA는 TOPO TA cloning으로 만든다. Taq는 proofreading이 없어 PCR 산물 3' 말단에 A를 붙이고, T가 돌출된 TOPO Vector와 A-T 상보결합해 높은 효율로 결합한다(TOPO = Topoisomerase I, vector 3.519 kb). 반응액은 증류수 6·Salt solution 3·PCR product 6·TOPO Vector 3 µL(총 18 µL)를 순서대로 넣고 상온 30분 교반한 뒤 5 µL로 전기영동해 확인한다.",
+          "재조합 DNA는 TOPO TA cloning으로 만든다. Taq는 proofreading이 없어 PCR 산물 3' 말단에 A를 붙이고, T가 돌출된 TOPO Vector와 A-T 상보결합해 높은 효율로 결합한다(TOPO = Topoisomerase I, vector 약 3.9 kb). 반응액은 증류수 6·Salt solution 3·PCR product 6·TOPO Vector 3 µL(총 18 µL)를 순서대로 넣고 상온 30분 교반한 뒤 5 µL로 전기영동해 확인한다.",
           "Competent cell은 세포막(음전하)과 DNA(음전하)의 반발을 CaCl₂(Ca²⁺)로 중화해 DNA 흡수율을 높인 세포다. 200 mL 배양액을 50 mL 코니칼 4개로 나눠 얼음 20분→4℃·4,000 rpm·5분 원심→100 mM CaCl₂ 처리(2차는 15% Glycerol 포함)→100 µL씩 소분→-80℃ 보관하며, 모든 조작을 얼음 위에서 빠르게 한다."
         ],
         source: "실험방법 07 (Vector 및 Competent cell 제조) 전문 · 강의계획서 세부 7주차 · 강의 이론(재조합 및 형질전환)·실험방법 11(Competent cell)"
@@ -7774,7 +7774,7 @@ window.GAME_CONTENT = {
           { h: "오늘 하는 일", d: "① 재조합 DNA(Vector) 제조 — 6주차 회수 fragment를 TOPO Vector에 붙임 · ② Competent cell 제조 — 재조합 DNA를 받아줄 대장균 TOP10F를 CaCl₂로 처리" },
           { h: "재조합 DNA란", d: "표적(목적) 유전자 + Vector(플라스미드)를 결합한 DNA(=키메라 DNA). 숙주에 넣어 표적 유전자를 대량 획득·발현시킨다" },
           { h: "TA cloning 원리", d: "Taq는 proofreading이 없어 PCR 산물 3' 말단에 A 돌출 → T가 돌출된 T-Vector와 A-T 상보결합 → 높은 효율. Topoisomerase I(TOPO)이 결합을 도움" },
-          { h: "TOPO Vector", d: "3.519 kb(3,519 bp) · ori(복제원점) · MCS(lac operon 안의 cloning 부위) · Kanamycin 저항 유전자(선별 표지)" },
+          { h: "TOPO Vector", d: "약 3.9 kb · ori(복제원점) · MCS(lac operon 안의 cloning 부위) · Kanamycin 저항 유전자(선별 표지)" },
           { h: "Competent cell이란", d: "외부 DNA를 잘 흡수하도록 처리한 세포. 세포막(음전하)과 DNA(음전하)가 반발하므로 CaCl₂(Ca²⁺)로 중화해 흡수율을 높인다" },
           { h: "저온 유지·보관", d: "모든 조작을 얼음 위에서 빠르게. 100 µL씩 소분해 -80℃ Deepfreezer 보관(15% Glycerol이 동결 시 세포 손상을 줄임)" }
         ],
@@ -7783,7 +7783,7 @@ window.GAME_CONTENT = {
           { step: "재조합 반응액", value: "증류수 6 → Salt solution 3 → PCR product 6 → TOPO Vector 3 µL (총 18 µL)" },
           { step: "재조합 반응", value: "상온 30분 천천히 교반(결합 효율↑)" },
           { step: "재조합 확인", value: "완성 시료 5 µL 전기영동" },
-          { step: "TOPO vector 크기", value: "3.519 kb (3,519 bp)" },
+          { step: "TOPO vector 크기", value: "약 3.9 kb" },
           { step: "배양액 분주", value: "TOP10F 200 mL → 50 mL 코니칼 4개 · 얼음 20분" },
           { step: "원심분리", value: "4℃ · 4,000 rpm · 5분(상등액 제거) · 얼음 20분 후 반복" },
           { step: "1차 CaCl₂", value: "100 mM CaCl₂ 15 mL씩 → 두 개씩 혼합 30 mL 2개" },
@@ -7924,11 +7924,11 @@ window.GAME_CONTENT = {
           {
             qid: "w07p_m07", type: "mc", level: 1, points: 7, limitSec: 20,
             q: "이번에 쓰는 TOPO TA cloning vector의 크기는?",
-            choices: ["3.519 kb (3,519 bp)", "50 kb", "300 bp", "1 Mb"],
+            choices: ["약 3.9 kb", "50 kb", "300 bp", "1 Mb"],
             answer: 0,
-            explain: "TOPO TA cloning vector의 크기는 3.519 kb(3,519 bp)입니다.",
-            source: "강의 이론(재조합 및 형질전환) — TOPO TA cloning vector",
-            tags: ["3.519 kb","vector 크기"]
+            explain: "이번에 쓰는 TOPO TA cloning vector의 크기는 약 3.9 kb입니다.",
+            source: "강의 이론(재조합 및 형질전환) — TOPO TA cloning vector (크기: 2026-09-26 대표님 지정, 추후 확인)",
+            tags: ["약 3.9 kb","vector 크기"]
           },
           {
             qid: "w07p_m08", type: "mc", level: 2, points: 9, limitSec: 20,
