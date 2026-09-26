@@ -7671,7 +7671,7 @@ window.GAME_CONTENT = {
             "이 한 질문에 스스로 답할 수 있게 되는 것이 오늘 학습의 목표입니다. 오늘은 두 가지를 만듭니다. " +
             "① 재조합 DNA(Vector) 제조 — 6주차에 회수한 목적 DNA fragment를 TOPO Vector에 붙여, 표적 유전자와 Vector가 " +
             "하나로 이어진 재조합 DNA를 만듭니다(TOPO TA cloning). ② Competent cell 제조 — 다음 주 형질전환에서 이 재조합 " +
-            "DNA를 받아줄 대장균(TOP10F)을, 외부 DNA를 잘 흡수하도록 CaCl₂로 처리해 만듭니다. 오늘 만든 두 가지가 다음 주 " +
+            "DNA를 받아줄 대장균(TOP10F′)을, 외부 DNA를 잘 흡수하도록 CaCl₂로 처리해 만듭니다. 오늘 만든 두 가지가 다음 주 " +
             "형질전환의 재료가 됩니다.",
           source: "실험방법 07 [1]·[2] · 강의계획서 세부 7주차 · 강의 이론(재조합 및 형질전환)"
         },
@@ -7681,9 +7681,9 @@ window.GAME_CONTENT = {
             body:
               "오늘은 다음 주 형질전환을 위해 두 가지를 만듭니다. ① 재조합 DNA(Vector) 제조 — 6주차에 회수한 목적 DNA " +
               "fragment(PCR product)를 TOPO Vector에 붙여 재조합 DNA를 만듭니다. ② Competent cell 제조 — 이 재조합 DNA를 " +
-              "받아줄 대장균 TOP10F를 CaCl₂로 처리해, 외부 DNA를 잘 흡수하는 상태로 만듭니다. 이 두 가지가 하나로 만나는 것이 " +
+              "받아줄 대장균 TOP10F′를 CaCl₂로 처리해, 외부 DNA를 잘 흡수하는 상태로 만듭니다. 이 두 가지가 하나로 만나는 것이 " +
               "다음 주(8주차) 형질전환입니다. 그래서 오늘은 '넣을 것(재조합 DNA)'과 '받을 것(competent cell)'을 각각 준비하는 날입니다.",
-            keyNumbers: ["① 재조합 DNA(Vector) 제조 = 회수 fragment + TOPO Vector", "② Competent cell 제조 = 대장균 TOP10F를 CaCl₂로 처리", "재료 = 6주차 회수 fragment(PCR product)", "다음 주(8주차) 형질전환의 재료가 됨"],
+            keyNumbers: ["① 재조합 DNA(Vector) 제조 = 회수 fragment + TOPO Vector", "② Competent cell 제조 = 대장균 TOP10F′를 CaCl₂로 처리", "재료 = 6주차 회수 fragment(PCR product)", "다음 주(8주차) 형질전환의 재료가 됨"],
             source: "실험방법 07 [1]·[2] · 강의계획서 세부 7주차"
           },
           {
@@ -7708,14 +7708,14 @@ window.GAME_CONTENT = {
             source: "강의 이론(재조합 및 형질전환) — PCR product cloning · TA cloning"
           },
           {
-            id: "L4", title: "TOPO Vector의 구조 — ori · lac operon · 항생제 저항", kind: "내용",
+            id: "L4", title: "TOPO Vector의 구조 — ori · lacZα(MCS) · 항생제 저항", kind: "내용",
             body:
               "이번에 쓰는 TOPO TA cloning vector는 크기가 약 3.9 kb이며, 몇 가지 중요한 부위를 가집니다. ① ori(복제원점) " +
               "— 숙주 세포 안에서 vector가 스스로 복제되게 하는 부위, ② MCS(다중클로닝부위) — 목적 DNA를 끼워 넣는 cloning 부위로 " +
-              "lac operon(lacZ) 안에 있습니다, ③ 항생제 저항 유전자 — Kanamycin 저항 유전자가 있어, 이 vector를 받은 세포만 " +
-              "항생제 배지에서 살아남게 하는 선별 표지입니다. 목적 DNA가 MCS(lac operon)에 끼워지면 lacZ가 망가지는데, 이것이 다음 주 " +
+              "β-galactosidase 유전자의 앞조각(lacZα) 안에 있습니다, ③ 항생제 저항 유전자 — Kanamycin 저항 유전자가 있어, 이 vector를 받은 세포만 " +
+              "항생제 배지에서 살아남게 하는 선별 표지입니다. 목적 DNA가 MCS에 끼워지면 앞조각(lacZα)이 끊기는데, 이것이 다음 주 " +
               "Blue/White 선별의 바탕이 됩니다.",
-            keyNumbers: ["TOPO vector 크기 = 약 3.9 kb", "ori = 숙주 안에서 복제되게 하는 부위", "MCS(cloning 부위) = lac operon(lacZ) 안", "항생제 저항 유전자 = Kanamycin(선별 표지)"],
+            keyNumbers: ["TOPO vector 크기 = 약 3.9 kb", "ori = 숙주 안에서 복제되게 하는 부위", "MCS(cloning 부위) = 앞조각(lacZα) 안", "항생제 저항 유전자 = Kanamycin(선별 표지)"],
             source: "강의 이론(재조합 및 형질전환) — TOPO TA cloning vector"
           },
           {
@@ -7742,7 +7742,7 @@ window.GAME_CONTENT = {
           {
             id: "L7", title: "Competent cell 제조 절차 + 저온 유지·보관", kind: "내용",
             body:
-              "대장균 TOP10F 배양액 200 mL를 50 mL 코니칼 튜브 4개에 나눠 담고 얼음에 20분 둡니다. 이어 4℃·4,000 rpm·5분 " +
+              "대장균 TOP10F′(실험방법서 표기: TOP10F) 배양액 200 mL를 50 mL 코니칼 튜브 4개에 나눠 담고 얼음에 20분 둡니다. 이어 4℃·4,000 rpm·5분 " +
               "원심분리 후 상등액을 버리고, 차갑게 식힌 100 mM CaCl₂ 15 mL씩으로 풀어 두 개씩 합쳐 30 mL 2개로 만듭니다. 다시 " +
               "얼음에 20분 둔 뒤 같은 조건으로 원심·상등액 제거하고, 이번엔 15% Glycerol이 든 100 mM CaCl₂ 2.5 mL씩으로 풀어 두 " +
               "코니칼을 합쳐 5 mL 1개로 만듭니다. 이 용액을 멸균·저온의 1.5 mL E-tube에 100 µL씩 소분해(형질전환 1회 분량) " +
@@ -7753,7 +7753,7 @@ window.GAME_CONTENT = {
           }
         ],
         takeaways: [
-          "오늘은 다음 주 형질전환을 위해 두 가지를 만든다 — ① 재조합 DNA(Vector): 6주차에 회수한 목적 fragment(PCR product)를 TOPO Vector에 붙인 DNA(표적 유전자 + Vector). ② Competent cell: 이 재조합 DNA를 받아줄 대장균 TOP10F를 CaCl₂로 처리한 세포.",
+          "오늘은 다음 주 형질전환을 위해 두 가지를 만든다 — ① 재조합 DNA(Vector): 6주차에 회수한 목적 fragment(PCR product)를 TOPO Vector에 붙인 DNA(표적 유전자 + Vector). ② Competent cell: 이 재조합 DNA를 받아줄 대장균 TOP10F′를 CaCl₂로 처리한 세포.",
           "재조합 DNA는 TOPO TA cloning으로 만든다. Taq는 proofreading이 없어 PCR 산물 3' 말단에 A를 붙이고, T가 돌출된 TOPO Vector와 A-T 상보결합해 높은 효율로 결합한다(TOPO = Topoisomerase I, vector 약 3.9 kb). 반응액은 증류수 6·Salt solution 3·PCR product 6·TOPO Vector 3 µL(총 18 µL)를 순서대로 넣고 상온 30분 교반한 뒤 5 µL로 전기영동해 확인한다.",
           "Competent cell은 세포막(음전하)과 DNA(음전하)의 반발을 CaCl₂(Ca²⁺)로 중화해 DNA 흡수율을 높인 세포다. 200 mL 배양액을 50 mL 코니칼 4개로 나눠 얼음 20분→4℃·4,000 rpm·5분 원심→100 mM CaCl₂ 처리(2차는 15% Glycerol 포함)→100 µL씩 소분→-80℃ 보관하며, 모든 조작을 얼음 위에서 빠르게 한다."
         ],
@@ -7771,10 +7771,10 @@ window.GAME_CONTENT = {
         pipeline: "한 학기 흐름 중 ⑦ 재조합 DNA 제조 · Competent cell 제조 (6주차 회수 fragment로 재조합 → 다음 주 형질전환 준비)",
 
         concepts: [
-          { h: "오늘 하는 일", d: "① 재조합 DNA(Vector) 제조 — 6주차 회수 fragment를 TOPO Vector에 붙임 · ② Competent cell 제조 — 재조합 DNA를 받아줄 대장균 TOP10F를 CaCl₂로 처리" },
+          { h: "오늘 하는 일", d: "① 재조합 DNA(Vector) 제조 — 6주차 회수 fragment를 TOPO Vector에 붙임 · ② Competent cell 제조 — 재조합 DNA를 받아줄 대장균 TOP10F′를 CaCl₂로 처리" },
           { h: "재조합 DNA란", d: "표적(목적) 유전자 + Vector(플라스미드)를 결합한 DNA(=키메라 DNA). 숙주에 넣어 표적 유전자를 대량 획득·발현시킨다" },
           { h: "TA cloning 원리", d: "Taq는 proofreading이 없어 PCR 산물 3' 말단에 A 돌출 → T가 돌출된 T-Vector와 A-T 상보결합 → 높은 효율. Topoisomerase I(TOPO)이 결합을 도움" },
-          { h: "TOPO Vector", d: "약 3.9 kb · ori(복제원점) · MCS(lac operon 안의 cloning 부위) · Kanamycin 저항 유전자(선별 표지)" },
+          { h: "TOPO Vector", d: "약 3.9 kb · ori(복제원점) · MCS(앞조각 lacZα 안의 cloning 부위) · Kanamycin 저항 유전자(선별 표지)" },
           { h: "Competent cell이란", d: "외부 DNA를 잘 흡수하도록 처리한 세포. 세포막(음전하)과 DNA(음전하)가 반발하므로 CaCl₂(Ca²⁺)로 중화해 흡수율을 높인다" },
           { h: "저온 유지·보관", d: "모든 조작을 얼음 위에서 빠르게. 100 µL씩 소분해 -80℃ Deepfreezer 보관(15% Glycerol이 동결 시 세포 손상을 줄임)" }
         ],
@@ -7784,7 +7784,7 @@ window.GAME_CONTENT = {
           { step: "재조합 반응", value: "상온 30분 천천히 교반(결합 효율↑)" },
           { step: "재조합 확인", value: "완성 시료 5 µL 전기영동" },
           { step: "TOPO vector 크기", value: "약 3.9 kb" },
-          { step: "배양액 분주", value: "TOP10F 200 mL → 50 mL 코니칼 4개 · 얼음 20분" },
+          { step: "배양액 분주", value: "TOP10F′ 200 mL → 50 mL 코니칼 4개 · 얼음 20분" },
           { step: "원심분리", value: "4℃ · 4,000 rpm · 5분(상등액 제거) · 얼음 20분 후 반복" },
           { step: "1차 CaCl₂", value: "100 mM CaCl₂ 15 mL씩 → 두 개씩 혼합 30 mL 2개" },
           { step: "2차 CaCl₂", value: "100 mM CaCl₂(15% Glycerol 포함) 2.5 mL씩 → 5 mL 1개" },
@@ -7815,7 +7815,7 @@ window.GAME_CONTENT = {
           ]
         },
 
-        closing: "오늘은 '넣을 것'과 '받을 것'을 각각 준비하는 날이다. 6주차 회수 fragment를 TOPO Vector에 붙여 재조합 DNA를 만들고(TA cloning), 대장균 TOP10F를 CaCl₂로 처리해 competent cell을 만든다. 모든 조작을 얼음 위에서 빠르게 하고 -80℃에 보관한 뒤, 다음 주(8주차) 이 둘을 만나게 하는 것이 형질전환이다",
+        closing: "오늘은 '넣을 것'과 '받을 것'을 각각 준비하는 날이다. 6주차 회수 fragment를 TOPO Vector에 붙여 재조합 DNA를 만들고(TA cloning), 대장균 TOP10F′를 CaCl₂로 처리해 competent cell을 만든다. 모든 조작을 얼음 위에서 빠르게 하고 -80℃에 보관한 뒤, 다음 주(8주차) 이 둘을 만나게 하는 것이 형질전환이다",
         report: "재조합 DNA(Vector) 제조 확인 사진 1장과 Competent cell 제조 사진 3장(CaCl₂ 처리 30 mL 2개 · 15% Glycerol CaCl₂ 5 mL 1개 · 100 µL 소분)을 찍고, 두 준비가 잘 됐는지 고찰과 함께 보고서에 남긴다 (다음 실험 시작 전 제출)",
         source: "실험방법 07 · 강의계획서 세부 7주차 · 강의 이론(재조합 및 형질전환)·실험방법 11"
       },
@@ -7933,9 +7933,9 @@ window.GAME_CONTENT = {
           {
             qid: "w07p_m08", type: "mc", level: 2, points: 9, limitSec: 20,
             q: "TOPO Vector가 가지는 부위가 아닌 것은?",
-            choices: ["ori(복제원점)", "MCS(cloning 부위, lac operon)", "항생제 저항 유전자", "PCR 프라이머"],
+            choices: ["ori(복제원점)", "MCS(cloning 부위, lacZα 안)", "항생제 저항 유전자", "PCR 프라이머"],
             answer: 3,
-            explain: "Vector는 ori·MCS(lac operon)·항생제 저항 유전자를 가집니다. 프라이머는 vector의 구성 요소가 아니라 PCR에 쓰는 별개의 짧은 DNA입니다.",
+            explain: "Vector는 ori·MCS(lacZα 안)·항생제 저항 유전자를 가집니다. 프라이머는 vector의 구성 요소가 아니라 PCR에 쓰는 별개의 짧은 DNA입니다.",
             source: "강의 이론(재조합 및 형질전환) — TOPO TA cloning vector",
             tags: ["vector 구조","ori","MCS"]
           },
@@ -8032,11 +8032,11 @@ window.GAME_CONTENT = {
           {
             qid: "w07p_m19", type: "mc", level: 1, points: 7, limitSec: 20,
             q: "이번 competent cell 제조에 쓰는 대장균 균주는?",
-            choices: ["TOP10F", "황색포도상구균", "폐렴구균", "효모"],
+            choices: ["TOP10F′", "황색포도상구균", "폐렴구균", "효모"],
             answer: 0,
-            explain: "이번 실험은 대장균 TOP10F로 competent cell을 제조합니다.",
+            explain: "이번 실험은 대장균 TOP10F′로 competent cell을 제조합니다.",
             source: "실험방법 07 [2] ①",
-            tags: ["TOP10F","균주"]
+            tags: ["TOP10F′","균주"]
           },
           {
             qid: "w07p_m20", type: "mc", level: 2, points: 9, limitSec: 20,
@@ -8049,7 +8049,7 @@ window.GAME_CONTENT = {
           },
           {
             qid: "w07p_m21", type: "mc", level: 1, points: 7, limitSec: 20,
-            q: "TOP10F 배양액 200 mL를 처음에 나눠 담는 용기는?",
+            q: "TOP10F′ 배양액 200 mL를 처음에 나눠 담는 용기는?",
             choices: ["50 mL 코니칼 튜브 4개", "1.5 mL E-tube 1개", "250 mL 삼각플라스크 1개", "페트리디쉬 1개"],
             answer: 0,
             explain: "배양액 200 mL를 50 mL 코니칼 튜브 4개에 나누어 담고 얼음에 20분 둡니다.",
@@ -8465,8 +8465,8 @@ window.GAME_CONTENT = {
                 debrief: "얼음 위 저온 유지는 올바른 절차입니다 — 원인이 아닙니다." },
               { id: "s3", mark: "ㄷ", label: "4,000 rpm으로 원심했다", correct: false,
                 debrief: "4,000 rpm은 규정 조건입니다 — 원인이 아닙니다." },
-              { id: "s4", mark: "ㄹ", label: "TOP10F 균주를 썼다", correct: false,
-                debrief: "TOP10F는 규정 균주입니다 — 원인이 아닙니다." }
+              { id: "s4", mark: "ㄹ", label: "TOP10F′ 균주를 썼다", correct: false,
+                debrief: "TOP10F′는 규정 균주입니다 — 원인이 아닙니다." }
             ],
             answer: { suspect: "s1", evidence: ["k1", "k4"] },
             debrief:
@@ -8752,19 +8752,19 @@ window.GAME_CONTENT = {
             body:
               "형질전환(Transformation)은 외부 DNA를 세포에 도입해 유전적 변화를 일으키는 것입니다. 1928년 영국의 Griffith가 폐렴 " +
               "쌍구균 실험에서 처음 밝힌 현상으로, 오늘날 유전공학에서는 만든 재조합 DNA를 숙주세포(대장균)에 넣어 증식·발현시키는 " +
-              "핵심 수단으로 씁니다. 오늘은 지난 주(7주차)에 만든 재조합 DNA(Vector)를, 역시 지난 주에 만든 competent cell(TOP10F)에 " +
+              "핵심 수단으로 씁니다. 오늘은 지난 주(7주차)에 만든 재조합 DNA(Vector)를, 역시 지난 주에 만든 competent cell(TOP10F′)에 " +
               "넣습니다. 이렇게 해야 앞의 모든 실험(배양→추출→정량→PCR→회수→재조합)이 하나의 결과로 이어집니다.",
-            keyNumbers: ["형질전환 = 외부 DNA를 세포에 도입해 유전적 변화", "역사: 1928 Griffith 폐렴 쌍구균 실험", "재료: 지난 주 제작한 재조합 DNA(Vector) + competent cell(TOP10F)", "한 학기 클로닝의 마지막 확인 단계"],
+            keyNumbers: ["형질전환 = 외부 DNA를 세포에 도입해 유전적 변화", "역사: 1928 Griffith 폐렴 쌍구균 실험", "재료: 지난 주 제작한 재조합 DNA(Vector) + competent cell(TOP10F′)", "한 학기 클로닝의 마지막 확인 단계"],
             source: "강의 이론(재조합 및 형질전환) — Transformation"
           },
           {
             id: "L2", title: "DNA를 넣기 — competent cell에 Vector·pUC19 섞기", kind: "내용",
             body:
-              "얼음에 둔 competent cell TOP10F 100 µL 한 개에는 지난 실험(7주차)에서 만든 재조합 DNA(Vector) 10 µL를 넣고, 또 하나의 " +
+              "얼음에 둔 competent cell TOP10F′ 100 µL 한 개에는 지난 실험(7주차)에서 만든 재조합 DNA(Vector) 10 µL를 넣고, 또 하나의 " +
               "competent cell에는 pUC19 plasmid 10 µL를 넣습니다(라벨링을 확실히 해 구분). 각각 뚜껑을 닫고 가볍게 혼합한 뒤 얼음에 " +
               "30분 둡니다. pUC19는 잘 알려진 대조용 plasmid로, 형질전환 자체가 잘 일어났는지 확인하는 데 씁니다. 이 단계는 DNA가 " +
               "세포막 가까이 충분히 붙도록 저온에서 기다리는 과정입니다.",
-            keyNumbers: ["competent cell TOP10F 100 µL 2개 준비", "① 재조합 DNA(Vector) 10 µL · ② pUC19 10 µL", "각각 혼합 후 얼음 30분(라벨링 구분)", "pUC19 = 형질전환 확인용 대조 plasmid"],
+            keyNumbers: ["competent cell TOP10F′ 100 µL 2개 준비", "① 재조합 DNA(Vector) 10 µL · ② pUC19 10 µL", "각각 혼합 후 얼음 30분(라벨링 구분)", "pUC19 = 형질전환 확인용 대조 plasmid"],
             source: "실험방법 08 [1] ①②"
           },
           {
@@ -8799,15 +8799,15 @@ window.GAME_CONTENT = {
             source: "실험방법 08 [2] ①②③"
           },
           {
-            id: "L6", title: "Blue/White 선별 — 콜로니 색으로 성공 판정", kind: "핵심",
+            id: "L6", title: "Blue/White 선별 — 앞조각+뒷조각(α-상보성)으로 색 판정", kind: "핵심",
             body:
-              "재조합이 잘 됐는지는 콜로니 색으로 판정합니다(Blue-White 선별). Vector 안에는 lac operon(lacZ)이 있고, 이것이 발현되면 " +
-              "β-galactosidase라는 효소가 만들어져 배지의 X-gal을 분해해 파란색(Blue) 콜로니가 됩니다(IPTG가 lac operon 발현을 " +
-              "유도합니다). 그런데 목적 DNA가 lacZ 자리(MCS)에 끼워지면 lacZ가 망가져 β-galactosidase가 만들어지지 않고, X-gal이 " +
-              "분해되지 않아 흰색(White) 콜로니가 됩니다. 따라서 흰색 콜로니 = 목적 DNA 삽입 성공, 파란색 콜로니 = 삽입되지 않은 " +
-              "원래 vector입니다.",
-            keyNumbers: ["Blue-White 선별 = 콜로니 색으로 삽입 판정", "파란색 = lacZ 발현 → β-galactosidase가 X-gal 분해(삽입 안 됨)", "흰색 = 목적 DNA가 lacZ에 삽입 → β-gal 없음 → X-gal 안 분해(삽입 성공)", "IPTG = lac operon 발현 유도물질"],
-            source: "강의 이론(재조합 및 형질전환) — Blue-White screening"
+              "재조합이 잘 됐는지는 콜로니 색으로 판정합니다(Blue-White 선별). 숙주 대장균(TOP10F′)은 β-galactosidase의 뒷조각을, " +
+              "플라스미드(pUC19·TOPO Vector)는 앞조각(lacZα)을 가지고 있어 둘이 만나야 효소가 됩니다(α-상보성). 완성된 효소가 배지의 " +
+              "X-gal을 분해하면 파란색(Blue) 콜로니가 됩니다. 그런데 목적 DNA가 lacZα에 끼워지면 앞조각이 끊겨 효소가 되지 못하므로 " +
+              "흰색(White) 콜로니가 됩니다. IPTG는 꺼져 있는 앞조각(lacZα) 유전자를 켜 줍니다. 따라서 흰색 콜로니 = 목적 DNA 삽입 " +
+              "성공, 파란색 콜로니 = 삽입되지 않은 빈 벡터입니다.",
+            keyNumbers: ["숙주(TOP10F′) = 뒷조각 · 플라스미드 = 앞조각(lacZα)", "둘이 만나야 효소 완성(α-상보성) → X-gal 분해 → 파란색(빈 벡터)", "목적 DNA가 lacZα에 끼워짐 → 앞조각 끊김 → 흰색(삽입 성공)", "IPTG = 꺼져 있는 앞조각(lacZα) 유전자를 켜 줌"],
+            source: "강의 이론(재조합 및 형질전환) — Blue-White screening · 2026-09-26 대표님 지정 설명(α-상보성)"
           },
           {
             id: "L7", title: "배양·판독 + 안전 — 48시간 뒤 콜로니 확인", kind: "내용",
@@ -8821,9 +8821,9 @@ window.GAME_CONTENT = {
           }
         ],
         takeaways: [
-          "형질전환(Transformation)은 외부 DNA를 세포에 넣어 유전적 변화를 일으키는 것이다(1928 Griffith). 지난 주(7주차)에 만든 재조합 DNA(Vector)와 competent cell(TOP10F)을 만나게 해, 앞의 모든 실험을 하나의 결과로 잇는 마지막 확인 단계다.",
+          "형질전환(Transformation)은 외부 DNA를 세포에 넣어 유전적 변화를 일으키는 것이다(1928 Griffith). 지난 주(7주차)에 만든 재조합 DNA(Vector)와 competent cell(TOP10F′)을 만나게 해, 앞의 모든 실험을 하나의 결과로 잇는 마지막 확인 단계다.",
           "핵심 절차 — competent cell 100 µL에 Vector 10 µL(또는 대조 pUC19 10 µL)를 넣고 얼음 30분 → 42℃ 30초 heat-shock → 즉시 얼음 2분 → SOC 250 µL 넣고 37℃·225 rpm 1시간 회복배양 → 13,000 rpm 1분 원심·SOC 100 µL 재현탁 → 선별평판 도말(Vector→Kan, pUC19→Amp) → 37℃ 48시간 배양. heat-shock은 세포막에 모공을 만들어 DNA를 넣고, 회복배양은 항생제 저항 단백질을 발현시킨다.",
-          "Blue/White 선별로 성공을 판정한다. Vector의 lacZ가 발현되면 β-galactosidase가 X-gal을 분해해 파란색 콜로니가 되고(IPTG가 발현 유도), 목적 DNA가 lacZ에 삽입되면 lacZ가 망가져 흰색 콜로니가 된다. 흰색=삽입 성공, 파란색=삽입 안 된 원래 vector. 항생제 평판에 콜로니가 자랐으면 형질전환(저항 획득) 성공이다."
+          "Blue/White 선별로 성공을 판정한다. 숙주 대장균(TOP10F′)은 β-galactosidase의 뒷조각을, 플라스미드는 앞조각(lacZα)을 가지고 있어 둘이 만나야 효소가 된다(α-상보성) → X-gal 분해 → 파란색. 목적 DNA가 lacZα에 끼워지면 앞조각이 끊겨 → 흰색. IPTG는 꺼져 있는 앞조각 유전자를 켜 준다. 흰색=삽입 성공, 파란색=삽입 안 된 빈 벡터. 항생제 평판에 콜로니가 자랐으면 형질전환(저항 획득) 성공이다."
         ],
         source: "실험방법 08 (형질전환) 전문 · 강의 이론(재조합 및 형질전환) · 강의계획서 세부"
       },
@@ -8843,7 +8843,7 @@ window.GAME_CONTENT = {
           { h: "Heat-shock", d: "42℃ 30초로 세포막에 순간적 모공을 만들어 삼투압으로 DNA를 흡수시키는 방법. 직후 즉시 얼음 2분(시간 엄수 — 오래 두면 세포 사멸)" },
           { h: "회복배양", d: "SOC 배지 250 µL 넣고 37℃·225 rpm 1시간. 세포를 회복시키고 항생제 저항 단백질을 발현시켜 선별평판에서 살아남게 함" },
           { h: "항생제 선별", d: "Vector(재조합 DNA)→Kanamycin 평판, pUC19→Ampicillin 평판. vector의 저항 유전자를 받은(형질전환된) 세포만 콜로니를 만듦" },
-          { h: "Blue/White 선별", d: "파란색 = lacZ 발현→β-galactosidase가 X-gal 분해(삽입 안 됨). 흰색 = 목적 DNA가 lacZ에 삽입→β-gal 없음→X-gal 안 분해(삽입 성공). IPTG가 발현 유도" },
+          { h: "Blue/White 선별(α-상보성)", d: "숙주(TOP10F′)의 뒷조각 + 플라스미드의 앞조각(lacZα)이 만나야 효소 완성 → X-gal 분해 → 파란색(빈 벡터). 목적 DNA가 lacZα에 끼워지면 앞조각이 끊겨 → 흰색(삽입 성공). IPTG는 꺼져 있는 앞조각 유전자를 켜 줌" },
           { h: "판독", d: "37℃ 뚜껑 아래로 48시간 배양 후, ① 콜로니 유무(형질전환 성공)와 ② 색(흰색=삽입 성공)으로 판정" }
         ],
 
@@ -8870,19 +8870,19 @@ window.GAME_CONTENT = {
         expected: {
           good: [
             "Kan 평판(Vector)에 콜로니가 자람 → 형질전환·항생제 저항 획득 성공",
-            "흰색 콜로니 → 목적 DNA가 lacZ에 삽입된 재조합 성공",
+            "흰색 콜로니 → 목적 DNA가 lacZα에 끼워져 앞조각이 끊긴 재조합 성공",
             "Amp 평판(pUC19 대조)에 콜로니가 자람 → 형질전환 자체가 정상적으로 일어남",
             "콜로니 유무와 색으로 형질전환·재조합의 성패를 판정"
           ],
           suspect: [
             "콜로니가 하나도 없다 → heat-shock 시간·회복배양(SOC 1시간)·평판 짝을 지켰는지 의심",
-            "파란색만 나온다 → 목적 DNA가 lacZ에 삽입되지 않은(원래 vector) 것은 아닌지 의심",
+            "파란색만 나온다 → 앞조각(lacZα)이 온전한 빈 벡터(삽입 안 됨)는 아닌지 의심",
             "색 구분이 안 된다 → IPTG·X-gal을 평판에 도말했는지 점검",
             "대조(pUC19)도 안 자란다 → competent cell 상태·heat-shock 조건을 점검"
           ]
         },
 
-        closing: "42℃ 30초 heat-shock으로 세포막에 잠깐 구멍을 내 DNA를 넣고, SOC로 회복시켜 항생제 저항을 준비시킨 뒤, 항생제·X-gal 평판에 도말한다. 48시간 뒤 콜로니가 자랐으면 형질전환 성공, 흰색이면 목적 DNA 삽입 성공이다. 한 학기 배양→추출→정량→PCR→회수→재조합의 모든 결과가 이 콜로니 하나로 확인된다",
+        closing: "42℃ 30초 heat-shock으로 세포막에 잠깐 구멍을 내 DNA를 넣고, SOC로 회복시켜 항생제 저항을 준비시킨 뒤, 항생제·X-gal 평판에 도말한다. 48시간 뒤 콜로니가 자랐으면 형질전환 성공, 흰색이면(앞조각이 끊겨 효소가 되지 못함) 목적 DNA 삽입 성공이다. 한 학기 배양→추출→정량→PCR→회수→재조합의 모든 결과가 이 콜로니 하나로 확인된다",
         report: "회복배양이 끝난 형질전환 배양액 2개(Vector·pUC19)와 48시간 배양한 평판배지 결과 2개(Kanamycin 평판·Ampicillin 평판)를 나란히 찍고, 콜로니 유무와 색(Blue/White)으로 형질전환·재조합 성공 여부를 고찰과 함께 보고서에 남긴다 (다음 실험 시작 전 제출)",
         source: "실험방법 08 · 강의 이론(재조합 및 형질전환)"
       },
@@ -8955,11 +8955,11 @@ window.GAME_CONTENT = {
           {
             qid: "w08p_m03", type: "mc", level: 1, points: 7, limitSec: 20,
             q: "오늘 형질전환에 쓰는 세포는?",
-            choices: ["지난 주 제조한 Competent cell(TOP10F)", "새로 배양한 효모", "동물 세포주", "죽은 대장균"],
+            choices: ["지난 주 제조한 Competent cell(TOP10F′)", "새로 배양한 효모", "동물 세포주", "죽은 대장균"],
             answer: 0,
-            explain: "지난 주(7주차)에 제조한 competent cell(대장균 TOP10F)에 DNA를 넣습니다.",
+            explain: "지난 주(7주차)에 제조한 competent cell(대장균 TOP10F′)에 DNA를 넣습니다.",
             source: "실험방법 08 [1] ①",
-            tags: ["competent cell","TOP10F"]
+            tags: ["competent cell","TOP10F′"]
           },
           {
             qid: "w08p_m04", type: "mc", level: 1, points: 7, limitSec: 20,
@@ -9062,28 +9062,28 @@ window.GAME_CONTENT = {
           },
           {
             qid: "w08p_m15", type: "mc", level: 2, points: 9, limitSec: 20,
-            q: "lac operon의 발현을 유도하는 물질은?",
+            q: "꺼져 있는 앞조각(lacZα) 유전자를 켜 주는 물질은?",
             choices: ["IPTG", "Kanamycin", "Glycerol", "Ampicillin"],
             answer: 0,
-            explain: "IPTG는 lac operon의 발현을 유도하는 물질로, Blue-White 선별 시 함께 씁니다.",
+            explain: "IPTG는 꺼져 있는 앞조각(lacZα) 유전자를 켜 줍니다. 그래서 Blue-White 선별 때 X-gal과 함께 평판에 도말합니다.",
             source: "강의 이론(Blue-White screening) · 실험방법 08 [2] ①",
             tags: ["IPTG","유도"]
           },
           {
             qid: "w08p_m16", type: "mc", level: 3, points: 11, limitSec: 20,
             q: "파란색(Blue) 콜로니가 생기는 경우로 옳은 것은?",
-            choices: ["lacZ가 발현돼 β-galactosidase가 X-gal을 분해(목적 DNA 삽입 안 됨)", "목적 DNA가 lacZ에 삽입됨", "세포가 죽음", "항생제가 없음"],
+            choices: ["빈 벡터의 앞조각(lacZα)이 숙주의 뒷조각과 만나 효소가 되어 X-gal을 분해(목적 DNA 삽입 안 됨)", "목적 DNA가 lacZα에 끼워짐", "세포가 죽음", "항생제가 없음"],
             answer: 0,
-            explain: "목적 DNA가 삽입되지 않은 원래 vector는 lacZ가 정상 발현돼 β-galactosidase가 X-gal을 분해해 파란색이 됩니다.",
+            explain: "빈 벡터는 앞조각(lacZα)이 온전해 숙주의 뒷조각과 만나 효소가 되므로(α-상보성) X-gal을 분해해 파란색이 됩니다.",
             source: "강의 이론(Blue-White screening)",
-            tags: ["파란색","lacZ 발현"]
+            tags: ["파란색","α-상보성"]
           },
           {
             qid: "w08p_m17", type: "mc", level: 3, points: 11, limitSec: 20,
             q: "흰색(White) 콜로니가 생기는 경우로 옳은 것은?",
-            choices: ["목적 DNA가 lacZ에 삽입돼 β-galactosidase가 안 만들어져 X-gal이 분해되지 않음", "lacZ가 정상 발현됨", "IPTG가 없음", "세포가 죽음"],
+            choices: ["목적 DNA가 lacZα에 끼워져 앞조각이 끊겨 효소가 되지 못해 X-gal이 분해되지 않음", "앞조각(lacZα)이 온전함", "IPTG가 없음", "세포가 죽음"],
             answer: 0,
-            explain: "목적 DNA가 lacZ 자리에 삽입되면 lacZ가 망가져 β-galactosidase가 안 만들어지고, X-gal이 분해되지 않아 흰색이 됩니다.",
+            explain: "목적 DNA가 lacZα에 끼워지면 앞조각이 끊겨 효소가 되지 못하므로, X-gal이 분해되지 않아 흰색이 됩니다.",
             source: "강의 이론(Blue-White screening)",
             tags: ["흰색","삽입 성공"]
           },
@@ -9097,13 +9097,13 @@ window.GAME_CONTENT = {
             tags: ["흰색","삽입 성공"]
           },
           {
-            qid: "w08p_m19", type: "mc", level: 2, points: 9, limitSec: 20,
-            q: "β-galactosidase가 X-gal을 분해하면 콜로니는 무슨 색이 되는가?",
-            choices: ["파란색", "흰색", "투명", "검정색"],
+            qid: "w08p_m27", type: "mc", level: 2, points: 9, limitSec: 20,
+            q: "Blue/White 선별에서 파란색 콜로니가 나오려면?",
+            choices: ["숙주의 뒷조각과 플라스미드의 앞조각(lacZα)이 만나 효소가 완성돼야 한다", "플라스미드 혼자 효소를 모두 만들면 된다", "목적 DNA가 lacZα에 끼워져야 한다", "X-gal 없이 IPTG만 있으면 된다"],
             answer: 0,
-            explain: "β-galactosidase가 X-gal을 분해하면 파란색 콜로니가 됩니다.",
-            source: "강의 이론(Blue-White screening)",
-            tags: ["파란색","β-galactosidase"]
+            explain: "숙주 대장균(TOP10F′)의 뒷조각과 플라스미드의 앞조각(lacZα)이 만나야 효소가 완성되고(α-상보성), 이 효소가 X-gal을 분해해 파란색이 됩니다.",
+            source: "강의 이론(재조합 및 형질전환) — Blue-White screening · 2026-09-26 대표님 지정 설명(α-상보성)",
+            tags: ["α-상보성","파란색","앞조각·뒷조각"]
           },
           {
             qid: "w08p_m20", type: "mc", level: 2, points: 9, limitSec: 20,
@@ -9214,7 +9214,7 @@ window.GAME_CONTENT = {
             qid: "w08p_o06", type: "ox", level: 2, points: 9, limitSec: 20,
             q: "Blue-White 선별에서 흰색 콜로니는 목적 DNA 삽입 성공을 뜻한다.",
             answer: true,
-            explain: "맞습니다. 목적 DNA가 lacZ에 삽입되면 X-gal이 분해되지 않아 흰색 콜로니가 됩니다(삽입 성공).",
+            explain: "맞습니다. 목적 DNA가 lacZα에 끼워지면 앞조각이 끊겨 효소가 되지 못하므로 흰색 콜로니가 됩니다(삽입 성공).",
             source: "강의 이론(Blue-White screening)",
             tags: ["흰색","삽입 성공"]
           },
@@ -9222,7 +9222,7 @@ window.GAME_CONTENT = {
             qid: "w08p_o07", type: "ox", level: 2, points: 9, limitSec: 20,
             q: "파란색 콜로니는 β-galactosidase가 X-gal을 분해해 생긴다.",
             answer: true,
-            explain: "맞습니다. lacZ가 발현돼 β-galactosidase가 X-gal을 분해하면 파란색이 됩니다(삽입 안 됨).",
+            explain: "맞습니다. 빈 벡터의 앞조각(lacZα)과 숙주의 뒷조각이 만나 완성된 효소가 X-gal을 분해하면 파란색이 됩니다(삽입 안 됨).",
             source: "강의 이론(Blue-White screening)",
             tags: ["파란색"]
           },
@@ -9235,12 +9235,12 @@ window.GAME_CONTENT = {
             tags: ["Kan 평판"]
           },
           {
-            qid: "w08p_o09", type: "ox", level: 1, points: 7, limitSec: 20,
-            q: "IPTG는 lac operon을 유도하는 물질이다.",
-            answer: true,
-            explain: "맞습니다. IPTG는 lac operon의 발현을 유도합니다.",
-            source: "강의 이론(Blue-White screening)",
-            tags: ["IPTG"]
+            qid: "w08p_o13", type: "ox", level: 1, points: 7, limitSec: 20,
+            q: "pUC19 혼자서 β-galactosidase를 모두 만든다.",
+            answer: false,
+            explain: "아닙니다. pUC19에는 앞조각(lacZα)만 있어서, 숙주 대장균의 뒷조각과 만나야 효소가 완성됩니다(α-상보성).",
+            source: "강의 이론(재조합 및 형질전환) — Blue-White screening · 2026-09-26 대표님 지정 설명(α-상보성)",
+            tags: ["α-상보성","pUC19","앞조각"]
           },
           {
             qid: "w08p_o10", type: "ox", level: 1, points: 7, limitSec: 20,
@@ -9359,18 +9359,18 @@ window.GAME_CONTENT = {
           {
             qid: "w08p_r05", type: "order", level: 3, points: 11, limitSec: 45,
             q: "흰색(White) 콜로니가 생기는 원리를 순서대로 맞춰 보세요.",
-            steps: ["X-gal이 분해되지 않음", "목적 DNA가 lacZ 자리에 삽입됨", "흰색 콜로니", "β-galactosidase가 만들어지지 않음"],
+            steps: ["X-gal이 분해되지 않음", "목적 DNA가 lacZα에 끼워짐", "흰색 콜로니", "앞조각이 끊겨 효소가 되지 못함"],
             answer: [1, 3, 0, 2],
-            explain: "목적 DNA가 lacZ에 삽입 → β-galactosidase 안 만들어짐 → X-gal 안 분해 → 흰색 콜로니 순서입니다(삽입 성공).",
+            explain: "목적 DNA가 lacZα에 끼워짐 → 앞조각이 끊겨 효소가 되지 못함 → X-gal 안 분해 → 흰색 콜로니 순서입니다(삽입 성공).",
             source: "강의 이론(Blue-White screening)",
             tags: ["흰색 원리 순서"]
           },
           {
             qid: "w08p_r06", type: "order", level: 3, points: 11, limitSec: 45,
             q: "파란색(Blue) 콜로니가 생기는 원리를 순서대로 맞춰 보세요.",
-            steps: ["β-galactosidase가 X-gal을 분해", "lacZ(lac operon)가 발현됨", "파란색 콜로니"],
+            steps: ["완성된 효소가 X-gal을 분해", "빈 벡터의 앞조각(lacZα)과 숙주의 뒷조각이 만남(α-상보성)", "파란색 콜로니"],
             answer: [1, 0, 2],
-            explain: "lacZ 발현 → β-galactosidase가 X-gal 분해 → 파란색 콜로니 순서입니다(목적 DNA 삽입 안 됨).",
+            explain: "앞조각+뒷조각이 만나 효소 완성(α-상보성) → X-gal 분해 → 파란색 콜로니 순서입니다(목적 DNA 삽입 안 됨).",
             source: "강의 이론(Blue-White screening)",
             tags: ["파란색 원리 순서"]
           }
@@ -9649,7 +9649,7 @@ window.GAME_CONTENT = {
             ],
             answer: { suspect: "s1", evidence: ["k1", "k4"] },
             debrief:
-              "Blue/White 선별은 X-gal이 β-galactosidase에 의해 분해되면서 나는 색으로 판정합니다. IPTG는 그 발현을 유도합니다. " +
+              "Blue/White 선별은 X-gal이 β-galactosidase에 의해 분해되면서 나는 색으로 판정합니다. IPTG는 꺼져 있는 앞조각(lacZα) 유전자를 켜 줍니다. " +
               "평판에 IPTG·X-gal을 도말하지 않으면 콜로니가 자라도 색이 나지 않아 삽입 여부(흰색/파란색)를 구분할 수 없습니다. 색 " +
               "판정이 안 되면 IPTG·X-gal 도말을 빠뜨리지 않았는지 확인해야 합니다.",
             prescription: [
@@ -9684,7 +9684,7 @@ window.GAME_CONTENT = {
                 isEvidence: false,
                 source: "실험방법 08 [2]" },
               { id: "k3", order: 3, label: "단서 ③ — 원리 확인",
-                body: "재조합 DNA가 lacZ에 삽입되면 β-galactosidase가 안 만들어져 X-gal이 분해되지 않고 흰색이 된다는 원리가 강의에 있었음.",
+                body: "재조합 DNA가 lacZα에 끼워지면 앞조각이 끊겨 효소가 되지 못하므로 X-gal이 분해되지 않고 흰색이 된다는 원리가 강의에 있었음.",
                 readingHint: "원리상 흰색이 삽입 성공이다 → 파란색을 성공이라 본 것은 오독이다.",
                 isEvidence: true,
                 source: "강의 이론(Blue-White screening)" },
@@ -9705,12 +9705,12 @@ window.GAME_CONTENT = {
             ],
             answer: { suspect: "s1", evidence: ["k1", "k4"] },
             debrief:
-              "Blue/White 선별에서 목적 DNA가 lacZ에 삽입되면 lacZ가 망가져 β-galactosidase가 만들어지지 않고, X-gal이 분해되지 않아 " +
-              "흰색 콜로니가 됩니다(삽입 성공). 반대로 삽입되지 않은 원래 vector는 lacZ가 정상 발현돼 파란색이 됩니다. 따라서 흰색이 " +
+              "Blue/White 선별에서 목적 DNA가 lacZα에 끼워지면 앞조각이 끊겨 숙주의 뒷조각과 효소를 이루지 못하므로, X-gal이 분해되지 않아 " +
+              "흰색 콜로니가 됩니다(삽입 성공). 반대로 삽입되지 않은 빈 벡터는 앞조각이 온전해 효소가 되므로 파란색이 됩니다. 따라서 흰색이 " +
               "재조합 성공, 파란색이 실패입니다. 판독을 반대로 하면 결과 해석이 완전히 뒤집히므로 원리를 정확히 기억해야 합니다.",
             prescription: [
               "흰색 콜로니 = 목적 DNA 삽입 성공, 파란색 = 삽입 안 된 원래 vector로 판독한다",
-              "'삽입되면 lacZ가 망가져 색이 안 난다(흰색)'는 원리로 방향을 기억한다",
+              "'끼워지면 앞조각이 끊겨 효소가 안 되므로 색이 안 난다(흰색)'는 원리로 방향을 기억한다",
               "보고서에 색과 의미를 적을 때 방향을 다시 확인한다"
             ],
             source: "강의 이론(Blue-White screening)",
