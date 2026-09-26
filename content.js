@@ -8102,9 +8102,9 @@ window.GAME_CONTENT = {
             tags: ["소분","100 µL","1회 분량"]
           },
 
-          /* ===== ox (O/X · 20초) 12문 ===== */
+          /* ===== ox (O/X · 8초) 12문 ===== */
           {
-            qid: "w07p_o01", type: "ox", level: 1, points: 7, limitSec: 20,
+            qid: "w07p_o01", type: "ox", level: 1, points: 7, limitSec: 8,
             q: "재조합 DNA는 표적(목적) 유전자와 Vector를 결합한 것이다.",
             answer: true,
             explain: "맞습니다. 재조합 DNA = 표적 유전자 + Vector(플라스미드)이며, 키메라 DNA라고도 부릅니다.",
@@ -8112,7 +8112,7 @@ window.GAME_CONTENT = {
             tags: ["재조합 DNA"]
           },
           {
-            qid: "w07p_o02", type: "ox", level: 2, points: 9, limitSec: 20,
+            qid: "w07p_o02", type: "ox", level: 2, points: 9, limitSec: 8,
             q: "TA cloning은 PCR 산물 3' 말단의 A와 Vector의 T가 상보결합하는 원리를 쓴다.",
             answer: true,
             explain: "맞습니다. Taq가 PCR 산물 3' 말단에 A를 붙이고, T가 돌출된 Vector와 A-T 상보결합합니다.",
@@ -8120,7 +8120,7 @@ window.GAME_CONTENT = {
             tags: ["TA cloning","A-T"]
           },
           {
-            qid: "w07p_o03", type: "ox", level: 2, points: 9, limitSec: 20,
+            qid: "w07p_o03", type: "ox", level: 2, points: 9, limitSec: 8,
             q: "TOPO는 제한효소이다.",
             answer: false,
             explain: "아닙니다. TOPO는 Topoisomerase I 효소로, PCR 산물과 Vector의 결합을 도와줍니다(제한효소 아님).",
@@ -8128,7 +8128,7 @@ window.GAME_CONTENT = {
             tags: ["TOPO","Topoisomerase I"]
           },
           {
-            qid: "w07p_o04", type: "ox", level: 1, points: 7, limitSec: 20,
+            qid: "w07p_o04", type: "ox", level: 1, points: 7, limitSec: 8,
             q: "재조합 반응액은 증류수·Salt solution·PCR product·TOPO Vector로 구성한다.",
             answer: true,
             explain: "맞습니다. 이 네 가지를 순서대로 넣어 총 18 µL의 재조합 반응액을 만듭니다.",
@@ -8136,7 +8136,7 @@ window.GAME_CONTENT = {
             tags: ["반응액 구성"]
           },
           {
-            qid: "w07p_o05", type: "ox", level: 2, points: 9, limitSec: 20,
+            qid: "w07p_o05", type: "ox", level: 2, points: 9, limitSec: 8,
             q: "재조합 반응액은 TOPO Vector를 가장 먼저 넣는다.",
             answer: false,
             explain: "아닙니다. 증류수 → Salt solution → PCR product → TOPO Vector 순서로, 증류수를 가장 먼저 넣습니다.",
@@ -8144,7 +8144,7 @@ window.GAME_CONTENT = {
             tags: ["넣는 순서"]
           },
           {
-            qid: "w07p_o06", type: "ox", level: 1, points: 7, limitSec: 20,
+            qid: "w07p_o06", type: "ox", level: 1, points: 7, limitSec: 8,
             q: "완성된 재조합 Vector는 시료 5 µL로 전기영동해 확인한다.",
             answer: true,
             explain: "맞습니다. 완성된 시료 5 µL만 이용해 전기영동으로 확인합니다.",
@@ -8152,7 +8152,7 @@ window.GAME_CONTENT = {
             tags: ["전기영동","5 µL"]
           },
           {
-            qid: "w07p_o07", type: "ox", level: 1, points: 7, limitSec: 20,
+            qid: "w07p_o07", type: "ox", level: 1, points: 7, limitSec: 8,
             q: "Competent cell은 외부 DNA를 쉽게 흡수하도록 처리한 세포이다.",
             answer: true,
             explain: "맞습니다. 물리·화학적 처리로 외부 DNA 흡수율을 높인 세포입니다.",
@@ -8160,7 +8160,7 @@ window.GAME_CONTENT = {
             tags: ["competent cell"]
           },
           {
-            qid: "w07p_o08", type: "ox", level: 2, points: 9, limitSec: 20,
+            qid: "w07p_o08", type: "ox", level: 2, points: 9, limitSec: 8,
             q: "세포막과 DNA는 모두 음전하라 서로 반발하므로 중화가 필요하다.",
             answer: true,
             explain: "맞습니다. 그래서 CaCl₂(Ca²⁺)로 세포막 음전하를 중화해 DNA 흡수율을 높입니다.",
@@ -8168,7 +8168,7 @@ window.GAME_CONTENT = {
             tags: ["중화","음전하"]
           },
           {
-            qid: "w07p_o09", type: "ox", level: 1, points: 7, limitSec: 20,
+            qid: "w07p_o09", type: "ox", level: 1, points: 7, limitSec: 8,
             q: "Competent cell 제조에는 CaCl₂를 쓴다.",
             answer: true,
             explain: "맞습니다. 100 mM CaCl₂로 처리합니다(RbCl₂ 처리법도 있습니다).",
@@ -8176,7 +8176,7 @@ window.GAME_CONTENT = {
             tags: ["CaCl2"]
           },
           {
-            qid: "w07p_o10", type: "ox", level: 2, points: 9, limitSec: 20,
+            qid: "w07p_o10", type: "ox", level: 2, points: 9, limitSec: 8,
             q: "Competent cell 제조는 온도가 올라가도 상관없어 상온에서 편하게 해도 된다.",
             answer: false,
             explain: "아닙니다. 온도가 오르면 competent 상태가 나빠지므로 모든 조작을 얼음 위에서 빠르게 해야 합니다.",
@@ -8184,7 +8184,7 @@ window.GAME_CONTENT = {
             tags: ["저온 유지"]
           },
           {
-            qid: "w07p_o11", type: "ox", level: 1, points: 7, limitSec: 20,
+            qid: "w07p_o11", type: "ox", level: 1, points: 7, limitSec: 8,
             q: "제조한 Competent cell은 냉장(4℃)에 보관한다.",
             answer: false,
             explain: "아닙니다. -80℃ Deepfreezer에 보관합니다(4℃ 냉장이 아님).",
@@ -8192,7 +8192,7 @@ window.GAME_CONTENT = {
             tags: ["-80℃ 보관"]
           },
           {
-            qid: "w07p_o12", type: "ox", level: 1, points: 7, limitSec: 20,
+            qid: "w07p_o12", type: "ox", level: 1, points: 7, limitSec: 8,
             q: "Competent cell은 1.5 mL E-tube에 100 µL씩 소분한다.",
             answer: true,
             explain: "맞습니다. 형질전환 1회 분량인 100 µL씩 소분해 보관합니다.",
@@ -8663,7 +8663,7 @@ window.GAME_CONTENT = {
         course: "유전자분석 (동양미래대학교 바이오융합공학과 2학년 · 2026-2학기)",
         weekLabel: "7주차",
         experimentNo: "실험 6",
-        experimentName: "Vector 및 Competent cell 제조 (재조합 DNA 제조 · Competent cell 제조)",
+        experimentName: "Vector 및 Competent cell 제조",   /* O-0067 B11: 작성본 머리말(meta.expName)과 통일 */
         dateLabel: "2026-10-07",
         paper: "A4",
         gradeNote: "실험보고서 — 다음 실험 시작 전 제출",
@@ -8682,35 +8682,39 @@ window.GAME_CONTENT = {
          * type:"images"는 conditions 개수만큼 이미지 업로드 슬롯을 그린다(w05·w06과 동일 엔진). */
         sections: [
           {
-            key: "vector", no: 1, label: "사진 ① — 재조합 DNA(Vector) 제조 확인 사진",
+            key: "vector", no: 1, label: "사진 ① — 재조합 DNA(Vector) 제조 확인",
             type: "images",
+            slotNos: ["①"],   /* O-0067 B12: 칸 번호를 섹션 사진 번호와 맞춤(공통 "1)" 대신) */
             hint: "재조합 DNA(Vector) 제조와 관련된 사진을 1장 올린다. 완성된 시료 5 µL를 전기영동해 재조합 DNA를 확인한 결과 사진, 또는 반응액을 조성한 장면을 담는다.",
             conditions: [
               "재조합 DNA(Vector) 제조 확인 사진"
             ]
           },
           {
-            key: "compcacl", no: 2, label: "사진 ② — Competent cell 제조 ① : 100 mM CaCl₂로 풀어 30 mL 2개로 만든 것",
+            key: "compcacl", no: 2, label: "사진 ② — Competent cell 제조 1단계: 100 mM CaCl₂로 풀어 30 mL 2개로 만든 것",
             type: "images",
+            slotNos: ["②"],
             hint: "미리 차갑게 식혀둔 100 mM CaCl₂ 용액을 15 mL씩 넣고 마이크로피펫으로 풀어준 뒤, 두 개씩 혼합하여 30 mL 2개로 만든 코니칼 튜브를 찍어 1장 올린다(실험방법 07 [2] ③).",
             conditions: [
-              "Competent cell 제조 ① — 100 mM CaCl₂ 처리 후 30 mL 2개"
+              "100 mM CaCl₂ 처리 후 30 mL 2개 (1단계)"
             ]
           },
           {
-            key: "compglyc", no: 3, label: "사진 ③ — Competent cell 제조 ② : 15% Glycerol 포함 CaCl₂로 풀어 5 mL 1개로 만든 것",
+            key: "compglyc", no: 3, label: "사진 ③ — Competent cell 제조 2단계: 15% Glycerol 포함 CaCl₂로 풀어 5 mL 1개로 만든 것",
             type: "images",
+            slotNos: ["③"],
             hint: "미리 차갑게 식혀둔 100 mM CaCl₂(15% Glycerol 포함) 용액을 2.5 mL씩 넣고 마이크로피펫으로 풀어준 뒤, 두 개의 코니칼 튜브를 혼합하여 5 mL 1개로 만든 것을 찍어 1장 올린다(실험방법 07 [2] ⑤).",
             conditions: [
-              "Competent cell 제조 ② — 15% Glycerol 포함 CaCl₂ 처리 후 5 mL 1개"
+              "15% Glycerol 포함 CaCl₂ 처리 후 5 mL 1개 (2단계)"
             ]
           },
           {
-            key: "compaliquot", no: 4, label: "사진 ④ — Competent cell 제조 ③ : 1.5 mL E-tube에 100 µL씩 소분한 최종 모습",
+            key: "compaliquot", no: 4, label: "사진 ④ — Competent cell 제조 3단계: 1.5 mL E-tube에 100 µL씩 소분한 최종 모습",
             type: "images",
+            slotNos: ["④"],
             hint: "멸균하여 미리 차갑게 식혀둔 1.5 mL E-tube에 100 µL씩 소분한 최종 competent cell을 찍어 1장 올린다(실험방법 07 [2] ⑥).",
             conditions: [
-              "Competent cell 제조 ③ — 1.5 mL E-tube에 100 µL씩 소분"
+              "1.5 mL E-tube에 100 µL씩 소분 (3단계)"
             ]
           },
           {
@@ -9169,9 +9173,9 @@ window.GAME_CONTENT = {
             tags: ["13000 rpm","1분"]
           },
 
-          /* ===== ox (O/X · 20초) 12문 ===== */
+          /* ===== ox (O/X · 8초) 12문 ===== */
           {
-            qid: "w08p_o01", type: "ox", level: 1, points: 7, limitSec: 20,
+            qid: "w08p_o01", type: "ox", level: 1, points: 7, limitSec: 8,
             q: "형질전환은 외부 DNA를 세포에 도입해 유전적 변화를 일으키는 것이다.",
             answer: true,
             explain: "맞습니다. 형질전환(Transformation)의 정의입니다(1928 Griffith가 처음 밝힘).",
@@ -9179,7 +9183,7 @@ window.GAME_CONTENT = {
             tags: ["형질전환"]
           },
           {
-            qid: "w08p_o02", type: "ox", level: 1, points: 7, limitSec: 20,
+            qid: "w08p_o02", type: "ox", level: 1, points: 7, limitSec: 8,
             q: "Heat-shock은 42℃에서 30초간 준다.",
             answer: true,
             explain: "맞습니다. 42℃ 항온수조에서 30초간 heat-shock합니다.",
@@ -9187,7 +9191,7 @@ window.GAME_CONTENT = {
             tags: ["heat-shock","42℃"]
           },
           {
-            qid: "w08p_o03", type: "ox", level: 2, points: 9, limitSec: 20,
+            qid: "w08p_o03", type: "ox", level: 2, points: 9, limitSec: 8,
             q: "Heat-shock 직후에는 세포를 37℃에 그대로 둔다.",
             answer: false,
             explain: "아닙니다. heat-shock 직후 즉시 얼음으로 옮겨 2분간 식힙니다.",
@@ -9195,7 +9199,7 @@ window.GAME_CONTENT = {
             tags: ["즉시 얼음"]
           },
           {
-            qid: "w08p_o04", type: "ox", level: 2, points: 9, limitSec: 20,
+            qid: "w08p_o04", type: "ox", level: 2, points: 9, limitSec: 8,
             q: "Heat-shock은 세포막에 모공을 만들어 DNA를 흡수시키는 원리다.",
             answer: true,
             explain: "맞습니다. 짧은 온도 변화가 세포막에 모공을 만들고 삼투압으로 DNA가 들어갑니다.",
@@ -9203,7 +9207,7 @@ window.GAME_CONTENT = {
             tags: ["heat-shock 원리"]
           },
           {
-            qid: "w08p_o05", type: "ox", level: 2, points: 9, limitSec: 20,
+            qid: "w08p_o05", type: "ox", level: 2, points: 9, limitSec: 8,
             q: "SOC 회복배양은 항생제 저항 단백질을 발현시키기 위한 것이다.",
             answer: true,
             explain: "맞습니다. 회복배양 동안 세포가 회복하고 항생제 저항 유전자가 발현됩니다.",
@@ -9211,7 +9215,7 @@ window.GAME_CONTENT = {
             tags: ["회복배양"]
           },
           {
-            qid: "w08p_o06", type: "ox", level: 2, points: 9, limitSec: 20,
+            qid: "w08p_o06", type: "ox", level: 2, points: 9, limitSec: 8,
             q: "Blue-White 선별에서 흰색 콜로니는 목적 DNA 삽입 성공을 뜻한다.",
             answer: true,
             explain: "맞습니다. 목적 DNA가 lacZα에 끼워지면 앞조각이 끊겨 효소가 되지 못하므로 흰색 콜로니가 됩니다(삽입 성공).",
@@ -9219,7 +9223,7 @@ window.GAME_CONTENT = {
             tags: ["흰색","삽입 성공"]
           },
           {
-            qid: "w08p_o07", type: "ox", level: 2, points: 9, limitSec: 20,
+            qid: "w08p_o07", type: "ox", level: 2, points: 9, limitSec: 8,
             q: "파란색 콜로니는 β-galactosidase가 X-gal을 분해해 생긴다.",
             answer: true,
             explain: "맞습니다. 빈 벡터의 앞조각(lacZα)과 숙주의 뒷조각이 만나 완성된 효소가 X-gal을 분해하면 파란색이 됩니다(삽입 안 됨).",
@@ -9227,7 +9231,7 @@ window.GAME_CONTENT = {
             tags: ["파란색"]
           },
           {
-            qid: "w08p_o08", type: "ox", level: 2, points: 9, limitSec: 20,
+            qid: "w08p_o08", type: "ox", level: 2, points: 9, limitSec: 8,
             q: "재조합 DNA(Vector)를 삽입한 대장균은 Ampicillin 평판에 도말한다.",
             answer: false,
             explain: "아닙니다. 재조합 DNA(Vector)는 Kanamycin 평판에, pUC19는 Ampicillin 평판에 도말합니다.",
@@ -9235,7 +9239,7 @@ window.GAME_CONTENT = {
             tags: ["Kan 평판"]
           },
           {
-            qid: "w08p_o13", type: "ox", level: 1, points: 7, limitSec: 20,
+            qid: "w08p_o13", type: "ox", level: 1, points: 7, limitSec: 8,
             q: "pUC19 혼자서 β-galactosidase를 모두 만든다.",
             answer: false,
             explain: "아닙니다. pUC19에는 앞조각(lacZα)만 있어서, 숙주 대장균의 뒷조각과 만나야 효소가 완성됩니다(α-상보성).",
@@ -9243,7 +9247,7 @@ window.GAME_CONTENT = {
             tags: ["α-상보성","pUC19","앞조각"]
           },
           {
-            qid: "w08p_o10", type: "ox", level: 1, points: 7, limitSec: 20,
+            qid: "w08p_o10", type: "ox", level: 1, points: 7, limitSec: 8,
             q: "도말한 평판은 37℃에서 48시간 배양한다.",
             answer: true,
             explain: "맞습니다. 37℃ 배양기에서 뚜껑이 아래로 가도록 48시간 배양합니다.",
@@ -9251,7 +9255,7 @@ window.GAME_CONTENT = {
             tags: ["48시간"]
           },
           {
-            qid: "w08p_o11", type: "ox", level: 1, points: 7, limitSec: 20,
+            qid: "w08p_o11", type: "ox", level: 1, points: 7, limitSec: 8,
             q: "회복배양은 SOC 배지에서 37℃로 1시간 한다.",
             answer: true,
             explain: "맞습니다. S.O.C. 배지를 넣고 37℃ 진탕배양기 225 rpm에서 1시간 회복배양합니다.",
@@ -9259,7 +9263,7 @@ window.GAME_CONTENT = {
             tags: ["회복배양","1시간"]
           },
           {
-            qid: "w08p_o12", type: "ox", level: 1, points: 7, limitSec: 20,
+            qid: "w08p_o12", type: "ox", level: 1, points: 7, limitSec: 8,
             q: "Competent cell에 DNA를 넣은 뒤 얼음에 30분간 둔다.",
             answer: true,
             explain: "맞습니다. DNA를 넣고 혼합한 뒤 얼음에 30분간 둡니다.",
@@ -9731,7 +9735,7 @@ window.GAME_CONTENT = {
         course: "유전자분석 (동양미래대학교 바이오융합공학과 2학년 · 2026-2학기)",
         weekLabel: "8주차",
         experimentNo: "실험 7",
-        experimentName: "형질전환 (Transformation · Blue-White 선별)",
+        experimentName: "형질전환 (Blue-White 선별)",   /* O-0067 B11: 작성본 머리말(meta.expName)과 통일 */
         dateLabel: "2026-10-14",
         paper: "A4",
         gradeNote: "실험보고서 — 다음 실험 시작 전 제출",
@@ -9753,6 +9757,7 @@ window.GAME_CONTENT = {
             key: "tfculture", no: 1, label: "사진 ①·② — 형질전환 배양액 (S.O.C. 회복배양 후)",
             type: "images",
             cols: 2,
+            slotNos: ["①", "②"],   /* O-0067 B12: 칸 번호를 섹션 사진 번호와 맞춤 */
             hint: "S.O.C. 배지 250 µL를 넣고 37℃ 진탕 배양기에서 225 rpm으로 1시간 회복배양을 마친 배양액을 찍는다(실험방법 08 [1] ④). 왼쪽 칸에는 재조합 DNA(Vector)를 넣은 대장균 배양액, 오른쪽 칸에는 pUC19를 넣은 대장균 배양액을 올린다(라벨이 보이게).",
             conditions: [
               "Vector 넣은 배양액",
@@ -9763,6 +9768,7 @@ window.GAME_CONTENT = {
             key: "tfplate", no: 2, label: "사진 ③·④ — 평판배지 결과 (37℃ 48시간 배양 후)",
             type: "images",
             cols: 2,
+            slotNos: ["③", "④"],
             hint: "37℃ 배양기에서 뚜껑이 아래로 가도록 48시간 배양한 평판배지 결과를 찍는다(실험방법 08 [2] ④). 왼쪽 칸에는 Vector를 도말한 Kanamycin 평판, 오른쪽 칸에는 pUC19를 도말한 Ampicillin 평판을 올린다. 콜로니 유무와 색(흰색/파란색)이 보이게 찍는다.",
             conditions: [
               "Kanamycin 평판 (Vector)",

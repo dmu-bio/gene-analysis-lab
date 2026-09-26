@@ -735,6 +735,15 @@ function weekPack(id){
 var AW = null;                                  /* 활성 주차 콘텐츠 (boot 에서 설정) */
 function labById(id){ var r = null; (C.labs || []).forEach(function(l){ if(l.id === id) r = l; }); return r; }
 function curLab(){ return labById(ACTIVE_WEEK) || { weekLabel:"", title:"", dateLabel:"", unlockDate:"" }; }
+/* 2026-09-26(O-0067 B8): 저장 방식 안내 — 서버 모드에서 "이 기기에만 저장" 고정 문구(content.js meta.storageNote)가 사실과 달라 모드별로 바꾼다. */
+function storageNoteText(){
+  if(window.GLR && GLR.on) return "학습·미션·보고서는 서버에 저장되어 폰·PC 어디서나 이어서 할 수 있습니다.";
+  return (C && C.meta && C.meta.storageNote) || "";
+}
+/* 2026-09-26(O-0067 B13): 보고서 양식의 "다음 실험 시작 전 제출" 문구(콘텐츠 원문)를 실제 마감 규칙에 맞춰 화면에서만 바꿔 보여 준다(콘텐츠는 그대로). */
+function fixDeadlinePhrase(s){
+  return String(s || "").replace(/다음 실험 시작 전(까지)? 제출/g, "제출 마감은 보고서 화면에 표시된 기한(다음 수업일 23:59)까지");
+}
 
 /* ==========================================================================
  * 결과보고서 제출 기한 — 주차별로 둔다(2주차 w02, 3주차 w03).
@@ -1288,6 +1297,8 @@ function reportLocalCopy(sid, data, wk){
   return lite;
 }
 function saveReport(sid, data){
+  /* 2026-09-26(O-0067 B6): 교수 신원(학번 없음)·빈 학번으로는 보고서를 저장하지 않는다(교수 미리보기 안전장치). */
+  if(!sid || (state && state.role === "prof")) return false;
   var cloud = !!(window.GLR && GLR.on);
   var localOk = false;
   /* 클라우드 모드: 로컬에는 '가벼운 사본'(사진=경로)만 저장한다(base64 누적으로 기기가 꽉 차는 것을 막는다). */
@@ -1797,7 +1808,8 @@ function showLogin(){
   h += '<div class="k">DMU 바이오융합공학과 · 유전자분석</div>';
   h += '<h1>유전자분석 실습</h1>';
   h += '<div class="sub">실험 결과보고서 작성 · 제출 + 학습 · 미션</div>';
-  h += '<div class="chips"><span class="chip mint">' + esc(lab.weekLabel || "2주차") + ' · ' + esc(lab.title || "세포배양") + ' 열림</span></div></div>';
+  /* 2026-09-26(O-0067 B14): 예전엔 부팅 주차("2주차 · 세포배양 열림")를 고정 표시해 실제 공개 상태와 어긋났다 → 중립 안내로 바꾼다. */
+  h += '<div class="chips"><span class="chip mint">실습 주차는 교수님이 시작하면 열립니다</span></div></div>';
 
   if(!roleGateStep.role){
     h += '<div class="greet">' + coli("idle", "static") + '<div class="speech">로그인해 주세요. 학생은 <b>이름·학번</b>, 교수는 <b>이름·교번</b>으로 들어갑니다.</div></div>';
@@ -1821,7 +1833,7 @@ function showLogin(){
   h += '<p class="small" style="margin:6px 0 0">' + ((window.GLR&&GLR.on) ? '✔ 입력하신 이름·번호를 서버 명단과 대조해 로그인합니다. 기록은 서버에 저장돼 기기가 바뀌어도 이어집니다.' : '⚠ 이 기기 저장 모드 — 기록이 이 기기 안에만 남습니다.') + '</p></div>';
   h += '<button class="btn primary" id="rgStart" type="button">' + (isProf ? "교수 로그인 🧑‍🏫" : "학생 로그인 🧑‍🎓") + '</button>';
   h += '<button class="btn ghost center" id="rgBack" type="button">← 역할 다시 고르기</button>';
-  h += '<p class="small" style="text-align:center">' + esc(C.meta.storageNote || "") + '</p>';
+  h += '<p class="small" style="text-align:center">' + esc(storageNoteText()) + '</p>';
   h += '<div style="height:30px"></div>';
   $("tutInner").innerHTML = h;
   $("tutorial").classList.add("on");
@@ -1996,7 +2008,7 @@ RENDER.labs = function(){
   });
 
   h += '<button class="btn sm ghost center" type="button" id="logoutBtn" style="margin-top:12px">🚪 로그아웃</button>';
-  h += '<p class="small" style="margin-top:10px">' + esc(C.meta.storageNote || "") + '</p>';
+  h += '<p class="small" style="margin-top:10px">' + esc(storageNoteText()) + '</p>';
   h += '<p class="small">※ 열림 여부는 교수님의 「주차 시작」 여부로 정해집니다(날짜가 지나도 교수님이 시작해야 열립니다).' + ((window.GLR&&GLR.on) ? ' 학습·미션·보고서는 서버에 저장돼 기기가 바뀌어도 이어집니다.' : ' (이 기기 저장 모드 — 기록이 이 기기에만 남습니다.)') + '</p>';
 
   var sc = $("sc-labs"); sc.innerHTML = h;
@@ -2132,7 +2144,7 @@ RENDER.lobby = function(){
   h += '<button class="btn sm center" type="button" data-go="growth">내 기록<br><span class="small">' + (state.mission.passed ? '미션 합격' : (unlocked ? '미션 대기' : '학습 중')) + '</span></button></div>';
   h += '<button class="btn sm ghost center" type="button" data-go="summary">📄 이 주차 요약 카드</button>';
 
-  h += '<p class="small" style="margin-top:14px">' + esc(C.meta.storageNote || "") + '</p>';
+  h += '<p class="small" style="margin-top:14px">' + esc(storageNoteText()) + '</p>';
   if(!storageOk) h += '<p class="small" style="color:var(--amber)">※ 이 브라우저에서는 진도 저장이 안 됩니다. 창을 닫으면 기록이 사라집니다.</p>';
 
   var sc = $("sc-lobby");
@@ -2313,7 +2325,9 @@ function teamStatusCard(){
 
 /* 로그인 학생 본인의 보고서 작성 화면을 연다 */
 function openReportSelf(){
-  ctx.report = { sid: state.studentId, name: state.studentName, readonly: false, view: "edit" };
+  /* 2026-09-26(O-0067 B6): 교수의 「학생 화면 미리보기」에서 여는 보고서는 읽기 전용(교수 신원엔 학번이 없어 저장하면 서버가 거부했다). */
+  var _pv = (state.role === "prof");
+  ctx.report = { sid: state.studentId, name: state.studentName, readonly: _pv, profPreview: _pv, view: "edit" };
   go("report");
 }
 
@@ -2334,7 +2348,11 @@ function reportMetaMap(def, sid, name, data, wk){
   if(m.name) m.name.value = name || "";
   return m;
 }
-function reportFileBase(sid){ return "CellCulture_Report_" + (sid || "student"); }
+/* 2026-09-26(O-0067 B10): 파일명에 주차를 넣는다(예: GeneAnalysis_W08_Report_20250001). 예전엔 모든 주차가 CellCulture_Report_ 로 같아 덮어쓰기 혼동. */
+function reportFileBase(sid, wk){
+  var w = String(wk || ACTIVE_WEEK || "").replace(/^w/i, "");
+  return "GeneAnalysis_W" + (w || "00") + "_Report_" + (sid || "student");
+}
 
 /* 이미지 파일 → 「긴 변」 최대 maxEdge 로 리사이즈 + JPEG 압축 → base64 dataURL. 순수 브라우저 API.
  * 폰으로 찍은 수십 MB·수천만 화소 원본도 올라가게 만든 것이 핵심:
@@ -2398,6 +2416,9 @@ function resizeImageFile(file, maxEdge, cb){
   }catch(e){ fromDataURL(); }
 }
 
+/* 2026-09-26(O-0067 B12): 사진 칸 머리 번호. 섹션에 slotNos(예: ["③","④"])가 있으면 그 표기를 쓰고,
+   없으면 예전과 똑같이 "1) 2)"를 붙인다(w02~w06 표시 무변경 — 옵션은 w07·w08 content 에만 있다). */
+function slotNoLabel(s, i){ return (s && Array.isArray(s.slotNos) && s.slotNos[i]) ? (s.slotNos[i] + ' ') : ((i + 1) + ') '); }
 /* 이미지 업로드 섹션(배양 전/후) — 조건별 슬롯 그리드(편집 폼용) */
 function buildImageSlots(s, data, readonly){
   var conds = s.conditions || [];
@@ -2408,7 +2429,7 @@ function buildImageSlots(s, data, readonly){
     var durl = arr[i] || "";
     var iid = "imgf_" + s.key + "_" + i;
     h += '<div class="img-slot">';
-    h += '<div class="is-cond">' + (i + 1) + ') ' + esc(cond) + '</div>';
+    h += '<div class="is-cond">' + slotNoLabel(s, i) + esc(cond) + '</div>';
     h += '<div class="is-box">' + (durl
         ? '<img src="' + durl + '" alt="' + esc(cond) + '">'
         : '<div class="is-ph">사진 없음<br>' + (readonly ? '(미첨부)' : '아래 버튼으로 올려요') + '</div>') + '</div>';
@@ -2525,7 +2546,7 @@ function buildReportHTML(sid, name, data, wk){
       h += '<div class="p-imgrid">';
       conds.forEach(function(cond, i){
         var durl = arr[i] || "";
-        h += '<div class="p-imgcell"><div class="p-imgcap">' + (i + 1) + ') ' + esc(cond) + '</div>';
+        h += '<div class="p-imgcell"><div class="p-imgcap">' + slotNoLabel(s, i) + esc(cond) + '</div>';
         h += durl ? '<img src="' + durl + '" alt="' + esc(cond) + '">' : '<div class="p-imgno">(미첨부)</div>';
         h += '</div>';
       });
@@ -2541,7 +2562,7 @@ function buildReportHTML(sid, name, data, wk){
       h += '<div class="p-imgrid">';
       conds2.forEach(function(cond, i){
         var durl = arr2[i] || "";
-        h += '<div class="p-imgcell"><div class="p-imgcap">' + (i + 1) + ') ' + esc(cond) + '</div>';
+        h += '<div class="p-imgcell"><div class="p-imgcap">' + slotNoLabel(s, i) + esc(cond) + '</div>';
         h += durl ? '<img src="' + durl + '" alt="' + esc(cond) + '">' : '<div class="p-imgno">(미첨부)</div>';
         h += '</div>';
       });
@@ -2574,10 +2595,10 @@ function downloadReportWord(sid, name, data, wk){
     var blob = new Blob(["﻿", html], { type: "application/msword" });
     var url = URL.createObjectURL(blob);
     var a = document.createElement("a");
-    a.href = url; a.download = reportFileBase(sid) + ".doc";
+    a.href = url; a.download = reportFileBase(sid, wk) + ".doc";
     document.body.appendChild(a); a.click();
     setTimeout(function(){ URL.revokeObjectURL(url); if(a.parentNode) a.parentNode.removeChild(a); }, 1500);
-    toast("워드 파일을 내려받았습니다: " + reportFileBase(sid) + ".doc");
+    toast("워드 파일을 내려받았습니다: " + reportFileBase(sid, wk) + ".doc");
   }catch(e){
     toast("이 브라우저에서는 파일 다운로드가 막혀 있습니다. Chrome/Edge에서 파일을 직접 열어 주세요.");
   }
@@ -2670,8 +2691,16 @@ RENDER.report = function(){
   var h = "";
   h += '<button class="btn sm ghost" type="button" id="rpBack" style="margin-bottom:10px;text-align:left">← ' + (state.role==="prof"?"확인 대시보드로":"실습 허브로") + '</button>';
   h += '<h2 class="sc-h">📝 실험 결과보고서 — ' + esc(def.title || lab.title || "") + '</h2>';
-  h += '<p class="sc-p">' + esc(def.gradeNote || "") + (readonly ? ' · A4 미리보기·워드·PDF로 내려받을 수 있어요.' : ' · 작성한 뒤 [보고서 제출]을 눌러 주세요.') + '</p>';
-  if(readonly){
+  h += '<p class="sc-p">' + esc(fixDeadlinePhrase(def.gradeNote)) + ((readonly && !R.profPreview) ? ' · A4 미리보기·워드·PDF로 내려받을 수 있어요.' : ' · 작성한 뒤 [보고서 제출]을 눌러 주세요.') + '</p>';
+  /* 2026-09-26(O-0067 B13): "보고서 화면에 표시된 기한"이 실제로 이 화면에 보이게 마감 문구를 함께 표시한다(학생 작성 화면·교수 미리보기). */
+  var _dw = R.week || ACTIVE_WEEK;
+  if((!readonly || R.profPreview) && effectiveDeadline(_dw)){
+    var _dover = reportDeadlinePassed(_dw);
+    h += '<p class="small" style="margin:-4px 0 10px;font-weight:700;color:' + (_dover ? 'var(--red)' : 'var(--mint)') + '">' + esc(_dover ? deadlineOverFor(_dw) : deadlineLabelFor(_dw)) + '</p>';
+  }
+  if(readonly && R.profPreview){
+    h += '<div class="card tight"><div class="small" style="color:var(--amber)">🧑‍🏫 교수 미리보기 — 학생이 보는 보고서 화면입니다. <b>읽기 전용</b>이라 입력·사진 올리기·임시저장·제출이 되지 않습니다(저장되지 않음).</div></div>';
+  }else if(readonly){
     var _rst = reportStatusOf(data, R.week);
     var _rstBadge = (_rst === "제출(미완성)") ? ' <span class="pill amber">제출(미완성)</span>'
                   : (_rst === "제출") ? ' <span class="pill ok">제출</span>'
@@ -2717,6 +2746,9 @@ RENDER.report = function(){
   if(!readonly){
     h += '<div class="row"><button class="btn sm" type="button" id="rfSave">💾 임시 저장</button>';
     h += '<button class="btn ' + (data.submitted ? '' : 'primary') + '" type="button" id="rfSubmit">' + (data.submitted ? '✅ 제출됨 — 다시 제출' : '보고서 제출') + '</button></div>';
+  }else if(R.profPreview){
+    h += '<div class="row"><button class="btn sm" type="button" disabled>💾 임시 저장</button>';
+    h += '<button class="btn" type="button" disabled>보고서 제출</button></div>';
   }else{
     h += '<div class="row"><button class="btn sm" type="button" id="rfPreview">A4 미리보기 👁</button>';
     h += '<button class="btn sm" type="button" id="rfWord">📄 워드(.doc)</button></div>';
@@ -2743,7 +2775,29 @@ RENDER.report = function(){
     });
     return d;
   }
+  /* 🔴 2026-09-26(O-0067 B2): 학생 보고서의 「저장·제출 진입점」에서 마감을 다시 확인한다.
+     허브 버튼만 막던 예전에는, 마감 전에 편집 화면을 열어 두면 마감 뒤에도 저장·제출이 됐다.
+     ⚠️ 여기서는 새 저장·제출만 막는다. 마감 전에 이미 전송 큐(GLR.q)에 들어간 사진 업로드·재시도는 건드리지 않는다. */
+  function reportSaveBlocked(){
+    if(readonly || !state || state.role !== "student") return false;
+    var wkB = R.week || ACTIVE_WEEK;
+    if(!reportDeadlinePassed(wkB)) return false;
+    var msg = "제출 기한이 지나 저장·제출되지 않습니다.";
+    toast(msg);
+    if(!sc.querySelector("#rfDlBlock")){
+      var box = document.createElement("div");
+      box.id = "rfDlBlock"; box.className = "card tight"; box.style.cssText = "border-color:#f3b4b4;background:#fdecec";
+      box.innerHTML = '<div class="small" style="color:var(--red)">⛔ <b>' + esc(msg) + '</b> ' + esc(deadlineOverFor(wkB)) +
+        ' — 지금 화면에서 고친 내용은 저장되지 않습니다. 기한 전에 저장·제출한 내용과 이미 보내는 중이던 사진은 그대로 남습니다.</div>';
+      var anchor = sc.querySelector("h2.sc-h");
+      if(anchor && anchor.parentNode) anchor.parentNode.insertBefore(box, anchor.nextSibling); else sc.insertBefore(box, sc.firstChild);
+    }
+    sc.querySelectorAll("textarea,[data-tbl],#rfDate,#rfTeam").forEach(function(el){ el.readOnly = true; });
+    sc.querySelectorAll("#rfSave,#rfSubmit,[data-imgpick],[data-imgdel]").forEach(function(el){ el.disabled = true; });
+    return true;
+  }
   function persist(silent){
+    if(reportSaveBlocked()) return collect();   /* 기한 경과: 저장하지 않는다(화면 표시용으로만 모음) */
     var d = collect();
     d.savedAt = today();
     var ok = saveReport(R.sid, d);
@@ -2756,6 +2810,7 @@ RENDER.report = function(){
   if($("rfWord")) $("rfWord").onclick = function(){ var d = readonly ? data : persist(true); downloadReportWord(R.sid, R.name, d, R.week); };
   if($("rfPdf")) $("rfPdf").onclick = function(){ var d = readonly ? data : persist(true); printReportPDF(R.sid, R.name, d, R.week); };
   if($("rfSubmit")) $("rfSubmit").onclick = function(){
+    if(reportSaveBlocked()) return;   /* O-0067 B2 */
     var d = collect(); d.submitted = true; d.submittedAt = today(); d.savedAt = today();
     saveReport(R.sid, d); R.data = d;
     toast("보고서를 제출했습니다. (교수 확인 화면에 기록됩니다)");
@@ -2776,10 +2831,12 @@ RENDER.report = function(){
       inp.onchange = function(){
         var file = inp.files && inp.files[0];
         if(!file) return;
+        if(reportSaveBlocked()){ inp.value = ""; return; }   /* O-0067 B2: 기한 경과 후 새 사진 저장 차단 */
         var key = inp.getAttribute("data-imgfile"), idx = parseInt(inp.getAttribute("data-idx"), 10);
         toast("사진 처리 중…");
         resizeImageFile(file, 1280, function(durl, err){
           if(err || !durl){ toast(err || "사진을 불러오지 못했습니다."); return; }
+          if(reportSaveBlocked()) return;           /* 변환 도중 기한이 지난 경우 */
           collect();                               /* 고찰 등 현재 입력 보존 */
           var d = R.data;
           if(!d.images) d.images = {};
@@ -2801,13 +2858,17 @@ RENDER.report = function(){
     sc.querySelectorAll("[data-imgdel]").forEach(function(b){
       b.onclick = function(){
         var key = b.getAttribute("data-imgdel"), idx = parseInt(b.getAttribute("data-idx"), 10);
-        collect();
-        var d = R.data;
-        if(d.images && Array.isArray(d.images[key])) d.images[key][idx] = "";
-        d.savedAt = today();
-        saveReport(R.sid, d);
-        toast("사진을 삭제했습니다.");
-        RENDER.report();
+        /* 2026-09-26(O-0067 B17): 한 번 눌러 바로 지워지던 것을 확인창 뒤에 실행. 확인 뒤 삭제 로직은 예전과 동일. */
+        askConfirm("이 사진을 삭제할까요?\n삭제하면 이 칸이 비고, 다시 올려야 합니다.", function(){
+          if(reportSaveBlocked()) return;
+          collect();
+          var d = R.data;
+          if(d.images && Array.isArray(d.images[key])) d.images[key][idx] = "";
+          d.savedAt = today();
+          saveReport(R.sid, d);
+          toast("사진을 삭제했습니다.");
+          RENDER.report();
+        }, { yes:"삭제" });
       };
     });
     /* 🔴 슬롯별 저장 상태 초기 표시(2026-09-10) — 이미 서버에 저장된 사진은 "✓ 서버에 저장됨", 방금 올려 아직 전송 중인 사진은 "저장 중…" */
@@ -2831,6 +2892,7 @@ function renderReportPreview(sc, R, def){
   $("rvWord").onclick = function(){ downloadReportWord(R.sid, R.name, data, R.week); };
   $("rvPdf").onclick = function(){ printReportPDF(R.sid, R.name, data, R.week); };
   if($("rvSubmit")) $("rvSubmit").onclick = function(){
+    if(state.role === "student" && reportDeadlinePassed(R.week || ACTIVE_WEEK)){ toast("제출 기한이 지나 저장·제출되지 않습니다."); return; }   /* O-0067 B2 */
     data.submitted = true; data.submittedAt = today(); data.savedAt = today();
     saveReport(R.sid, data); toast("보고서를 제출했습니다.");
     RENDER.report();
@@ -2960,6 +3022,8 @@ RENDER.profdash = function(){
     h += '<input type="datetime-local" data-dlweek="' + esc(wid) + '" value="' + esc(dtLocalValue(eff)) + '" style="padding:5px 6px;border:1px solid #9bbce0;border-radius:6px;font-size:14px">';
     h += '<button class="btn sm primary" type="button" data-dlsave="' + esc(wid) + '">저장</button>';
     h += '<button class="btn sm ghost" type="button" data-dltoday="' + esc(wid) + '">오늘 자정까지</button>';
+    /* 2026-09-26(O-0067 B7): 교수 지정값을 지우고 코드 기본값(REPORT_DEADLINE)으로 되돌린다 */
+    h += '<button class="btn sm ghost" type="button" data-dlreset="' + esc(wid) + '"' + (srv ? '' : ' disabled title="이미 기본값입니다"') + '>기본값으로</button>';
     h += '</div>';
   });
   h += '<div class="small" style="color:var(--muted);margin-top:6px">' + ((window.GLR && GLR.on) ? '여기서 정한 기한은 서버에 저장돼 <b>모든 학생 기기</b>에 반영됩니다. <b>학생 화면은 새로고침(재접속) 후 반영</b>됩니다.' : '⚠ 지금은 이 기기 저장 모드 — 서버에 반영되지 않아 <b>이 기기에서만</b> 적용됩니다(실제 수업은 서버 방식에서 정하세요).') + '</div>';
@@ -3033,7 +3097,7 @@ RENDER.profdash = function(){
   h += '</div>';
 
   h += '<button class="btn sm danger center" type="button" id="pdLogout">🚪 로그아웃</button>';
-  h += '<p class="small" style="margin-top:10px">' + esc(C.meta.storageNote || "") + '</p>';
+  h += '<p class="small" style="margin-top:10px">' + esc(storageNoteText()) + '</p>';
 
   var sc = $("sc-profdash"); sc.innerHTML = h;
   sc.querySelectorAll("[data-open]").forEach(function(b){
@@ -3076,10 +3140,14 @@ RENDER.profdash = function(){
       var d = iso ? new Date(iso) : null;
       if(!iso || !d || isNaN(d.getTime())){ toast("올바른 날짜·시간이 아닙니다."); return; }
       var l = labById(wid); var wlabel = (l && (l.weekLabel || wid)) || wid;
-      var m = setReportDeadlineLocal(wid, iso);
-      if(window.GLR && GLR.on) GLR.syncReportDeadline(m);
-      toast(wlabel + " 마감을 " + deadlineLabel(d).replace('⏰ 제출 기한: ','').replace(' (한국시간)','') + "로 변경했습니다.");
-      RENDER.profdash();
+      var dtxt = deadlineLabel(d).replace('⏰ 제출 기한: ','').replace(' (한국시간)','');
+      /* 2026-09-26(O-0067 B7): 저장 전 확인(askConfirm — window.confirm 금지) */
+      askConfirm(wlabel + " 보고서 마감을 " + dtxt + "로 바꿉니다.\n학생 화면에는 새로고침(재접속) 후 반영됩니다. 바꿀까요?", function(){
+        var m = setReportDeadlineLocal(wid, iso);
+        if(window.GLR && GLR.on) GLR.syncReportDeadline(m);
+        toast(wlabel + " 마감을 " + dtxt + "로 변경했습니다.");
+        RENDER.profdash();
+      }, { yes:"바꾸기", yesClass:"primary" });
     };
   });
   /* 📅 오늘 자정(23:59:59)까지 — 빠른 편의 버튼. 오늘(KST) 23:59:59 로 세팅. */
@@ -3089,10 +3157,31 @@ RENDER.profdash = function(){
       var t = kstParts(new Date());
       var iso = t.y + '-' + pad2(t.mo) + '-' + pad2(t.d) + 'T23:59:59+09:00';
       var l = labById(wid); var wlabel = (l && (l.weekLabel || wid)) || wid;
-      var m = setReportDeadlineLocal(wid, iso);
-      if(window.GLR && GLR.on) GLR.syncReportDeadline(m);
-      toast(wlabel + " 마감을 오늘(" + t.y + '-' + pad2(t.mo) + '-' + pad2(t.d) + ") 23:59로 설정했습니다.");
-      RENDER.profdash();
+      var todayTxt = t.y + '-' + pad2(t.mo) + '-' + pad2(t.d);
+      /* 2026-09-26(O-0067 B7): 한 번 눌러 바로 바뀌던 것을 확인 뒤 실행(미래 주차를 잘못 누르면 학생이 보고서를 못 쓰게 됨) */
+      askConfirm(wlabel + " 보고서 마감을 오늘(" + todayTxt + ") 23:59로 바꿉니다.\n오늘 자정이 지나면 학생은 이 주차 보고서를 저장·제출할 수 없습니다. 바꿀까요?", function(){
+        var m = setReportDeadlineLocal(wid, iso);
+        if(window.GLR && GLR.on) GLR.syncReportDeadline(m);
+        toast(wlabel + " 마감을 오늘(" + todayTxt + ") 23:59로 설정했습니다.");
+        RENDER.profdash();
+      }, { yes:"바꾸기", yesClass:"primary" });
+    };
+  });
+  /* 📅 기본값으로 — 서버 report_deadline 에서 그 주차 값을 지워 코드 기본값(REPORT_DEADLINE)으로 되돌린다(교수 모드만). */
+  sc.querySelectorAll("[data-dlreset]").forEach(function(b){
+    b.onclick = function(){
+      if(!state || state.role !== "prof"){ toast("교수만 바꿀 수 있습니다."); return; }
+      var wid = b.getAttribute("data-dlreset");
+      var l = labById(wid); var wlabel = (l && (l.weekLabel || wid)) || wid;
+      if(!hasServerDeadline(wid)){ toast(wlabel + " 마감은 이미 기본값입니다."); return; }
+      var dl = REPORT_DEADLINE[wid];
+      var defTxt = (dl && dl.at instanceof Date) ? deadlineLabel(dl.at).replace('⏰ 제출 기한: ','').replace(' (한국시간)','') : "제한 없음";
+      askConfirm(wlabel + " 마감을 기본값(" + defTxt + ")으로 되돌립니다.\n교수님이 지정한 값은 지워집니다. 되돌릴까요?", function(){
+        var m = setReportDeadlineLocal(wid, "");     /* 이 주차 키를 지운 전체 맵 */
+        if(window.GLR && GLR.on) GLR.syncReportDeadline(m);
+        toast(wlabel + " 마감을 기본값(" + defTxt + ")으로 되돌렸습니다.");
+        RENDER.profdash();
+      }, { yes:"되돌리기", yesClass:"primary" });
     };
   });
   if($("pdBulkPdf")) $("pdBulkPdf").onclick = function(){ printBulkReports(wk); };
@@ -3229,7 +3318,7 @@ function buildBlankReport(wk){
       var conds = s.conditions || [];
       h += '<div class="p-imgrid">';
       conds.forEach(function(cond, i){
-        h += '<div class="p-imgcell"><div class="p-imgcap">' + (i+1) + ') ' + esc(cond) + '</div><div class="p-imgno" style="min-height:34mm">(사진 부착)</div></div>';
+        h += '<div class="p-imgcell"><div class="p-imgcap">' + slotNoLabel(s, i) + esc(cond) + '</div><div class="p-imgno" style="min-height:34mm">(사진 부착)</div></div>';
       });
       h += '</div>';
       renderBlankTbl();
@@ -3240,7 +3329,7 @@ function buildBlankReport(wk){
     if(s.conditions && s.conditions.length){
       h += '<div class="p-imgrid">';
       s.conditions.forEach(function(cond, i){
-        h += '<div class="p-imgcell"><div class="p-imgcap">' + (i+1) + ') ' + esc(cond) + '</div><div class="p-imgno" style="min-height:34mm">(사진 부착)</div></div>';
+        h += '<div class="p-imgcell"><div class="p-imgcap">' + slotNoLabel(s, i) + esc(cond) + '</div><div class="p-imgno" style="min-height:34mm">(사진 부착)</div></div>';
       });
       h += '</div>';
     }
@@ -3267,9 +3356,11 @@ function buildWeekResults(wk){
     var best = (prog && prog.mission && prog.mission.bestScore) || 0;
     var attempts = (prog && prog.mission && prog.mission.attempts) || 0;
     var rep = loadReport(st.sid, wk);
-    return { st: st, early: isEarly(st.sid), learnP: learnP, learnDone: learnP >= need, passed: passed, best: best, attempts: attempts, repSub: !!(rep && rep.submitted) };
+    /* 2026-09-26(O-0067 B5): 대시보드와 같은 단일 판정(reportStatusOf) — 제출 / 제출(미완성) / 작성중 / 미작성 */
+    var repSt = reportStatusOf(rep, wk);
+    return { st: st, early: isEarly(st.sid), learnP: learnP, learnDone: learnP >= need, passed: passed, best: best, attempts: attempts, repSt: repSt, repSub: isSubmittedStatus(repSt) };
   });
-  var nHasData = rows.filter(function(r){ return r.learnP > 0 || r.attempts > 0 || r.repSub; }).length;
+  var nHasData = rows.filter(function(r){ return r.learnP > 0 || r.attempts > 0 || r.repSt !== "미작성"; }).length;
   h += '<table class="p-grid"><tr><th style="width:6%">#</th><th style="width:15%">학번</th><th class="l" style="width:13%">이름</th><th style="width:9%">면제</th><th>학습</th><th>미션</th><th>보고서</th></tr>';
   rows.forEach(function(r, i){
     var learn, miss, rep;
@@ -3277,12 +3368,12 @@ function buildWeekResults(wk){
     else{
       learn = r.learnDone ? '완료' : (r.learnP > 0 ? (r.learnP + '/' + need) : '—');
       miss = r.passed ? ('합격 ' + r.best) : (r.attempts > 0 ? ('응시 ' + r.attempts) : '—');
-      rep = r.repSub ? '제출' : '—';
+      rep = (r.repSt === "미작성") ? '—' : r.repSt;
     }
     h += '<tr><td>' + (i+1) + '</td><td>' + esc(r.st.sid) + '</td><td class="l">' + esc(r.st.name) + '</td><td>' + (r.early ? '🎓' : '') + '</td><td>' + esc(learn) + '</td><td>' + esc(miss) + '</td><td>' + esc(rep) + '</td></tr>';
   });
   h += '</table>';
-  h += '<div class="p-note">※ 학습 완료 기준 ' + need + '문 · 미션 합격선 70점(합격 시 점수 표시) · 보고서 제출 여부. 현재 기록이 있는 학생 ' + nHasData + '명.'
+  h += '<div class="p-note">※ 학습 완료 기준 ' + need + '문 · 미션 합격선 70점(합격 시 점수 표시) · 보고서 상태(제출 / 제출(미완성) / 작성중 / —=미작성, 대시보드와 같은 기준). 현재 기록이 있는 학생 ' + nHasData + '명.'
      + ((window.GLR && GLR.on) ? '' : ' (이 기기에 저장된 기록만 반영됩니다.)') + '</div>';
   h += '</div>';
   return h;
@@ -3480,7 +3571,12 @@ RENDER.roster = function(){
   h += '<div class="chips"><span class="chip mint">현재 ' + list.length + '명 등록</span>' + (nEarlyRM ? '<span class="chip">🎓 면제 ' + nEarlyRM + '명</span>' : '') + '</div></div>';
 
   /* 안내 */
-  h += '<div class="card tight" style="border-color:#bcd6f0;background:var(--mintdk)"><div class="small">🔒 <b>명단은 이 기기(브라우저)에만 저장됩니다.</b> 소스코드에는 학생 정보가 들어가지 않아 공개 배포해도 안전합니다.<br>다만 이 기기에 등록한 명단은 <b>학생 기기로 자동 공유되지 않습니다</b>(서버가 없는 앱이라서요). 그래서 아래 <b>백업(내보내기)</b>으로 명단을 텍스트/JSON 으로 보관해 두시면, 기기를 바꾸거나 브라우저 기록이 지워져도 <b>불러오기</b>로 되살릴 수 있습니다.</div></div>';
+  /* 2026-09-26(O-0067 B8): 서버 모드에서 "이 기기에만 저장·서버가 없는 앱" 문구가 사실과 달라 모드별로 나눈다(로컬 모드 문구는 예전 그대로). */
+  if(window.GLR && GLR.on){
+    h += '<div class="card tight" style="border-color:#bcd6f0;background:var(--mintdk)"><div class="small">🔒 <b>명단은 서버에 저장되어 폰·PC 어디서나 같게 보입니다.</b> 학생 로그인 때 이 명단과 대조합니다. 소스코드에는 학생 정보가 들어가지 않아 공개 배포해도 안전합니다.<br>필요하면 아래 <b>백업(내보내기)</b>으로 명단을 텍스트/JSON 사본으로 보관해 둘 수 있습니다.</div></div>';
+  }else{
+    h += '<div class="card tight" style="border-color:#bcd6f0;background:var(--mintdk)"><div class="small">🔒 <b>명단은 이 기기(브라우저)에만 저장됩니다.</b> 소스코드에는 학생 정보가 들어가지 않아 공개 배포해도 안전합니다.<br>다만 이 기기에 등록한 명단은 <b>학생 기기로 자동 공유되지 않습니다</b>(서버가 없는 앱이라서요). 그래서 아래 <b>백업(내보내기)</b>으로 명단을 텍스트/JSON 으로 보관해 두시면, 기기를 바꾸거나 브라우저 기록이 지워져도 <b>불러오기</b>로 되살릴 수 있습니다.</div></div>';
+  }
 
   /* 📄 출석부 PDF 자동 등록 — pdf.js 인라인(fake worker·메인스레드)로 학번·이름을 뽑아 미리보기 후 등록 */
   h += '<div class="card" style="border-color:#bcd6f0"><h3>📄 출석부 PDF로 자동 등록 <span class="small">가장 간편</span></h3>';
@@ -3510,7 +3606,7 @@ RENDER.roster = function(){
   if(list.length === 0){
     h += '<p class="small" style="color:var(--amber)">아직 등록된 명단이 없습니다. 위에서 등록해 주세요.</p>';
   }else{
-    h += '<p class="small" style="margin:0 0 8px"><b>조기취업</b> 칸을 체크하면 그 학생은 보고서·학습·미션이 <b>면제</b>되고, 교수 대시보드 집계 분모에서 빠집니다(이 기기에 저장). 면제 학생 본인이 로그인하면 면제 안내가 표시됩니다.</p>';
+    h += '<p class="small" style="margin:0 0 8px"><b>조기취업</b> 칸을 체크하면 그 학생은 보고서·학습·미션이 <b>면제</b>되고, 교수 대시보드 집계 분모에서 빠집니다(' + ((window.GLR && GLR.on) ? '서버에 저장' : '이 기기에 저장') + '). 면제 학생 본인이 로그인하면 면제 안내가 표시됩니다.</p>';
     h += '<div class="tblwrap"><table class="dash-tbl">';
     h += '<tr><th>#</th><th>학번</th><th>이름</th><th class="c">조기취업<br>(면제)</th><th class="c">삭제</th></tr>';
     list.forEach(function(r, i){
@@ -3850,12 +3946,16 @@ function answerWidget(q, opts){
 function bindAnswer(sc, q, orderState, onSubmit, repaint){
   sc.querySelectorAll("[data-ans]").forEach(function(b){ b.onclick = function(){ onSubmit(parseInt(b.getAttribute("data-ans"), 10)); }; });
   sc.querySelectorAll("[data-ox]").forEach(function(b){ b.onclick = function(){ onSubmit(b.getAttribute("data-ox") === "1"); }; });
-  if($("numSubmit")) $("numSubmit").onclick = function(){
-    var v = ($("numIn").value || "").replace(/[^0-9.\-]/g, "");
+  /* 🔴 2026-09-26(O-0067 B1): 입력 요소는 반드시 「지금 그리는 화면(sc)」 안에서 찾는다.
+     go()는 다른 화면을 지우지 않고 숨기기만 하므로, 학습 퀴즈 화면(sc-lquiz)에 남아 있는 같은 id(numIn·numSubmit·orderSubmit)를
+     전역 $()로 잡으면 미션에서 엉뚱한 입력값으로 채점되거나 [순서 제출]이 반응하지 않았다. */
+  var numSubmitEl = sc.querySelector("#numSubmit"), numInEl = sc.querySelector("#numIn");
+  if(numSubmitEl) numSubmitEl.onclick = function(){
+    var v = ((numInEl && numInEl.value) || "").replace(/[^0-9.\-]/g, "");
     if(v === ""){ toast("숫자를 입력해 주십시오."); return; }
     onSubmit(parseFloat(v));
   };
-  if($("numIn")) $("numIn").onkeydown = function(e){ if(e.key === "Enter" && $("numSubmit")) $("numSubmit").click(); };
+  if(numInEl) numInEl.onkeydown = function(e){ if(e.key === "Enter" && numSubmitEl) numSubmitEl.click(); };
   if(orderState){
     sc.querySelectorAll("[data-oput]").forEach(function(b){
       b.onclick = function(){ var idx = parseInt(b.getAttribute("data-oput"), 10); orderState.pool = orderState.pool.filter(function(x){ return x !== idx; }); orderState.placed.push(idx); repaint(); };
@@ -3863,7 +3963,8 @@ function bindAnswer(sc, q, orderState, onSubmit, repaint){
     sc.querySelectorAll("[data-oun]").forEach(function(b){
       b.onclick = function(){ var i = parseInt(b.getAttribute("data-oun"), 10); var idx = orderState.placed.splice(i, 1)[0]; orderState.pool.push(idx); repaint(); };
     });
-    if($("orderSubmit")) $("orderSubmit").onclick = function(){ if(orderState.placed.length === q.steps.length) onSubmit(orderState.placed.slice()); };
+    var orderSubmitEl = sc.querySelector("#orderSubmit");   /* O-0067 B1: 현재 화면 안에서만 찾는다 */
+    if(orderSubmitEl) orderSubmitEl.onclick = function(){ if(orderState.placed.length === q.steps.length) onSubmit(orderState.placed.slice()); };
   }
 }
 function kindLabel(t){ return t === "mc" ? "4지선다" : t === "ox" ? "OX 속답" : t === "num" ? "숫자 계산" : t === "order" ? "순서 배열" : t; }
@@ -3943,9 +4044,9 @@ function paintLQ(){
   var sc = $("sc-lquiz");
   sc.innerHTML = h;
 
-  $("timerToggle").onclick = function(){ state.settings.timerOff = !state.settings.timerOff; saveState(); stopTimer(); paintLQ(); };
+  sc.querySelector("#timerToggle").onclick = function(){ state.settings.timerOff = !state.settings.timerOff; saveState(); stopTimer(); paintLQ(); };
   bindAnswer(sc, q, (S.phase === "ask" ? S.order : null), function(pick){ answerLQ(pick, false); }, paintLQ);
-  if($("lqNext")) $("lqNext").onclick = function(){ loadLearnQ(); };
+  if(sc.querySelector("#lqNext")) sc.querySelector("#lqNext").onclick = function(){ loadLearnQ(); };   /* O-0067 B1: 화면 안에서만 */
   bindGo(sc);
 
   if(S.phase === "ask" && !timerOff && (q.type === "mc" || q.type === "ox")){
@@ -4072,19 +4173,17 @@ function paintMissionIntro(){
     '</table></div></div>';
   h += '<div class="card idform"><h3>응시자 <span class="small">합격증에 표시</span></h3>';
   h += '<p class="muted" style="margin:0 0 4px">학번 <b>' + esc(state.studentId || "(미입력)") + '</b> · 이름 <b>' + esc(state.studentName || "(미입력)") + '</b></p>';
-  h += '<button class="btn sm center" type="button" id="mEditId">학번·이름 수정</button>';
-  h += '<div id="mIdEdit" style="display:none"><label for="mSid">학번</label><input id="mSid" type="text" inputmode="numeric" maxlength="15" value="' + esc(state.studentId || "") + '">' +
-       '<label for="mName">이름</label><input id="mName" type="text" maxlength="20" value="' + esc(state.studentName || "") + '">' +
-       '<button class="btn sm primary center" type="button" id="mSaveId" style="margin-top:10px">저장</button></div>';
-  h += '<p class="small" style="margin:8px 0 0;color:var(--amber)">⚠ 지금은 연습본이라 결과가 자동 제출되지 않습니다.</p></div>';
+  /* 2026-09-26(O-0067 B4): [학번·이름 수정] 제거 — 로그인 신원을 여기서 바꾸면 진도가 다른 학번으로 전송돼 서버가 거부하고
+     미션 합격이 기록되지 않았다. 학번·이름은 로그인 정보 그대로 쓴다. 문구도 실제 동작(서버 기록)에 맞게 고쳤다. */
+  h += '<p class="small" style="margin:8px 0 0;color:var(--tx3)">' + ((window.GLR && GLR.on)
+        ? '결과는 로그인한 학번으로 서버에 자동 기록되어 교수님 확인 화면에 반영됩니다. 학번·이름이 틀렸다면 로그아웃한 뒤 다시 로그인해 주세요.'
+        : '이 기기 저장 모드 — 결과가 이 기기 안에만 남습니다.') + '</p></div>';
   if(state.mission.passed) h += '<div class="card tight"><div class="small" style="color:var(--gold)">🏆 이미 합격했습니다 (최고 ' + (state.mission.bestScore||0) + '점). 다시 도전하면 새 문항으로 재응시합니다.</div></div>';
   h += '<button class="btn primary" type="button" id="mStart">미션 시작 🎯</button>';
   h += '<button class="btn ghost center" type="button" data-go="lobby">로비로</button>';
 
   var sc = $("sc-mission"); sc.innerHTML = h;
-  $("mEditId").onclick = function(){ var e = $("mIdEdit"); e.style.display = e.style.display === "none" ? "block" : "none"; };
-  $("mSaveId").onclick = function(){ state.studentId = ($("mSid").value||"").trim(); state.studentName = ($("mName").value||"").trim(); saveState(); toast("저장했습니다."); paintMissionIntro(); };
-  $("mStart").onclick = function(){ startMission(); };
+  sc.querySelector("#mStart").onclick = function(){ startMission(); };
   bindGo(sc);
 }
 function startMission(){
@@ -4150,7 +4249,7 @@ function paintMissionItem(){
   h += '<button class="btn ghost center" type="button" id="mQuit">그만두기 (기록 안 됨)</button>';
 
   var sc = $("sc-mission"); sc.innerHTML = h;
-  $("mQuit").onclick = function(){ stopTimer(); ctx.mission = null; go("lobby"); };
+  sc.querySelector("#mQuit").onclick = function(){ stopTimer(); ctx.mission = null; go("lobby"); };
 
   if(it.kind === "timed"){
     var q2 = it.q;
@@ -4217,7 +4316,7 @@ function bindMissionReason(sc, it){
       paintMissionItem();
     };
   });
-  if($("rSubmit")) $("rSubmit").onclick = function(){ submitMissionReason(it); };
+  if(sc.querySelector("#rSubmit")) sc.querySelector("#rSubmit").onclick = function(){ submitMissionReason(it); };
 }
 function submitMissionReason(it){
   var M = ctx.mission, cs = it.cs;
@@ -4336,7 +4435,7 @@ function paintMissionResult(){
   }
 
   var sc = $("sc-mission"); sc.innerHTML = h;
-  if($("mRetry")) $("mRetry").onclick = function(){ startMission(); };
+  if(sc.querySelector("#mRetry")) sc.querySelector("#mRetry").onclick = function(){ startMission(); };
   bindGo(sc);
 }
 function renderCertificate(score){
@@ -4410,7 +4509,7 @@ RENDER.growth = function(){
   h += '<button class="btn sm center" type="button" data-go="notes" style="margin-top:10px">오답노트 바로가기</button></div>';
 
   /* 저장/초기화 */
-  h += '<div class="card"><h3>저장</h3><p class="small">' + esc(C.meta.storageNote || "") +
+  h += '<div class="card"><h3>저장</h3><p class="small">' + esc(storageNoteText()) +
     (storageOk ? "" : "<br><span style=\"color:var(--amber)\">현재 이 브라우저에서는 저장이 되지 않습니다.</span>") + '</p>';
   h += '<button class="btn sm danger center" type="button" id="gwReset">진도 초기화</button></div>';
   h += '<button class="btn ghost center" type="button" data-go="lobby">로비로</button>';
@@ -4454,7 +4553,7 @@ RENDER.summary = function(){
     (s.expected.suspect || []).forEach(function(g){ h += '<div class="fb miss"><div class="b">' + esc(g) + '</div></div>'; });
     h += '</div>';
   }
-  if(s.closing) h += '<div class="card"><h3>마무리</h3><p class="muted">' + esc(s.closing) + '</p>' + (s.report ? '<p class="small">' + esc(s.report) + '</p>' : "") + (s.source ? '<div class="src">출처 · ' + esc(s.source) + '</div>' : "") + '</div>';
+  if(s.closing) h += '<div class="card"><h3>마무리</h3><p class="muted">' + esc(s.closing) + '</p>' + (s.report ? '<p class="small">' + esc(fixDeadlinePhrase(s.report)) + '</p>' : "") + (s.source ? '<div class="src">출처 · ' + esc(s.source) + '</div>' : "") + '</div>';
   h += '<button class="btn ghost center" type="button" data-go="lobby">로비로</button>';
   var sc = $("sc-summary"); sc.innerHTML = h; bindGo(sc);
 };
@@ -4613,7 +4712,7 @@ var GLR = {
          사진 전용 경고를 우선 띄운다 — 사진은 이 기기에 보관돼 있어 다시 임시저장하면 재전송된다(유실 아님). */
       var photoFail = this.failed.some(function(j){ return j && j.op==="report" && self._reportHasBase64(j.data); });
       if(photoFail){ this.bar('🔴 사진 전송에 실패했습니다. <span style="font-weight:400">네트워크를 확인한 뒤 사진을 다시 임시저장해 주세요. 작성 내용과 사진은 이 기기에 안전하게 보관돼 있어 다시 저장하면 재전송됩니다.</span>',"red"); return; }
-      this.bar('🔴 서버가 저장을 거부한 것이 <b>'+this.failed.length+'건</b> 있습니다. <span style="font-weight:400">소장에게 알려 주세요.</span>',"red"); return;
+      this.bar('🔴 서버가 저장을 거부한 것이 <b>'+this.failed.length+'건</b> 있습니다. <span style="font-weight:400">교수님께 알려 주세요.</span>',"red"); return;
     }
     /* 🔵 전송 대기 자료를 이 기기에 임시 보관조차 못 한 경우(저장공간 부족) — 조용히 넘기지 않고 알린다. */
     if(this.qPersistFailed && this.q.length){ this.bar('🔴 이 기기 저장공간이 부족해 <b>전송 대기 자료를 임시 보관하지 못했습니다.</b> <span style="font-weight:400">전송이 끝날 때까지(위 “보내는 중” 표시가 사라질 때까지) 창을 닫지 마세요.</span>',"red"); return; }
