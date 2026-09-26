@@ -1288,7 +1288,10 @@ function reportLocalCopy(sid, data, wk){
            아직 업로드가 확인되지 않았으면 base64 를 이 기기에 그대로 남겨 둔다 — 업로드가 실패해도
            (폰 용량·네트워크·앱을 닫음) 새로고침·재로그인 뒤에도 사진이 사라지지 않는다.
            서버 확인이 된 뒤에는(pump 성공/ loadAll 미러) 경로로 내려가 용량을 되돌려 받는다. */
-        if(GLR.isPhotoConfirmed(path)) return path;
+        /* 🔴 2026-09-27(O-0068 B3): 「경로가 확정됐는가」만이 아니라 「이 내용이 그 경로에 확정됐는가」까지 본다.
+           예전엔 이미 서버에 있던 칸을 새 사진으로 바꾸고 업로드가 실패하면, 경로가 예전에 확정돼 있다는 이유로 새 사진 base64 를
+           버리고 옛 경로로 내려 → 보고서를 다시 열면 새 사진이 사라지고 옛 사진으로 돌아갔다. 이제 내용까지 같을 때만 경로로 내린다. */
+        if(GLR.isPhotoConfirmed(path) && GLR.ledgerMatch(path, val)) return path;
         return val;
       }
       return val || "";
@@ -1306,7 +1309,9 @@ function saveReport(sid, data){
   /* 클라우드(서버) 모드: 사진은 Storage 버킷에, 경로만 표에 올린다. 서버로는 base64 를 그대로 보낸다(syncReport).
    * 이 기기 localStorage 가 꽉 차 로컬 사본 저장이 실패해도 서버 업로드는 계속 진행해 사진이 유실되지 않게 한다
    * (새로고침하면 서버에서 되받는다). */
-  if(cloud){ try{ GLR.syncReport(sid, data, ACTIVE_WEEK); }catch(e){} return true; }
+  /* 🔴 2026-09-27(O-0068 B3): 서버로는 「저장용 사본」을 보낸다 — 화면 표시용으로 내려받은 사진(서버에 이미 있는 그 파일과
+     글자 하나까지 같은 데이터)은 base64 대신 원래 서버 경로로 보내 재업로드하지 않는다. 판정이 조금이라도 애매하면 예전처럼 업로드한다. */
+  if(cloud){ try{ GLR.syncReport(sid, GLR.storageCopy(data, ACTIVE_WEEK, sid), ACTIVE_WEEK); }catch(e){} return true; }
   return localOk;   /* 로컬 전용 모드: 로컬 저장 성공 여부가 곧 결과(실패 시 호출부가 롤백) */
 }
 /* 보고서에 작성 흔적이 있는가 — 텍스트 섹션 또는 업로드한 사진 */
@@ -1867,7 +1872,8 @@ function showLogin(){
 /* 로그아웃 — 세션을 지우고 로그인 화면으로. 진도·보고서는 기기에 그대로 남는다. */
 function logout(){
   clearSession();
-  if(window.GLR && GLR.on){ GLR.stopTeamPoll(); GLR.clearTok(); }   /* 🟡 서버 출입증도 지운다(공용 PC 안전) + 폴링 중단 */
+  if(window.GLR && GLR.on){ GLR.stopTeamPoll(); GLR.clearTok(); }
+  if(window.GLR) GLR.photoLedger = {};   /* O-0068 B3 */   /* 🟡 서버 출입증도 지운다(공용 PC 안전) + 폴링 중단 */
   state = defaultState();
   ctx = {}; navStack = []; cur = "labs";
   roleGateStep.role = null;
@@ -2467,7 +2473,10 @@ function glUpdateSlotStat(){
       if(!hasImg){ el.textContent=""; el.className="is-stat"; return; }
       if(!cloud){ el.textContent="이 기기에 저장됨"; el.className="is-stat ok"; return; }
       var path = wk + "/" + sid + "/" + key + "_" + idx + ".jpg";
-      if(GLR.isPhotoConfirmed(path)){ el.textContent="✓ 서버에 저장됨"; el.className="is-stat ok"; return; }
+      /* O-0068 B3: 칸에 보이는 사진이 새로 고른 것(data:)이면, 그 내용이 서버에 확정됐을 때만 ✓ (경로만 확정이면 아직 저장 중) */
+      var _imgEl = slot.querySelector(".is-box img"), _src = _imgEl ? (_imgEl.getAttribute("src") || "") : "";
+      var _contentOk = (_src.indexOf("data:") !== 0) || GLR.ledgerMatch(path, _src);
+      if(GLR.isPhotoConfirmed(path) && _contentOk){ el.textContent="✓ 서버에 저장됨"; el.className="is-stat ok"; return; }
       if(anyFailed){ el.textContent="⚠ 전송 실패 — 사진을 다시 올려 주세요"; el.className="is-stat bad"; return; }
       el.textContent="⏳ 저장 중…"; el.className="is-stat pend";
     });
@@ -4616,6 +4625,42 @@ var GLR = {
      (loadAll 이 서버 기록으로 채우고, 업로드 성공 때마다 pump 이 한 건씩 추가한다.) */
   isPhotoConfirmed:function(p){ return !!(p && this.okPhoto[p]); },
   markPhotoOk:function(p){ if(p) this.okPhoto[p]=1; },
+  /* 🔴 2026-09-27(O-0068 B3) 사진 장부 — 「이 경로의 서버 파일 내용 = 이 사진 데이터」임이 확실한 것만 기억한다(메모리에만, 저장 안 함).
+       · 기록 시점 ① resolveReportPhotos 가 서버에서 그 파일을 실제로 내려받았을 때(다운로드 200)
+                 ② pump 이 그 데이터를 그 경로로 올리고 gl_reports 반영까지 2xx 로 끝났을 때(okPhoto 확정과 같은 시점)
+       · 로그인한 학생 본인의 사진(주차/학번/파일)만 기록한다(교수 열람·전체 PDF 는 기록 안 함 → 메모리 누적 없음).
+       · 쓰임: storageCopy 가 저장 직전, 칸의 데이터가 장부 값과 완전히 같고 그 경로가 okPhoto 확정일 때만 경로로 바꾼다. */
+  photoLedger:{},
+  _ledgerOwn:function(p){
+    try{ var a=String(p||"").split("/"); return a.length===3 && typeof state!=="undefined" && state && state.role==="student" && !!state.studentId && a[1]===String(state.studentId); }catch(e){ return false; }
+  },
+  ledgerSet:function(p, durl){ if(p && durl && typeof durl==="string" && durl.indexOf("data:")===0 && this._ledgerOwn(p)) this.photoLedger[p]=durl; },
+  ledgerMatch:function(p, durl){ return !!(p && durl && this.photoLedger[p]===durl && this.isPhotoConfirmed(p)); },
+  /* 저장용 사본: 표시용 플래그(_photosResolved)를 빼고, 「바꾸지 않은」 사진 칸만 서버 경로로 바꾼다.
+     경로 규칙은 pump 이 올리는 경로("주차/학번/키_번호.jpg")와 같다. 새로 고른 사진·아직 서버에 없는(실패·미전송) 사진·삭제한 칸은 그대로 둔다.
+     어떤 오류든 나면 원본을 그대로 돌려준다(= 예전과 같은 재업로드 — 유실 쪽으로 기울지 않게). */
+  storageCopy:function(data, wk, sid){
+    var self=this;
+    try{
+      if(!data || typeof data!=="object") return data;
+      var out={}; for(var k in data){ if(Object.prototype.hasOwnProperty.call(data,k) && k!=="_photosResolved") out[k]=data[k]; }
+      var imgs=data.images; if(!imgs || typeof imgs!=="object") return out;
+      var nim={}, w=String(wk||ACTIVE_WEEK), s=String(sid);
+      Object.keys(imgs).forEach(function(key){
+        var arr=imgs[key];
+        if(!Array.isArray(arr)){ nim[key]=arr; return; }
+        nim[key]=arr.map(function(val, idx){
+          if(val && typeof val==="string" && val.indexOf("data:")===0){
+            var path=w+"/"+s+"/"+key+"_"+idx+".jpg";
+            if(self.ledgerMatch(path, val)) return path;
+          }
+          return val;
+        });
+      });
+      out.images=nim;
+      return out;
+    }catch(e){ return data; }
+  },
   /* 🔴 사진 유실 방지(2026-09-09 2차): 이 보고서에 '아직 서버에 못 올린' base64 사진이 남아 있는가.
      reportLocalCopy 규칙상 로컬 사본의 사진 슬롯에 data: 가 남았다는 것은 = 서버 확인 전(미전송)이라는 뜻이다.
      (서버가 받은 것은 pump/ loadAll 이 경로로 내려 놓으므로 base64 가 남지 않는다.) */
@@ -4829,7 +4874,7 @@ var GLR = {
       var arr=imgs[key]; if(!Array.isArray(arr)) return;
       arr.forEach(function(val, idx){
         if(val && typeof val==="string" && val.indexOf("data:")!==0 && val.indexOf("/")!==-1){
-          tasks.push(self.fetchPhoto(val).then(function(d){ arr[idx]=d; }, function(){}));
+          tasks.push(self.fetchPhoto(val).then(function(d){ arr[idx]=d; self.ledgerSet(val, d); }, function(){}));   /* O-0068 B3: 내려받은 파일 = 서버에 있음 */
         }
       });
     });
@@ -5034,7 +5079,7 @@ var GLR = {
     if(this.busy || !this.on || !this.q.length) return;
     if(!this.tok || !this.tok.access_token) return;   /* 로그인 전에는 보내지 않습니다 */
     this.busy=true;
-    var job=this.q[0], p;
+    var job=this.q[0], p, okDurl={};   /* okDurl: 이번 작업에서 2xx 로 올라간 {경로: 사진 데이터} — 성공 확정 뒤 장부에 넣는다(큐에는 저장 안 함) */
 
     if(job.op==="report"){
       /* 🔴 각 사진 '독립' 업로드·확정(2026-09-10, 교수님 지시)
@@ -5060,6 +5105,8 @@ var GLR = {
       /* 이미 경로로 내려가 있던(예전에 서버가 받은) 슬롯도 확인 장부에 포함(base64 는 제외) */
       Object.keys(photos).forEach(function(k){ (photos[k]||[]).forEach(function(pp){ if(pp && typeof pp==="string" && pp.indexOf("data:")!==0 && pp.indexOf("/")!==-1) job._okPaths.push(pp); }); });
       job._failCount = 0;
+      if(data && Object.prototype.hasOwnProperty.call(data, "_photosResolved")) delete data._photosResolved;   /* O-0068 B3: 표시용 플래그는 서버에 쓰지 않는다 */
+      okDurl = {};
       p=Promise.allSettled(tasks.map(function(t){ return self.uploadPhoto(t.path, t.durl); })).then(function(results){
         results.forEach(function(r, i){
           var t=tasks[i];
@@ -5067,6 +5114,7 @@ var GLR = {
             if(Array.isArray(imgs[t.key])) imgs[t.key][t.idx]=t.path;   /* 이 슬롯만 경로로 내림 → 다음 재시도 때 재업로드 안 함 */
             photos[t.key][t.idx]=t.path;
             job._okPaths.push(t.path);
+            okDurl[t.path]=t.durl;
           }else{
             job._failCount++;   /* 실패: imgs 슬롯은 base64 그대로(재전송 대상), photos 는 빈칸 유지 */
           }
@@ -5089,6 +5137,7 @@ var GLR = {
          지금 저장돼 있는 사본을 다시 읽어(그 사이 새로 추가된 사진의 base64 는 건드리지 않고) 확인된 슬롯만 경로로 바꾼다. */
       if(job.op==="report" && job._okPaths && job._okPaths.length){
         job._okPaths.forEach(function(pp){ self.markPhotoOk(pp); });
+        Object.keys(okDurl).forEach(function(pp){ self.ledgerSet(pp, okDurl[pp]); });   /* O-0068 B3: 업로드·표 반영 2xx 뒤에만 장부 기록 */
         try{
           var rk = "dmu_gene_report_" + job.week + "_" + job.sid;
           var cur = localStorage.getItem(rk);
