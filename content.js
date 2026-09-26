@@ -60,14 +60,14 @@ window.GAME_CONTENT = {
       desc: "전기영동한 겔에서 원하는 크기의 DNA 조각을 잘라 회수한다"
     },
     {
-      id: "w11", no: 6, weekLabel: "11주차분", title: "Competent cell·Vector 제조",
-      dateLabel: "10/7", unlockDate: "2026-10-07", ready: false,
-      desc: "형질전환에 쓸 competent cell과 vector를 준비한다"
+      id: "w07", no: 6, weekLabel: "7주차", title: "Vector 및 Competent cell 제조",
+      dateLabel: "10/7", unlockDate: "2026-10-07", ready: true,
+      desc: "6주차에 회수한 fragment로 재조합 DNA(Vector)를 만들고, 형질전환에 쓸 competent cell을 준비한다"
     },
     {
-      id: "w07", no: 7, weekLabel: "7주차", title: "형질전환",
-      dateLabel: "10/14", unlockDate: "2026-10-14", ready: false,
-      desc: "준비한 vector를 competent cell에 도입해 형질전환한다"
+      id: "w08", no: 7, weekLabel: "8주차", title: "형질전환",
+      dateLabel: "10/14", unlockDate: "2026-10-14", ready: true,
+      desc: "만든 재조합 DNA(Vector)를 competent cell에 넣어 형질전환하고 Blue/White로 선별한다"
     }
   ],
 
@@ -7651,6 +7651,2108 @@ window.GAME_CONTENT = {
           }
         ],
         source: "강의 이론 슬라이드 11·12·13·15·16·19 · 실험방법 06 · 교수님 지시(사진② + 고찰: ①회수 과정·프로세스 ②NanoDrop 측정 결과)"
+      }
+    },
+    w07: {
+
+      /* ------------------------------------------------------------------
+       * learn(w07) — Vector 및 Competent cell 제조 학습 카드
+       *   절차·수치·시약명·온도·부피 = 2026-2 (실험방법) 07. Vector 및 Competent cell 제조 · 강의계획서 세부 7주차.
+       *   원리·개념(재조합·TA cloning·competent cell 중화 등) = 유전공학실험 강의 이론(재조합 및 형질전환)·실험방법 11(Competent cell).
+       *   ⚠️ 수치가 옛 자료와 다르면 2026-2 실험방법을 따랐다. 지어낸 값 없음.
+       * ----------------------------------------------------------------*/
+      learn: {
+        stageId: "w07",
+        intro: {
+          oneLiner:
+            "6주차에 회수한 fragment를 Vector에 붙여 재조합 DNA를 만들고, 이 DNA를 받아줄 competent cell을 준비한다.",
+          bigQuestion: "다음 주 형질전환을 하려면, 넣을 재조합 DNA(Vector)와 그것을 받아줄 세포를 어떻게 준비하나",
+          note:
+            "이 한 질문에 스스로 답할 수 있게 되는 것이 오늘 학습의 목표입니다. 오늘은 두 가지를 만듭니다. " +
+            "① 재조합 DNA(Vector) 제조 — 6주차에 회수한 목적 DNA fragment를 TOPO Vector에 붙여, 표적 유전자와 Vector가 " +
+            "하나로 이어진 재조합 DNA를 만듭니다(TOPO TA cloning). ② Competent cell 제조 — 다음 주 형질전환에서 이 재조합 " +
+            "DNA를 받아줄 대장균(TOP10F)을, 외부 DNA를 잘 흡수하도록 CaCl₂로 처리해 만듭니다. 오늘 만든 두 가지가 다음 주 " +
+            "형질전환의 재료가 됩니다.",
+          source: "실험방법 07 [1]·[2] · 강의계획서 세부 7주차 · 강의 이론(재조합 및 형질전환)"
+        },
+        cards: [
+          {
+            id: "L1", title: "오늘 무엇을 하나 — 재조합 DNA와 competent cell 두 가지 준비", kind: "내용",
+            body:
+              "오늘은 다음 주 형질전환을 위해 두 가지를 만듭니다. ① 재조합 DNA(Vector) 제조 — 6주차에 회수한 목적 DNA " +
+              "fragment(PCR product)를 TOPO Vector에 붙여 재조합 DNA를 만듭니다. ② Competent cell 제조 — 이 재조합 DNA를 " +
+              "받아줄 대장균 TOP10F를 CaCl₂로 처리해, 외부 DNA를 잘 흡수하는 상태로 만듭니다. 이 두 가지가 하나로 만나는 것이 " +
+              "다음 주(8주차) 형질전환입니다. 그래서 오늘은 '넣을 것(재조합 DNA)'과 '받을 것(competent cell)'을 각각 준비하는 날입니다.",
+            keyNumbers: ["① 재조합 DNA(Vector) 제조 = 회수 fragment + TOPO Vector", "② Competent cell 제조 = 대장균 TOP10F를 CaCl₂로 처리", "재료 = 6주차 회수 fragment(PCR product)", "다음 주(8주차) 형질전환의 재료가 됨"],
+            source: "실험방법 07 [1]·[2] · 강의계획서 세부 7주차"
+          },
+          {
+            id: "L2", title: "재조합 DNA란 — 표적 유전자 + Vector", kind: "원리",
+            body:
+              "재조합 DNA는 표적(목적) 유전자와 Vector(플라스미드)를 하나로 결합한 DNA입니다. 서로 다른 유전자를 이어 붙였다는 " +
+              "뜻에서 키메라 DNA(Chimera DNA)라고도 부릅니다. 이렇게 만든 재조합 DNA를 대장균 같은 숙주세포에 넣으면(형질전환), " +
+              "숙주가 증식하면서 표적 유전자를 대량으로 얻거나 발현시킬 수 있습니다. 이것이 유전자 클로닝의 핵심이며, NCS 능력단위요소 " +
+              "② '유전자 결합하기'에 해당합니다. 대장균·효모·동물세포·식물세포 등이 발현 매체(숙주)로 쓰입니다.",
+            keyNumbers: ["재조합 DNA = 표적 유전자 + Vector(플라스미드)", "다른 이름 = 키메라 DNA(Chimera DNA)", "목적 = 숙주에 넣어 표적 유전자 대량 획득·발현", "숙주 = 대장균·효모·동물세포·식물세포"],
+            source: "강의 이론(재조합 및 형질전환) · 강의계획서 세부 학습목표 3)"
+          },
+          {
+            id: "L3", title: "TA cloning 원리 — PCR 산물의 A와 Vector의 T", kind: "핵심",
+            body:
+              "이번 실험은 TOPO TA cloning으로 재조합 DNA를 만듭니다. 원리는 이렇습니다 — Taq 같은 열 안정성 중합효소는 3'→5' " +
+              "교정 판독(proofreading) 기능이 없어, PCR로 증폭한 DNA의 3' 말단에 아데닌(A)을 하나 붙여 돌출된 말단을 만드는 경향이 " +
+              "있습니다. 그래서 티민(T)이 돌출된 Vector(T-Vector)를 준비하면, PCR 산물의 A와 Vector의 T가 상보적으로 결합해 높은 " +
+              "효율로 재조합 DNA가 만들어집니다. 이것이 TA cloning입니다. 여기에 Topoisomerase I(TOPO) 효소가 결합을 도와주어 " +
+              "TOPO TA cloning이라 부릅니다.",
+            keyNumbers: ["Taq는 proofreading 없음 → PCR 산물 3' 말단에 A 돌출", "T가 돌출된 Vector(T-Vector) 준비", "PCR 산물의 A ↔ Vector의 T 상보결합", "TOPO = Topoisomerase I(결합을 도움)"],
+            source: "강의 이론(재조합 및 형질전환) — PCR product cloning · TA cloning"
+          },
+          {
+            id: "L4", title: "TOPO Vector의 구조 — ori · lac operon · 항생제 저항", kind: "내용",
+            body:
+              "이번에 쓰는 TOPO TA cloning vector는 크기가 3.519 kb(3,519 bp)이며, 몇 가지 중요한 부위를 가집니다. ① ori(복제원점) " +
+              "— 숙주 세포 안에서 vector가 스스로 복제되게 하는 부위, ② MCS(다중클로닝부위) — 목적 DNA를 끼워 넣는 cloning 부위로 " +
+              "lac operon(lacZ) 안에 있습니다, ③ 항생제 저항 유전자 — Kanamycin 저항 유전자가 있어, 이 vector를 받은 세포만 " +
+              "항생제 배지에서 살아남게 하는 선별 표지입니다. 목적 DNA가 MCS(lac operon)에 끼워지면 lacZ가 망가지는데, 이것이 다음 주 " +
+              "Blue/White 선별의 바탕이 됩니다.",
+            keyNumbers: ["TOPO vector 크기 = 3.519 kb (3,519 bp)", "ori = 숙주 안에서 복제되게 하는 부위", "MCS(cloning 부위) = lac operon(lacZ) 안", "항생제 저항 유전자 = Kanamycin(선별 표지)"],
+            source: "강의 이론(재조합 및 형질전환) — TOPO TA cloning vector"
+          },
+          {
+            id: "L5", title: "재조합 DNA(Vector) 제조 — 순서·부피·조건", kind: "내용",
+            body:
+              "재조합 DNA는 멸균된 PCR tube에 네 용액을 순서대로 넣어 만듭니다 — ① 증류수(Distilled water) 6 µL → ② Salt solution " +
+              "3 µL → ③ PCR product 6 µL → ④ TOPO Vector 3 µL, 총 18 µL입니다(PCR product는 6주차에 회수한 목적 fragment). " +
+              "네 용액을 모두 넣어 섞은 뒤, DNA 합성(결합) 효율을 높이기 위해 상온에서 30분간 천천히 교반합니다. 반응이 끝나면 완성된 " +
+              "시료 5 µL만 덜어 전기영동으로 재조합 DNA가 제대로 만들어졌는지 확인합니다.",
+            keyNumbers: ["순서 = 증류수 6 → Salt solution 3 → PCR product 6 → TOPO Vector 3 µL (총 18 µL)", "PCR product = 6주차 회수 fragment", "반응 = 상온 30분 천천히 교반(결합 효율↑)", "확인 = 완성 시료 5 µL 전기영동"],
+            source: "실험방법 07 [1] ①②③"
+          },
+          {
+            id: "L6", title: "Competent cell이란 — 왜 CaCl₂로 처리하나", kind: "핵심",
+            body:
+              "Competent cell(수용성 세포)은 외부 DNA를 쉽게 흡수하도록 물리·화학적으로 처리한 세포입니다. 처리가 필요한 이유는 " +
+              "전하 때문입니다 — 세포막은 음전하를 띠고, DNA도 인산기 때문에 음전하를 띠어 서로 반발하므로, DNA가 세포 가까이 " +
+              "가기 어렵습니다. 그래서 세포막의 음전하를 중화해야 DNA 흡수율이 올라갑니다. 이때 CaCl₂(염화칼슘)의 칼슘 이온(Ca²⁺, " +
+              "양전하)이 세포막과 DNA 사이의 반발을 줄여 중화 역할을 합니다(RbCl₂ 처리법도 있습니다). 이렇게 처리한 세포가 다음 주 " +
+              "형질전환에서 재조합 DNA를 받아줍니다.",
+            keyNumbers: ["Competent cell = 외부 DNA를 잘 흡수하도록 처리한 세포", "문제: 세포막(음전하) ↔ DNA(음전하) 반발", "해결: 세포막 음전하를 중화 → 흡수율↑", "방법 = CaCl₂(Ca²⁺) 처리 (RbCl₂도 가능)"],
+            source: "강의 이론(재조합 및 형질전환) — Competent cell · 실험방법 11"
+          },
+          {
+            id: "L7", title: "Competent cell 제조 절차 + 저온 유지·보관", kind: "내용",
+            body:
+              "대장균 TOP10F 배양액 200 mL를 50 mL 코니칼 튜브 4개에 나눠 담고 얼음에 20분 둡니다. 이어 4℃·4,000 rpm·5분 " +
+              "원심분리 후 상등액을 버리고, 차갑게 식힌 100 mM CaCl₂ 15 mL씩으로 풀어 두 개씩 합쳐 30 mL 2개로 만듭니다. 다시 " +
+              "얼음에 20분 둔 뒤 같은 조건으로 원심·상등액 제거하고, 이번엔 15% Glycerol이 든 100 mM CaCl₂ 2.5 mL씩으로 풀어 두 " +
+              "코니칼을 합쳐 5 mL 1개로 만듭니다. 이 용액을 멸균·저온의 1.5 mL E-tube에 100 µL씩 소분해(형질전환 1회 분량) " +
+              "-80℃ Deepfreezer에 보관합니다. 모든 조작은 온도가 오르지 않게 얼음 위에서 빠르게 진행하며, 15% Glycerol은 -80℃에서 " +
+              "얼려 보관할 때 세포 손상을 줄이는 역할을 합니다.",
+            keyNumbers: ["배양액 200 mL → 50 mL 코니칼 4개 · 얼음 20분", "원심 = 4℃ · 4,000 rpm · 5분(상등액 제거)", "1차 100 mM CaCl₂ 15 mL씩 → 30 mL 2개 → 2차 15% Glycerol 포함 2.5 mL씩 → 5 mL 1개", "소분 100 µL씩 · -80℃ 보관 · 전 과정 얼음 위"],
+            source: "실험방법 07 [2] ①~⑦ · 실험방법 11"
+          }
+        ],
+        takeaways: [
+          "오늘은 다음 주 형질전환을 위해 두 가지를 만든다 — ① 재조합 DNA(Vector): 6주차에 회수한 목적 fragment(PCR product)를 TOPO Vector에 붙인 DNA(표적 유전자 + Vector). ② Competent cell: 이 재조합 DNA를 받아줄 대장균 TOP10F를 CaCl₂로 처리한 세포.",
+          "재조합 DNA는 TOPO TA cloning으로 만든다. Taq는 proofreading이 없어 PCR 산물 3' 말단에 A를 붙이고, T가 돌출된 TOPO Vector와 A-T 상보결합해 높은 효율로 결합한다(TOPO = Topoisomerase I, vector 3.519 kb). 반응액은 증류수 6·Salt solution 3·PCR product 6·TOPO Vector 3 µL(총 18 µL)를 순서대로 넣고 상온 30분 교반한 뒤 5 µL로 전기영동해 확인한다.",
+          "Competent cell은 세포막(음전하)과 DNA(음전하)의 반발을 CaCl₂(Ca²⁺)로 중화해 DNA 흡수율을 높인 세포다. 200 mL 배양액을 50 mL 코니칼 4개로 나눠 얼음 20분→4℃·4,000 rpm·5분 원심→100 mM CaCl₂ 처리(2차는 15% Glycerol 포함)→100 µL씩 소분→-80℃ 보관하며, 모든 조작을 얼음 위에서 빠르게 한다."
+        ],
+        source: "실험방법 07 (Vector 및 Competent cell 제조) 전문 · 강의계획서 세부 7주차 · 강의 이론(재조합 및 형질전환)·실험방법 11(Competent cell)"
+      },
+
+      /* ------------------------------------------------------------------
+       * summaryCard(w07) — 7주차 요약 카드
+       * ----------------------------------------------------------------*/
+      summaryCard: {
+        stageId: "w07",
+        title: "7주차 요약 카드 — Vector 및 Competent cell 제조",
+        oneLiner: "넣을 것(재조합 DNA)과 받을 것(competent cell)을 각각 준비한다",
+        hook: "다음 주 형질전환을 하려면, 넣을 재조합 DNA와 그것을 받아줄 세포를 어떻게 준비하나",
+        pipeline: "한 학기 흐름 중 ⑦ 재조합 DNA 제조 · Competent cell 제조 (6주차 회수 fragment로 재조합 → 다음 주 형질전환 준비)",
+
+        concepts: [
+          { h: "오늘 하는 일", d: "① 재조합 DNA(Vector) 제조 — 6주차 회수 fragment를 TOPO Vector에 붙임 · ② Competent cell 제조 — 재조합 DNA를 받아줄 대장균 TOP10F를 CaCl₂로 처리" },
+          { h: "재조합 DNA란", d: "표적(목적) 유전자 + Vector(플라스미드)를 결합한 DNA(=키메라 DNA). 숙주에 넣어 표적 유전자를 대량 획득·발현시킨다" },
+          { h: "TA cloning 원리", d: "Taq는 proofreading이 없어 PCR 산물 3' 말단에 A 돌출 → T가 돌출된 T-Vector와 A-T 상보결합 → 높은 효율. Topoisomerase I(TOPO)이 결합을 도움" },
+          { h: "TOPO Vector", d: "3.519 kb(3,519 bp) · ori(복제원점) · MCS(lac operon 안의 cloning 부위) · Kanamycin 저항 유전자(선별 표지)" },
+          { h: "Competent cell이란", d: "외부 DNA를 잘 흡수하도록 처리한 세포. 세포막(음전하)과 DNA(음전하)가 반발하므로 CaCl₂(Ca²⁺)로 중화해 흡수율을 높인다" },
+          { h: "저온 유지·보관", d: "모든 조작을 얼음 위에서 빠르게. 100 µL씩 소분해 -80℃ Deepfreezer 보관(15% Glycerol이 동결 시 세포 손상을 줄임)" }
+        ],
+
+        numbers: [
+          { step: "재조합 반응액", value: "증류수 6 → Salt solution 3 → PCR product 6 → TOPO Vector 3 µL (총 18 µL)" },
+          { step: "재조합 반응", value: "상온 30분 천천히 교반(결합 효율↑)" },
+          { step: "재조합 확인", value: "완성 시료 5 µL 전기영동" },
+          { step: "TOPO vector 크기", value: "3.519 kb (3,519 bp)" },
+          { step: "배양액 분주", value: "TOP10F 200 mL → 50 mL 코니칼 4개 · 얼음 20분" },
+          { step: "원심분리", value: "4℃ · 4,000 rpm · 5분(상등액 제거) · 얼음 20분 후 반복" },
+          { step: "1차 CaCl₂", value: "100 mM CaCl₂ 15 mL씩 → 두 개씩 혼합 30 mL 2개" },
+          { step: "2차 CaCl₂", value: "100 mM CaCl₂(15% Glycerol 포함) 2.5 mL씩 → 5 mL 1개" },
+          { step: "소분·보관", value: "1.5 mL E-tube에 100 µL씩 · -80℃ Deepfreezer" }
+        ],
+
+        cautions: [
+          "전 과정 저온 — 모든 조작을 얼음 위에서 빠르게(온도가 오르면 competent 상태가 나빠진다)",
+          "넣는 순서 — 재조합 반응액은 증류수 → Salt solution → PCR product → TOPO Vector 순서로",
+          "완전 혼합·상온 30분 — 결합 효율을 높이려면 상온에서 30분 천천히 교반",
+          "원심 조건 — 4℃·4,000 rpm·5분(저온 원심분리기)을 지킨다",
+          "보관 — 100 µL씩 소분해 -80℃ Deepfreezer(냉장 아님)",
+          "라벨·소분 — 형질전환 1회 분량으로 나눠 필요할 때 하나씩 꺼내 쓴다"
+        ],
+
+        expected: {
+          good: [
+            "재조합 반응액 18 µL를 순서대로 넣고 상온 30분 교반 → 재조합 DNA 완성",
+            "완성 시료 5 µL 전기영동 → 재조합 DNA가 확인됨",
+            "저온을 유지하며 CaCl₂ 처리 → 외부 DNA를 잘 흡수하는 competent cell 완성",
+            "100 µL씩 소분해 -80℃ 보관 → 다음 주 형질전환 재료 확보"
+          ],
+          suspect: [
+            "재조합 효율이 낮다 → 반응 시간(상온 30분)·순서·부피를 지켰는지 의심",
+            "형질전환이 잘 안 된다(다음 주) → competent 제조 때 온도가 올라갔는지(얼음 유지) 의심",
+            "competent cell이 잘 안 만들어진다 → CaCl₂ 처리·저온 원심 조건을 지켰는지 점검",
+            "세포가 상했다 → -80℃ 보관·15% Glycerol을 지켰는지 점검"
+          ]
+        },
+
+        closing: "오늘은 '넣을 것'과 '받을 것'을 각각 준비하는 날이다. 6주차 회수 fragment를 TOPO Vector에 붙여 재조합 DNA를 만들고(TA cloning), 대장균 TOP10F를 CaCl₂로 처리해 competent cell을 만든다. 모든 조작을 얼음 위에서 빠르게 하고 -80℃에 보관한 뒤, 다음 주(8주차) 이 둘을 만나게 하는 것이 형질전환이다",
+        report: "재조합 DNA(Vector) 제조 확인(전기영동) 사진과 Competent cell 제조 과정 사진을 찍고, 두 준비가 잘 됐는지 고찰과 함께 보고서에 남긴다 (다음 실험 시작 전 제출)",
+        source: "실험방법 07 · 강의계획서 세부 7주차 · 강의 이론(재조합 및 형질전환)·실험방법 11"
+      },
+
+      /* ------------------------------------------------------------------
+       * pool(w07) — 학습·복습 퀴즈 풀 + 미션 문항 풀
+       *   timed 50문(mc 26 · ox 12 · num 6 · order 6) · reason 6건
+       *   근거 = 실험방법 07 · 강의계획서 세부 7주차 · 강의 이론(재조합·형질전환)·실험방법 11. 지어낸 값 없음.
+       * ----------------------------------------------------------------*/
+      pool: {
+        stageId: "w07",
+
+        info: {
+          purpose: "실습 보고서 제출을 대체·보완하는 평가 도구 — 미션 통과 시 보고서 점수를 부여한다(성적 반영).",
+          gradeNotice: "이 미션은 성적에 반영되는 평가 도구입니다. 통과해야 보고서 점수를 받습니다.",
+          flow: "① 학습·복습 퀴즈 약 30문(정답·오답 무관 다 풀면 미션 해금) → ② 미션 10문(시간제한 8 + 추리 2) 평가",
+          learnUnlockCount: 30,
+          mission: {
+            timedCount: 8,
+            reasonCount: 2,
+            totalItems: 10,
+            totalPoints: 100,
+            passPoints: 70,
+            passPercent: 70,
+            perStudentRandom: true,
+            reshuffleOnRetry: true,
+            note:
+              "학생마다·재도전마다 시간제한 8문과 추리 2문을 풀에서 무작위로 다시 뽑는다(직전 회차 문항은 제외). " +
+              "배점은 뽑힌 문항의 원점수(시간제한 Lv1 7 · Lv2 9 · Lv3 11 · 추리 15)를 100점에 비례 정규화해 " +
+              "합을 정확히 100으로 맞춘다(buildMission의 roundToSum). 합격선은 70점(70%)이다."
+          },
+          points: { timedLv1: 7, timedLv2: 9, timedLv3: 11, reason: 15 },
+          limits: { mc: 20, ox: 8, num: 30, order: 45 },
+          orderAnswerConvention:
+            "type=order 문항의 answer는 steps 배열의 인덱스(0부터)를 올바른 순서대로 나열한 배열이다. " +
+            "steps는 화면에 섞어서 보여주고, 학생이 맞춘 순서를 answer와 비교한다.",
+          resultScreen: {
+            showScore: true,
+            showPerItem: true,
+            showCertificate: true,
+            certificatePassText: "합격 — 7주차 Vector 및 Competent cell 제조 미션 통과",
+            certificateFailText: "재도전 — 문항이 바뀌어 다시 출제됩니다",
+            note: "미션 결과 화면과 합격증 표시까지는 이번 시제품에 포함. 서버 자동집계는 운영본 단계."
+          },
+          source: "교수님 지시(미션 방식) · 모든 수치 근거 = 실험방법 07 · 강의계획서 세부 7주차 · 강의 이론(재조합 및 형질전환)"
+        },
+
+        /* ---- pool.timed — 시간제한형 50문 (mc 26 · ox 12 · num 6 · order 6) ---- */
+        timed: [
+
+          /* ===== mc (4지선다 · 20초) 26문 ===== */
+          {
+            qid: "w07p_m01", type: "mc", level: 1, points: 7, limitSec: 20,
+            q: "재조합 DNA를 가장 잘 설명한 것은?",
+            choices: ["표적(목적) 유전자와 Vector(플라스미드)를 결합한 DNA", "DNA를 잘게 자른 조각", "세포에서 갓 추출한 plasmid", "PCR로 증폭만 한 DNA"],
+            answer: 0,
+            explain: "재조합 DNA는 표적(목적) 유전자와 Vector(플라스미드)를 하나로 결합한 DNA입니다.",
+            source: "강의 이론(재조합 및 형질전환)",
+            tags: ["재조합 DNA","정의"]
+          },
+          {
+            qid: "w07p_m02", type: "mc", level: 1, points: 7, limitSec: 20,
+            q: "재조합 DNA를 달리 부르는 이름은?",
+            choices: ["키메라 DNA(Chimera DNA)", "게놈 DNA", "미토콘드리아 DNA", "프라이머"],
+            answer: 0,
+            explain: "서로 다른 유전자를 이어 붙였다는 뜻에서 재조합 DNA를 키메라 DNA(Chimera DNA)라고도 부릅니다.",
+            source: "강의 이론(재조합 및 형질전환)",
+            tags: ["키메라 DNA","별명"]
+          },
+          {
+            qid: "w07p_m03", type: "mc", level: 1, points: 7, limitSec: 20,
+            q: "이번 실험에서 재조합 DNA를 만드는 방법은?",
+            choices: ["TOPO TA cloning", "PCR 증폭만", "전기영동", "세포 배양"],
+            answer: 0,
+            explain: "이번 실험은 TOPO TA cloning으로 회수한 fragment를 Vector에 붙여 재조합 DNA를 만듭니다.",
+            source: "강의 이론(재조합 및 형질전환) · 실험방법 07 [1]",
+            tags: ["TA cloning","TOPO"]
+          },
+          {
+            qid: "w07p_m04", type: "mc", level: 2, points: 9, limitSec: 20,
+            q: "TA cloning이 가능한 이유로 옳은 것은?",
+            choices: ["Taq가 proofreading이 없어 PCR 산물 3' 말단에 A(아데닌)를 붙이기 때문", "PCR 산물이 원형이기 때문", "Vector가 단일가닥이기 때문", "제한효소로 잘랐기 때문"],
+            answer: 0,
+            explain: "Taq 등 열 안정성 중합효소는 3'→5' 교정(proofreading) 기능이 없어 PCR 산물 3' 말단에 A를 하나 붙여 돌출 말단을 만듭니다. 그래서 T가 돌출된 Vector와 결합합니다.",
+            source: "강의 이론(재조합 및 형질전환) — PCR product cloning",
+            tags: ["TA cloning","Taq","A 돌출"]
+          },
+          {
+            qid: "w07p_m05", type: "mc", level: 2, points: 9, limitSec: 20,
+            q: "PCR 산물과 T-Vector가 결합하는 원리는?",
+            choices: ["PCR 산물 3'의 A와 Vector의 T가 상보결합", "제한효소 자리끼리 붙음", "양전하-음전하 인력", "열로 융합"],
+            answer: 0,
+            explain: "PCR 산물 3' 말단의 A와, T가 돌출된 Vector의 T가 상보적으로 결합(A-T)해 재조합 DNA가 만들어집니다.",
+            source: "강의 이론(재조합 및 형질전환) — TA cloning",
+            tags: ["A-T 상보결합","T-Vector"]
+          },
+          {
+            qid: "w07p_m06", type: "mc", level: 2, points: 9, limitSec: 20,
+            q: "TOPO TA cloning의 'TOPO'는 무엇인가?",
+            choices: ["Topoisomerase I(효소)", "제한효소", "항생제", "프라이머 이름"],
+            answer: 0,
+            explain: "TOPO는 Topoisomerase I 효소로, PCR 산물과 Vector의 결합을 도와줍니다.",
+            source: "강의 이론(재조합 및 형질전환) — TOPO TA cloning vector",
+            tags: ["TOPO","Topoisomerase I"]
+          },
+          {
+            qid: "w07p_m07", type: "mc", level: 1, points: 7, limitSec: 20,
+            q: "이번에 쓰는 TOPO TA cloning vector의 크기는?",
+            choices: ["3.519 kb (3,519 bp)", "50 kb", "300 bp", "1 Mb"],
+            answer: 0,
+            explain: "TOPO TA cloning vector의 크기는 3.519 kb(3,519 bp)입니다.",
+            source: "강의 이론(재조합 및 형질전환) — TOPO TA cloning vector",
+            tags: ["3.519 kb","vector 크기"]
+          },
+          {
+            qid: "w07p_m08", type: "mc", level: 2, points: 9, limitSec: 20,
+            q: "TOPO Vector가 가지는 부위가 아닌 것은?",
+            choices: ["ori(복제원점)", "MCS(cloning 부위, lac operon)", "항생제 저항 유전자", "PCR 프라이머"],
+            answer: 3,
+            explain: "Vector는 ori·MCS(lac operon)·항생제 저항 유전자를 가집니다. 프라이머는 vector의 구성 요소가 아니라 PCR에 쓰는 별개의 짧은 DNA입니다.",
+            source: "강의 이론(재조합 및 형질전환) — TOPO TA cloning vector",
+            tags: ["vector 구조","ori","MCS"]
+          },
+          {
+            qid: "w07p_m09", type: "mc", level: 2, points: 9, limitSec: 20,
+            q: "Vector의 ori(복제원점)의 역할은?",
+            choices: ["숙주 세포 안에서 vector가 복제되게 하는 부위", "목적 DNA를 끼우는 자리", "항생제를 분해하는 부위", "colony 색을 내는 부위"],
+            answer: 0,
+            explain: "ori(복제원점)는 숙주 세포 안에서 vector가 스스로 복제되게 하는 부위입니다.",
+            source: "강의 이론(재조합 및 형질전환) — TOPO TA cloning vector",
+            tags: ["ori","복제원점"]
+          },
+          {
+            qid: "w07p_m10", type: "mc", level: 2, points: 9, limitSec: 20,
+            q: "Vector의 항생제 저항 유전자가 하는 일은?",
+            choices: ["vector를 받은 세포만 항생제 배지에서 살아남게 하는 선별 표지", "DNA를 자르는 일", "colony를 파랗게 만드는 일", "PCR을 돕는 일"],
+            answer: 0,
+            explain: "항생제 저항 유전자는 vector를 받은(형질전환된) 세포만 항생제 배지에서 살아남게 하는 선별 표지입니다.",
+            source: "강의 이론(재조합 및 형질전환) · 강의계획서 세부",
+            tags: ["항생제 저항","선별"]
+          },
+          {
+            qid: "w07p_m11", type: "mc", level: 1, points: 7, limitSec: 20,
+            q: "재조합 반응액에 넣는 용액이 아닌 것은?",
+            choices: ["증류수(Distilled water)", "Salt solution", "TOPO Vector", "Ampicillin"],
+            answer: 3,
+            explain: "재조합 반응액은 증류수·Salt solution·PCR product·TOPO Vector로 구성합니다. Ampicillin은 형질전환 선별에 쓰는 항생제로, 재조합 반응액에 넣지 않습니다.",
+            source: "실험방법 07 [1] ①",
+            tags: ["반응액 구성"]
+          },
+          {
+            qid: "w07p_m12", type: "mc", level: 2, points: 9, limitSec: 20,
+            q: "재조합 반응액을 넣는 올바른 순서는?",
+            choices: ["증류수 → Salt solution → PCR product → TOPO Vector", "TOPO Vector → PCR product → Salt solution → 증류수", "PCR product → 증류수 → TOPO Vector → Salt solution", "Salt solution → 증류수 → TOPO Vector → PCR product"],
+            answer: 0,
+            explain: "멸균 PCR tube에 증류수 → Salt solution → PCR product → TOPO Vector 순서로 넣습니다.",
+            source: "실험방법 07 [1] ①",
+            tags: ["넣는 순서"]
+          },
+          {
+            qid: "w07p_m13", type: "mc", level: 1, points: 7, limitSec: 20,
+            q: "재조합 반응액의 총 부피는?",
+            choices: ["18 µL", "6 µL", "50 µL", "100 µL"],
+            answer: 0,
+            explain: "증류수 6 + Salt solution 3 + PCR product 6 + TOPO Vector 3 = 총 18 µL입니다.",
+            source: "실험방법 07 [1] ①",
+            tags: ["총 18 µL"]
+          },
+          {
+            qid: "w07p_m14", type: "mc", level: 2, points: 9, limitSec: 20,
+            q: "재조합 반응을 상온에서 30분간 천천히 교반하는 이유는?",
+            choices: ["DNA 합성(결합) 효율을 높이려고", "DNA를 변성시키려고", "효소를 죽이려고", "물을 증발시키려고"],
+            answer: 0,
+            explain: "용액을 모두 넣어 섞은 뒤, DNA 합성(결합) 효율을 높이기 위해 상온에서 30분간 천천히 교반합니다.",
+            source: "실험방법 07 [1] ②",
+            tags: ["상온 30분","교반"]
+          },
+          {
+            qid: "w07p_m15", type: "mc", level: 1, points: 7, limitSec: 20,
+            q: "완성된 재조합 Vector가 잘 만들어졌는지 확인하는 방법은?",
+            choices: ["시료 5 µL를 전기영동", "냄새를 맡음", "무게를 잼", "색을 봄"],
+            answer: 0,
+            explain: "완성된 시료 5 µL만 이용해 전기영동으로 재조합 DNA가 제대로 만들어졌는지 확인합니다.",
+            source: "실험방법 07 [1] ③",
+            tags: ["전기영동 확인","5 µL"]
+          },
+          {
+            qid: "w07p_m16", type: "mc", level: 1, points: 7, limitSec: 20,
+            q: "Competent cell을 가장 잘 설명한 것은?",
+            choices: ["외부 DNA를 쉽게 흡수하도록 물리·화학적으로 처리한 세포", "죽은 세포", "항생제를 만드는 세포", "DNA가 없는 세포"],
+            answer: 0,
+            explain: "Competent cell(수용성 세포)은 외부 DNA를 쉽게 흡수하도록 물리·화학적으로 처리한 세포입니다.",
+            source: "강의 이론(재조합 및 형질전환) — Competent cell",
+            tags: ["competent cell","정의"]
+          },
+          {
+            qid: "w07p_m17", type: "mc", level: 2, points: 9, limitSec: 20,
+            q: "Competent cell 제조에서 세포막을 '중화'해야 하는 이유는?",
+            choices: ["세포막(음전하)과 DNA(음전하)가 서로 반발하므로", "세포막이 양전하라서", "DNA가 전하가 없어서", "세포가 너무 커서"],
+            answer: 0,
+            explain: "세포막은 음전하, DNA도 음전하라 서로 반발해 DNA가 세포 가까이 가기 어렵습니다. 그래서 세포막의 음전하를 중화해 흡수율을 높입니다.",
+            source: "강의 이론(재조합 및 형질전환) — Competent cell",
+            tags: ["중화","음전하"]
+          },
+          {
+            qid: "w07p_m18", type: "mc", level: 1, points: 7, limitSec: 20,
+            q: "Competent cell 제조에 세포막 중화를 위해 쓰는 시약은?",
+            choices: ["CaCl₂(염화칼슘)", "NaOH", "에탄올", "Taq polymerase"],
+            answer: 0,
+            explain: "CaCl₂(염화칼슘)의 칼슘 이온(Ca²⁺·양전하)이 세포막과 DNA의 반발을 줄여 중화합니다(RbCl₂ 처리법도 있습니다).",
+            source: "강의 이론(재조합 및 형질전환) · 실험방법 07 [2]",
+            tags: ["CaCl2","중화"]
+          },
+          {
+            qid: "w07p_m19", type: "mc", level: 1, points: 7, limitSec: 20,
+            q: "이번 competent cell 제조에 쓰는 대장균 균주는?",
+            choices: ["TOP10F", "황색포도상구균", "폐렴구균", "효모"],
+            answer: 0,
+            explain: "이번 실험은 대장균 TOP10F로 competent cell을 제조합니다.",
+            source: "실험방법 07 [2] ①",
+            tags: ["TOP10F","균주"]
+          },
+          {
+            qid: "w07p_m20", type: "mc", level: 2, points: 9, limitSec: 20,
+            q: "Competent cell 제조에서 모든 조작을 얼음 위(저온)에서 하는 이유는?",
+            choices: ["온도가 오르면 세포 상태(competent)가 나빠지므로", "얼음이 세포를 죽이려고", "빛을 차단하려고", "무게를 줄이려고"],
+            answer: 0,
+            explain: "온도가 오르면 competent 상태가 나빠지므로, 모든 작업을 빠르게 하고 얼음에 꽂아 온도가 올라가지 않게 합니다.",
+            source: "실험방법 07 [2] ③⑤",
+            tags: ["저온 유지","얼음"]
+          },
+          {
+            qid: "w07p_m21", type: "mc", level: 1, points: 7, limitSec: 20,
+            q: "TOP10F 배양액 200 mL를 처음에 나눠 담는 용기는?",
+            choices: ["50 mL 코니칼 튜브 4개", "1.5 mL E-tube 1개", "250 mL 삼각플라스크 1개", "페트리디쉬 1개"],
+            answer: 0,
+            explain: "배양액 200 mL를 50 mL 코니칼 튜브 4개에 나누어 담고 얼음에 20분 둡니다.",
+            source: "실험방법 07 [2] ①",
+            tags: ["50 mL 코니칼","4개"]
+          },
+          {
+            qid: "w07p_m22", type: "mc", level: 2, points: 9, limitSec: 20,
+            q: "Competent cell 제조의 원심분리 조건으로 옳은 것은?",
+            choices: ["4℃ · 4,000 rpm · 5분", "상온 · 13,000 rpm · 1분", "60℃ · 4,000 rpm · 5분", "4℃ · 100 rpm · 30분"],
+            answer: 0,
+            explain: "원심분리기를 4℃로 맞추고 4,000 rpm에서 5분간 원심분리한 뒤 상등액을 제거합니다.",
+            source: "실험방법 07 [2] ②④",
+            tags: ["4℃","4000 rpm","5분"]
+          },
+          {
+            qid: "w07p_m23", type: "mc", level: 1, points: 7, limitSec: 20,
+            q: "Competent cell 제조에 쓰는 CaCl₂ 용액의 농도는?",
+            choices: ["100 mM", "10 mM", "1 M", "5 %"],
+            answer: 0,
+            explain: "차갑게 식힌 100 mM CaCl₂ 용액으로 세포를 처리합니다.",
+            source: "실험방법 07 [2] ③⑤",
+            tags: ["100 mM","CaCl2"]
+          },
+          {
+            qid: "w07p_m24", type: "mc", level: 2, points: 9, limitSec: 20,
+            q: "2차 CaCl₂ 용액에 15% Glycerol을 넣는 주된 이유는?",
+            choices: ["-80℃에서 얼려 보관할 때 세포 손상을 줄이려고", "세포를 빨리 죽이려고", "DNA를 분해하려고", "색을 내려고"],
+            answer: 0,
+            explain: "15% Glycerol이 든 CaCl₂로 최종 처리하고 -80℃에 보관합니다. Glycerol은 얼릴 때 세포 손상을 줄이는 역할을 합니다.",
+            source: "실험방법 07 [2] ⑤⑦",
+            tags: ["Glycerol","동결보호","-80"]
+          },
+          {
+            qid: "w07p_m25", type: "mc", level: 1, points: 7, limitSec: 20,
+            q: "제조한 Competent cell을 보관하는 곳은?",
+            choices: ["-80℃ Deepfreezer", "4℃ 냉장고", "상온 시약대", "37℃ 배양기"],
+            answer: 0,
+            explain: "소분한 competent cell은 -80℃ Deepfreezer에 넣어 보관하고 필요할 때 꺼내 씁니다.",
+            source: "실험방법 07 [2] ⑦",
+            tags: ["-80℃","보관"]
+          },
+          {
+            qid: "w07p_m26", type: "mc", level: 2, points: 9, limitSec: 20,
+            q: "Competent cell을 1.5 mL E-tube에 100 µL씩 소분하는 이유로 가장 알맞은 것은?",
+            choices: ["형질전환 1회 사용 분량으로 나눠, 필요할 때 하나씩 꺼내 쓰려고", "무게를 재려고", "색을 확인하려고", "농도를 측정하려고"],
+            answer: 0,
+            explain: "형질전환 1회 분량(100 µL)으로 소분해 두면, 필요할 때 하나씩 꺼내 쓰고 나머지는 -80℃에 그대로 둘 수 있습니다.",
+            source: "실험방법 07 [2] ⑥ · 실험방법 11",
+            tags: ["소분","100 µL","1회 분량"]
+          },
+
+          /* ===== ox (O/X · 20초) 12문 ===== */
+          {
+            qid: "w07p_o01", type: "ox", level: 1, points: 7, limitSec: 20,
+            q: "재조합 DNA는 표적(목적) 유전자와 Vector를 결합한 것이다.",
+            answer: true,
+            explain: "맞습니다. 재조합 DNA = 표적 유전자 + Vector(플라스미드)이며, 키메라 DNA라고도 부릅니다.",
+            source: "강의 이론(재조합 및 형질전환)",
+            tags: ["재조합 DNA"]
+          },
+          {
+            qid: "w07p_o02", type: "ox", level: 2, points: 9, limitSec: 20,
+            q: "TA cloning은 PCR 산물 3' 말단의 A와 Vector의 T가 상보결합하는 원리를 쓴다.",
+            answer: true,
+            explain: "맞습니다. Taq가 PCR 산물 3' 말단에 A를 붙이고, T가 돌출된 Vector와 A-T 상보결합합니다.",
+            source: "강의 이론(재조합 및 형질전환) — TA cloning",
+            tags: ["TA cloning","A-T"]
+          },
+          {
+            qid: "w07p_o03", type: "ox", level: 2, points: 9, limitSec: 20,
+            q: "TOPO는 제한효소이다.",
+            answer: false,
+            explain: "아닙니다. TOPO는 Topoisomerase I 효소로, PCR 산물과 Vector의 결합을 도와줍니다(제한효소 아님).",
+            source: "강의 이론(재조합 및 형질전환) — TOPO",
+            tags: ["TOPO","Topoisomerase I"]
+          },
+          {
+            qid: "w07p_o04", type: "ox", level: 1, points: 7, limitSec: 20,
+            q: "재조합 반응액은 증류수·Salt solution·PCR product·TOPO Vector로 구성한다.",
+            answer: true,
+            explain: "맞습니다. 이 네 가지를 순서대로 넣어 총 18 µL의 재조합 반응액을 만듭니다.",
+            source: "실험방법 07 [1] ①",
+            tags: ["반응액 구성"]
+          },
+          {
+            qid: "w07p_o05", type: "ox", level: 2, points: 9, limitSec: 20,
+            q: "재조합 반응액은 TOPO Vector를 가장 먼저 넣는다.",
+            answer: false,
+            explain: "아닙니다. 증류수 → Salt solution → PCR product → TOPO Vector 순서로, 증류수를 가장 먼저 넣습니다.",
+            source: "실험방법 07 [1] ①",
+            tags: ["넣는 순서"]
+          },
+          {
+            qid: "w07p_o06", type: "ox", level: 1, points: 7, limitSec: 20,
+            q: "완성된 재조합 Vector는 시료 5 µL로 전기영동해 확인한다.",
+            answer: true,
+            explain: "맞습니다. 완성된 시료 5 µL만 이용해 전기영동으로 확인합니다.",
+            source: "실험방법 07 [1] ③",
+            tags: ["전기영동","5 µL"]
+          },
+          {
+            qid: "w07p_o07", type: "ox", level: 1, points: 7, limitSec: 20,
+            q: "Competent cell은 외부 DNA를 쉽게 흡수하도록 처리한 세포이다.",
+            answer: true,
+            explain: "맞습니다. 물리·화학적 처리로 외부 DNA 흡수율을 높인 세포입니다.",
+            source: "강의 이론(재조합 및 형질전환) — Competent cell",
+            tags: ["competent cell"]
+          },
+          {
+            qid: "w07p_o08", type: "ox", level: 2, points: 9, limitSec: 20,
+            q: "세포막과 DNA는 모두 음전하라 서로 반발하므로 중화가 필요하다.",
+            answer: true,
+            explain: "맞습니다. 그래서 CaCl₂(Ca²⁺)로 세포막 음전하를 중화해 DNA 흡수율을 높입니다.",
+            source: "강의 이론(재조합 및 형질전환) — Competent cell",
+            tags: ["중화","음전하"]
+          },
+          {
+            qid: "w07p_o09", type: "ox", level: 1, points: 7, limitSec: 20,
+            q: "Competent cell 제조에는 CaCl₂를 쓴다.",
+            answer: true,
+            explain: "맞습니다. 100 mM CaCl₂로 처리합니다(RbCl₂ 처리법도 있습니다).",
+            source: "실험방법 07 [2] · 강의 이론",
+            tags: ["CaCl2"]
+          },
+          {
+            qid: "w07p_o10", type: "ox", level: 2, points: 9, limitSec: 20,
+            q: "Competent cell 제조는 온도가 올라가도 상관없어 상온에서 편하게 해도 된다.",
+            answer: false,
+            explain: "아닙니다. 온도가 오르면 competent 상태가 나빠지므로 모든 조작을 얼음 위에서 빠르게 해야 합니다.",
+            source: "실험방법 07 [2] ③⑤",
+            tags: ["저온 유지"]
+          },
+          {
+            qid: "w07p_o11", type: "ox", level: 1, points: 7, limitSec: 20,
+            q: "제조한 Competent cell은 냉장(4℃)에 보관한다.",
+            answer: false,
+            explain: "아닙니다. -80℃ Deepfreezer에 보관합니다(4℃ 냉장이 아님).",
+            source: "실험방법 07 [2] ⑦",
+            tags: ["-80℃ 보관"]
+          },
+          {
+            qid: "w07p_o12", type: "ox", level: 1, points: 7, limitSec: 20,
+            q: "Competent cell은 1.5 mL E-tube에 100 µL씩 소분한다.",
+            answer: true,
+            explain: "맞습니다. 형질전환 1회 분량인 100 µL씩 소분해 보관합니다.",
+            source: "실험방법 07 [2] ⑥",
+            tags: ["소분","100 µL"]
+          },
+
+          /* ===== num (숫자 입력 · 30초) 6문 ===== */
+          {
+            qid: "w07p_n01", type: "num", level: 2, points: 9, limitSec: 30,
+            q: "재조합 반응액의 총 부피는 몇 µL인가?",
+            answer: 18, unit: "µL", tolerance: 0,
+            explain: "증류수 6 + Salt solution 3 + PCR product 6 + TOPO Vector 3 = 총 18 µL입니다.",
+            source: "실험방법 07 [1] ①",
+            tags: ["18","총 부피"]
+          },
+          {
+            qid: "w07p_n02", type: "num", level: 1, points: 7, limitSec: 30,
+            q: "재조합 반응액에 넣는 PCR product는 몇 µL인가?",
+            answer: 6, unit: "µL", tolerance: 0,
+            explain: "재조합 반응액에는 PCR product 6 µL를 넣습니다.",
+            source: "실험방법 07 [1] ①",
+            tags: ["PCR product","6"]
+          },
+          {
+            qid: "w07p_n03", type: "num", level: 2, points: 9, limitSec: 30,
+            q: "Competent cell 제조의 원심분리 회전수는 몇 rpm인가?",
+            answer: 4000, unit: "rpm", tolerance: 0,
+            explain: "4℃에서 4,000 rpm으로 5분간 원심분리합니다.",
+            source: "실험방법 07 [2] ②④",
+            tags: ["4000","rpm"]
+          },
+          {
+            qid: "w07p_n04", type: "num", level: 2, points: 9, limitSec: 30,
+            q: "1차로 넣는 100 mM CaCl₂ 용액은 코니칼당 몇 mL인가?",
+            answer: 15, unit: "mL", tolerance: 0,
+            explain: "차갑게 식힌 100 mM CaCl₂ 용액을 15 mL씩 넣고 풀어 두 개씩 합쳐 30 mL 2개로 만듭니다.",
+            source: "실험방법 07 [2] ③",
+            tags: ["15","CaCl2"]
+          },
+          {
+            qid: "w07p_n05", type: "num", level: 1, points: 7, limitSec: 30,
+            q: "제조한 competent cell을 E-tube에 몇 µL씩 소분하는가?",
+            answer: 100, unit: "µL", tolerance: 0,
+            explain: "형질전환 1회 분량인 100 µL씩 1.5 mL E-tube에 소분합니다.",
+            source: "실험방법 07 [2] ⑥",
+            tags: ["100","소분"]
+          },
+          {
+            qid: "w07p_n06", type: "num", level: 2, points: 9, limitSec: 30,
+            q: "재조합 반응은 상온에서 몇 분간 천천히 교반하는가?",
+            answer: 30, unit: "분", tolerance: 0,
+            explain: "DNA 합성(결합) 효율을 높이기 위해 상온에서 30분간 천천히 교반합니다.",
+            source: "실험방법 07 [1] ②",
+            tags: ["30분","교반"]
+          },
+
+          /* ===== order (순서 배열 · 45초) 6문
+           *   answer = steps 배열의 인덱스(0부터)를 올바른 순서대로 나열한 배열
+           * ===== */
+          {
+            qid: "w07p_r01", type: "order", level: 1, points: 7, limitSec: 45,
+            q: "재조합 반응액에 용액을 넣는 순서를 맞춰 보세요.",
+            steps: ["PCR product", "증류수", "TOPO Vector", "Salt solution"],
+            answer: [1, 3, 0, 2],
+            explain: "증류수 → Salt solution → PCR product → TOPO Vector 순서로 넣습니다.",
+            source: "실험방법 07 [1] ①",
+            tags: ["넣는 순서"]
+          },
+          {
+            qid: "w07p_r02", type: "order", level: 2, points: 9, limitSec: 45,
+            q: "재조합 DNA(Vector) 제조 과정을 순서대로 맞춰 보세요.",
+            steps: ["상온 30분 천천히 교반", "반응액(4용액) 조성", "완성 시료 5 µL 전기영동 확인"],
+            answer: [1, 0, 2],
+            explain: "반응액 조성 → 상온 30분 교반 → 완성 시료 5 µL 전기영동 확인 순서입니다.",
+            source: "실험방법 07 [1] ①②③",
+            tags: ["Vector 제조 순서"]
+          },
+          {
+            qid: "w07p_r03", type: "order", level: 2, points: 9, limitSec: 45,
+            q: "Competent cell 제조 앞부분을 순서대로 맞춰 보세요.",
+            steps: ["4℃·4,000 rpm·5분 원심 후 상등액 제거", "배양액 200 mL를 50 mL 코니칼 4개에 분주·얼음 20분", "100 mM CaCl₂ 15 mL씩 넣어 30 mL 2개로"],
+            answer: [1, 0, 2],
+            explain: "배양액 분주·얼음 20분 → 원심·상등액 제거 → CaCl₂ 15 mL씩(30 mL 2개) 순서입니다.",
+            source: "실험방법 07 [2] ①②③",
+            tags: ["competent 제조 순서"]
+          },
+          {
+            qid: "w07p_r04", type: "order", level: 3, points: 11, limitSec: 45,
+            q: "Competent cell 제조 뒷부분을 순서대로 맞춰 보세요.",
+            steps: ["-80℃ Deepfreezer 보관", "얼음 20분 후 다시 원심·상등액 제거", "15% Glycerol 포함 CaCl₂ 2.5 mL씩 → 5 mL 1개", "1.5 mL E-tube에 100 µL씩 소분"],
+            answer: [1, 2, 3, 0],
+            explain: "얼음 20분 후 재원심 → 15% Glycerol CaCl₂로 5 mL 1개 → 100 µL씩 소분 → -80℃ 보관 순서입니다.",
+            source: "실험방법 07 [2] ④⑤⑥⑦",
+            tags: ["competent 제조 순서"]
+          },
+          {
+            qid: "w07p_r05", type: "order", level: 2, points: 9, limitSec: 45,
+            q: "오늘 실험의 큰 흐름을 순서대로 맞춰 보세요.",
+            steps: ["Competent cell 제조(CaCl₂ 처리)", "재조합 DNA(Vector) 제조", "다음 주 형질전환의 재료로 -80℃ 보관"],
+            answer: [1, 0, 2],
+            explain: "재조합 DNA 제조 → competent cell 제조 → -80℃ 보관(다음 주 형질전환 재료) 순으로, 두 준비물을 만드는 날입니다.",
+            source: "실험방법 07 [1]·[2] · 강의계획서 세부 7주차",
+            tags: ["오늘 흐름"]
+          },
+          {
+            qid: "w07p_r06", type: "order", level: 3, points: 11, limitSec: 45,
+            q: "TA cloning으로 재조합 DNA가 만들어지는 원리를 순서대로 맞춰 보세요.",
+            steps: ["PCR 산물의 A와 Vector의 T가 상보결합", "Taq가 PCR 산물 3' 말단에 A를 붙임", "T가 돌출된 TOPO Vector를 준비"],
+            answer: [1, 2, 0],
+            explain: "Taq가 A를 붙임 → T-Vector 준비 → A와 T가 상보결합 순서로, 이렇게 재조합 DNA가 만들어집니다.",
+            source: "강의 이론(재조합 및 형질전환) — TA cloning",
+            tags: ["TA cloning 원리 순서"]
+          }
+        ],
+
+        /* ---- pool.reason — 추리형 사건 6건 (제조 실패 시나리오) ----
+         *   각 사건 points = 15. 근거 = 실험방법 07 · 강의 이론(재조합·competent cell).
+         * ---------------------------------------------------------------*/
+        reason: [
+          {
+            caseId: "w07_r01",
+            no: "Case 01",
+            title: "재조합 효율이 낮다 — 반응 시간을 너무 짧게 줬다",
+            subtitle: "7주차 Vector 제조 — 상온 30분을 지키지 않고 금방 꺼냈다",
+            weeks: "7주차",
+            points: 15,
+            brief:
+              "한 조가 만든 재조합 Vector의 결합 효율이 옆 조보다 크게 낮았습니다. 재조합 반응 기록을 확인하니 이상했습니다. " +
+              "무엇이 잘못됐는지 밝히세요.",
+            freeClues: 3,
+            extraClueCostXp: 20,
+            clues: [
+              { id: "k1", order: 1, label: "단서 ① — 반응 시간 기록",
+                body: "반응액 18 µL를 순서대로 넣긴 했으나, 상온 30분 교반을 하지 않고 섞자마자 바로 다음 단계로 넘어감.",
+                readingHint: "재조합 반응은 상온 30분 교반으로 결합 효율을 높인다 — 시간을 안 주면 효율이 떨어진다. 결정타일 수 있다.",
+                isEvidence: true, decisive: true,
+                source: "실험방법 07 [1] ②" },
+              { id: "k2", order: 2, label: "단서 ② — 반응액 조성",
+                body: "증류수 6·Salt solution 3·PCR product 6·TOPO Vector 3 µL(총 18 µL)를 순서대로 정확히 넣었음.",
+                readingHint: "반응액 부피·순서는 정상이다 → 조성 문제는 아니다.",
+                isEvidence: false,
+                source: "실험방법 07 [1] ①" },
+              { id: "k3", order: 3, label: "단서 ③ — 옆 조 비교",
+                body: "같은 시료로 상온 30분을 지킨 옆 조는 결합 효율이 정상이었음.",
+                readingHint: "차이는 '상온 30분 교반을 했느냐'뿐이다.",
+                isEvidence: true,
+                source: "실험방법 07 [1] ②" },
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+                body: "빨리 끝내려고 섞자마자 바로 다음으로 넘어갔어요. 30분 기다리는 걸 안 했어요.",
+                readingHint: "확정타. 반응 시간을 안 줘 결합 효율이 떨어졌다.",
+                isEvidence: true, decisive: true,
+                source: "실험방법 07 [1] ②" }
+            ],
+            suspects: [
+              { id: "s1", mark: "ㄱ", label: "상온 30분 교반을 하지 않아 DNA 결합 효율이 떨어졌다", correct: true },
+              { id: "s2", mark: "ㄴ", label: "PCR product를 6 µL 넣었다", correct: false,
+                debrief: "PCR product 6 µL는 규정 부피입니다(단서 ②) — 실패 원인이 아닙니다." },
+              { id: "s3", mark: "ㄷ", label: "TOPO Vector를 3 µL 넣었다", correct: false,
+                debrief: "TOPO Vector 3 µL는 규정 부피입니다 — 원인이 아닙니다." },
+              { id: "s4", mark: "ㄹ", label: "증류수를 가장 먼저 넣었다", correct: false,
+                debrief: "증류수를 먼저 넣는 것은 올바른 순서입니다 — 원인이 아닙니다." }
+            ],
+            answer: { suspect: "s1", evidence: ["k1", "k4"] },
+            debrief:
+              "재조합 반응은 용액을 다 넣은 뒤 상온에서 30분간 천천히 교반해 결합 효율을 높입니다. 시간을 주지 않으면 PCR 산물과 " +
+              "Vector가 충분히 결합하지 못해 재조합 효율이 떨어집니다. 결합 효율이 낮으면 상온 30분 교반을 지켰는지 가장 먼저 " +
+              "점검해야 합니다.",
+            prescription: [
+              "반응액을 다 넣고 섞은 뒤 상온에서 30분간 천천히 교반한다",
+              "시간을 아끼려고 반응 시간을 건너뛰지 않는다",
+              "결합 효율이 낮으면 반응 시간(상온 30분)을 먼저 확인한다"
+            ],
+            source: "실험방법 07 [1] ②",
+            tags: ["반응 시간","재조합 효율","상온 30분"]
+          },
+          {
+            caseId: "w07_r02",
+            no: "Case 02",
+            title: "다음 주 형질전환이 잘 안 됐다 — competent 제조 중 온도가 올라갔다",
+            subtitle: "7주차 Competent cell 제조 — 얼음에서 꺼내 상온에 오래 두었다",
+            weeks: "7주차",
+            points: 15,
+            brief:
+              "한 조의 competent cell로 다음 주 형질전환을 했더니 콜로니가 거의 없었습니다. competent 제조 기록을 보니 이상했습니다. " +
+              "무엇이 잘못됐는지 밝히세요.",
+            freeClues: 3,
+            extraClueCostXp: 20,
+            clues: [
+              { id: "k1", order: 1, label: "단서 ① — 온도 관리 기록",
+                body: "CaCl₂ 처리 도중 코니칼을 얼음에서 꺼내 상온 실험대에 오래 올려두어 용액 온도가 올라갔음.",
+                readingHint: "competent 제조는 모든 조작을 얼음 위에서 해야 한다 — 온도가 오르면 세포 상태가 나빠진다. 결정타일 수 있다.",
+                isEvidence: true, decisive: true,
+                source: "실험방법 07 [2] ③⑤" },
+              { id: "k2", order: 2, label: "단서 ② — 시약·원심 조건",
+                body: "100 mM CaCl₂ 농도와 4℃·4,000 rpm·5분 원심은 규정대로였음.",
+                readingHint: "시약·원심 조건은 정상이다 → 그쪽 문제는 아니다.",
+                isEvidence: false,
+                source: "실험방법 07 [2] ②③" },
+              { id: "k3", order: 3, label: "단서 ③ — 옆 조 비교",
+                body: "얼음 위에서만 빠르게 작업한 옆 조의 competent cell은 형질전환이 정상이었음.",
+                readingHint: "차이는 '얼음 위에서 저온을 유지했느냐'뿐이다.",
+                isEvidence: true,
+                source: "실험방법 07 [2] ⑤" },
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+                body: "사진 찍느라 얼음에서 꺼내 실험대에 한참 뒀어요. 그동안 용액이 미지근해졌어요.",
+                readingHint: "확정타. 저온을 못 지켜 competent 상태가 나빠졌다.",
+                isEvidence: true, decisive: true,
+                source: "실험방법 07 [2] ⑤" }
+            ],
+            suspects: [
+              { id: "s1", mark: "ㄱ", label: "얼음 위 저온을 지키지 못해(온도 상승) competent 상태가 나빠졌다", correct: true },
+              { id: "s2", mark: "ㄴ", label: "100 mM CaCl₂를 썼다", correct: false,
+                debrief: "100 mM CaCl₂는 규정 농도입니다 — 원인이 아닙니다." },
+              { id: "s3", mark: "ㄷ", label: "4℃·4,000 rpm으로 원심했다", correct: false,
+                debrief: "4℃·4,000 rpm·5분은 규정 조건입니다 — 원인이 아닙니다." },
+              { id: "s4", mark: "ㄹ", label: "100 µL씩 소분했다", correct: false,
+                debrief: "100 µL 소분은 정상 절차입니다 — 원인이 아닙니다." }
+            ],
+            answer: { suspect: "s1", evidence: ["k1", "k4"] },
+            debrief:
+              "Competent cell 제조는 모든 조작을 얼음 위에서 빠르게 해 온도가 오르지 않게 해야 합니다. 온도가 오르면 세포막의 " +
+              "competent 상태가 나빠져 DNA를 잘 흡수하지 못하고, 결국 다음 주 형질전환에서 콜로니가 거의 생기지 않습니다. 형질전환 " +
+              "효율이 낮으면 competent 제조 때 저온을 유지했는지 점검해야 합니다.",
+            prescription: [
+              "competent 제조는 모든 조작을 얼음 위에서 빠르게 한다",
+              "얼음에서 꺼내 상온에 오래 두지 않는다",
+              "형질전환이 잘 안 되면 competent 제조 때 온도 관리를 먼저 점검한다"
+            ],
+            source: "실험방법 07 [2] ③⑤",
+            tags: ["저온 유지","온도 상승","competent 저하"]
+          },
+          {
+            caseId: "w07_r03",
+            no: "Case 03",
+            title: "competent cell이 DNA를 잘 못 받는다 — CaCl₂ 대신 물로 처리했다",
+            subtitle: "7주차 Competent cell 제조 — 세포막 중화를 못 했다",
+            weeks: "7주차",
+            points: 15,
+            brief:
+              "한 조의 competent cell이 다음 주 형질전환에서 DNA를 거의 못 받아들였습니다. 처리 용액을 확인하니 이상했습니다. " +
+              "무엇이 잘못됐는지 밝히세요.",
+            freeClues: 3,
+            extraClueCostXp: 20,
+            clues: [
+              { id: "k1", order: 1, label: "단서 ① — 처리 용액",
+                body: "세포를 100 mM CaCl₂가 아니라 증류수로 풀어줌 — 세포막의 음전하를 중화하지 못함.",
+                readingHint: "CaCl₂(Ca²⁺)가 세포막과 DNA의 반발을 중화해 흡수율을 높인다 — 물로는 중화가 안 된다. 결정타일 수 있다.",
+                isEvidence: true, decisive: true,
+                source: "실험방법 07 [2] ③⑤ · 강의 이론(Competent cell)" },
+              { id: "k2", order: 2, label: "단서 ② — 온도·원심",
+                body: "모든 조작을 얼음 위에서 했고 4℃·4,000 rpm·5분 원심도 정상이었음.",
+                readingHint: "온도·원심은 정상이다 → 그쪽 문제는 아니다.",
+                isEvidence: false,
+                source: "실험방법 07 [2] ②⑤" },
+              { id: "k3", order: 3, label: "단서 ③ — 재실험 결과",
+                body: "100 mM CaCl₂로 다시 처리한 재실험에서는 형질전환이 정상적으로 되었음.",
+                readingHint: "CaCl₂로 바꿨더니 잘 됐다 → 원인은 처리 용액이다.",
+                isEvidence: true,
+                source: "강의 이론(Competent cell)" },
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+                body: "CaCl₂ 대신 그냥 증류수로 풀었어요. 세포막 중화가 안 돼서 DNA가 안 들어간 것 같아요.",
+                readingHint: "확정타. 중화가 안 돼 DNA 흡수율이 낮았다.",
+                isEvidence: true, decisive: true,
+                source: "강의 이론(Competent cell)" }
+            ],
+            suspects: [
+              { id: "s1", mark: "ㄱ", label: "CaCl₂ 대신 물로 처리해 세포막 음전하를 중화하지 못했다", correct: true },
+              { id: "s2", mark: "ㄴ", label: "얼음 위에서 작업했다", correct: false,
+                debrief: "얼음 위 저온 유지는 올바른 절차입니다 — 원인이 아닙니다." },
+              { id: "s3", mark: "ㄷ", label: "4,000 rpm으로 원심했다", correct: false,
+                debrief: "4,000 rpm은 규정 조건입니다 — 원인이 아닙니다." },
+              { id: "s4", mark: "ㄹ", label: "TOP10F 균주를 썼다", correct: false,
+                debrief: "TOP10F는 규정 균주입니다 — 원인이 아닙니다." }
+            ],
+            answer: { suspect: "s1", evidence: ["k1", "k4"] },
+            debrief:
+              "세포막과 DNA는 둘 다 음전하라 서로 반발하므로, CaCl₂(Ca²⁺)로 세포막의 음전하를 중화해야 DNA 흡수율이 올라갑니다. " +
+              "물로 처리하면 중화가 안 돼 competent cell이 만들어지지 않고, 형질전환에서 DNA를 거의 못 받습니다. 형질전환이 안 되면 " +
+              "competent 제조에 CaCl₂를 제대로 썼는지 점검해야 합니다.",
+            prescription: [
+              "competent cell 제조에는 반드시 100 mM CaCl₂로 처리해 세포막을 중화한다",
+              "물 등으로 대체하지 않는다(중화가 안 됨)",
+              "형질전환 흡수가 안 되면 CaCl₂ 처리 여부를 먼저 확인한다"
+            ],
+            source: "실험방법 07 [2] · 강의 이론(Competent cell)",
+            tags: ["CaCl2","중화 실패","흡수율"]
+          },
+          {
+            caseId: "w07_r04",
+            no: "Case 04",
+            title: "재조합이 거의 안 됐다 — PCR product를 빠뜨렸다",
+            subtitle: "7주차 Vector 제조 — 목적 fragment 없이 반응했다",
+            weeks: "7주차",
+            points: 15,
+            brief:
+              "한 조의 재조합 반응 결과에서 재조합 DNA가 거의 확인되지 않았습니다. 반응액 조성을 확인하니 이상했습니다. " +
+              "무엇이 잘못됐는지 밝히세요.",
+            freeClues: 3,
+            extraClueCostXp: 20,
+            clues: [
+              { id: "k1", order: 1, label: "단서 ① — 반응액 조성 기록",
+                body: "증류수·Salt solution·TOPO Vector는 넣었으나 PCR product(6주차 회수 fragment)를 넣는 것을 빠뜨림.",
+                readingHint: "재조합 DNA = 목적 유전자(PCR product) + Vector다. 목적 fragment가 없으면 재조합할 대상이 없다. 결정타일 수 있다.",
+                isEvidence: true, decisive: true,
+                source: "실험방법 07 [1] ① · 강의 이론(재조합)" },
+              { id: "k2", order: 2, label: "단서 ② — 반응 조건",
+                body: "상온 30분 천천히 교반은 규정대로 지켰음.",
+                readingHint: "반응 시간은 정상이다 → 시간 문제는 아니다.",
+                isEvidence: false,
+                source: "실험방법 07 [1] ②" },
+              { id: "k3", order: 3, label: "단서 ③ — 남은 시료 확인",
+                body: "6주차에 회수한 fragment 튜브가 그대로 남아 있었음 — 반응액에 넣지 않았음이 확인됨.",
+                readingHint: "목적 fragment가 반응에 안 들어갔다 → 재조합할 DNA가 없었다.",
+                isEvidence: true,
+                source: "실험방법 07 [1] ①" },
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+                body: "물이랑 벡터만 넣고 PCR product 넣는 걸 깜빡했어요. 그래서 붙을 게 없었나 봐요.",
+                readingHint: "확정타. 목적 fragment가 없어 재조합이 일어나지 못했다.",
+                isEvidence: true, decisive: true,
+                source: "실험방법 07 [1] ①" }
+            ],
+            suspects: [
+              { id: "s1", mark: "ㄱ", label: "PCR product(목적 fragment)를 빠뜨려 재조합할 대상이 없었다", correct: true },
+              { id: "s2", mark: "ㄴ", label: "상온 30분 교반을 했다", correct: false,
+                debrief: "상온 30분 교반은 올바른 절차입니다 — 원인이 아닙니다." },
+              { id: "s3", mark: "ㄷ", label: "증류수를 6 µL 넣었다", correct: false,
+                debrief: "증류수 6 µL는 규정 부피입니다 — 원인이 아닙니다." },
+              { id: "s4", mark: "ㄹ", label: "TOPO Vector를 넣었다", correct: false,
+                debrief: "TOPO Vector를 넣는 것은 정상 절차입니다 — 원인이 아닙니다." }
+            ],
+            answer: { suspect: "s1", evidence: ["k1", "k4"] },
+            debrief:
+              "재조합 DNA는 목적 유전자(PCR product)와 Vector를 결합한 것입니다. PCR product를 빠뜨리면 Vector에 붙일 목적 fragment " +
+              "자체가 없어 재조합이 일어나지 않습니다. 재조합이 안 되면 반응액에 목적 fragment(PCR product)를 넣었는지 먼저 " +
+              "확인해야 합니다.",
+            prescription: [
+              "재조합 반응액에 목적 fragment(PCR product) 6 µL를 반드시 넣는다",
+              "반응액 4가지(증류수·Salt solution·PCR product·TOPO Vector)를 순서대로 빠짐없이 넣는다",
+              "재조합이 안 되면 PCR product 누락 여부를 먼저 점검한다"
+            ],
+            source: "실험방법 07 [1] ① · 강의 이론(재조합)",
+            tags: ["PCR product 누락","재조합 실패"]
+          },
+          {
+            caseId: "w07_r05",
+            no: "Case 05",
+            title: "다음 주에 쓸 세포가 상했다 — 냉장에 보관했다",
+            subtitle: "7주차 Competent cell 보관 — -80℃가 아닌 4℃ 냉장에 두었다",
+            weeks: "7주차",
+            points: 15,
+            brief:
+              "한 조가 만든 competent cell을 다음 주에 꺼냈더니 형질전환이 되지 않았습니다. 보관 방법을 확인하니 이상했습니다. " +
+              "무엇이 잘못됐는지 밝히세요.",
+            freeClues: 3,
+            extraClueCostXp: 20,
+            clues: [
+              { id: "k1", order: 1, label: "단서 ① — 보관 기록",
+                body: "소분한 competent cell을 -80℃ Deepfreezer가 아니라 4℃ 냉장고에 일주일 보관함.",
+                readingHint: "competent cell은 15% Glycerol을 넣어 -80℃에서 얼려 보관해야 오래 살아 있다 — 냉장은 부적절하다. 결정타일 수 있다.",
+                isEvidence: true, decisive: true,
+                source: "실험방법 07 [2] ⑤⑦" },
+              { id: "k2", order: 2, label: "단서 ② — 제조 과정",
+                body: "CaCl₂ 처리·저온 유지·100 µL 소분까지 제조 과정은 모두 정상이었음.",
+                readingHint: "제조는 정상이었다 → 만드는 과정 문제는 아니다. 보관이 문제다.",
+                isEvidence: false,
+                source: "실험방법 07 [2] ③⑥" },
+              { id: "k3", order: 3, label: "단서 ③ — 다른 조 비교",
+                body: "-80℃에 보관한 다른 조의 competent cell은 다음 주 형질전환이 정상이었음.",
+                readingHint: "차이는 '-80℃에 보관했느냐'뿐이다.",
+                isEvidence: true,
+                source: "실험방법 07 [2] ⑦" },
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+                body: "-80℃ 자리가 없어서 그냥 냉장고에 뒀어요. 일주일 지나니까 세포가 안 살아난 것 같아요.",
+                readingHint: "확정타. 보관 온도가 맞지 않아 세포가 상했다.",
+                isEvidence: true, decisive: true,
+                source: "실험방법 07 [2] ⑦" }
+            ],
+            suspects: [
+              { id: "s1", mark: "ㄱ", label: "-80℃가 아닌 4℃ 냉장에 보관해 세포가 상했다", correct: true },
+              { id: "s2", mark: "ㄴ", label: "100 µL씩 소분했다", correct: false,
+                debrief: "100 µL 소분은 정상 절차입니다 — 원인이 아닙니다." },
+              { id: "s3", mark: "ㄷ", label: "15% Glycerol을 넣었다", correct: false,
+                debrief: "15% Glycerol은 냉동 보관을 위한 정상 성분입니다 — 원인이 아닙니다." },
+              { id: "s4", mark: "ㄹ", label: "CaCl₂로 처리했다", correct: false,
+                debrief: "CaCl₂ 처리는 올바른 절차입니다 — 원인이 아닙니다." }
+            ],
+            answer: { suspect: "s1", evidence: ["k1", "k4"] },
+            debrief:
+              "제조한 competent cell은 15% Glycerol을 넣어 -80℃ Deepfreezer에 얼려 보관해야 활성을 오래 유지합니다. 4℃ 냉장에 " +
+              "두면 세포가 상해 다음 주 형질전환에서 DNA를 받지 못합니다. 보관 온도(-80℃)를 지키는 것이 세포 활성 유지의 핵심입니다.",
+            prescription: [
+              "소분한 competent cell은 -80℃ Deepfreezer에 보관한다",
+              "냉장(4℃)에 두지 않는다 — 세포가 상한다",
+              "다음 주 실험이 안 되면 보관 온도부터 점검한다"
+            ],
+            source: "실험방법 07 [2] ⑤⑦",
+            tags: ["보관 온도","-80℃","냉장 오보관"]
+          },
+          {
+            caseId: "w07_r06",
+            no: "Case 06",
+            title: "균체가 회수되지 않았다 — 원심을 너무 약하게 돌렸다",
+            subtitle: "7주차 Competent cell 제조 — 원심 회전수를 잘못 설정했다",
+            weeks: "7주차",
+            points: 15,
+            brief:
+              "한 조가 원심분리 후 상등액을 버리려는데 바닥에 세포 펠릿이 거의 없었습니다. 원심 조건을 확인하니 이상했습니다. " +
+              "무엇이 잘못됐는지 밝히세요.",
+            freeClues: 3,
+            extraClueCostXp: 20,
+            clues: [
+              { id: "k1", order: 1, label: "단서 ① — 원심 설정 기록",
+                body: "원심분리를 4,000 rpm이 아니라 400 rpm으로 약하게 돌려, 세포가 바닥에 충분히 가라앉지 않음.",
+                readingHint: "competent 제조 원심은 4℃·4,000 rpm·5분이다 — 너무 약하면 균체가 회수되지 않는다. 결정타일 수 있다.",
+                isEvidence: true, decisive: true,
+                source: "실험방법 07 [2] ②④" },
+              { id: "k2", order: 2, label: "단서 ② — 온도·시약",
+                body: "원심 온도 4℃와 100 mM CaCl₂ 처리는 규정대로였음.",
+                readingHint: "온도·시약은 정상이다 → 회전수만 다르다.",
+                isEvidence: false,
+                source: "실험방법 07 [2] ②③" },
+              { id: "k3", order: 3, label: "단서 ③ — 상등액 확인",
+                body: "버리려던 상등액이 뿌옇게 흐렸음 — 세포가 가라앉지 않고 위에 떠 있었음.",
+                readingHint: "세포가 펠릿으로 안 가라앉았다 → 원심이 약했다.",
+                isEvidence: true,
+                source: "실험방법 07 [2] ②" },
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+                body: "숫자를 잘못 눌러서 400 rpm으로 돌렸어요. 그래서 세포가 안 가라앉았나 봐요.",
+                readingHint: "확정타. 원심 회전수가 너무 낮아 균체 회수에 실패했다.",
+                isEvidence: true, decisive: true,
+                source: "실험방법 07 [2] ②" }
+            ],
+            suspects: [
+              { id: "s1", mark: "ㄱ", label: "원심 회전수를 4,000 rpm보다 훨씬 낮게(400 rpm) 돌려 균체가 회수되지 않았다", correct: true },
+              { id: "s2", mark: "ㄴ", label: "원심을 4℃에서 돌렸다", correct: false,
+                debrief: "4℃ 저온 원심은 규정 조건입니다 — 원인이 아닙니다." },
+              { id: "s3", mark: "ㄷ", label: "100 mM CaCl₂로 처리했다", correct: false,
+                debrief: "100 mM CaCl₂는 규정 농도입니다 — 원인이 아닙니다." },
+              { id: "s4", mark: "ㄹ", label: "50 mL 코니칼 튜브를 썼다", correct: false,
+                debrief: "50 mL 코니칼 튜브 사용은 정상입니다 — 원인이 아닙니다." }
+            ],
+            answer: { suspect: "s1", evidence: ["k1", "k4"] },
+            debrief:
+              "Competent cell 제조의 원심분리는 4℃·4,000 rpm·5분으로 돌려 세포를 바닥에 가라앉혀 펠릿으로 회수합니다. 회전수가 " +
+              "너무 낮으면 세포가 가라앉지 않아 상등액과 함께 버려지고, 회수가 실패합니다. 세포 펠릿이 없으면 원심 회전수·시간을 " +
+              "먼저 확인해야 합니다.",
+            prescription: [
+              "원심분리는 4℃·4,000 rpm·5분 조건을 정확히 설정한다",
+              "회전수를 잘못 입력하지 않았는지 시작 전 확인한다",
+              "펠릿이 안 보이면 원심 회전수·시간을 먼저 점검한다"
+            ],
+            source: "실험방법 07 [2] ②④",
+            tags: ["원심 회전수","균체 회수 실패","4000 rpm"]
+          }
+        ],
+
+        source: "실험방법 07 (Vector 및 Competent cell 제조) · 강의계획서 세부 7주차 · 강의 이론(재조합 및 형질전환)·실험방법 11 · 교수님 지시(미션 방식)"
+      },
+
+      /* ------------------------------------------------------------------
+       * report(w07) — 실험보고서 (사진2 + 고찰, w05·w06과 동일 엔진)
+       *   ① 재조합 DNA(Vector) 제조 확인(전기영동) 사진  ② Competent cell 제조 과정 사진  ③ 고찰
+       * ----------------------------------------------------------------*/
+      report: {
+        stageId: "w07",
+        title: "Vector 및 Competent cell 제조",
+        course: "유전자분석 (동양미래대학교 바이오융합공학과 2학년 · 2026-2학기)",
+        weekLabel: "7주차",
+        experimentNo: "실험 6",
+        experimentName: "Vector 및 Competent cell 제조 (재조합 DNA 제조 · Competent cell 제조)",
+        dateLabel: "2026-10-07",
+        paper: "A4",
+        gradeNote: "실험보고서 — 다음 실험 시작 전 제출",
+        meta: [
+          { key: "course", label: "과목", value: "유전자분석", fixed: true },
+          { key: "week", label: "주차", value: "7주차", fixed: true },
+          { key: "expName", label: "실험명", value: "Vector 및 Competent cell 제조", fixed: true },
+          { key: "date", label: "실험일자", value: "2026-10-07", fixed: false },
+          { key: "team", label: "조", value: "", fixed: false, hint: "예: 3조" },
+          { key: "sid", label: "학번", value: "", fixed: false, hint: "로그인 학번" },
+          { key: "name", label: "이름", value: "", fixed: false, hint: "로그인 이름" }
+        ],
+        /* 사진①(재조합 Vector 제조 확인·전기영동) · 사진②(Competent cell 제조 과정) · 고찰.
+         * type:"images"는 conditions 개수만큼 이미지 업로드 슬롯을 그린다(w05·w06과 동일 엔진). */
+        sections: [
+          {
+            key: "vector", no: 1, label: "사진 ① — 재조합 DNA(Vector) 제조 확인 사진",
+            type: "images",
+            hint: "재조합 DNA(Vector) 제조와 관련된 사진을 1장 올린다. 완성된 시료 5 µL를 전기영동해 재조합 DNA를 확인한 결과 사진, 또는 반응액을 조성한 장면을 담는다.",
+            conditions: [
+              "재조합 DNA(Vector) 제조 확인 사진"
+            ]
+          },
+          {
+            key: "competent", no: 2, label: "사진 ② — Competent cell 제조 과정 사진",
+            type: "images",
+            hint: "Competent cell 제조 과정 사진을 1장 올린다. CaCl₂ 처리·원심분리·소분(100 µL) 등 제조 절차 중 한 장면을 담는다.",
+            conditions: [
+              "Competent cell 제조 과정 사진"
+            ]
+          },
+          {
+            key: "discussion", no: 3, label: "고찰",
+            type: "text",
+            rows: 8,
+            hint: "재조합 DNA(Vector) 제조와 competent cell 제조가 잘 됐는지 판정하고, 각각의 원리와 연결해 결과를 해석하세요. 재조합은 TA cloning 원리(PCR 산물의 A와 Vector의 T 상보결합)와 반응 조건(상온 30분)에, competent cell은 세포막 중화(CaCl₂)·저온 유지·보관(-80℃)에 연결해 적습니다. 잘 안 됐다면 그 원인(반응 시간 부족·PCR product 누락·온도 상승·CaCl₂ 미사용·보관 온도 등)을 추정해 적습니다."
+          }
+        ],
+        source: "실험방법 07 · 강의계획서 세부 7주차 · 교수님 지시(사진2 + 고찰: ①재조합 DNA 제조 확인 ②Competent cell 제조 과정)"
+      }
+    },
+    w08: {
+
+      /* ------------------------------------------------------------------
+       * learn(w08) — 형질전환 학습 카드
+       *   절차·수치·온도·부피 = 2026-2 (실험방법) 08. 형질전환.
+       *   원리·개념(형질전환·heat-shock·Blue/White 선별) = 유전공학실험 강의 이론(재조합 및 형질전환).
+       *   ⚠️ 실험방법 08 [1]①의 "6주차에 제작한 Vector"는 Vector 제조 주차(7주차)와 어긋나는 오기로 보여,
+       *      여기서는 "지난 실험(7주차)에서 제작한 Vector"로 표기했다. 수치는 2026-2 실험방법을 따랐다. 지어낸 값 없음.
+       * ----------------------------------------------------------------*/
+      learn: {
+        stageId: "w08",
+        intro: {
+          oneLiner:
+            "지난 주 만든 재조합 DNA(Vector)를 competent cell에 넣어 형질전환하고, Blue/White 선별로 성공 여부를 판정한다.",
+          bigQuestion: "만든 재조합 DNA를 세포에 어떻게 집어넣고, 그것이 제대로 들어갔는지 어떻게 눈으로 확인하나",
+          note:
+            "이 한 질문에 스스로 답할 수 있게 되는 것이 오늘 학습의 목표입니다. 형질전환(Transformation)은 외부 DNA를 세포에 " +
+            "넣어 유전적 변화를 일으키는 것입니다. 지난 주(7주차)에 만든 재조합 DNA(Vector)와 competent cell을 만나게 해, 42℃ " +
+            "짧은 heat-shock으로 DNA를 세포 안에 넣고, SOC 배지로 회복배양한 뒤, 항생제·X-gal이 든 선별평판에 도말합니다. 48시간 " +
+            "배양 후 생긴 콜로니의 유무와 색(Blue/White)으로 형질전환과 재조합의 성공 여부를 판정합니다. 이것이 한 학기 클로닝 " +
+            "파이프라인의 마지막 확인 단계입니다.",
+          source: "실험방법 08 [1]·[2] · 강의 이론(재조합 및 형질전환)"
+        },
+        cards: [
+          {
+            id: "L1", title: "형질전환이란 — 외부 DNA를 세포에 넣기", kind: "원리",
+            body:
+              "형질전환(Transformation)은 외부 DNA를 세포에 도입해 유전적 변화를 일으키는 것입니다. 1928년 영국의 Griffith가 폐렴 " +
+              "쌍구균 실험에서 처음 밝힌 현상으로, 오늘날 유전공학에서는 만든 재조합 DNA를 숙주세포(대장균)에 넣어 증식·발현시키는 " +
+              "핵심 수단으로 씁니다. 오늘은 지난 주(7주차)에 만든 재조합 DNA(Vector)를, 역시 지난 주에 만든 competent cell(TOP10F)에 " +
+              "넣습니다. 이렇게 해야 앞의 모든 실험(배양→추출→정량→PCR→회수→재조합)이 하나의 결과로 이어집니다.",
+            keyNumbers: ["형질전환 = 외부 DNA를 세포에 도입해 유전적 변화", "역사: 1928 Griffith 폐렴 쌍구균 실험", "재료: 지난 주 제작한 재조합 DNA(Vector) + competent cell(TOP10F)", "한 학기 클로닝의 마지막 확인 단계"],
+            source: "강의 이론(재조합 및 형질전환) — Transformation"
+          },
+          {
+            id: "L2", title: "DNA를 넣기 — competent cell에 Vector·pUC19 섞기", kind: "내용",
+            body:
+              "얼음에 둔 competent cell TOP10F 100 µL 한 개에는 지난 실험(7주차)에서 만든 재조합 DNA(Vector) 10 µL를 넣고, 또 하나의 " +
+              "competent cell에는 pUC19 plasmid 10 µL를 넣습니다(라벨링을 확실히 해 구분). 각각 뚜껑을 닫고 가볍게 혼합한 뒤 얼음에 " +
+              "30분 둡니다. pUC19는 잘 알려진 대조용 plasmid로, 형질전환 자체가 잘 일어났는지 확인하는 데 씁니다. 이 단계는 DNA가 " +
+              "세포막 가까이 충분히 붙도록 저온에서 기다리는 과정입니다.",
+            keyNumbers: ["competent cell TOP10F 100 µL 2개 준비", "① 재조합 DNA(Vector) 10 µL · ② pUC19 10 µL", "각각 혼합 후 얼음 30분(라벨링 구분)", "pUC19 = 형질전환 확인용 대조 plasmid"],
+            source: "실험방법 08 [1] ①②"
+          },
+          {
+            id: "L3", title: "Heat-shock — 42℃ 30초로 DNA 밀어넣기", kind: "핵심",
+            body:
+              "형질전환의 핵심은 heat-shock(열충격법)입니다. 혼합물 2개를 42℃ 항온수조에서 30초간 짧게 데운 뒤 즉시 얼음으로 옮겨 " +
+              "2분간 식힙니다. 원리는 이렇습니다 — 짧고 강한 온도 변화가 세포막에 순간적으로 모공(작은 구멍)을 만들고, 삼투압에 의해 " +
+              "세포 주변의 DNA가 그 구멍으로 세포 안에 빨려 들어갑니다. 시간이 매우 중요해서, 너무 오래 42℃에 두면 세포가 죽고, " +
+              "너무 짧으면 DNA가 못 들어갑니다. 그래서 30초를 정확히 지키고 즉시 얼음으로 옮깁니다.",
+            keyNumbers: ["Heat-shock = 42℃ 항온수조 30초", "직후 즉시 얼음 2분", "원리: 세포막에 모공 형성 → 삼투압으로 DNA 흡수", "시간 엄수 — 오래 두면 세포 사멸, 짧으면 DNA 미흡수"],
+            source: "실험방법 08 [1] ③ · 강의 이론(Heat-shock method)"
+          },
+          {
+            id: "L4", title: "회복배양 — SOC 배지로 살려내기", kind: "핵심",
+            body:
+              "heat-shock으로 스트레스를 받은 세포를 바로 항생제 배지에 놓으면 죽어 버립니다. 그래서 각 혼합물에 37℃로 데운 S.O.C. " +
+              "배지 250 µL를 넣고, 37℃ 진탕배양기에서 225 rpm으로 1시간 회복배양합니다. 이 1시간 동안 세포가 회복하면서, vector가 가진 " +
+              "항생제 저항 유전자가 발현되어 저항 단백질을 만듭니다. 이 단백질이 있어야 다음 단계의 항생제 선별평판에서 살아남을 수 " +
+              "있습니다. 즉 회복배양은 '세포를 살리고 + 항생제 저항을 준비시키는' 단계입니다.",
+            keyNumbers: ["S.O.C. 배지 250 µL 첨가(각 혼합물)", "37℃ 진탕배양기 225 rpm · 1시간", "목적: 세포 회복 + 항생제 저항 단백질 발현", "이 준비가 있어야 선별평판에서 생존"],
+            source: "실험방법 08 [1] ④ · 강의 이론"
+          },
+          {
+            id: "L5", title: "선별평판 준비·도말 — 항생제로 골라내기", kind: "내용",
+            body:
+              "형질전환된 세포만 골라내기 위해 두 장의 선별평판을 준비합니다 — Kanamycin(50 µg/mL) LB 고체평판 1개와 Ampicillin(100 " +
+              "µg/mL) LB 고체평판 1개입니다. 각 평판에 IPTG(100 mM)와 X-gal(40 mg/mL)을 각 40 µL씩 표면에 도말하고 건조합니다. " +
+              "회복배양이 끝난 혼합물은 13,000 rpm에서 1분 원심분리해 상등액을 제거하고 깨끗한 S.O.C. 배지 100 µL로 풀어준 뒤, 평판에 " +
+              "전체를 도말합니다. 단, 재조합 DNA(Vector)를 삽입한 배양액은 Kanamycin 평판에, pUC19를 삽입한 배양액은 Ampicillin " +
+              "평판에 도말합니다(각 vector가 가진 저항 유전자에 맞춥니다).",
+            keyNumbers: ["Kan(50 µg/mL) 평판 + Amp(100 µg/mL) 평판", "각 평판에 IPTG(100 mM)·X-gal(40 mg/mL) 각 40 µL 도말·건조", "회복배양 후 13,000 rpm 1분 원심 → SOC 100 µL 재현탁", "도말: Vector→Kan 평판 · pUC19→Amp 평판"],
+            source: "실험방법 08 [2] ①②③"
+          },
+          {
+            id: "L6", title: "Blue/White 선별 — 콜로니 색으로 성공 판정", kind: "핵심",
+            body:
+              "재조합이 잘 됐는지는 콜로니 색으로 판정합니다(Blue-White 선별). Vector 안에는 lac operon(lacZ)이 있고, 이것이 발현되면 " +
+              "β-galactosidase라는 효소가 만들어져 배지의 X-gal을 분해해 파란색(Blue) 콜로니가 됩니다(IPTG가 lac operon 발현을 " +
+              "유도합니다). 그런데 목적 DNA가 lacZ 자리(MCS)에 끼워지면 lacZ가 망가져 β-galactosidase가 만들어지지 않고, X-gal이 " +
+              "분해되지 않아 흰색(White) 콜로니가 됩니다. 따라서 흰색 콜로니 = 목적 DNA 삽입 성공, 파란색 콜로니 = 삽입되지 않은 " +
+              "원래 vector입니다.",
+            keyNumbers: ["Blue-White 선별 = 콜로니 색으로 삽입 판정", "파란색 = lacZ 발현 → β-galactosidase가 X-gal 분해(삽입 안 됨)", "흰색 = 목적 DNA가 lacZ에 삽입 → β-gal 없음 → X-gal 안 분해(삽입 성공)", "IPTG = lac operon 발현 유도물질"],
+            source: "강의 이론(재조합 및 형질전환) — Blue-White screening"
+          },
+          {
+            id: "L7", title: "배양·판독 + 안전 — 48시간 뒤 콜로니 확인", kind: "내용",
+            body:
+              "도말한 평판은 37℃ 배양기에서 뚜껑이 아래로 가도록 48시간 배양한 뒤, 생긴 콜로니를 확인해 형질전환 결과를 분석합니다. " +
+              "판독은 두 가지를 봅니다 — ① 콜로니 유무(항생제 평판에 콜로니가 자랐으면 형질전환·항생제 저항 획득 성공), ② 콜로니 색" +
+              "(흰색이면 목적 DNA 삽입 성공, 파란색이면 삽입 안 됨). 안전·품질 수칙 — 재조합체(GMO)이므로 BL1 규정에 따라 취급·폐기하고, " +
+              "라벨링을 확실히 해 Vector·pUC19 평판을 헷갈리지 않게 하며, heat-shock 시간(30초)과 회복배양(1시간)을 정확히 지킵니다.",
+            keyNumbers: ["배양 = 37℃ · 뚜껑 아래로 · 48시간", "판독 ① 콜로니 유무(형질전환 성공 여부)", "판독 ② 콜로니 색(흰색=삽입 성공 · 파란색=삽입 안 됨)", "안전: GMO·BL1 취급/폐기 · 라벨링 · 시간 엄수"],
+            source: "실험방법 08 [2] ④ · 강의 이론 · 강의계획서 세부(BL1·GMO)"
+          }
+        ],
+        takeaways: [
+          "형질전환(Transformation)은 외부 DNA를 세포에 넣어 유전적 변화를 일으키는 것이다(1928 Griffith). 지난 주(7주차)에 만든 재조합 DNA(Vector)와 competent cell(TOP10F)을 만나게 해, 앞의 모든 실험을 하나의 결과로 잇는 마지막 확인 단계다.",
+          "핵심 절차 — competent cell 100 µL에 Vector 10 µL(또는 대조 pUC19 10 µL)를 넣고 얼음 30분 → 42℃ 30초 heat-shock → 즉시 얼음 2분 → SOC 250 µL 넣고 37℃·225 rpm 1시간 회복배양 → 13,000 rpm 1분 원심·SOC 100 µL 재현탁 → 선별평판 도말(Vector→Kan, pUC19→Amp) → 37℃ 48시간 배양. heat-shock은 세포막에 모공을 만들어 DNA를 넣고, 회복배양은 항생제 저항 단백질을 발현시킨다.",
+          "Blue/White 선별로 성공을 판정한다. Vector의 lacZ가 발현되면 β-galactosidase가 X-gal을 분해해 파란색 콜로니가 되고(IPTG가 발현 유도), 목적 DNA가 lacZ에 삽입되면 lacZ가 망가져 흰색 콜로니가 된다. 흰색=삽입 성공, 파란색=삽입 안 된 원래 vector. 항생제 평판에 콜로니가 자랐으면 형질전환(저항 획득) 성공이다."
+        ],
+        source: "실험방법 08 (형질전환) 전문 · 강의 이론(재조합 및 형질전환) · 강의계획서 세부"
+      },
+
+      /* ------------------------------------------------------------------
+       * summaryCard(w08) — 8주차 요약 카드
+       * ----------------------------------------------------------------*/
+      summaryCard: {
+        stageId: "w08",
+        title: "8주차 요약 카드 — 형질전환",
+        oneLiner: "42℃ 30초로 DNA를 넣고, 콜로니 색(Blue/White)으로 성공을 확인한다",
+        hook: "만든 재조합 DNA를 세포에 어떻게 집어넣고, 제대로 들어갔는지 어떻게 눈으로 확인하나",
+        pipeline: "한 학기 흐름 중 ⑧ 형질전환·Blue/White 선별 (재조합 DNA를 세포에 넣어 클로닝 결과를 확인하는 마지막 단계)",
+
+        concepts: [
+          { h: "형질전환이란", d: "외부 DNA를 세포에 도입해 유전적 변화를 일으키는 것(1928 Griffith 폐렴 쌍구균 실험). 만든 재조합 DNA를 대장균에 넣어 증식·발현시킨다" },
+          { h: "Heat-shock", d: "42℃ 30초로 세포막에 순간적 모공을 만들어 삼투압으로 DNA를 흡수시키는 방법. 직후 즉시 얼음 2분(시간 엄수 — 오래 두면 세포 사멸)" },
+          { h: "회복배양", d: "SOC 배지 250 µL 넣고 37℃·225 rpm 1시간. 세포를 회복시키고 항생제 저항 단백질을 발현시켜 선별평판에서 살아남게 함" },
+          { h: "항생제 선별", d: "Vector(재조합 DNA)→Kanamycin 평판, pUC19→Ampicillin 평판. vector의 저항 유전자를 받은(형질전환된) 세포만 콜로니를 만듦" },
+          { h: "Blue/White 선별", d: "파란색 = lacZ 발현→β-galactosidase가 X-gal 분해(삽입 안 됨). 흰색 = 목적 DNA가 lacZ에 삽입→β-gal 없음→X-gal 안 분해(삽입 성공). IPTG가 발현 유도" },
+          { h: "판독", d: "37℃ 뚜껑 아래로 48시간 배양 후, ① 콜로니 유무(형질전환 성공)와 ② 색(흰색=삽입 성공)으로 판정" }
+        ],
+
+        numbers: [
+          { step: "DNA 넣기", value: "competent cell 100 µL + Vector 10 µL(또는 pUC19 10 µL) · 얼음 30분" },
+          { step: "Heat-shock", value: "42℃ 항온수조 30초 → 즉시 얼음 2분" },
+          { step: "회복배양", value: "S.O.C. 배지 250 µL · 37℃ 진탕 225 rpm · 1시간" },
+          { step: "선별평판", value: "Kan 50 µg/mL · Amp 100 µg/mL 평판 각 1개" },
+          { step: "IPTG·X-gal 도말", value: "IPTG 100 mM · X-gal 40 mg/mL 각 40 µL씩 표면 도말·건조" },
+          { step: "원심·재현탁", value: "13,000 rpm 1분 → 상등액 제거 → S.O.C. 100 µL로 풀어줌" },
+          { step: "도말", value: "Vector → Kan 평판 · pUC19 → Amp 평판(전체 도말)" },
+          { step: "배양·판독", value: "37℃ · 뚜껑 아래로 · 48시간 → 콜로니 유무·색 확인" }
+        ],
+
+        cautions: [
+          "Heat-shock 시간 엄수 — 42℃ 30초 후 즉시 얼음 2분(오래 두면 세포가 죽는다)",
+          "회복배양 필수 — SOC로 37℃ 1시간, 건너뛰면 항생제 저항이 발현 못 해 콜로니가 안 생긴다",
+          "평판 짝 맞추기 — Vector는 Kan 평판, pUC19는 Amp 평판(바꾸면 콜로니가 안 생긴다)",
+          "라벨링 — Vector·pUC19 튜브와 평판을 확실히 구분",
+          "IPTG·X-gal 도말 — 안 넣으면 Blue/White 색 구분이 안 된다",
+          "GMO·BL1 — 재조합체이므로 규정에 따라 취급·폐기한다"
+        ],
+
+        expected: {
+          good: [
+            "Kan 평판(Vector)에 콜로니가 자람 → 형질전환·항생제 저항 획득 성공",
+            "흰색 콜로니 → 목적 DNA가 lacZ에 삽입된 재조합 성공",
+            "Amp 평판(pUC19 대조)에 콜로니가 자람 → 형질전환 자체가 정상적으로 일어남",
+            "콜로니 유무와 색으로 형질전환·재조합의 성패를 판정"
+          ],
+          suspect: [
+            "콜로니가 하나도 없다 → heat-shock 시간·회복배양(SOC 1시간)·평판 짝을 지켰는지 의심",
+            "파란색만 나온다 → 목적 DNA가 lacZ에 삽입되지 않은(원래 vector) 것은 아닌지 의심",
+            "색 구분이 안 된다 → IPTG·X-gal을 평판에 도말했는지 점검",
+            "대조(pUC19)도 안 자란다 → competent cell 상태·heat-shock 조건을 점검"
+          ]
+        },
+
+        closing: "42℃ 30초 heat-shock으로 세포막에 잠깐 구멍을 내 DNA를 넣고, SOC로 회복시켜 항생제 저항을 준비시킨 뒤, 항생제·X-gal 평판에 도말한다. 48시간 뒤 콜로니가 자랐으면 형질전환 성공, 흰색이면 목적 DNA 삽입 성공이다. 한 학기 배양→추출→정량→PCR→회수→재조합의 모든 결과가 이 콜로니 하나로 확인된다",
+        report: "Kanamycin 평판(Vector 삽입)과 Ampicillin 평판(pUC19)의 콜로니 결과 사진을 찍고, 콜로니 유무와 색(Blue/White)으로 형질전환·재조합 성공 여부를 고찰과 함께 보고서에 남긴다 (다음 실험 시작 전 제출)",
+        source: "실험방법 08 · 강의 이론(재조합 및 형질전환)"
+      },
+
+      /* ------------------------------------------------------------------
+       * pool(w08) — 학습·복습 퀴즈 풀 + 미션 문항 풀
+       *   timed 50문(mc 26 · ox 12 · num 6 · order 6) · reason 6건
+       *   근거 = 실험방법 08 · 강의 이론(재조합 및 형질전환). 지어낸 값 없음.
+       * ----------------------------------------------------------------*/
+      pool: {
+        stageId: "w08",
+
+        info: {
+          purpose: "실습 보고서 제출을 대체·보완하는 평가 도구 — 미션 통과 시 보고서 점수를 부여한다(성적 반영).",
+          gradeNotice: "이 미션은 성적에 반영되는 평가 도구입니다. 통과해야 보고서 점수를 받습니다.",
+          flow: "① 학습·복습 퀴즈 약 30문(정답·오답 무관 다 풀면 미션 해금) → ② 미션 10문(시간제한 8 + 추리 2) 평가",
+          learnUnlockCount: 30,
+          mission: {
+            timedCount: 8,
+            reasonCount: 2,
+            totalItems: 10,
+            totalPoints: 100,
+            passPoints: 70,
+            passPercent: 70,
+            perStudentRandom: true,
+            reshuffleOnRetry: true,
+            note:
+              "학생마다·재도전마다 시간제한 8문과 추리 2문을 풀에서 무작위로 다시 뽑는다(직전 회차 문항은 제외). " +
+              "배점은 뽑힌 문항의 원점수(시간제한 Lv1 7 · Lv2 9 · Lv3 11 · 추리 15)를 100점에 비례 정규화해 " +
+              "합을 정확히 100으로 맞춘다(buildMission의 roundToSum). 합격선은 70점(70%)이다."
+          },
+          points: { timedLv1: 7, timedLv2: 9, timedLv3: 11, reason: 15 },
+          limits: { mc: 20, ox: 8, num: 30, order: 45 },
+          orderAnswerConvention:
+            "type=order 문항의 answer는 steps 배열의 인덱스(0부터)를 올바른 순서대로 나열한 배열이다. " +
+            "steps는 화면에 섞어서 보여주고, 학생이 맞춘 순서를 answer와 비교한다.",
+          resultScreen: {
+            showScore: true,
+            showPerItem: true,
+            showCertificate: true,
+            certificatePassText: "합격 — 8주차 형질전환 미션 통과",
+            certificateFailText: "재도전 — 문항이 바뀌어 다시 출제됩니다",
+            note: "미션 결과 화면과 합격증 표시까지는 이번 시제품에 포함. 서버 자동집계는 운영본 단계."
+          },
+          source: "교수님 지시(미션 방식) · 모든 수치 근거 = 실험방법 08 · 강의 이론(재조합 및 형질전환)"
+        },
+
+        /* ---- pool.timed — 시간제한형 50문 (mc 26 · ox 12 · num 6 · order 6) ---- */
+        timed: [
+
+          /* ===== mc (4지선다 · 20초) 26문 ===== */
+          {
+            qid: "w08p_m01", type: "mc", level: 1, points: 7, limitSec: 20,
+            q: "형질전환(Transformation)을 가장 잘 설명한 것은?",
+            choices: ["외부 DNA를 세포에 도입해 유전적 변화를 일으키는 것", "세포를 둘로 나누는 것", "DNA를 잘게 자르는 것", "단백질을 정제하는 것"],
+            answer: 0,
+            explain: "형질전환은 외부 DNA를 세포에 도입해 유전적 변화를 일으키는 것입니다.",
+            source: "강의 이론(재조합 및 형질전환) — Transformation",
+            tags: ["형질전환","정의"]
+          },
+          {
+            qid: "w08p_m02", type: "mc", level: 2, points: 9, limitSec: 20,
+            q: "형질전환 현상을 처음 밝힌 실험은?",
+            choices: ["1928년 Griffith의 폐렴 쌍구균 실험", "Mendel의 완두 실험", "Watson·Crick의 이중나선 발견", "Pasteur의 백조목 플라스크 실험"],
+            answer: 0,
+            explain: "형질전환은 1928년 영국의 Fredrick Griffith가 폐렴 쌍구균 실험에서 처음 밝혔습니다.",
+            source: "강의 이론(재조합 및 형질전환) — Transformation",
+            tags: ["Griffith","1928","역사"]
+          },
+          {
+            qid: "w08p_m03", type: "mc", level: 1, points: 7, limitSec: 20,
+            q: "오늘 형질전환에 쓰는 세포는?",
+            choices: ["지난 주 제조한 Competent cell(TOP10F)", "새로 배양한 효모", "동물 세포주", "죽은 대장균"],
+            answer: 0,
+            explain: "지난 주(7주차)에 제조한 competent cell(대장균 TOP10F)에 DNA를 넣습니다.",
+            source: "실험방법 08 [1] ①",
+            tags: ["competent cell","TOP10F"]
+          },
+          {
+            qid: "w08p_m04", type: "mc", level: 1, points: 7, limitSec: 20,
+            q: "실험군 competent cell에 넣는 DNA는?",
+            choices: ["지난 실험(7주차)에서 만든 재조합 DNA(Vector) 10 µL", "게놈 DNA 10 µL", "프라이머 10 µL", "RNA 10 µL"],
+            answer: 0,
+            explain: "실험군에는 지난 주 만든 재조합 DNA(Vector) 10 µL를 넣습니다.",
+            source: "실험방법 08 [1] ①",
+            tags: ["Vector","10 µL"]
+          },
+          {
+            qid: "w08p_m05", type: "mc", level: 1, points: 7, limitSec: 20,
+            q: "형질전환 확인용 대조로 다른 competent cell에 넣는 plasmid는?",
+            choices: ["pUC19 10 µL", "TOPO Vector 10 µL", "pBI5ΔRTD 10 µL", "물 10 µL"],
+            answer: 0,
+            explain: "또 하나의 competent cell에는 대조용 pUC19 plasmid 10 µL를 넣습니다(라벨링 구분).",
+            source: "실험방법 08 [1] ②",
+            tags: ["pUC19","대조"]
+          },
+          {
+            qid: "w08p_m06", type: "mc", level: 1, points: 7, limitSec: 20,
+            q: "DNA를 넣은 competent cell을 얼음에 얼마나 두는가?",
+            choices: ["30분", "5분", "1시간", "2분"],
+            answer: 0,
+            explain: "DNA를 넣고 뚜껑을 닫아 혼합한 뒤 얼음에 30분간 둡니다.",
+            source: "실험방법 08 [1] ①②",
+            tags: ["얼음 30분"]
+          },
+          {
+            qid: "w08p_m07", type: "mc", level: 1, points: 7, limitSec: 20,
+            q: "Heat-shock의 조건으로 옳은 것은?",
+            choices: ["42℃ 항온수조에서 30초", "100℃에서 5분", "37℃에서 1시간", "4℃에서 30분"],
+            answer: 0,
+            explain: "혼합물 2개를 42℃ 항온수조에서 30초간 heat-shock합니다.",
+            source: "실험방법 08 [1] ③",
+            tags: ["heat-shock","42℃","30초"]
+          },
+          {
+            qid: "w08p_m08", type: "mc", level: 2, points: 9, limitSec: 20,
+            q: "Heat-shock으로 DNA가 세포에 들어가는 원리는?",
+            choices: ["세포막에 모공을 만들어 삼투압으로 DNA를 흡수시킴", "DNA를 녹여 없앰", "세포를 반으로 쪼갬", "DNA를 증폭함"],
+            answer: 0,
+            explain: "짧고 강한 온도 변화가 세포막에 순간적으로 모공을 만들고, 삼투압으로 DNA가 세포 안으로 들어갑니다.",
+            source: "강의 이론(Heat-shock method)",
+            tags: ["heat-shock 원리","모공","삼투압"]
+          },
+          {
+            qid: "w08p_m09", type: "mc", level: 1, points: 7, limitSec: 20,
+            q: "Heat-shock 직후에 하는 일은?",
+            choices: ["즉시 얼음으로 옮겨 2분간 식힘", "그대로 42℃에 10분 더 둠", "바로 도말함", "원심분리함"],
+            answer: 0,
+            explain: "heat-shock 직후 즉시 얼음으로 옮겨 2분간 차게 식힙니다.",
+            source: "실험방법 08 [1] ③",
+            tags: ["즉시 얼음","2분"]
+          },
+          {
+            qid: "w08p_m10", type: "mc", level: 1, points: 7, limitSec: 20,
+            q: "Heat-shock 후 넣어주는 회복 배지는?",
+            choices: ["S.O.C. 배지 250 µL", "LB 고체배지", "증류수 250 µL", "CaCl₂ 용액"],
+            answer: 0,
+            explain: "37℃로 데운 S.O.C. 배지 250 µL를 각 혼합물에 넣어 회복배양을 준비합니다.",
+            source: "실험방법 08 [1] ④",
+            tags: ["SOC","250 µL"]
+          },
+          {
+            qid: "w08p_m11", type: "mc", level: 2, points: 9, limitSec: 20,
+            q: "회복배양의 조건으로 옳은 것은?",
+            choices: ["37℃ 진탕배양기 225 rpm에서 1시간", "4℃에서 30분", "60℃에서 20분", "상온에서 하룻밤"],
+            answer: 0,
+            explain: "S.O.C. 배지를 넣고 37℃ 진탕배양기에서 225 rpm으로 1시간 회복배양합니다.",
+            source: "실험방법 08 [1] ④",
+            tags: ["37℃","225 rpm","1시간"]
+          },
+          {
+            qid: "w08p_m12", type: "mc", level: 2, points: 9, limitSec: 20,
+            q: "회복배양(SOC·37℃·1시간)을 하는 이유는?",
+            choices: ["세포를 회복시키고 항생제 저항 단백질을 발현시키려고", "DNA를 증폭하려고", "colony를 파랗게 만들려고", "세포를 죽이려고"],
+            answer: 0,
+            explain: "회복배양 동안 세포가 회복하고 vector의 항생제 저항 유전자가 발현돼, 이후 선별평판에서 살아남을 수 있습니다.",
+            source: "강의 이론 · 실험방법 08 [1] ④",
+            tags: ["회복배양","항생제 저항 발현"]
+          },
+          {
+            qid: "w08p_m13", type: "mc", level: 1, points: 7, limitSec: 20,
+            q: "형질전환 결과를 분석하는 선별법은?",
+            choices: ["Blue-White 선별법", "Western blot", "PCR 정량", "Nanodrop 측정"],
+            answer: 0,
+            explain: "콜로니 색으로 재조합·형질전환 성공을 판정하는 Blue-White 선별법을 씁니다.",
+            source: "실험방법 08 [2] · 강의 이론",
+            tags: ["Blue-White","선별"]
+          },
+          {
+            qid: "w08p_m14", type: "mc", level: 1, points: 7, limitSec: 20,
+            q: "Blue-White 선별에서 콜로니 색을 내게 하는 염색 기질은?",
+            choices: ["X-gal", "RedSafe", "EtBr", "Coomassie blue"],
+            answer: 0,
+            explain: "X-gal이 β-galactosidase에 의해 분해되면 파란색을 냅니다.",
+            source: "강의 이론(Blue-White screening)",
+            tags: ["X-gal"]
+          },
+          {
+            qid: "w08p_m15", type: "mc", level: 2, points: 9, limitSec: 20,
+            q: "lac operon의 발현을 유도하는 물질은?",
+            choices: ["IPTG", "Kanamycin", "Glycerol", "Ampicillin"],
+            answer: 0,
+            explain: "IPTG는 lac operon의 발현을 유도하는 물질로, Blue-White 선별 시 함께 씁니다.",
+            source: "강의 이론(Blue-White screening) · 실험방법 08 [2] ①",
+            tags: ["IPTG","유도"]
+          },
+          {
+            qid: "w08p_m16", type: "mc", level: 3, points: 11, limitSec: 20,
+            q: "파란색(Blue) 콜로니가 생기는 경우로 옳은 것은?",
+            choices: ["lacZ가 발현돼 β-galactosidase가 X-gal을 분해(목적 DNA 삽입 안 됨)", "목적 DNA가 lacZ에 삽입됨", "세포가 죽음", "항생제가 없음"],
+            answer: 0,
+            explain: "목적 DNA가 삽입되지 않은 원래 vector는 lacZ가 정상 발현돼 β-galactosidase가 X-gal을 분해해 파란색이 됩니다.",
+            source: "강의 이론(Blue-White screening)",
+            tags: ["파란색","lacZ 발현"]
+          },
+          {
+            qid: "w08p_m17", type: "mc", level: 3, points: 11, limitSec: 20,
+            q: "흰색(White) 콜로니가 생기는 경우로 옳은 것은?",
+            choices: ["목적 DNA가 lacZ에 삽입돼 β-galactosidase가 안 만들어져 X-gal이 분해되지 않음", "lacZ가 정상 발현됨", "IPTG가 없음", "세포가 죽음"],
+            answer: 0,
+            explain: "목적 DNA가 lacZ 자리에 삽입되면 lacZ가 망가져 β-galactosidase가 안 만들어지고, X-gal이 분해되지 않아 흰색이 됩니다.",
+            source: "강의 이론(Blue-White screening)",
+            tags: ["흰색","삽입 성공"]
+          },
+          {
+            qid: "w08p_m18", type: "mc", level: 2, points: 9, limitSec: 20,
+            q: "Blue-White 선별에서 목적 DNA 삽입 성공을 뜻하는 콜로니 색은?",
+            choices: ["흰색(White)", "파란색(Blue)", "빨간색", "노란색"],
+            answer: 0,
+            explain: "흰색 콜로니가 목적 DNA 삽입 성공(재조합)을 뜻합니다.",
+            source: "강의 이론(Blue-White screening)",
+            tags: ["흰색","삽입 성공"]
+          },
+          {
+            qid: "w08p_m19", type: "mc", level: 2, points: 9, limitSec: 20,
+            q: "β-galactosidase가 X-gal을 분해하면 콜로니는 무슨 색이 되는가?",
+            choices: ["파란색", "흰색", "투명", "검정색"],
+            answer: 0,
+            explain: "β-galactosidase가 X-gal을 분해하면 파란색 콜로니가 됩니다.",
+            source: "강의 이론(Blue-White screening)",
+            tags: ["파란색","β-galactosidase"]
+          },
+          {
+            qid: "w08p_m20", type: "mc", level: 2, points: 9, limitSec: 20,
+            q: "재조합 DNA(Vector)를 삽입한 대장균 배양액을 도말하는 평판은?",
+            choices: ["Kanamycin 평판", "Ampicillin 평판", "항생제 없는 평판", "X-gal만 있는 평판"],
+            answer: 0,
+            explain: "재조합 DNA(Vector)를 삽입한 배양액은 Kanamycin이 든 평판에 도말합니다.",
+            source: "실험방법 08 [2] ③",
+            tags: ["Kan 평판","Vector"]
+          },
+          {
+            qid: "w08p_m21", type: "mc", level: 2, points: 9, limitSec: 20,
+            q: "pUC19를 삽입한 대장균 배양액을 도말하는 평판은?",
+            choices: ["Ampicillin 평판", "Kanamycin 평판", "항생제 없는 평판", "물 평판"],
+            answer: 0,
+            explain: "pUC19를 삽입한 배양액은 Ampicillin이 든 평판에 도말합니다.",
+            source: "실험방법 08 [2] ③",
+            tags: ["Amp 평판","pUC19"]
+          },
+          {
+            qid: "w08p_m22", type: "mc", level: 2, points: 9, limitSec: 20,
+            q: "항생제 선별평판의 원리로 옳은 것은?",
+            choices: ["vector의 항생제 저항 유전자를 받은(형질전환된) 세포만 살아남음", "모든 세포가 다 자람", "죽은 세포만 자람", "색이 있는 세포만 자람"],
+            answer: 0,
+            explain: "항생제 평판에서는 vector가 준 항생제 저항 유전자를 가진(형질전환된) 세포만 콜로니를 만듭니다.",
+            source: "강의 이론 · 강의계획서 세부",
+            tags: ["선택압","항생제 저항"]
+          },
+          {
+            qid: "w08p_m23", type: "mc", level: 1, points: 7, limitSec: 20,
+            q: "각 선별평판에 IPTG와 X-gal을 얼마씩 도말하는가?",
+            choices: ["각 40 µL씩", "각 250 µL씩", "각 5 µL씩", "각 1 mL씩"],
+            answer: 0,
+            explain: "IPTG(100 mM)와 X-gal(40 mg/mL)을 각 40 µL씩 배지 위에 도말하고 건조합니다.",
+            source: "실험방법 08 [2] ①",
+            tags: ["40 µL","IPTG","X-gal"]
+          },
+          {
+            qid: "w08p_m24", type: "mc", level: 2, points: 9, limitSec: 20,
+            q: "회복배양이 끝난 혼합물을 원심분리한 뒤 무엇으로 풀어주는가?",
+            choices: ["깨끗한 S.O.C. 배지 100 µL", "증류수 1 mL", "CaCl₂ 용액", "에탄올"],
+            answer: 0,
+            explain: "13,000 rpm 1분 원심분리 후 상등액을 제거하고 깨끗한 S.O.C. 배지 100 µL로 풀어줍니다.",
+            source: "실험방법 08 [2] ②",
+            tags: ["SOC 100 µL","재현탁"]
+          },
+          {
+            qid: "w08p_m25", type: "mc", level: 1, points: 7, limitSec: 20,
+            q: "도말한 평판의 배양 조건으로 옳은 것은?",
+            choices: ["37℃에서 뚜껑이 아래로 가도록 48시간", "4℃에서 48시간", "60℃에서 1시간", "상온에서 30분"],
+            answer: 0,
+            explain: "37℃ 배양기에서 뚜껑이 아래로 가도록 48시간 배양한 뒤 콜로니를 확인합니다.",
+            source: "실험방법 08 [2] ④",
+            tags: ["37℃","48시간"]
+          },
+          {
+            qid: "w08p_m26", type: "mc", level: 2, points: 9, limitSec: 20,
+            q: "배양이 끝난 혼합물의 원심분리 조건은?",
+            choices: ["13,000 rpm에서 1분", "4,000 rpm에서 5분", "13,000 rpm에서 30분", "400 rpm에서 1분"],
+            answer: 0,
+            explain: "배양이 끝난 혼합물을 13,000 rpm에서 1분간 원심분리한 뒤 상등액을 제거합니다.",
+            source: "실험방법 08 [2] ②",
+            tags: ["13000 rpm","1분"]
+          },
+
+          /* ===== ox (O/X · 20초) 12문 ===== */
+          {
+            qid: "w08p_o01", type: "ox", level: 1, points: 7, limitSec: 20,
+            q: "형질전환은 외부 DNA를 세포에 도입해 유전적 변화를 일으키는 것이다.",
+            answer: true,
+            explain: "맞습니다. 형질전환(Transformation)의 정의입니다(1928 Griffith가 처음 밝힘).",
+            source: "강의 이론(재조합 및 형질전환)",
+            tags: ["형질전환"]
+          },
+          {
+            qid: "w08p_o02", type: "ox", level: 1, points: 7, limitSec: 20,
+            q: "Heat-shock은 42℃에서 30초간 준다.",
+            answer: true,
+            explain: "맞습니다. 42℃ 항온수조에서 30초간 heat-shock합니다.",
+            source: "실험방법 08 [1] ③",
+            tags: ["heat-shock","42℃"]
+          },
+          {
+            qid: "w08p_o03", type: "ox", level: 2, points: 9, limitSec: 20,
+            q: "Heat-shock 직후에는 세포를 37℃에 그대로 둔다.",
+            answer: false,
+            explain: "아닙니다. heat-shock 직후 즉시 얼음으로 옮겨 2분간 식힙니다.",
+            source: "실험방법 08 [1] ③",
+            tags: ["즉시 얼음"]
+          },
+          {
+            qid: "w08p_o04", type: "ox", level: 2, points: 9, limitSec: 20,
+            q: "Heat-shock은 세포막에 모공을 만들어 DNA를 흡수시키는 원리다.",
+            answer: true,
+            explain: "맞습니다. 짧은 온도 변화가 세포막에 모공을 만들고 삼투압으로 DNA가 들어갑니다.",
+            source: "강의 이론(Heat-shock method)",
+            tags: ["heat-shock 원리"]
+          },
+          {
+            qid: "w08p_o05", type: "ox", level: 2, points: 9, limitSec: 20,
+            q: "SOC 회복배양은 항생제 저항 단백질을 발현시키기 위한 것이다.",
+            answer: true,
+            explain: "맞습니다. 회복배양 동안 세포가 회복하고 항생제 저항 유전자가 발현됩니다.",
+            source: "강의 이론 · 실험방법 08 [1] ④",
+            tags: ["회복배양"]
+          },
+          {
+            qid: "w08p_o06", type: "ox", level: 2, points: 9, limitSec: 20,
+            q: "Blue-White 선별에서 흰색 콜로니는 목적 DNA 삽입 성공을 뜻한다.",
+            answer: true,
+            explain: "맞습니다. 목적 DNA가 lacZ에 삽입되면 X-gal이 분해되지 않아 흰색 콜로니가 됩니다(삽입 성공).",
+            source: "강의 이론(Blue-White screening)",
+            tags: ["흰색","삽입 성공"]
+          },
+          {
+            qid: "w08p_o07", type: "ox", level: 2, points: 9, limitSec: 20,
+            q: "파란색 콜로니는 β-galactosidase가 X-gal을 분해해 생긴다.",
+            answer: true,
+            explain: "맞습니다. lacZ가 발현돼 β-galactosidase가 X-gal을 분해하면 파란색이 됩니다(삽입 안 됨).",
+            source: "강의 이론(Blue-White screening)",
+            tags: ["파란색"]
+          },
+          {
+            qid: "w08p_o08", type: "ox", level: 2, points: 9, limitSec: 20,
+            q: "재조합 DNA(Vector)를 삽입한 대장균은 Ampicillin 평판에 도말한다.",
+            answer: false,
+            explain: "아닙니다. 재조합 DNA(Vector)는 Kanamycin 평판에, pUC19는 Ampicillin 평판에 도말합니다.",
+            source: "실험방법 08 [2] ③",
+            tags: ["Kan 평판"]
+          },
+          {
+            qid: "w08p_o09", type: "ox", level: 1, points: 7, limitSec: 20,
+            q: "IPTG는 lac operon을 유도하는 물질이다.",
+            answer: true,
+            explain: "맞습니다. IPTG는 lac operon의 발현을 유도합니다.",
+            source: "강의 이론(Blue-White screening)",
+            tags: ["IPTG"]
+          },
+          {
+            qid: "w08p_o10", type: "ox", level: 1, points: 7, limitSec: 20,
+            q: "도말한 평판은 37℃에서 48시간 배양한다.",
+            answer: true,
+            explain: "맞습니다. 37℃ 배양기에서 뚜껑이 아래로 가도록 48시간 배양합니다.",
+            source: "실험방법 08 [2] ④",
+            tags: ["48시간"]
+          },
+          {
+            qid: "w08p_o11", type: "ox", level: 1, points: 7, limitSec: 20,
+            q: "회복배양은 SOC 배지에서 37℃로 1시간 한다.",
+            answer: true,
+            explain: "맞습니다. S.O.C. 배지를 넣고 37℃ 진탕배양기 225 rpm에서 1시간 회복배양합니다.",
+            source: "실험방법 08 [1] ④",
+            tags: ["회복배양","1시간"]
+          },
+          {
+            qid: "w08p_o12", type: "ox", level: 1, points: 7, limitSec: 20,
+            q: "Competent cell에 DNA를 넣은 뒤 얼음에 30분간 둔다.",
+            answer: true,
+            explain: "맞습니다. DNA를 넣고 혼합한 뒤 얼음에 30분간 둡니다.",
+            source: "실험방법 08 [1] ①②",
+            tags: ["얼음 30분"]
+          },
+
+          /* ===== num (숫자 입력 · 30초) 6문 ===== */
+          {
+            qid: "w08p_n01", type: "num", level: 1, points: 7, limitSec: 30,
+            q: "Heat-shock의 온도는 몇 ℃인가?",
+            answer: 42, unit: "℃", tolerance: 0,
+            explain: "42℃ 항온수조에서 heat-shock합니다.",
+            source: "실험방법 08 [1] ③",
+            tags: ["42","heat-shock"]
+          },
+          {
+            qid: "w08p_n02", type: "num", level: 1, points: 7, limitSec: 30,
+            q: "Heat-shock을 주는 시간은 몇 초인가?",
+            answer: 30, unit: "초", tolerance: 0,
+            explain: "42℃에서 30초간 heat-shock합니다.",
+            source: "실험방법 08 [1] ③",
+            tags: ["30초"]
+          },
+          {
+            qid: "w08p_n03", type: "num", level: 2, points: 9, limitSec: 30,
+            q: "Heat-shock 후 넣는 S.O.C. 배지는 몇 µL인가?",
+            answer: 250, unit: "µL", tolerance: 0,
+            explain: "37℃로 데운 S.O.C. 배지 250 µL를 각 혼합물에 넣습니다.",
+            source: "실험방법 08 [1] ④",
+            tags: ["250","SOC"]
+          },
+          {
+            qid: "w08p_n04", type: "num", level: 2, points: 9, limitSec: 30,
+            q: "배양이 끝난 혼합물의 원심분리 회전수는 몇 rpm인가?",
+            answer: 13000, unit: "rpm", tolerance: 0,
+            explain: "13,000 rpm에서 1분간 원심분리합니다.",
+            source: "실험방법 08 [2] ②",
+            tags: ["13000","rpm"]
+          },
+          {
+            qid: "w08p_n05", type: "num", level: 2, points: 9, limitSec: 30,
+            q: "도말한 평판을 37℃에서 몇 시간 배양하는가?",
+            answer: 48, unit: "시간", tolerance: 0,
+            explain: "37℃에서 뚜껑이 아래로 가도록 48시간 배양합니다.",
+            source: "실험방법 08 [2] ④",
+            tags: ["48","배양"]
+          },
+          {
+            qid: "w08p_n06", type: "num", level: 2, points: 9, limitSec: 30,
+            q: "선별평판에 쓰는 Ampicillin의 최종 농도는 몇 µg/mL인가?",
+            answer: 100, unit: "µg/mL", tolerance: 0,
+            explain: "Ampicillin은 최종 100 µg/mL 농도로 든 LB 고체평판을 씁니다(Kanamycin은 50 µg/mL).",
+            source: "실험방법 08 [2] ①",
+            tags: ["100","Ampicillin"]
+          },
+
+          /* ===== order (순서 배열 · 45초) 6문
+           *   answer = steps 배열의 인덱스(0부터)를 올바른 순서대로 나열한 배열
+           * ===== */
+          {
+            qid: "w08p_r01", type: "order", level: 2, points: 9, limitSec: 45,
+            q: "형질전환(DNA 넣기~회복배양) 과정을 순서대로 맞춰 보세요.",
+            steps: ["42℃ 30초 heat-shock", "SOC 250 µL 넣고 37℃ 1시간 회복배양", "competent cell에 DNA 넣고 얼음 30분", "즉시 얼음 2분"],
+            answer: [2, 0, 3, 1],
+            explain: "DNA 넣고 얼음 30분 → 42℃ 30초 heat-shock → 즉시 얼음 2분 → SOC 넣고 37℃ 1시간 회복배양 순서입니다.",
+            source: "실험방법 08 [1] ①②③④",
+            tags: ["형질전환 순서"]
+          },
+          {
+            qid: "w08p_r02", type: "order", level: 3, points: 11, limitSec: 45,
+            q: "회복배양 이후(원심~배양) 과정을 순서대로 맞춰 보세요.",
+            steps: ["선별평판에 도말", "37℃ 뚜껑 아래로 48시간 배양", "13,000 rpm 1분 원심·상등액 제거", "SOC 100 µL로 재현탁"],
+            answer: [2, 3, 0, 1],
+            explain: "13,000 rpm 원심·상등액 제거 → SOC 100 µL 재현탁 → 선별평판 도말 → 37℃ 48시간 배양 순서입니다.",
+            source: "실험방법 08 [2] ②③④",
+            tags: ["분석 순서"]
+          },
+          {
+            qid: "w08p_r03", type: "order", level: 1, points: 7, limitSec: 45,
+            q: "선별평판 준비 과정을 순서대로 맞춰 보세요.",
+            steps: ["IPTG·X-gal 각 40 µL 도말", "Kan·Amp LB 고체평판 준비", "건조"],
+            answer: [1, 0, 2],
+            explain: "Kan·Amp 평판 준비 → IPTG·X-gal 40 µL씩 도말 → 건조 순서입니다.",
+            source: "실험방법 08 [2] ①",
+            tags: ["평판 준비 순서"]
+          },
+          {
+            qid: "w08p_r04", type: "order", level: 2, points: 9, limitSec: 45,
+            q: "Heat-shock으로 DNA가 들어가는 원리를 순서대로 맞춰 보세요.",
+            steps: ["삼투압으로 DNA가 세포 안으로 흡수됨", "42℃ 30초로 세포막에 모공이 형성됨", "즉시 얼음으로 옮김"],
+            answer: [1, 0, 2],
+            explain: "42℃ 30초로 모공 형성 → 삼투압으로 DNA 흡수 → 즉시 얼음으로 옮김 순서입니다.",
+            source: "강의 이론(Heat-shock method) · 실험방법 08 [1] ③",
+            tags: ["heat-shock 원리 순서"]
+          },
+          {
+            qid: "w08p_r05", type: "order", level: 3, points: 11, limitSec: 45,
+            q: "흰색(White) 콜로니가 생기는 원리를 순서대로 맞춰 보세요.",
+            steps: ["X-gal이 분해되지 않음", "목적 DNA가 lacZ 자리에 삽입됨", "흰색 콜로니", "β-galactosidase가 만들어지지 않음"],
+            answer: [1, 3, 0, 2],
+            explain: "목적 DNA가 lacZ에 삽입 → β-galactosidase 안 만들어짐 → X-gal 안 분해 → 흰색 콜로니 순서입니다(삽입 성공).",
+            source: "강의 이론(Blue-White screening)",
+            tags: ["흰색 원리 순서"]
+          },
+          {
+            qid: "w08p_r06", type: "order", level: 3, points: 11, limitSec: 45,
+            q: "파란색(Blue) 콜로니가 생기는 원리를 순서대로 맞춰 보세요.",
+            steps: ["β-galactosidase가 X-gal을 분해", "lacZ(lac operon)가 발현됨", "파란색 콜로니"],
+            answer: [1, 0, 2],
+            explain: "lacZ 발현 → β-galactosidase가 X-gal 분해 → 파란색 콜로니 순서입니다(목적 DNA 삽입 안 됨).",
+            source: "강의 이론(Blue-White screening)",
+            tags: ["파란색 원리 순서"]
+          }
+        ],
+
+        /* ---- pool.reason — 추리형 사건 6건 (형질전환 실패·판독 시나리오) ----
+         *   각 사건 points = 15. 근거 = 실험방법 08 · 강의 이론(형질전환·Blue/White).
+         * ---------------------------------------------------------------*/
+        reason: [
+          {
+            caseId: "w08_r01",
+            no: "Case 01",
+            title: "콜로니가 하나도 없다 — Heat-shock을 건너뛰었다",
+            subtitle: "8주차 형질전환 — DNA를 넣고 heat-shock 없이 바로 진행했다",
+            weeks: "8주차",
+            points: 15,
+            brief:
+              "한 조의 Kanamycin 평판에 48시간 뒤에도 콜로니가 하나도 없었습니다. 형질전환 과정을 확인하니 이상했습니다. " +
+              "무엇이 잘못됐는지 밝히세요.",
+            freeClues: 3,
+            extraClueCostXp: 20,
+            clues: [
+              { id: "k1", order: 1, label: "단서 ① — 과정 기록",
+                body: "competent cell에 Vector를 넣고 얼음에 30분 둔 뒤, 42℃ 30초 heat-shock을 하지 않고 바로 SOC를 넣어 배양함.",
+                readingHint: "heat-shock이 세포막에 모공을 만들어 DNA를 넣는다 — 건너뛰면 DNA가 세포에 못 들어간다. 결정타일 수 있다.",
+                isEvidence: true, decisive: true,
+                source: "실험방법 08 [1] ③ · 강의 이론(Heat-shock)" },
+              { id: "k2", order: 2, label: "단서 ② — 시약·평판",
+                body: "Vector 10 µL, SOC 250 µL, Kan 평판 도말 등 나머지는 규정대로였음.",
+                readingHint: "다른 조건은 정상이다 → heat-shock만 빠졌다.",
+                isEvidence: false,
+                source: "실험방법 08 [1]·[2]" },
+              { id: "k3", order: 3, label: "단서 ③ — 옆 조 비교",
+                body: "42℃ 30초 heat-shock을 정확히 한 옆 조는 Kan 평판에 콜로니가 자랐음.",
+                readingHint: "차이는 'heat-shock을 했느냐'뿐이다.",
+                isEvidence: true,
+                source: "실험방법 08 [1] ③" },
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+                body: "항온수조 순서를 놓쳐서 heat-shock을 안 하고 넘어갔어요. 그래서 DNA가 세포에 안 들어간 것 같아요.",
+                readingHint: "확정타. heat-shock을 건너뛰어 DNA가 세포에 들어가지 못했다.",
+                isEvidence: true, decisive: true,
+                source: "실험방법 08 [1] ③" }
+            ],
+            suspects: [
+              { id: "s1", mark: "ㄱ", label: "42℃ 30초 heat-shock을 건너뛰어 DNA가 세포에 들어가지 못했다", correct: true },
+              { id: "s2", mark: "ㄴ", label: "SOC 배지를 250 µL 넣었다", correct: false,
+                debrief: "SOC 250 µL는 규정 부피입니다(단서 ②) — 원인이 아닙니다." },
+              { id: "s3", mark: "ㄷ", label: "Vector를 10 µL 넣었다", correct: false,
+                debrief: "Vector 10 µL는 규정 부피입니다 — 원인이 아닙니다." },
+              { id: "s4", mark: "ㄹ", label: "Kanamycin 평판에 도말했다", correct: false,
+                debrief: "Vector는 Kan 평판에 도말하는 것이 맞습니다 — 원인이 아닙니다." }
+            ],
+            answer: { suspect: "s1", evidence: ["k1", "k4"] },
+            debrief:
+              "heat-shock은 42℃ 짧은 열충격으로 세포막에 모공을 만들어 DNA를 세포 안에 넣는 핵심 단계입니다. 이를 건너뛰면 DNA가 " +
+              "세포에 들어가지 못해 형질전환이 일어나지 않고, 선별평판에 콜로니가 생기지 않습니다. 콜로니가 하나도 없으면 heat-shock을 " +
+              "제대로 했는지 먼저 점검해야 합니다.",
+            prescription: [
+              "DNA를 넣고 얼음 30분 뒤 반드시 42℃ 30초 heat-shock을 한다",
+              "heat-shock 직후 즉시 얼음으로 옮긴다",
+              "콜로니가 없으면 heat-shock 수행 여부를 먼저 확인한다"
+            ],
+            source: "실험방법 08 [1] ③ · 강의 이론(Heat-shock)",
+            tags: ["heat-shock 생략","콜로니 없음"]
+          },
+          {
+            caseId: "w08_r02",
+            no: "Case 02",
+            title: "세포가 다 죽었다 — Heat-shock 후 얼음으로 안 옮겼다",
+            subtitle: "8주차 형질전환 — 42℃에 계속 두어 세포가 사멸했다",
+            weeks: "8주차",
+            points: 15,
+            brief:
+              "한 조의 두 평판 모두 콜로니가 거의 없었습니다. heat-shock 단계 기록을 확인하니 이상했습니다. " +
+              "무엇이 잘못됐는지 밝히세요.",
+            freeClues: 3,
+            extraClueCostXp: 20,
+            clues: [
+              { id: "k1", order: 1, label: "단서 ① — heat-shock 기록",
+                body: "42℃에서 30초가 지난 뒤에도 얼음으로 옮기지 않고 항온수조에 여러 분간 계속 두었음.",
+                readingHint: "heat-shock은 짧아야 하고 직후 즉시 얼음으로 식혀야 한다 — 오래 데우면 세포가 죽는다. 결정타일 수 있다.",
+                isEvidence: true, decisive: true,
+                source: "실험방법 08 [1] ③ · 강의 이론(Heat-shock)" },
+              { id: "k2", order: 2, label: "단서 ② — 앞뒤 조건",
+                body: "DNA 양(10 µL), 얼음 30분, SOC 250 µL·37℃ 1시간 회복배양은 규정대로였음.",
+                readingHint: "다른 조건은 정상이다 → heat-shock 시간 관리만 문제다.",
+                isEvidence: false,
+                source: "실험방법 08 [1]" },
+              { id: "k3", order: 3, label: "단서 ③ — 대조(pUC19)도 실패",
+                body: "형질전환이 잘됐는지 확인하는 pUC19 대조 평판에도 콜로니가 거의 없었음.",
+                readingHint: "대조까지 실패 → DNA 종류 문제가 아니라 세포 자체가 상했을 가능성.",
+                isEvidence: true,
+                source: "실험방법 08 [1] ②" },
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+                body: "다른 조 기다린다고 42℃에 한참 뒀어요. 얼음으로 바로 안 옮겼어요.",
+                readingHint: "확정타. 42℃에 오래 둬 세포가 죽었다.",
+                isEvidence: true, decisive: true,
+                source: "실험방법 08 [1] ③" }
+            ],
+            suspects: [
+              { id: "s1", mark: "ㄱ", label: "heat-shock 후 즉시 얼음으로 옮기지 않고 42℃에 오래 둬 세포가 죽었다", correct: true },
+              { id: "s2", mark: "ㄴ", label: "SOC로 37℃ 1시간 회복배양했다", correct: false,
+                debrief: "회복배양은 올바른 절차입니다 — 원인이 아닙니다." },
+              { id: "s3", mark: "ㄷ", label: "DNA를 10 µL 넣었다", correct: false,
+                debrief: "10 µL는 규정 부피입니다 — 원인이 아닙니다." },
+              { id: "s4", mark: "ㄹ", label: "얼음에 30분 두었다", correct: false,
+                debrief: "DNA 넣고 얼음 30분은 정상 절차입니다 — 원인이 아닙니다." }
+            ],
+            answer: { suspect: "s1", evidence: ["k1", "k4"] },
+            debrief:
+              "heat-shock은 42℃에서 30초만 짧게 주고 즉시 얼음으로 옮겨 식혀야 합니다. 42℃에 오래 두면 세포가 열에 죽어, 실험군·" +
+              "대조군 모두 콜로니가 생기지 않습니다. 두 평판이 다 실패하고 대조까지 안 자랐다면 세포가 죽은 것은 아닌지(heat-shock " +
+              "시간 초과) 의심해야 합니다.",
+            prescription: [
+              "heat-shock은 42℃ 30초만 정확히 주고 즉시 얼음으로 옮긴다",
+              "항온수조에 오래 두지 않는다(세포 사멸)",
+              "실험군·대조 모두 실패하면 세포 사멸(heat-shock 시간)을 먼저 의심한다"
+            ],
+            source: "실험방법 08 [1] ③",
+            tags: ["heat-shock 시간 초과","세포 사멸"]
+          },
+          {
+            caseId: "w08_r03",
+            no: "Case 03",
+            title: "콜로니가 없다 — 회복배양을 건너뛰었다",
+            subtitle: "8주차 형질전환 — SOC 회복배양 없이 바로 도말했다",
+            weeks: "8주차",
+            points: 15,
+            brief:
+              "한 조의 Kanamycin 평판에 콜로니가 자라지 않았습니다. heat-shock까지는 정상이었는데 그 뒤가 이상했습니다. " +
+              "무엇이 잘못됐는지 밝히세요.",
+            freeClues: 3,
+            extraClueCostXp: 20,
+            clues: [
+              { id: "k1", order: 1, label: "단서 ① — 회복배양 기록",
+                body: "heat-shock 후 SOC 배지로 37℃ 1시간 회복배양을 하지 않고, 곧바로 항생제 평판에 도말함.",
+                readingHint: "회복배양 동안 항생제 저항 단백질이 발현돼야 항생제 평판에서 산다 — 건너뛰면 다 죽는다. 결정타일 수 있다.",
+                isEvidence: true, decisive: true,
+                source: "실험방법 08 [1] ④ · 강의 이론" },
+              { id: "k2", order: 2, label: "단서 ② — heat-shock",
+                body: "42℃ 30초 heat-shock과 즉시 얼음 2분은 정상이었음.",
+                readingHint: "heat-shock은 정상이다 → DNA는 들어갔다. 그 뒤가 문제다.",
+                isEvidence: false,
+                source: "실험방법 08 [1] ③" },
+              { id: "k3", order: 3, label: "단서 ③ — 재실험 결과",
+                body: "SOC로 37℃ 1시간 회복배양을 지킨 재실험에서는 콜로니가 자랐음.",
+                readingHint: "회복배양을 넣었더니 성공했다 → 원인은 회복배양 생략이다.",
+                isEvidence: true,
+                source: "실험방법 08 [1] ④" },
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+                body: "시간이 없어서 SOC 넣고 바로 도말했어요. 1시간 배양을 안 했어요.",
+                readingHint: "확정타. 저항 단백질이 발현될 시간이 없어 항생제에 다 죽었다.",
+                isEvidence: true, decisive: true,
+                source: "실험방법 08 [1] ④" }
+            ],
+            suspects: [
+              { id: "s1", mark: "ㄱ", label: "SOC 회복배양(37℃ 1시간)을 건너뛰어 항생제 저항이 발현되지 못했다", correct: true },
+              { id: "s2", mark: "ㄴ", label: "42℃ 30초 heat-shock을 했다", correct: false,
+                debrief: "heat-shock은 올바른 절차입니다 — 원인이 아닙니다." },
+              { id: "s3", mark: "ㄷ", label: "Kanamycin 평판에 도말했다", correct: false,
+                debrief: "Vector는 Kan 평판에 도말하는 것이 맞습니다 — 원인이 아닙니다." },
+              { id: "s4", mark: "ㄹ", label: "SOC 배지를 넣었다", correct: false,
+                debrief: "SOC를 넣은 것 자체는 맞으나, 넣고 37℃ 1시간 배양을 안 한 것이 문제입니다 — 이 항목만으로는 원인이 아닙니다." }
+            ],
+            answer: { suspect: "s1", evidence: ["k1", "k4"] },
+            debrief:
+              "heat-shock으로 DNA가 들어가도, SOC 배지에서 37℃ 1시간 회복배양을 해야 세포가 회복하고 항생제 저항 단백질을 " +
+              "발현합니다. 이 단계를 건너뛰고 바로 항생제 평판에 도말하면 저항이 아직 없어 세포가 다 죽어 콜로니가 생기지 않습니다. " +
+              "heat-shock은 정상인데 콜로니가 없으면 회복배양을 지켰는지 점검해야 합니다.",
+            prescription: [
+              "heat-shock 후 SOC 배지로 37℃ 1시간 회복배양을 반드시 한다",
+              "시간을 아끼려고 회복배양을 건너뛰지 않는다",
+              "heat-shock은 정상인데 콜로니가 없으면 회복배양을 점검한다"
+            ],
+            source: "실험방법 08 [1] ④",
+            tags: ["회복배양 생략","콜로니 없음"]
+          },
+          {
+            caseId: "w08_r04",
+            no: "Case 04",
+            title: "콜로니가 없다 — 평판을 바꿔 도말했다",
+            subtitle: "8주차 형질전환 — Vector를 Ampicillin 평판에 도말했다",
+            weeks: "8주차",
+            points: 15,
+            brief:
+              "한 조가 재조합 DNA(Vector) 형질전환은 잘했는데, 도말한 평판에 콜로니가 없었습니다. 도말 기록을 확인하니 이상했습니다. " +
+              "무엇이 잘못됐는지 밝히세요.",
+            freeClues: 3,
+            extraClueCostXp: 20,
+            clues: [
+              { id: "k1", order: 1, label: "단서 ① — 도말 기록",
+                body: "재조합 DNA(Vector·Kanamycin 저항)를 삽입한 배양액을 Kanamycin이 아니라 Ampicillin 평판에 도말함.",
+                readingHint: "Vector는 Kan 저항 유전자를 가지므로 Kan 평판에서 산다 — Amp 평판에서는 못 산다. 결정타일 수 있다.",
+                isEvidence: true, decisive: true,
+                source: "실험방법 08 [2] ③" },
+              { id: "k2", order: 2, label: "단서 ② — 앞 단계",
+                body: "heat-shock·회복배양·원심·재현탁은 모두 규정대로였음.",
+                readingHint: "형질전환 과정 자체는 정상이다 → 평판 짝만 문제다.",
+                isEvidence: false,
+                source: "실험방법 08 [1]·[2]" },
+              { id: "k3", order: 3, label: "단서 ③ — pUC19 평판",
+                body: "같은 조가 pUC19를 Kanamycin 평판에 도말했더니 그쪽도 콜로니가 없었음(pUC19는 Amp 저항).",
+                readingHint: "두 평판을 서로 바꿔 도말했다 → 항생제 짝이 어긋났다.",
+                isEvidence: true,
+                source: "실험방법 08 [2] ③" },
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+                body: "Kan하고 Amp 평판을 헷갈려서 반대로 도말했어요. 그래서 둘 다 안 자란 것 같아요.",
+                readingHint: "확정타. 저항 유전자와 평판 항생제가 맞지 않아 세포가 죽었다.",
+                isEvidence: true, decisive: true,
+                source: "실험방법 08 [2] ③" }
+            ],
+            suspects: [
+              { id: "s1", mark: "ㄱ", label: "Vector(Kan 저항)를 Amp 평판에 도말하는 등 평판 짝을 바꿔 세포가 살지 못했다", correct: true },
+              { id: "s2", mark: "ㄴ", label: "42℃ 30초 heat-shock을 했다", correct: false,
+                debrief: "heat-shock은 올바른 절차입니다 — 원인이 아닙니다." },
+              { id: "s3", mark: "ㄷ", label: "SOC로 37℃ 1시간 회복배양했다", correct: false,
+                debrief: "회복배양은 올바른 절차입니다 — 원인이 아닙니다." },
+              { id: "s4", mark: "ㄹ", label: "13,000 rpm 1분 원심했다", correct: false,
+                debrief: "13,000 rpm 1분 원심은 규정 조건입니다 — 원인이 아닙니다." }
+            ],
+            answer: { suspect: "s1", evidence: ["k1", "k4"] },
+            debrief:
+              "각 vector는 특정 항생제 저항 유전자를 가집니다 — 재조합 DNA(Vector)는 Kanamycin 저항, pUC19는 Ampicillin 저항입니다. " +
+              "그래서 Vector는 Kan 평판에, pUC19는 Amp 평판에 도말해야 형질전환된 세포가 살아남습니다. 평판을 바꾸면 저항이 없는 " +
+              "항생제라 세포가 다 죽어 콜로니가 생기지 않습니다. 도말 전 평판 짝을 반드시 확인해야 합니다.",
+            prescription: [
+              "재조합 DNA(Vector)는 Kanamycin 평판, pUC19는 Ampicillin 평판에 도말한다",
+              "평판·튜브 라벨을 확실히 해 짝을 바꾸지 않는다",
+              "형질전환은 정상인데 콜로니가 없으면 평판 짝(항생제)을 먼저 점검한다"
+            ],
+            source: "실험방법 08 [2] ③",
+            tags: ["평판 짝 오류","항생제 불일치"]
+          },
+          {
+            caseId: "w08_r05",
+            no: "Case 05",
+            title: "색 구분이 안 된다 — IPTG·X-gal을 빠뜨렸다",
+            subtitle: "8주차 형질전환 — 선별평판에 X-gal을 도말하지 않았다",
+            weeks: "8주차",
+            points: 15,
+            brief:
+              "한 조는 콜로니가 잘 자랐는데, 파란색·흰색 구분이 전혀 되지 않아 재조합 성공 여부를 판정할 수 없었습니다. 평판 준비를 " +
+              "확인하니 이상했습니다. 무엇이 잘못됐는지 밝히세요.",
+            freeClues: 3,
+            extraClueCostXp: 20,
+            clues: [
+              { id: "k1", order: 1, label: "단서 ① — 평판 준비 기록",
+                body: "선별평판에 IPTG(100 mM)와 X-gal(40 mg/mL)을 도말하지 않고 항생제만 든 평판을 사용함.",
+                readingHint: "Blue/White 색은 X-gal이 β-galactosidase에 분해돼 나온다 — X-gal이 없으면 색이 안 난다. 결정타일 수 있다.",
+                isEvidence: true, decisive: true,
+                source: "실험방법 08 [2] ① · 강의 이론(Blue-White)" },
+              { id: "k2", order: 2, label: "단서 ② — 형질전환 과정",
+                body: "heat-shock·회복배양·도말·48시간 배양은 정상이었고, 콜로니는 잘 자랐음.",
+                readingHint: "형질전환 자체는 성공(콜로니 자람) → 문제는 색 판정이다.",
+                isEvidence: false,
+                source: "실험방법 08 [1]·[2]" },
+              { id: "k3", order: 3, label: "단서 ③ — 옆 조 비교",
+                body: "IPTG·X-gal을 40 µL씩 도말한 옆 조는 파란색·흰색 콜로니가 뚜렷이 구분됐음.",
+                readingHint: "차이는 'IPTG·X-gal을 도말했느냐'뿐이다.",
+                isEvidence: true,
+                source: "실험방법 08 [2] ①" },
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+                body: "X-gal 도말하는 걸 깜빡했어요. 그래서 색이 안 나와서 흰지 파란지 알 수가 없어요.",
+                readingHint: "확정타. X-gal이 없어 발색이 안 돼 Blue/White를 구분할 수 없다.",
+                isEvidence: true, decisive: true,
+                source: "실험방법 08 [2] ①" }
+            ],
+            suspects: [
+              { id: "s1", mark: "ㄱ", label: "선별평판에 IPTG·X-gal을 도말하지 않아 Blue/White 색이 나오지 않았다", correct: true },
+              { id: "s2", mark: "ㄴ", label: "37℃에서 48시간 배양했다", correct: false,
+                debrief: "37℃ 48시간 배양은 규정 조건입니다 — 원인이 아닙니다." },
+              { id: "s3", mark: "ㄷ", label: "Kanamycin 평판을 썼다", correct: false,
+                debrief: "Vector에 Kan 평판은 맞습니다 — 색 구분 실패의 원인이 아닙니다." },
+              { id: "s4", mark: "ㄹ", label: "SOC로 회복배양했다", correct: false,
+                debrief: "회복배양은 올바른 절차입니다 — 원인이 아닙니다." }
+            ],
+            answer: { suspect: "s1", evidence: ["k1", "k4"] },
+            debrief:
+              "Blue/White 선별은 X-gal이 β-galactosidase에 의해 분해되면서 나는 색으로 판정합니다. IPTG는 그 발현을 유도합니다. " +
+              "평판에 IPTG·X-gal을 도말하지 않으면 콜로니가 자라도 색이 나지 않아 삽입 여부(흰색/파란색)를 구분할 수 없습니다. 색 " +
+              "판정이 안 되면 IPTG·X-gal 도말을 빠뜨리지 않았는지 확인해야 합니다.",
+            prescription: [
+              "선별평판에 IPTG(100 mM)·X-gal(40 mg/mL)을 각 40 µL씩 도말·건조한다",
+              "X-gal 도말을 빠뜨리지 않는다(색이 안 남)",
+              "색 구분이 안 되면 IPTG·X-gal 도말 여부를 먼저 점검한다"
+            ],
+            source: "실험방법 08 [2] ① · 강의 이론(Blue-White)",
+            tags: ["X-gal 누락","색 구분 실패"]
+          },
+          {
+            caseId: "w08_r06",
+            no: "Case 06",
+            title: "결과를 거꾸로 읽었다 — 파란색을 삽입 성공으로 봤다",
+            subtitle: "8주차 형질전환 — Blue/White 판독을 반대로 해석했다",
+            weeks: "8주차",
+            points: 15,
+            brief:
+              "한 조가 보고서에 '파란색 콜로니가 재조합 성공'이라고 적었습니다. 판독 근거를 확인하니 해석이 뒤집혀 있었습니다. " +
+              "무엇이 잘못됐는지 밝히세요.",
+            freeClues: 3,
+            extraClueCostXp: 20,
+            clues: [
+              { id: "k1", order: 1, label: "단서 ① — 판독 기록",
+                body: "파란색 콜로니를 '목적 DNA 삽입 성공'으로, 흰색 콜로니를 '실패'로 적음 — 실제와 반대로 해석함.",
+                readingHint: "흰색이 삽입 성공, 파란색이 삽입 안 된 원벡터다 — 해석이 뒤집혔다. 결정타일 수 있다.",
+                isEvidence: true, decisive: true,
+                source: "강의 이론(Blue-White screening)" },
+              { id: "k2", order: 2, label: "단서 ② — 실험 과정",
+                body: "형질전환·도말·배양·IPTG·X-gal 도말까지 실험 과정은 모두 정상이었음.",
+                readingHint: "실험은 정상이다 → 문제는 결과 해석(판독)이다.",
+                isEvidence: false,
+                source: "실험방법 08 [2]" },
+              { id: "k3", order: 3, label: "단서 ③ — 원리 확인",
+                body: "재조합 DNA가 lacZ에 삽입되면 β-galactosidase가 안 만들어져 X-gal이 분해되지 않고 흰색이 된다는 원리가 강의에 있었음.",
+                readingHint: "원리상 흰색이 삽입 성공이다 → 파란색을 성공이라 본 것은 오독이다.",
+                isEvidence: true,
+                source: "강의 이론(Blue-White screening)" },
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+                body: "파란색이 눈에 띄어서 그게 성공인 줄 알았어요. 흰색이 삽입 성공인 걸 반대로 알았어요.",
+                readingHint: "확정타. Blue/White 판독을 반대로 해석했다.",
+                isEvidence: true, decisive: true,
+                source: "강의 이론(Blue-White screening)" }
+            ],
+            suspects: [
+              { id: "s1", mark: "ㄱ", label: "흰색이 삽입 성공인데 파란색을 성공으로 보아 판독을 반대로 했다", correct: true },
+              { id: "s2", mark: "ㄴ", label: "IPTG·X-gal을 40 µL씩 도말했다", correct: false,
+                debrief: "IPTG·X-gal 도말은 올바른 절차입니다 — 판독 오류의 원인이 아닙니다." },
+              { id: "s3", mark: "ㄷ", label: "37℃에서 48시간 배양했다", correct: false,
+                debrief: "37℃ 48시간 배양은 규정 조건입니다 — 원인이 아닙니다." },
+              { id: "s4", mark: "ㄹ", label: "Vector를 Kanamycin 평판에 도말했다", correct: false,
+                debrief: "Vector에 Kan 평판은 맞습니다 — 판독 오류의 원인이 아닙니다." }
+            ],
+            answer: { suspect: "s1", evidence: ["k1", "k4"] },
+            debrief:
+              "Blue/White 선별에서 목적 DNA가 lacZ에 삽입되면 lacZ가 망가져 β-galactosidase가 만들어지지 않고, X-gal이 분해되지 않아 " +
+              "흰색 콜로니가 됩니다(삽입 성공). 반대로 삽입되지 않은 원래 vector는 lacZ가 정상 발현돼 파란색이 됩니다. 따라서 흰색이 " +
+              "재조합 성공, 파란색이 실패입니다. 판독을 반대로 하면 결과 해석이 완전히 뒤집히므로 원리를 정확히 기억해야 합니다.",
+            prescription: [
+              "흰색 콜로니 = 목적 DNA 삽입 성공, 파란색 = 삽입 안 된 원래 vector로 판독한다",
+              "'삽입되면 lacZ가 망가져 색이 안 난다(흰색)'는 원리로 방향을 기억한다",
+              "보고서에 색과 의미를 적을 때 방향을 다시 확인한다"
+            ],
+            source: "강의 이론(Blue-White screening)",
+            tags: ["판독 오류","Blue/White 해석"]
+          }
+        ],
+
+        source: "실험방법 08 (형질전환) · 강의 이론(재조합 및 형질전환) · 교수님 지시(미션 방식)"
+      },
+
+      /* ------------------------------------------------------------------
+       * report(w08) — 실험보고서 (사진2 + 고찰, w05·w06·w07과 동일 엔진)
+       *   ① Kanamycin 평판(Vector 삽입) 콜로니 사진  ② Ampicillin 평판(pUC19) 콜로니 사진  ③ 고찰
+       * ----------------------------------------------------------------*/
+      report: {
+        stageId: "w08",
+        title: "형질전환",
+        course: "유전자분석 (동양미래대학교 바이오융합공학과 2학년 · 2026-2학기)",
+        weekLabel: "8주차",
+        experimentNo: "실험 7",
+        experimentName: "형질전환 (Transformation · Blue-White 선별)",
+        dateLabel: "2026-10-14",
+        paper: "A4",
+        gradeNote: "실험보고서 — 다음 실험 시작 전 제출",
+        meta: [
+          { key: "course", label: "과목", value: "유전자분석", fixed: true },
+          { key: "week", label: "주차", value: "8주차", fixed: true },
+          { key: "expName", label: "실험명", value: "형질전환 (Blue-White 선별)", fixed: true },
+          { key: "date", label: "실험일자", value: "2026-10-14", fixed: false },
+          { key: "team", label: "조", value: "", fixed: false, hint: "예: 3조" },
+          { key: "sid", label: "학번", value: "", fixed: false, hint: "로그인 학번" },
+          { key: "name", label: "이름", value: "", fixed: false, hint: "로그인 이름" }
+        ],
+        /* 사진①(Kan 평판·Vector 삽입 콜로니) · 사진②(Amp 평판·pUC19 콜로니) · 고찰.
+         * type:"images"는 conditions 개수만큼 이미지 업로드 슬롯을 그린다(w05·w06·w07과 동일 엔진). */
+        sections: [
+          {
+            key: "kanplate", no: 1, label: "사진 ① — Kanamycin 평판(재조합 DNA 삽입) 콜로니 사진",
+            type: "images",
+            hint: "재조합 DNA(Vector)를 삽입한 대장균을 도말한 Kanamycin 평판을 48시간 배양한 결과 사진을 1장 올린다. 콜로니 유무와 색(흰색/파란색)이 보이게 찍는다.",
+            conditions: [
+              "Kanamycin 평판(재조합 DNA 삽입) 콜로니 사진"
+            ]
+          },
+          {
+            key: "ampplate", no: 2, label: "사진 ② — Ampicillin 평판(pUC19) 콜로니 사진",
+            type: "images",
+            hint: "대조용 pUC19를 삽입한 대장균을 도말한 Ampicillin 평판을 48시간 배양한 결과 사진을 1장 올린다. 형질전환이 정상적으로 일어났는지(콜로니 유무)가 보이게 찍는다.",
+            conditions: [
+              "Ampicillin 평판(pUC19) 콜로니 사진"
+            ]
+          },
+          {
+            key: "discussion", no: 3, label: "고찰",
+            type: "text",
+            rows: 8,
+            hint: "두 평판의 콜로니 유무와 색(Blue/White)으로 형질전환·재조합 성공 여부를 판정하고, 원리와 연결해 해석하세요. 항생제 평판에 콜로니가 자란 것은 형질전환(저항 획득) 성공을 뜻하고, 흰색 콜로니는 목적 DNA 삽입 성공(파란색은 삽입 안 된 원래 vector)을 뜻합니다. 콜로니가 없거나 색 구분이 안 됐다면 그 원인(heat-shock·회복배양·평판 짝·IPTG/X-gal 등)을 추정해 적습니다."
+          }
+        ],
+        source: "실험방법 08 · 강의 이론(재조합 및 형질전환) · 교수님 지시(사진2 + 고찰: ①Kan 평판 콜로니 ②Amp 평판 콜로니)"
       }
     }
   }
