@@ -7816,7 +7816,7 @@ window.GAME_CONTENT = {
         },
 
         closing: "오늘은 '넣을 것'과 '받을 것'을 각각 준비하는 날이다. 6주차 회수 fragment를 TOPO Vector에 붙여 재조합 DNA를 만들고(TA cloning), 대장균 TOP10F를 CaCl₂로 처리해 competent cell을 만든다. 모든 조작을 얼음 위에서 빠르게 하고 -80℃에 보관한 뒤, 다음 주(8주차) 이 둘을 만나게 하는 것이 형질전환이다",
-        report: "재조합 DNA(Vector) 제조 확인(전기영동) 사진과 Competent cell 제조 과정 사진을 찍고, 두 준비가 잘 됐는지 고찰과 함께 보고서에 남긴다 (다음 실험 시작 전 제출)",
+        report: "재조합 DNA(Vector) 제조 확인 사진 1장과 Competent cell 제조 사진 3장(CaCl₂ 처리 30 mL 2개 · 15% Glycerol CaCl₂ 5 mL 1개 · 100 µL 소분)을 찍고, 두 준비가 잘 됐는지 고찰과 함께 보고서에 남긴다 (다음 실험 시작 전 제출)",
         source: "실험방법 07 · 강의계획서 세부 7주차 · 강의 이론(재조합 및 형질전환)·실험방법 11"
       },
 
@@ -8676,7 +8676,9 @@ window.GAME_CONTENT = {
           { key: "sid", label: "학번", value: "", fixed: false, hint: "로그인 학번" },
           { key: "name", label: "이름", value: "", fixed: false, hint: "로그인 이름" }
         ],
-        /* 사진①(재조합 Vector 제조 확인·전기영동) · 사진②(Competent cell 제조 과정) · 고찰.
+        /* 2026-09-26 대표님 지시(O-0059): 사진 4장 + 고찰.
+         *   ①재조합 DNA(Vector) 제조 확인 · ②Competent cell 제조① 30 mL 2개(실험방법 07 [2]③)
+         *   ③Competent cell 제조② 5 mL 1개(⑤) · ④Competent cell 제조③ 100 µL 소분(⑥) · 고찰.
          * type:"images"는 conditions 개수만큼 이미지 업로드 슬롯을 그린다(w05·w06과 동일 엔진). */
         sections: [
           {
@@ -8688,21 +8690,37 @@ window.GAME_CONTENT = {
             ]
           },
           {
-            key: "competent", no: 2, label: "사진 ② — Competent cell 제조 과정 사진",
+            key: "compcacl", no: 2, label: "사진 ② — Competent cell 제조 ① : 100 mM CaCl₂로 풀어 30 mL 2개로 만든 것",
             type: "images",
-            hint: "Competent cell 제조 과정 사진을 1장 올린다. CaCl₂ 처리·원심분리·소분(100 µL) 등 제조 절차 중 한 장면을 담는다.",
+            hint: "미리 차갑게 식혀둔 100 mM CaCl₂ 용액을 15 mL씩 넣고 마이크로피펫으로 풀어준 뒤, 두 개씩 혼합하여 30 mL 2개로 만든 코니칼 튜브를 찍어 1장 올린다(실험방법 07 [2] ③).",
             conditions: [
-              "Competent cell 제조 과정 사진"
+              "Competent cell 제조 ① — 100 mM CaCl₂ 처리 후 30 mL 2개"
             ]
           },
           {
-            key: "discussion", no: 3, label: "고찰",
+            key: "compglyc", no: 3, label: "사진 ③ — Competent cell 제조 ② : 15% Glycerol 포함 CaCl₂로 풀어 5 mL 1개로 만든 것",
+            type: "images",
+            hint: "미리 차갑게 식혀둔 100 mM CaCl₂(15% Glycerol 포함) 용액을 2.5 mL씩 넣고 마이크로피펫으로 풀어준 뒤, 두 개의 코니칼 튜브를 혼합하여 5 mL 1개로 만든 것을 찍어 1장 올린다(실험방법 07 [2] ⑤).",
+            conditions: [
+              "Competent cell 제조 ② — 15% Glycerol 포함 CaCl₂ 처리 후 5 mL 1개"
+            ]
+          },
+          {
+            key: "compaliquot", no: 4, label: "사진 ④ — Competent cell 제조 ③ : 1.5 mL E-tube에 100 µL씩 소분한 최종 모습",
+            type: "images",
+            hint: "멸균하여 미리 차갑게 식혀둔 1.5 mL E-tube에 100 µL씩 소분한 최종 competent cell을 찍어 1장 올린다(실험방법 07 [2] ⑥).",
+            conditions: [
+              "Competent cell 제조 ③ — 1.5 mL E-tube에 100 µL씩 소분"
+            ]
+          },
+          {
+            key: "discussion", no: 5, label: "고찰",
             type: "text",
             rows: 8,
             hint: "재조합 DNA(Vector) 제조와 competent cell 제조가 잘 됐는지 판정하고, 각각의 원리와 연결해 결과를 해석하세요. 재조합은 TA cloning 원리(PCR 산물의 A와 Vector의 T 상보결합)와 반응 조건(상온 30분)에, competent cell은 세포막 중화(CaCl₂)·저온 유지·보관(-80℃)에 연결해 적습니다. 잘 안 됐다면 그 원인(반응 시간 부족·PCR product 누락·온도 상승·CaCl₂ 미사용·보관 온도 등)을 추정해 적습니다."
           }
         ],
-        source: "실험방법 07 · 강의계획서 세부 7주차 · 교수님 지시(사진2 + 고찰: ①재조합 DNA 제조 확인 ②Competent cell 제조 과정)"
+        source: "실험방법 07 [1]③·[2]③⑤⑥ · 강의계획서 세부 7주차 · 대표님 지시(O-0059, 사진4 + 고찰: ①재조합 DNA 제조 확인 ②CaCl₂ 30 mL 2개 ③Glycerol CaCl₂ 5 mL 1개 ④100 µL 소분)"
       }
     },
     w08: {
@@ -8865,7 +8883,7 @@ window.GAME_CONTENT = {
         },
 
         closing: "42℃ 30초 heat-shock으로 세포막에 잠깐 구멍을 내 DNA를 넣고, SOC로 회복시켜 항생제 저항을 준비시킨 뒤, 항생제·X-gal 평판에 도말한다. 48시간 뒤 콜로니가 자랐으면 형질전환 성공, 흰색이면 목적 DNA 삽입 성공이다. 한 학기 배양→추출→정량→PCR→회수→재조합의 모든 결과가 이 콜로니 하나로 확인된다",
-        report: "Kanamycin 평판(Vector 삽입)과 Ampicillin 평판(pUC19)의 콜로니 결과 사진을 찍고, 콜로니 유무와 색(Blue/White)으로 형질전환·재조합 성공 여부를 고찰과 함께 보고서에 남긴다 (다음 실험 시작 전 제출)",
+        report: "회복배양이 끝난 형질전환 배양액 2개(Vector·pUC19)와 48시간 배양한 평판배지 결과 2개(Kanamycin 평판·Ampicillin 평판)를 나란히 찍고, 콜로니 유무와 색(Blue/White)으로 형질전환·재조합 성공 여부를 고찰과 함께 보고서에 남긴다 (다음 실험 시작 전 제출)",
         source: "실험방법 08 · 강의 이론(재조합 및 형질전환)"
       },
 
@@ -9726,23 +9744,29 @@ window.GAME_CONTENT = {
           { key: "sid", label: "학번", value: "", fixed: false, hint: "로그인 학번" },
           { key: "name", label: "이름", value: "", fixed: false, hint: "로그인 이름" }
         ],
-        /* 사진①(Kan 평판·Vector 삽입 콜로니) · 사진②(Amp 평판·pUC19 콜로니) · 고찰.
-         * type:"images"는 conditions 개수만큼 이미지 업로드 슬롯을 그린다(w05·w06·w07과 동일 엔진). */
+        /* 2026-09-26 대표님 지시(O-0059): 사진 2열×2줄 + 고찰.
+         *   줄1 [형질전환 배양액(S.O.C. 회복배양 후)] 왼쪽=Vector · 오른쪽=pUC19 (실험방법 08 [1] ④)
+         *   줄2 [평판배지 결과(48시간 배양 후)]      왼쪽=Kanamycin 평판(Vector) · 오른쪽=Ampicillin 평판(pUC19) ([2] ③④)
+         * cols:2 = 편집폼에서 폰 폭이어도 2열 고정(index.html .img-grid-2). A4·PDF는 원래 2열 격자라 그대로 나란히. */
         sections: [
           {
-            key: "kanplate", no: 1, label: "사진 ① — Kanamycin 평판(재조합 DNA 삽입) 콜로니 사진",
+            key: "tfculture", no: 1, label: "사진 ①·② — 형질전환 배양액 (S.O.C. 회복배양 후)",
             type: "images",
-            hint: "재조합 DNA(Vector)를 삽입한 대장균을 도말한 Kanamycin 평판을 48시간 배양한 결과 사진을 1장 올린다. 콜로니 유무와 색(흰색/파란색)이 보이게 찍는다.",
+            cols: 2,
+            hint: "S.O.C. 배지 250 µL를 넣고 37℃ 진탕 배양기에서 225 rpm으로 1시간 회복배양을 마친 배양액을 찍는다(실험방법 08 [1] ④). 왼쪽 칸에는 재조합 DNA(Vector)를 넣은 대장균 배양액, 오른쪽 칸에는 pUC19를 넣은 대장균 배양액을 올린다(라벨이 보이게).",
             conditions: [
-              "Kanamycin 평판(재조합 DNA 삽입) 콜로니 사진"
+              "재조합 DNA(Vector)를 넣은 대장균 배양액",
+              "pUC19를 넣은 대장균 배양액"
             ]
           },
           {
-            key: "ampplate", no: 2, label: "사진 ② — Ampicillin 평판(pUC19) 콜로니 사진",
+            key: "tfplate", no: 2, label: "사진 ③·④ — 평판배지 결과 (37℃ 48시간 배양 후)",
             type: "images",
-            hint: "대조용 pUC19를 삽입한 대장균을 도말한 Ampicillin 평판을 48시간 배양한 결과 사진을 1장 올린다. 형질전환이 정상적으로 일어났는지(콜로니 유무)가 보이게 찍는다.",
+            cols: 2,
+            hint: "37℃ 배양기에서 뚜껑이 아래로 가도록 48시간 배양한 평판배지 결과를 찍는다(실험방법 08 [2] ④). 왼쪽 칸에는 Vector를 도말한 Kanamycin 평판, 오른쪽 칸에는 pUC19를 도말한 Ampicillin 평판을 올린다. 콜로니 유무와 색(흰색/파란색)이 보이게 찍는다.",
             conditions: [
-              "Ampicillin 평판(pUC19) 콜로니 사진"
+              "평판배지 결과 — Kanamycin 평판 (Vector)",
+              "평판배지 결과 — Ampicillin 평판 (pUC19)"
             ]
           },
           {
@@ -9752,7 +9776,7 @@ window.GAME_CONTENT = {
             hint: "두 평판의 콜로니 유무와 색(Blue/White)으로 형질전환·재조합 성공 여부를 판정하고, 원리와 연결해 해석하세요. 항생제 평판에 콜로니가 자란 것은 형질전환(저항 획득) 성공을 뜻하고, 흰색 콜로니는 목적 DNA 삽입 성공(파란색은 삽입 안 된 원래 vector)을 뜻합니다. 콜로니가 없거나 색 구분이 안 됐다면 그 원인(heat-shock·회복배양·평판 짝·IPTG/X-gal 등)을 추정해 적습니다."
           }
         ],
-        source: "실험방법 08 · 강의 이론(재조합 및 형질전환) · 교수님 지시(사진2 + 고찰: ①Kan 평판 콜로니 ②Amp 평판 콜로니)"
+        source: "실험방법 08 [1]④·[2]③④ · 강의 이론(재조합 및 형질전환) · 대표님 지시(O-0059, 사진 2열×2줄 + 고찰: 형질전환 배양액 Vector|pUC19 · 평판배지 결과 Kan(Vector)|Amp(pUC19))"
       }
     }
   }

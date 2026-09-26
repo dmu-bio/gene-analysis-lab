@@ -499,6 +499,19 @@ th.nw{white-space:nowrap}
 .img-slot .is-stat.pend{color:#92600a}
 .img-slot .is-stat.bad{color:#b42318}
 .img-note{font-size:12px;color:var(--tx3);margin:8px 0 0;line-height:1.5}
+/* 2026-09-26(O-0059) 나란히 비교 섹션(cols:2) — 좁은 폰에서도 2열 유지. .img-grid-2 가 붙은 섹션에만 적용된다 */
+.img-grid.img-grid-2{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.img-grid-2 .img-slot{min-width:0}
+@media(max-width:420px){
+  .img-grid.img-grid-2{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6px}
+  .img-grid-2 .img-slot{padding:7px 6px 8px}
+  .img-grid-2 .img-slot .is-cond{font-size:11.5px;word-break:keep-all;overflow-wrap:anywhere}
+  .img-grid-2 .img-slot .is-box{min-height:96px}
+  .img-grid-2 .img-slot .is-ph{font-size:11px;padding:12px 4px}
+  .img-grid-2 .img-slot .is-btns{flex-direction:column;gap:5px}
+  .img-grid-2 .img-slot .is-btns .btn{flex:0 0 auto;width:100%;min-width:0;padding-left:4px;padding-right:4px;font-size:12px;white-space:normal}
+  .img-grid-2 .img-slot .is-stat{font-size:11px;overflow-wrap:anywhere}
+}
 /* A4 미리보기·출력의 이미지 격자 */
 .paper .p-imgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:6px 0 4px}
 .paper .p-imgcell{border:1px solid #b9c2cc;border-radius:6px;overflow:hidden;background:#fff}
@@ -2378,7 +2391,8 @@ function resizeImageFile(file, maxEdge, cb){
 function buildImageSlots(s, data, readonly){
   var conds = s.conditions || [];
   var arr = (data.images && data.images[s.key]) || [];
-  var h = '<div class="img-grid">';
+  /* 2026-09-26(O-0059): 섹션에 cols:2 가 있을 때만 폰에서도 2열 고정(나란히 비교용). 없으면 기존과 동일한 문자열 */
+  var h = (s.cols === 2) ? '<div class="img-grid img-grid-2">' : '<div class="img-grid">';
   conds.forEach(function(cond, i){
     var durl = arr[i] || "";
     var iid = "imgf_" + s.key + "_" + i;
