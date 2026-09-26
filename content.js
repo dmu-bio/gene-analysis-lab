@@ -9755,8 +9755,8 @@ window.GAME_CONTENT = {
             cols: 2,
             hint: "S.O.C. 배지 250 µL를 넣고 37℃ 진탕 배양기에서 225 rpm으로 1시간 회복배양을 마친 배양액을 찍는다(실험방법 08 [1] ④). 왼쪽 칸에는 재조합 DNA(Vector)를 넣은 대장균 배양액, 오른쪽 칸에는 pUC19를 넣은 대장균 배양액을 올린다(라벨이 보이게).",
             conditions: [
-              "재조합 DNA(Vector)를 넣은 대장균 배양액",
-              "pUC19를 넣은 대장균 배양액"
+              "Vector 넣은 배양액",
+              "pUC19 넣은 배양액"
             ]
           },
           {
@@ -9765,8 +9765,8 @@ window.GAME_CONTENT = {
             cols: 2,
             hint: "37℃ 배양기에서 뚜껑이 아래로 가도록 48시간 배양한 평판배지 결과를 찍는다(실험방법 08 [2] ④). 왼쪽 칸에는 Vector를 도말한 Kanamycin 평판, 오른쪽 칸에는 pUC19를 도말한 Ampicillin 평판을 올린다. 콜로니 유무와 색(흰색/파란색)이 보이게 찍는다.",
             conditions: [
-              "평판배지 결과 — Kanamycin 평판 (Vector)",
-              "평판배지 결과 — Ampicillin 평판 (pUC19)"
+              "Kanamycin 평판 (Vector)",
+              "Ampicillin 평판 (pUC19)"
             ]
           },
           {

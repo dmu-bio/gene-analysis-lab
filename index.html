@@ -490,8 +490,10 @@ th.nw{white-space:nowrap}
   display:flex;align-items:center;justify-content:center;overflow:hidden}
 .img-slot .is-box img{display:block;width:100%;height:auto;max-height:260px;object-fit:contain;background:#fff}
 .img-slot .is-ph{color:var(--tx3);font-size:12px;text-align:center;padding:16px 8px;line-height:1.5}
-.img-slot .is-btns{display:flex;gap:7px;margin-top:8px}
-.img-slot .is-btns .btn{flex:1 1 0}
+.img-slot .is-btns{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px}
+/* 2026-09-26(O-0061) 폰 버튼 찌그러짐 수정: 공통 .btn 의 width:100% 때문에 "삭제"(inline flex:0 0 auto)가 칸 폭 전체를 차지해
+   "사진 바꾸기"가 0폭으로 눌리고 칸 밖으로 넘쳤다 → 슬롯 버튼만 내용 폭 기준·줄바꿈 금지·넘치면 다음 줄로. (동작·속성 무변경) */
+.img-slot .is-btns .btn{flex:1 1 auto;width:auto;min-width:0;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .img-slot input[type=file]{display:none}
 /* 🔴 사진 슬롯별 저장 상태(2026-09-10): 학생이 임시저장을 누르지 않아도 사진이 서버에 저장됐음을 슬롯마다 보여 안심시킨다 */
 .img-slot .is-stat{font-size:12px;font-weight:800;margin-top:7px;line-height:1.4;min-height:1px}
@@ -502,14 +504,23 @@ th.nw{white-space:nowrap}
 /* 2026-09-26(O-0059) 나란히 비교 섹션(cols:2) — 좁은 폰에서도 2열 유지. .img-grid-2 가 붙은 섹션에만 적용된다 */
 .img-grid.img-grid-2{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
 .img-grid-2 .img-slot{min-width:0}
+/* 2026-09-26(O-0060) 같은 줄 두 칸 정렬: 칸 제목·사진·버튼·상태를 부모 격자 행(subgrid)에 맞춰, 제목 줄 수가 달라도 사진칸 윗선이 같게 */
+@supports (grid-template-rows: subgrid){
+  .img-grid.img-grid-2{row-gap:0}
+  .img-grid-2 .img-slot{display:grid;grid-row:span 4;grid-template-rows:subgrid;row-gap:0;align-content:start}
+}
+/* subgrid 미지원 브라우저 대비: 칸 제목 높이를 3줄분으로 맞춰 사진칸 윗선을 정렬 */
+@supports not (grid-template-rows: subgrid){
+  .img-grid-2 .img-slot .is-cond{min-height:4.05em}
+}
 @media(max-width:420px){
-  .img-grid.img-grid-2{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6px}
+  .img-grid.img-grid-2{grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:6px}
   .img-grid-2 .img-slot{padding:7px 6px 8px}
   .img-grid-2 .img-slot .is-cond{font-size:11.5px;word-break:keep-all;overflow-wrap:anywhere}
   .img-grid-2 .img-slot .is-box{min-height:96px}
   .img-grid-2 .img-slot .is-ph{font-size:11px;padding:12px 4px}
   .img-grid-2 .img-slot .is-btns{flex-direction:column;gap:5px}
-  .img-grid-2 .img-slot .is-btns .btn{flex:0 0 auto;width:100%;min-width:0;padding-left:4px;padding-right:4px;font-size:12px;white-space:normal}
+  .img-grid-2 .img-slot .is-btns .btn{flex:0 0 auto;width:100%;min-width:0;padding-left:4px;padding-right:4px;font-size:12px;white-space:nowrap}
   .img-grid-2 .img-slot .is-stat{font-size:11px;overflow-wrap:anywhere}
 }
 /* A4 미리보기·출력의 이미지 격자 */
