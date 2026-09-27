@@ -2424,7 +2424,7 @@ window.GAME_CONTENT = {
         title: "2주차 요약 카드 — 세포 배양",
         oneLiner: "가진 균만, 맞는 항생제에서 살아남는다",
         hook: "왜 네 조합 중 대각선 두 조합만 자라는가",
-        pipeline: "한 학기 6단계 중 ① 세포 배양 (결과물 = 3주 plasmid 추출의 출발 재료)",
+        pipeline: "한 학기 흐름 중 ① 세포 배양 (결과물 = 3주 plasmid 추출의 출발 재료)",
 
         concepts: [
           { h: "오늘의 2×2 교차배양", d: "대장균 2종(pBI5ΔRTD·pUC19) × 항생제 2종(Kanamycin·Ampicillin)을 교차로 조합해 250 mL 플라스크 4개를 만든다" },
@@ -3511,7 +3511,7 @@ window.GAME_CONTENT = {
         title: "3주차 요약 카드 — 플라스미드 DNA 추출",
         oneLiner: "세포는 터뜨리고, 플라스미드만 골라 남긴다",
         hook: "세포는 터뜨리는데, 어떻게 플라스미드만 골라 남길 수 있는가",
-        pipeline: "한 학기 흐름 중 ③ 플라스미드 추출 (결과물 = 4주차 정량·5주차 PCR의 재료)",
+        pipeline: "한 학기 흐름 중 ② 플라스미드 추출 (결과물 = 4주차 정량·5주차 PCR의 재료)",
 
         concepts: [
           { h: "오늘의 목표 — 2종 추출", d: "지난주 키운 대장균에서 플라스미드 2종을 뽑는다 — pBI5ΔRTD 100 µL · pUC19 100 µL" },
@@ -4578,7 +4578,7 @@ window.GAME_CONTENT = {
         title: "4주차 요약 카드 — DNA 정량·정성 분석",
         oneLiner: "사진으로 온전한지 보고, 숫자로 얼마나·순수한지 잰다",
         hook: "내 DNA는 PCR에 넣어도 될 만큼 온전하고·충분하고·순수한가",
-        pipeline: "한 학기 흐름 중 ④ 정량·정성 분석 (오늘 확인한 DNA = 5주차 PCR의 재료)",
+        pipeline: "한 학기 흐름 중 ③ 정량·정성 분석 (오늘 확인한 DNA = 5주차 PCR의 재료)",
 
         concepts: [
           { h: "오늘의 목표 — 두 DNA 확인", d: "3주차에 뽑은 플라스미드 2종(pBI5ΔRTD·pUC19)을 정성(전기영동)·정량(NanoDrop)으로 확인한다" },
@@ -5655,7 +5655,7 @@ window.GAME_CONTENT = {
         title: "5주차 요약 카드 — PCR을 통한 DNA 증폭",
         oneLiner: "온도를 세 번 바꿔, 원하는 부위만 대량으로",
         hook: "미량의 DNA에서 내가 원하는 구간만 어떻게 골라 수십억 배로 늘리나",
-        pipeline: "한 학기 흐름 중 ⑤ PCR 증폭 (3주차에 뽑고 4주차에 확인한 DNA를 주형으로 특정 구간 증폭)",
+        pipeline: "한 학기 흐름 중 ④ PCR 증폭 (3주차에 뽑고 4주차에 확인한 DNA를 주형으로 특정 구간 증폭)",
 
         concepts: [
           { h: "PCR이란", d: "Polymerase Chain Reaction(중합효소연쇄반응) — 미량 DNA의 특정 부위를 짧은 시간에 대량으로 복제하는 기술. 프라이머가 구간을 지정한다" },
@@ -6715,7 +6715,7 @@ window.GAME_CONTENT = {
         title: "6주차 요약 카드 — DNA fragment 회수",
         oneLiner: "높은 염에 흡착·낮은 염에 용출 — 목적 밴드만 순수하게",
         hook: "여러 밴드가 섞인 겔에서 내가 원하는 크기의 DNA만 어떻게 순수하게 골라내나",
-        pipeline: "한 학기 흐름 중 ⑥ DNA fragment 회수 (5주차 PCR product에서 목적 밴드만 오려 정제)",
+        pipeline: "한 학기 흐름 중 ⑤ DNA fragment 회수 (5주차 PCR product에서 목적 밴드만 오려 정제)",
 
         concepts: [
           { h: "회수란", d: "DNA fragment 회수(Gel extraction) — 전기영동으로 나뉜 DNA 중 목적 밴드만 겔에서 오려내 실리카 스핀칼럼으로 순수하게 정제하는 기술" },
@@ -7768,7 +7768,7 @@ window.GAME_CONTENT = {
         title: "7주차 요약 카드 — Vector 및 Competent cell 제조",
         oneLiner: "넣을 것(재조합 DNA)과 받을 것(competent cell)을 각각 준비한다",
         hook: "다음 주 형질전환을 하려면, 넣을 재조합 DNA와 그것을 받아줄 세포를 어떻게 준비하나",
-        pipeline: "한 학기 흐름 중 ⑦ 재조합 DNA 제조 · Competent cell 제조 (6주차 회수 fragment로 재조합 → 다음 주 형질전환 준비)",
+        pipeline: "한 학기 흐름 중 ⑥ 재조합 DNA 제조 · Competent cell 제조 (6주차 회수 fragment로 재조합 → 다음 주 형질전환 준비)",
 
         concepts: [
           { h: "오늘 하는 일", d: "① 재조합 DNA(Vector) 제조 — 6주차 회수 fragment를 TOPO Vector에 붙임 · ② Competent cell 제조 — 재조합 DNA를 받아줄 대장균 TOP10F′를 CaCl₂로 처리" },
@@ -8840,7 +8840,7 @@ window.GAME_CONTENT = {
         title: "8주차 요약 카드 — 형질전환",
         oneLiner: "42℃ 30초로 DNA를 넣고, 콜로니 색(Blue/White)으로 성공을 확인한다",
         hook: "만든 재조합 DNA를 세포에 어떻게 집어넣고, 제대로 들어갔는지 어떻게 눈으로 확인하나",
-        pipeline: "한 학기 흐름 중 ⑧ 형질전환·Blue/White 선별 (재조합 DNA를 세포에 넣어 클로닝 결과를 확인하는 마지막 단계)",
+        pipeline: "한 학기 흐름 중 ⑦ 형질전환·Blue/White 선별 (재조합 DNA를 세포에 넣어 클로닝 결과를 확인하는 마지막 단계)",
 
         concepts: [
           { h: "형질전환이란", d: "외부 DNA를 세포에 도입해 유전적 변화를 일으키는 것(1928 Griffith 폐렴 쌍구균 실험). 만든 재조합 DNA를 대장균에 넣어 증식·발현시킨다" },

@@ -504,6 +504,7 @@ th.nw{white-space:nowrap}
 /* 2026-09-26(O-0059) 나란히 비교 섹션(cols:2) — 좁은 폰에서도 2열 유지. .img-grid-2 가 붙은 섹션에만 적용된다 */
 .img-grid.img-grid-2{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
 .img-grid-2 .img-slot{min-width:0}
+.img-grid-2 .img-slot .is-btns .btn{text-align:center;justify-content:center}   /* O-0075 #9: 2열 칸 버튼 글자(삭제 등) 가운데 정렬 */
 /* 2026-09-26(O-0060) 같은 줄 두 칸 정렬: 칸 제목·사진·버튼·상태를 부모 격자 행(subgrid)에 맞춰, 제목 줄 수가 달라도 사진칸 윗선이 같게 */
 @supports (grid-template-rows: subgrid){
   .img-grid.img-grid-2{row-gap:0}
@@ -520,7 +521,7 @@ th.nw{white-space:nowrap}
   .img-grid-2 .img-slot .is-box{min-height:96px}
   .img-grid-2 .img-slot .is-ph{font-size:11px;padding:12px 4px}
   .img-grid-2 .img-slot .is-btns{flex-direction:column;gap:5px}
-  .img-grid-2 .img-slot .is-btns .btn{flex:0 0 auto;width:100%;min-width:0;padding-left:4px;padding-right:4px;font-size:12px;white-space:nowrap}
+  .img-grid-2 .img-slot .is-btns .btn{flex:0 0 auto;width:100%;min-width:0;padding-left:4px;padding-right:4px;font-size:12px;white-space:nowrap;text-align:center;justify-content:center}
   .img-grid-2 .img-slot .is-stat{font-size:11px;overflow-wrap:anywhere}
 }
 /* A4 미리보기·출력의 이미지 격자 */
@@ -742,7 +743,8 @@ function storageNoteText(){
 }
 /* 2026-09-26(O-0067 B13): 보고서 양식의 "다음 실험 시작 전 제출" 문구(콘텐츠 원문)를 실제 마감 규칙에 맞춰 화면에서만 바꿔 보여 준다(콘텐츠는 그대로). */
 function fixDeadlinePhrase(s){
-  return String(s || "").replace(/다음 실험 시작 전(까지)? 제출/g, "제출 마감은 보고서 화면에 표시된 기한(다음 수업일 23:59)까지");
+  /* O-0075 #5: 교수가 기한을 23:59 가 아닌 시각으로 바꿀 수 있으므로 고정 시각 "(다음 수업일 23:59)"는 뺀다 — 실제 기한은 화면의 기한 줄이 보여 준다. */
+  return String(s || "").replace(/다음 실험 시작 전(까지)? 제출/g, "제출 마감은 보고서 화면에 표시된 기한까지");
 }
 
 /* ==========================================================================
@@ -1883,7 +1885,7 @@ function logout(){
   flushReportPending();   /* O-0074 N1: 로그아웃 전에 대기 중 자동저장을 먼저 끝낸다(출입증이 지워지기 전) */
   REPORT_LATEST = {};
   clearSession();
-  if(window.GLR && GLR.on){ GLR.stopTeamPoll(); GLR.clearTok(); }
+  if(window.GLR && GLR.on){ GLR.stopTeamPoll(); GLR.parkAll(); GLR.clearTok(); }   /* O-0075 #3: 보내지 못한 작업은 보관함으로(지우지 않음), 큐·실패 표시는 정리 */
   if(window.GLR) GLR.photoLedger = {};   /* O-0068 B3 */   /* 🟡 서버 출입증도 지운다(공용 PC 안전) + 폴링 중단 */
   state = defaultState();
   ctx = {}; navStack = []; cur = "labs";
@@ -2492,7 +2494,7 @@ function glUpdateSlotStat(){
       var _imgEl = slot.querySelector(".is-box img"), _src = _imgEl ? (_imgEl.getAttribute("src") || "") : "";
       var _contentOk = (_src.indexOf("data:") !== 0) || GLR.ledgerMatch(path, _src);
       if(GLR.isPhotoConfirmed(path) && _contentOk){ el.textContent="✓ 서버에 저장됨"; el.className="is-stat ok"; return; }
-      if(anyFailed){ el.textContent="⚠ 전송 실패 — 사진을 다시 올려 주세요"; el.className="is-stat bad"; return; }
+      if(anyFailed){ el.textContent = reportDeadlinePassed(wk) ? "⚠ 전송 실패 — 새로고침하면 자동으로 다시 보냅니다" : "⚠ 전송 실패 — 사진을 다시 올려 주세요"; el.className="is-stat bad"; return; }   /* O-0075 #4 */
       el.textContent="⏳ 저장 중…"; el.className="is-stat pend";
     });
   }catch(e){}
@@ -2844,7 +2846,13 @@ RENDER.report = function(){
     if(!silent) toast(ok ? "임시 저장했습니다." : "저장이 막혀 있습니다(브라우저 설정).");
     return d;
   }
-  if($("rpBack")) $("rpBack").onclick = function(){ if(!readonly) persist(true); go(state.role==="prof"?"profdash":"lobby"); };
+  /* O-0075 #6: 기한이 지난 학생 보고서는 뒤로 갈 때 저장을 시도하지 않고 조용히 이동한다(차단 토스트 없음). */
+  if($("rpBack")) $("rpBack").onclick = function(){
+    if(saveTimer){ clearTimeout(saveTimer); saveTimer = null; }
+    var _dlPassed = !!(state && state.role === "student" && reportDeadlinePassed(R.week || ACTIVE_WEEK));
+    if(!readonly && !_dlPassed) persist(true);
+    go(state.role==="prof"?"profdash":"lobby");
+  };
   if($("rfSave")) $("rfSave").onclick = function(){ persist(false); };
   if($("rfPreview")) $("rfPreview").onclick = function(){ R.data = readonly ? data : persist(true); R.view = "preview"; RENDER.report(); };
   if($("rfWord")) $("rfWord").onclick = function(){ var d = readonly ? data : persist(true); downloadReportWord(R.sid, R.name, d, R.week); };
@@ -3937,18 +3945,60 @@ function judge(q, pick){
   }
   return false;
 }
-/* 답 위젯 HTML. os = order 진행상태 {placed, pool}. locked 시 정오 표시. */
+/* ==========================================================================
+ * 🔀 보기·단계·원인·단서 순서 섞기 (2026-09-27, O-0075 #1)
+ *   콘텐츠의 정답 위치가 한쪽(7·8주차는 거의 1번, 추리는 항상 첫 원인·1·4번째 단서)에 몰려
+ *   "무조건 첫째"만 골라도 합격할 수 있었다 → 문항을 낼 때마다 표시 순서만 섞는다.
+ *   ⚠️ 채점·저장은 언제나 「원래 인덱스/원래 id」 기준이다: 보기 버튼의 data-ans 에 원래 인덱스를 싣는다.
+ *      (그래서 judge()·진도 저장 형식·미션 결과의 "선택: …" 표시는 바뀌지 않는다.)
+ *   · perm = [원래 인덱스, …] (화면 위→아래 순서). "위 셋 모두" 같은 위치 의존 보기는 항상 맨 뒤에 고정.
+ * ========================================================================*/
+var PIN_LAST_RE = /^(위|앞)의?\s*(셋|넷|둘|세|네|두)?\s*(개|가지|보기|것)?\s*(모두|전부)|모두\s?(옳|맞|해당)|해당\s?없음|정답\s?없음/;
+function mcPerm(q){
+  var n = (q && Array.isArray(q.choices)) ? q.choices.length : 0, free = [], pin = [];
+  for(var i = 0; i < n; i++){ (PIN_LAST_RE.test(String(q.choices[i])) ? pin : free).push(i); }
+  return shuffle(free).concat(pin);
+}
+function isPermOf(p, n){
+  if(!Array.isArray(p) || p.length !== n) return false;
+  var s = p.slice().sort(function(a, b){ return a - b; });
+  for(var i = 0; i < n; i++){ if(s[i] !== i) return false; }
+  return true;
+}
+function shuffledIdx(n){ var a = []; for(var i = 0; i < n; i++) a.push(i); return shuffle(a); }
+/* 순서 문항의 「남은 단계」 첫 제시 순서 — 매번 섞되, 우연히 정답 순서 그대로 나오면 다시 섞는다(정답 노출 방지). */
+function orderPoolFor(q){
+  var n = (q && Array.isArray(q.steps)) ? q.steps.length : 0, p = shuffledIdx(n), guard = 0;
+  function same(a){ return Array.isArray(q.answer) && a.length === q.answer.length && a.every(function(v, i){ return v === q.answer[i]; }); }
+  while(n > 1 && same(p) && guard < 8){ p = shuffledIdx(n); guard++; }
+  return p;
+}
+/* 추리 단서 이름의 「단서 ①」 번호를 화면 위치 기준으로 다시 붙인다(콘텐츠 원문은 그대로). */
+function clueLabelAt(label, d){
+  var s = String(label || ""), m = s.match(/^단서\s*[①②③④⑤⑥⑦⑧⑨]\s*/);
+  return m ? ("단서 " + (CIRC[d] || String(d + 1)) + " " + s.slice(m[0].length)) : s;
+}
+var SUS_MARKS = ["ㄱ","ㄴ","ㄷ","ㄹ","ㅁ","ㅂ","ㅅ","ㅇ"];
+/* 원인 후보 기호(ㄱㄴㄷㄹ)도 화면 위치 기준으로 — 콘텐츠 기호가 순서대로 ㄱㄴㄷㄹ 일 때만 바꿔 붙인다. */
+function susMarkAt(cs, origIdx, d){
+  var sus = cs.suspects || [], seq = sus.every(function(s, i){ return s.mark === SUS_MARKS[i]; });
+  return seq ? (SUS_MARKS[d] || "·") : ((sus[origIdx] && sus[origIdx].mark) || "·");
+}
+
+/* 답 위젯 HTML. os = order 진행상태 {placed, pool}. locked 시 정오 표시. opts.perm = 보기 표시 순서(원래 인덱스 배열). */
 function answerWidget(q, opts){
   opts = opts || {};
   var locked = !!opts.locked, pick = opts.pick, os = opts.orderState, reveal = !!opts.reveal;
   var h = "";
   if(q.type === "mc"){
-    q.choices.forEach(function(c, i){
+    var perm = isPermOf(opts.perm, q.choices.length) ? opts.perm : q.choices.map(function(_, k){ return k; });
+    perm.forEach(function(i, d){   /* i = 원래 인덱스(채점·저장용), d = 화면 위치(번호 표시용) */
+      var c = q.choices[i];
       var cls = "ch";
       if(locked && reveal){ if(i === q.answer) cls += " right"; else if(pick === i) cls += " wrong"; }
       else if(locked && pick === i) cls += " right";
       h += '<button class="' + cls + '" type="button" data-ans="' + i + '"' + (locked ? " disabled" : "") + '>' +
-        '<div class="mk">' + (i + 1) + '</div><div>' + esc(c) + '</div></button>';
+        '<div class="mk">' + (d + 1) + '</div><div>' + esc(c) + '</div></button>';
     });
   }else if(q.type === "ox"){
     [["O", true], ["X", false]].forEach(function(p){
@@ -3964,7 +4014,7 @@ function answerWidget(q, opts){
     h += '<p class="small" style="text-align:center;margin:6px 0 12px">단위: ' + esc(q.unit || "") + '</p>';
     if(!locked) h += '<button class="btn primary" type="button" id="numSubmit">답 제출</button>';
   }else if(q.type === "order"){
-    os = os || { placed: [], pool: q.steps.map(function(_, i){ return i; }) };
+    os = os || { placed: [], pool: orderPoolFor(q) };
     h += '<div class="card"><h3 style="font-size:14px">순서 <span class="small">' + os.placed.length + '/' + q.steps.length + '</span></h3>';
     for(var i = 0; i < q.steps.length; i++){
       if(i < os.placed.length){
@@ -4046,7 +4096,8 @@ function loadLearnQ(){
   ctx.lquiz.phase = "ask";
   ctx.lquiz.pick = null;
   ctx.lquiz.last = null;
-  ctx.lquiz.order = (q.type === "order") ? { placed: [], pool: q.steps.map(function(_, i){ return i; }) } : null;
+  ctx.lquiz.order = (q.type === "order") ? { placed: [], pool: orderPoolFor(q) } : null;   /* O-0075 #1: 단계 제시 순서 섞기 */
+  ctx.lquiz.perm = (q.type === "mc") ? mcPerm(q) : null;                                  /* O-0075 #1: 보기 순서 섞기(문항을 낼 때마다 새로) */
   paintLQ();
 }
 function paintLQ(){
@@ -4074,7 +4125,7 @@ function paintLQ(){
   else h += '<p class="small" style="margin:-8px 0 12px">제한 ' + q.limitSec + '초</p>';
 
   h += '<div class="qtext">' + esc(q.q) + '</div>';
-  h += answerWidget(q, { locked: locked, pick: S.pick, orderState: S.order, reveal: true });
+  h += answerWidget(q, { locked: locked, pick: S.pick, orderState: S.order, reveal: true, perm: S.perm });
 
   if(locked){
     var L = S.last;
@@ -4250,7 +4301,11 @@ function startMission(){
 }
 function initMissionItem(){
   var M = ctx.mission, it = M.items[M.i];
-  M.order = (it.kind === "timed" && it.q.type === "order") ? { placed: [], pool: it.q.steps.map(function(_, i){ return i; }) } : null;
+  M.order = (it.kind === "timed" && it.q.type === "order") ? { placed: [], pool: orderPoolFor(it.q) } : null;
+  /* O-0075 #1: 문항을 낼 때마다 보기·원인·단서 표시 순서를 새로 섞는다(채점은 원래 인덱스·id). 재도전하면 startMission→새로 섞임. */
+  M.perm = (it.kind === "timed" && it.q.type === "mc") ? mcPerm(it.q) : null;
+  M.susOrder = (it.kind === "reason") ? shuffledIdx((it.cs.suspects || []).length) : null;
+  M.clueOrder = (it.kind === "reason") ? shuffledIdx((it.cs.clues || []).length) : null;
   /* 문항이 처음 열린 시각을 고정해 둔다 — 순서·숫자 문항이 다시 그려져도 제한시간이 리셋되지 않게 한다. */
   M.itemStart = Date.now();
   if(it.kind === "reason"){
@@ -4293,7 +4348,7 @@ function paintMissionItem(){
     h += '<div class="tbar"><i style="width:100%"></i></div>';
     h += '<p class="small" style="margin:-8px 0 12px">제한 ' + q.limitSec + '초 · 초과 시 0점</p>';
     h += '<div class="qtext">' + esc(q.q) + '</div>';
-    h += answerWidget(q, { locked: false, orderState: M.order });
+    h += answerWidget(q, { locked: false, orderState: M.order, perm: M.perm });
   }else{
     h += paintMissionReason(it);
   }
@@ -4328,9 +4383,13 @@ function paintMissionReason(it){
   if(cs.subtitle) h += '<p class="sc-p">' + esc(cs.subtitle) + '</p>';
   h += '<div class="card"><h3>의뢰</h3><p class="muted pre">' + esc(cs.brief) + '</p></div>';
 
+  /* O-0075 #1: 단서·원인 표시 순서를 섞는다(M.clueOrder·M.susOrder = 원래 인덱스 배열). 선택·채점은 원래 id(data-rsus·data-rev) 그대로. */
+  var clueOrd = isPermOf(M.clueOrder, cs.clues.length) ? M.clueOrder : cs.clues.map(function(_, k){ return k; });
+  var susOrd = isPermOf(M.susOrder, cs.suspects.length) ? M.susOrder : cs.suspects.map(function(_, k){ return k; });
   h += '<div class="card"><h3>단서 <span class="small">' + cs.clues.length + '개 전부 공개</span></h3>';
-  cs.clues.forEach(function(c){
-    h += '<div class="clue"><div class="lb">' + esc(c.label) + '</div>';
+  clueOrd.forEach(function(ci, d){
+    var c = cs.clues[ci];
+    h += '<div class="clue"><div class="lb">' + esc(clueLabelAt(c.label, d)) + '</div>';
     h += '<div class="bd pre">' + esc(c.body) + '</div>';
     if(c.readingHint) h += '<div class="rh">읽는 법 — ' + esc(c.readingHint) + '</div>';
     h += '</div>';
@@ -4338,15 +4397,17 @@ function paintMissionReason(it){
   h += '</div>';
 
   h += '<div class="card"><h3>원인 지목 <span class="small">하나만</span></h3>';
-  cs.suspects.forEach(function(s){
-    h += '<button class="pick ' + (M.subSuspect === s.id ? "on" : "") + '" type="button" data-rsus="' + s.id + '"><div class="mk">' + esc(s.mark || "·") + '</div><div>' + esc(s.label) + '</div></button>';
+  susOrd.forEach(function(si, d){
+    var s = cs.suspects[si];
+    h += '<button class="pick ' + (M.subSuspect === s.id ? "on" : "") + '" type="button" data-rsus="' + s.id + '"><div class="mk">' + esc(susMarkAt(cs, si, d)) + '</div><div>' + esc(s.label) + '</div></button>';
   });
   h += '</div>';
 
   h += '<div class="card"><h3>근거 단서 <span class="small">정확히 2개</span></h3>';
-  cs.clues.forEach(function(c){
+  clueOrd.forEach(function(ci, d){
+    var c = cs.clues[ci];
     var on = M.subEvidence.indexOf(c.id) >= 0;
-    h += '<button class="pick ' + (on ? "on" : "") + '" type="button" data-rev="' + c.id + '"><div class="mk">' + (on ? "✓" : "") + '</div><div>' + esc(c.label) + '</div></button>';
+    h += '<button class="pick ' + (on ? "on" : "") + '" type="button" data-rev="' + c.id + '"><div class="mk">' + (on ? "✓" : "") + '</div><div>' + esc(clueLabelAt(c.label, d)) + '</div></button>';
   });
   h += '</div>';
 
@@ -4661,6 +4722,40 @@ var GLR = {
   on:false, ready:false, tok:null, _acc:null, q:[], failed:[], down:false, busy:false, qPersistFailed:false, okPhoto:{},
   MSG_DOWN:"지금 접속이 되지 않습니다. 잠시 뒤 다시 시도해 주세요.",
   QKEY:"gl_db_queue_v1", TOKKEY:"gl_db_tok_v1", SNAPKEY:"gl_premigrate_snapshot_v1",
+  /* 🔴 2026-09-27(O-0075 #3) 공용 기기 — 전송 큐는 「지금 로그인한 사람(owner)」 것만 보낸다.
+       owner = 학생이면 학번, 교수면 "prof", 로그인 전이면 "".
+       다른 사람의 미전송 작업은 지우지 않고 PARKKEY 에 보관해 두었다가, 그 사람이 다시 로그인하면 큐로 되돌린다(유실 없음).
+       epoch: 로그아웃마다 1 올린다 — 로그아웃 순간 전송 중이던 작업의 응답은 새 사용자의 큐를 건드리지 않는다. */
+  PARKKEY:"gl_db_parked_v1", owner:"", epoch:0,
+  _ownerOf:function(j){
+    if(!j) return "*";
+    if(j.by) return String(j.by);
+    if(j.op==="report") return String(j.sid);
+    if(j.op==="upsert" && j.t==="progress") return String((j.row && j.row.sid) || "*");
+    if(j.op==="meta" || j.t==="roster" || j.t==="early") return "prof";
+    return "*";   /* 예전(표시 없는) 조편성 작업 — 예전과 같이 누구 로그인에서든 보낸다 */
+  },
+  _mine:function(j){ var o=this._ownerOf(j); return o==="*" || (!!this.owner && o===this.owner); },
+  _push:function(j){ if(j && !j.by && this.owner) j.by=this.owner; this.q.push(j); },
+  loadParked:function(){ try{ var a=JSON.parse(localStorage.getItem(this.PARKKEY)||"[]"); return Array.isArray(a)?a:[]; }catch(e){ return []; } },
+  saveParked:function(a){ try{ if(a && a.length) localStorage.setItem(this.PARKKEY, JSON.stringify(a)); else localStorage.removeItem(this.PARKKEY); }catch(e){} },
+  /* 로그인(또는 자동 재개) 직후: 이 사람 것만 큐에, 나머지는 보관함에 — 둘 다 지우지 않는다. */
+  setOwner:function(o){
+    var self=this;
+    this.owner=String(o||"");
+    var all=this.q.concat(this.loadParked()), keep=[], park=[];
+    all.forEach(function(j){ (self._mine(j) ? keep : park).push(j); });
+    this.q=keep; this.saveParked(park); this.saveQ();
+    this.failed=this.failed.filter(function(j){ return self._mine(j); });
+  },
+  /* 로그아웃: 지금 큐·실패 목록을 화면·메모리에서 치우고, 보내지 못한 작업은 보관함으로(로컬 원본 보고서도 그대로 둔다). */
+  parkAll:function(){
+    var park=this.loadParked().concat(this.q, this.failed.filter(function(j){ return j && j.op==="report"; }));
+    this.saveParked(park);
+    this.q=[]; this.failed=[]; this.saveQ();
+    this.owner=""; this.epoch++;
+    this.bar("","");
+  },
 
   init:function(){ this.on = (GLCONF.mode === "remote" && !!GLCONF.url && !!GLCONF.key); return this.on; },
   /* 🔴 서버가 '확실히 받은' 사진 경로 장부 — 이 경로가 여기 있어야만 이 기기 저장에서 base64 를 버리고 경로로 바꾼다.
@@ -4753,8 +4848,11 @@ var GLR = {
         var data=null; try{ data=JSON.parse(localStorage.getItem(k)||"null"); }catch(e){ return; }
         if(!data || !self._reportHasBase64(data)) return;
         var wk=m[1], sid=m[2];
+        /* O-0075 #3: 지금 로그인한 학생 본인 것만 다시 보낸다. 다른 학번의 미전송 보고서는 이 기기에 그대로 두고(지우지 않음)
+           그 학생이 다시 로그인했을 때 보낸다. 교수 로그인(owner="prof")에서는 학생 보고서를 대신 올리지 않는다. */
+        if(!self.owner || sid!==self.owner) return;
         if(self.q.some(function(j){ return j && j.op==="report" && j.sid===sid && j.week===wk; })) return;
-        self.q.push({op:"report", sid:sid, week:wk, data:JSON.parse(JSON.stringify(data))});
+        self._push({op:"report", sid:sid, week:wk, data:JSON.parse(JSON.stringify(data))});
         found++;
       });
     }catch(e){}
@@ -4798,6 +4896,9 @@ var GLR = {
       /* 🔴 사진 유실 방지(2026-09-10): 영구 실패한 보고서 중 '아직 서버에 못 올린 base64 사진'이 든 것이 있으면
          사진 전용 경고를 우선 띄운다 — 사진은 이 기기에 보관돼 있어 다시 임시저장하면 재전송된다(유실 아님). */
       var photoFail = this.failed.some(function(j){ return j && j.op==="report" && self._reportHasBase64(j.data); });
+      /* O-0075 #4: 제출 기한이 지난 주차는 「다시 임시저장」을 할 수 없으므로 새로고침 재전송으로 안내한다. */
+      var photoFailPastDl = photoFail && this.failed.some(function(j){ return j && j.op==="report" && self._reportHasBase64(j.data) && typeof reportDeadlinePassed==="function" && reportDeadlinePassed(j.week); });
+      if(photoFailPastDl){ this.bar('🔴 사진 전송에 실패했습니다. <span style="font-weight:400">제출 기한이 지나 다시 저장할 수는 없지만, 기한 전에 고른 사진은 이 기기에 보관돼 있습니다. 네트워크를 확인한 뒤 새로고침하면 자동으로 다시 보냅니다.</span>',"red"); return; }
       if(photoFail){ this.bar('🔴 사진 전송에 실패했습니다. <span style="font-weight:400">네트워크를 확인한 뒤 사진을 다시 임시저장해 주세요. 작성 내용과 사진은 이 기기에 안전하게 보관돼 있어 다시 저장하면 재전송됩니다.</span>',"red"); return; }
       this.bar('🔴 서버가 저장을 거부한 것이 <b>'+this.failed.length+'건</b> 있습니다. <span style="font-weight:400">교수님께 알려 주세요.</span>',"red"); return;
     }
@@ -4986,8 +5087,8 @@ var GLR = {
   /* ---- 쓰기: 저장 함수들이 로컬 저장 뒤 이걸 부릅니다 ---- */
   syncRoster:function(newList, oldList){
     if(!this.on) return; var self=this, seen={};
-    (newList||[]).forEach(function(r){ var s=String(r.sid); seen[s]=1; self.q.push({op:"upsert", t:"roster", id:"r_"+s, row:{id:"r_"+s, sid:s, name:String(r.name), active:true}}); });
-    (oldList||[]).forEach(function(r){ var s=String(r.sid); if(!seen[s]) self.q.push({op:"delete", t:"roster", id:"r_"+s}); });
+    (newList||[]).forEach(function(r){ var s=String(r.sid); seen[s]=1; self._push({op:"upsert", t:"roster", id:"r_"+s, row:{id:"r_"+s, sid:s, name:String(r.name), active:true}}); });
+    (oldList||[]).forEach(function(r){ var s=String(r.sid); if(!seen[s]) self._push({op:"delete", t:"roster", id:"r_"+s}); });
     this.saveQ(); this.showQ(); this.pump();
   },
   /* 🔴 조는 id(무작위) 기준으로 diff — 새 조는 team_create(번호충돌 재시도), 없어진 조는 삭제 */
@@ -4996,10 +5097,10 @@ var GLR = {
     (oldList||[]).forEach(function(t){ if(t.id) oldIds[t.id]=1; });
     (newList||[]).forEach(function(t){ if(t.id) newIds[t.id]=1; });
     (newList||[]).forEach(function(t){
-      if(t.id && !oldIds[t.id]) self.q.push({op:"team_create", id:t.id, no:t.no, members:(t.members||[]).map(String)});
+      if(t.id && !oldIds[t.id]) self._push({op:"team_create", id:t.id, no:t.no, members:(t.members||[]).map(String)});
     });
     (oldList||[]).forEach(function(t){
-      if(t.id && !newIds[t.id]) self.q.push({op:"delete", t:"teams", id:t.id});
+      if(t.id && !newIds[t.id]) self._push({op:"delete", t:"teams", id:t.id});
     });
     this.saveQ(); this.showQ(); this.pump();
   },
@@ -5068,26 +5169,26 @@ var GLR = {
   },
   syncEarly:function(sid, on){
     if(!this.on) return; var s=String(sid);
-    if(on) this.q.push({op:"upsert", t:"early", id:"e_"+s, row:{id:"e_"+s, sid:s}});
-    else   this.q.push({op:"delete", t:"early", id:"e_"+s});
+    if(on) this._push({op:"upsert", t:"early", id:"e_"+s, row:{id:"e_"+s, sid:s}});
+    else   this._push({op:"delete", t:"early", id:"e_"+s});
     this.saveQ(); this.showQ(); this.pump();
   },
   /* 🚦 주차 공개 맵 전체를 gl_app_meta.week_open 에 upsert(교수만 쓰기 가능 — RLS). 큐에 얹어 재시도·오프라인 보관까지 그대로 탄다. */
   syncWeekOpen:function(map){
     if(!this.on) return;
-    this.q.push({op:"meta", k:"week_open", v:JSON.parse(JSON.stringify(map||{}))});
+    this._push({op:"meta", k:"week_open", v:JSON.parse(JSON.stringify(map||{}))});
     this.saveQ(); this.showQ(); this.pump();
   },
   /* 📅 제출기한 맵 전체를 gl_app_meta.report_deadline 에 upsert(교수만 쓰기 — RLS). week_open 과 동일 경로. */
   syncReportDeadline:function(map){
     if(!this.on) return;
-    this.q.push({op:"meta", k:"report_deadline", v:JSON.parse(JSON.stringify(map||{}))});
+    this._push({op:"meta", k:"report_deadline", v:JSON.parse(JSON.stringify(map||{}))});
     this.saveQ(); this.showQ(); this.pump();
   },
   syncProgress:function(st){
     if(!this.on || !st || st.role!=="student" || !st.studentId) return;
     var sid=String(st.studentId), wk=ACTIVE_WEEK, m=st.mission||{};
-    this.q.push({op:"upsert", t:"progress", id:"p_"+wk+"_"+sid, row:{id:"p_"+wk+"_"+sid, sid:sid, week:wk, mission_passed:!!m.passed, mission_best:m.bestScore||0, data:JSON.parse(JSON.stringify(st))}});
+    this._push({op:"upsert", t:"progress", id:"p_"+wk+"_"+sid, row:{id:"p_"+wk+"_"+sid, sid:sid, week:wk, mission_passed:!!m.passed, mission_best:m.bestScore||0, data:JSON.parse(JSON.stringify(st))}});
     this.saveQ(); this.showQ(); this.pump();
   },
   syncReport:function(sid, data, week){
@@ -5099,7 +5200,7 @@ var GLR = {
        단 지금 전송 중인 맨 앞 작업(busy)은 건드리지 않는다. */
     var startIdx = this.busy ? 1 : 0;
     for(var i=this.q.length-1; i>=startIdx; i--){ var j=this.q[i]; if(j && j.op==="report" && j.sid===s && j.week===wk) this.q.splice(i,1); }
-    this.q.push({op:"report", sid:s, week:wk, data:JSON.parse(JSON.stringify(data||{}))});
+    this._push({op:"report", sid:s, week:wk, data:JSON.parse(JSON.stringify(data||{}))});
     this.saveQ(); this.showQ(); this.pump();
   },
   /* 「이 기기 데이터를 서버로 올리기」 — 덮어쓰기 없이 upsert 만 */
@@ -5110,9 +5211,9 @@ var GLR = {
     (snap.early||[]).forEach(function(s){ GLR.syncEarly(s, true); });
     (snap.progress||[]).forEach(function(p){
       var m=(p.data&&p.data.mission)||{};
-      GLR.q.push({op:"upsert", t:"progress", id:"p_"+p.week+"_"+p.sid, row:{id:"p_"+p.week+"_"+p.sid, sid:String(p.sid), week:p.week, mission_passed:!!m.passed, mission_best:m.bestScore||0, data:p.data||{}}});
+      GLR._push({op:"upsert", t:"progress", id:"p_"+p.week+"_"+p.sid, row:{id:"p_"+p.week+"_"+p.sid, sid:String(p.sid), week:p.week, mission_passed:!!m.passed, mission_best:m.bestScore||0, data:p.data||{}}});
     });
-    (snap.reports||[]).forEach(function(r){ GLR.q.push({op:"report", sid:String(r.sid), week:r.week, data:r.data||{}}); });
+    (snap.reports||[]).forEach(function(r){ GLR._push({op:"report", sid:String(r.sid), week:r.week, data:r.data||{}}); });
     this.saveQ(); this.showQ(); this.pump();
   },
 
@@ -5120,8 +5221,15 @@ var GLR = {
     var self=this;
     if(this.busy || !this.on || !this.q.length) return;
     if(!this.tok || !this.tok.access_token) return;   /* 로그인 전에는 보내지 않습니다 */
+    /* O-0075 #3: 맨 앞 작업이 지금 로그인한 사람 것이 아니면 보내지 않고 보관함으로 옮긴다(지우지 않음). */
+    if(!this._mine(this.q[0])){
+      var parked=this.loadParked(), moved=false;
+      while(this.q.length && !this._mine(this.q[0])){ parked.push(this.q.shift()); moved=true; }
+      if(moved){ this.saveParked(parked); this.saveQ(); this.showQ(); }
+      if(!this.q.length) return;
+    }
     this.busy=true;
-    var job=this.q[0], p, okDurl={};   /* okDurl: 이번 작업에서 2xx 로 올라간 {경로: 사진 데이터} — 성공 확정 뒤 장부에 넣는다(큐에는 저장 안 함) */
+    var job=this.q[0], p, okDurl={}, ep=this.epoch;   /* okDurl: 이번 작업에서 2xx 로 올라간 {경로: 사진 데이터} — 성공 확정 뒤 장부에 넣는다(큐에는 저장 안 함). ep: 로그아웃 감지 */
 
     if(job.op==="report"){
       /* 🔴 각 사진 '독립' 업로드·확정(2026-09-10, 교수님 지시)
@@ -5178,6 +5286,8 @@ var GLR = {
     }
 
     p.then(function(){
+      /* O-0075 #3: 전송 중에 로그아웃했다 — 이 작업은 이미 보관함으로 옮겨졌으니 새 사용자의 큐·장부를 건드리지 않는다. */
+      if(ep!==self.epoch){ self.busy=false; self.pump(); return; }
       /* 🔴 사진 유실 방지(2026-09-09): 서버가 확실히 받은 뒤에만 이 기기의 base64 를 경로로 내려 용량을 되돌린다.
          지금 저장돼 있는 사본을 다시 읽어(그 사이 새로 추가된 사진의 base64 는 건드리지 않고) 확인된 슬롯만 경로로 바꾼다. */
       if(job.op==="report" && job._okPaths && job._okPaths.length){
@@ -5220,7 +5330,7 @@ var GLR = {
       self.q.shift(); self.saveQ(); self.busy=false; self.showQ();
       try{ glUpdateSlotStat(); }catch(e){}
       if(self.q.length) self.pump();
-    }, function(err){ self.busy=false; self.onJobErr(job, err); });
+    }, function(err){ self.busy=false; if(ep!==self.epoch){ self.pump(); return; } self.onJobErr(job, err); });
   },
   onJobErr:function(job, err){
     var self=this;
@@ -5252,6 +5362,7 @@ function doLogin(role, name, num, cb){
     var stu=findStudent(name, num); if(stu.error) return cb(stu.error); applyIdentity("student", stu.sid, stu.name); return cb(null,"student",stu);
   }
   GLR.login(name, num, role).then(function(acc){
+    GLR.setOwner(role==="prof" ? "prof" : String(num));   /* O-0075 #3: 이 사람 작업만 큐에(다른 사람 것은 보관) — loadAll 의 재전송도 이 기준 */
     GLR.ready=false;
     GLR.loadAll().then(function(){
       if(role==="prof"){ applyIdentity("prof","", acc.name||name); cb(null,"prof"); }
@@ -5318,6 +5429,7 @@ function bootRemote(){
   GLR.loadTok(); GLR.loadQ();
   var sess = loadSession();
   if(GLR.tok && GLR.tok.access_token && sess && (sess.role==="prof" || sess.role==="student")){
+    GLR.setOwner(sess.role==="prof" ? "prof" : String(sess.sid||""));   /* O-0075 #3 */
     var resume = function(){
       if(sess.role==="prof"){ applyIdentity("prof","", sess.name); paintTop(); go("profdash", false); }
       else{ applyIdentity("student", sess.sid, sess.name); paintTop(); go("labs", false); }
