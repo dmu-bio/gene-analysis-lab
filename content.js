@@ -516,10 +516,10 @@ window.GAME_CONTENT = {
           source: "설계안 8장 Case 02 단서③ / 조건 근거 content_04.py 실험방법 C"
         },
         {
-          id: "c4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+          id: "c4", order: 4, label: "단서 ④ — 조원 진술",
           body:
             "P1 넣고 피펫팅했는데 덩어리가 안 풀려서… P2까지 넣고 나서 vortex로 3초쯤 한 번 더 돌렸어요. 그러니까 잘 섞이더라고요.",
-          readingHint: "확정타. P2 이후 vortex는 금지 구간이다.",
+          readingHint: "P2 이후 vortex는 금지 구간이다.",
           isEvidence: true,
           decisive: true,
           source: "설계안 8장 Case 02 단서④ / 금지 근거 content_03.py 실험방법 B footer"
@@ -625,12 +625,12 @@ window.GAME_CONTENT = {
           source: "content_03.py 예상 결과·해석 (P2 후에도 뿌옇다 → 재현탁 불량 / 침전이 안 생김 → P3 혼합 부족) · 슬라이드 12 footer"
         },
         {
-          id: "k4", order: 4, label: "단서 ④ — 조원 진술 (P1 구간 · 확정타)",
+          id: "k4", order: 4, label: "단서 ④ — 조원 진술 (P1 구간)",
           body:
             "P1 250 µL 넣고 피펫팅을 서너 번 했는데 바닥에 흰 덩어리가 그대로 남아 있었어요. " +
             "다른 조가 이미 다음 단계로 넘어가길래 그냥 P2를 넣었습니다.",
           readingHint:
-            "확정타. 강의안이 P1 슬라이드 아래에 굵게 적어 둔 문장 그대로다 — 덩어리가 남으면 그 안의 균은 끝까지 안 터진다.",
+            "강의안이 P1 슬라이드 아래에 굵게 적어 둔 문장 그대로다 — 덩어리가 남으면 그 안의 균은 끝까지 안 터진다.",
           isEvidence: true,
           decisive: true,
           source: "content_03.py 슬라이드 11 footer (덩어리가 남으면 그 안의 균은 끝까지 안 터진다) · 실험방법 B (P1 재현탁 — 피펫팅으로 완전히 푼다)"
@@ -1901,10 +1901,10 @@ window.GAME_CONTENT = {
             source: "content_03.py 슬라이드 6(온전한 plasmid) / 판독 근거 content_04.py 슬라이드 25"
           },
           {
-            id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+            id: "k4", order: 4, label: "단서 ④ — 조원 진술",
             body:
               "세척하고 바로 컬럼을 새 튜브에 옮겨 EB를 넣었어요. 30분 원심 기다리는 게 지겨워서 중간에 빈 컬럼 공회전은 건너뛰었습니다.",
-            readingHint: "확정타. 건조 공회전을 생략하면 세척액의 에탄올이 컬럼에 남아 용출액에 섞인다.",
+            readingHint: "건조 공회전을 생략하면 세척액의 에탄올이 컬럼에 남아 용출액에 섞인다.",
             isEvidence: true,
             decisive: true,
             source: "content_03.py 실험방법 C(건조) · 슬라이드 16 footer · 슬라이드 17"
@@ -1968,10 +1968,10 @@ window.GAME_CONTENT = {
             source: "content_03.py 주의사항(라벨 누락 — 2종을 함께 다뤄 뒤바뀌기 쉽다)"
           },
           {
-            id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+            id: "k4", order: 4, label: "단서 ④ — 조원 진술",
             body:
               "바빠서 뚜껑엔 안 적고 옆면에만 적었는데, 원심·세척하다 보니 번졌어요. 두 개가 똑같이 생겨서 지금은 뭐가 뭔지 모르겠어요.",
-            readingHint: "확정타. 라벨을 한 곳(옆면)에만 적어 지워졌고, 눈으로는 두 벡터가 구분되지 않는다.",
+            readingHint: "라벨을 한 곳(옆면)에만 적어 지워졌고, 눈으로는 두 벡터가 구분되지 않는다.",
             isEvidence: true,
             decisive: true,
             source: "content_03.py 슬라이드 8 footer(이름·조 번호를 반드시) · 주의사항(라벨 누락)"
@@ -2022,10 +2022,10 @@ window.GAME_CONTENT = {
             source: "content_03.py 예상 결과·해석(값이 0 → 컬럼 막힘 · 용출 실패)"
           },
           {
-            id: "k2", order: 2, label: "단서 ② — 진행 기록 (확정타)",
+            id: "k2", order: 2, label: "단서 ② — 진행 기록",
             body:
               "상등액을 옮길 때 바닥의 흰 침전물이 조금 딸려 들어갔다. 그 뒤 컬럼 통과가 매우 느렸고, 원심을 여러 번 돌려도 액이 잘 내려가지 않았다.",
-            readingHint: "확정타. 침전물 유입 → 컬럼 막힘. 강의안이 실험방법 C에 '침전물이 조금이라도 딸려가면 컬럼이 막힌다'고 못박아 두었다.",
+            readingHint: "침전물 유입 → 컬럼 막힘. 강의안이 실험방법 C에 '침전물이 조금이라도 딸려가면 컬럼이 막힌다'고 못박아 두었다.",
             isEvidence: true,
             decisive: true,
             source: "content_03.py 실험방법 C footer · 주의사항(침전물 유입)"
@@ -2096,9 +2096,9 @@ window.GAME_CONTENT = {
             source: "content_03.py 예상 결과(P2 후 맑고 끈적) · 슬라이드 11·12"
           },
           {
-            id: "k3", order: 3, label: "단서 ③ — 조원 진술 (확정타)",
+            id: "k3", order: 3, label: "단서 ③ — 조원 진술",
             body: "P2를 넣고 더 많이 터뜨리려고 15분쯤 두었어요. 오래 두면 더 잘 나올 줄 알았거든요.",
-            readingHint: "확정타. P2는 5분을 넘기지 않는다 — 강염기(NaOH) 아래 오래 두면 plasmid까지 망가진다.",
+            readingHint: "P2는 5분을 넘기지 않는다 — 강염기(NaOH) 아래 오래 두면 plasmid까지 망가진다.",
             isEvidence: true,
             decisive: true,
             source: "content_03.py 슬라이드 12 footer(5분을 넘기지 않는다) · 주의사항(P2 시간 초과)"
@@ -2163,9 +2163,9 @@ window.GAME_CONTENT = {
             source: "content_03.py 슬라이드 13·14 / 판독 근거 content_04.py 슬라이드 17·25"
           },
           {
-            id: "k3", order: 3, label: "단서 ③ — 조원 진술 (확정타)",
+            id: "k3", order: 3, label: "단서 ③ — 조원 진술",
             body: "P3 넣고 바빠서 두어 번만 살짝 뒤집었어요. 흰 덩어리는 거의 안 보였는데 그냥 원심을 돌렸습니다.",
-            readingHint: "확정타. 강의안 예상 결과표의 '침전이 안 생김 → P3 혼합 부족'에 해당한다. 침전이 안 되면 염색체가 상등액에 남는다.",
+            readingHint: "강의안 예상 결과표의 '침전이 안 생김 → P3 혼합 부족'에 해당한다. 침전이 안 되면 염색체가 상등액에 남는다.",
             isEvidence: true,
             decisive: true,
             source: "content_03.py 예상 결과·해석(침전이 안 생김 → P3 혼합 부족) · 실험방법 B(P3 뒤집어 5분)"
@@ -2231,9 +2231,9 @@ window.GAME_CONTENT = {
             source: "content_03.py 실험방법 A~D · 예상 결과(잘 됐을 때)"
           },
           {
-            id: "k3", order: 3, label: "단서 ③ — 배양 기록 (확정타)",
+            id: "k3", order: 3, label: "단서 ③ — 배양 기록",
             body: "배양액을 예정보다 훨씬 오래(24시간을 크게 넘겨) 둔 뒤 사용했다.",
-            readingHint: "확정타. 강의안 슬라이드 17이 '24시간 넘긴 사멸기 균은 수율이 낮다'고 적고 있다.",
+            readingHint: "강의안 슬라이드 17이 '24시간 넘긴 사멸기 균은 수율이 낮다'고 적고 있다.",
             isEvidence: true,
             decisive: true,
             source: "content_03.py 슬라이드 17(배양 시기)"
@@ -2870,10 +2870,10 @@ window.GAME_CONTENT = {
             tags: ["배양 전 사진","기준","촬영"]
           },
           {
-            qid: "w02p_x09", type: "ox", level: 1, points: 7, limitSec: 8,
-            q: "배양은 20~24시간이 걸려 결과는 다음 날 확인한다.",
-            answer: true,
-            explain: "맞습니다. 37℃에서 20~24시간 배양하며, 총 180분 수업 안에 결과가 나오지 않아 다음 날 확인합니다.",
+            qid: "w02p_x21", type: "ox", level: 1, points: 7, limitSec: 8,
+            q: "배양은 약 1시간이면 끝나 결과는 수업 시간 안에 확인한다.",
+            answer: false,
+            explain: "아닙니다. 37℃에서 20~24시간 배양하므로, 총 180분 수업 안에는 결과가 나오지 않아 다음 날 확인합니다.",
             source: "강의 이론 슬라이드 1·14",
             tags: ["20~24시간","다음 날","배양"]
           },
@@ -3026,9 +3026,9 @@ window.GAME_CONTENT = {
                 readingHint: "재료가 나빴다면 옆 조도 실패했을 것 → 재료가 아니라 이 조의 배양 조건이 문제다.",
                 isEvidence: true,
                 source: "강의 이론 슬라이드 16·17(정상 예상 결과)" },
-              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술",
                 body: "인큐베이터에 넣을 때 옆 칸 냉장고랑 헷갈렸어요. 37℃ Shaking incubator가 아니라 4℃ 냉장고에 넣었던 것 같아요.",
-                readingHint: "확정타. 37℃가 아니면 대장균은 자라지 못한다.",
+                readingHint: "37℃가 아니면 대장균은 자라지 못한다.",
                 isEvidence: true, decisive: true,
                 source: "실험방법 ⑨(37℃ Shaking incubator)" }
             ],
@@ -3082,9 +3082,9 @@ window.GAME_CONTENT = {
                 readingHint: "배양 조건은 정상이다 → 성장 자체가 아니라 '무엇을 넣었나'가 문제다.",
                 isEvidence: false,
                 source: "실험방법 ⑨" },
-              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술",
                 body: "pBI5ΔRTD 두 플라스크에 stock을 넣을 때, Kan이라고 생각하고 집은 게 Amp 튜브였던 것 같아요.",
-                readingHint: "확정타. pBI5ΔRTD 플라스크의 Kan/Amp 라벨과 실제 넣은 항생제가 반대다.",
+                readingHint: "pBI5ΔRTD 플라스크의 Kan/Amp 라벨과 실제 넣은 항생제가 반대다.",
                 isEvidence: true, decisive: true,
                 source: "강의 이론 슬라이드 18(라벨 뒤바뀜 주의)" }
             ],
@@ -3195,9 +3195,9 @@ window.GAME_CONTENT = {
                 readingHint: "자라면 안 되는 칸 여러 곳이 탁하다 → 특정 항생제 문제가 아니라 공통 오염이다.",
                 isEvidence: true,
                 source: "강의 이론 슬라이드 17" },
-              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술",
                 body: "바쁘다고 클린벤치 밖 일반 실험대에서 잠깐 분주했어요. UV도 안 켰고 입구도 안 그슬렸습니다.",
-                readingHint: "확정타. 무균 조작을 건너뛰어 잡균이 배지에 들어갔다.",
+                readingHint: "무균 조작을 건너뛰어 잡균이 배지에 들어갔다.",
                 isEvidence: true, decisive: true,
                 source: "강의 이론 슬라이드 18 · 실험준비(클린벤치·UV)" }
             ],
@@ -3252,9 +3252,9 @@ window.GAME_CONTENT = {
                 readingHint: "라벨을 나중으로 미뤘다 → 옮기는 사이 순서가 섞이면 되돌릴 수 없다.",
                 isEvidence: true,
                 source: "강의 이론 슬라이드 15(분주 후 라벨·냉장)" },
-              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술",
                 body: "40 mL씩 다 담고 나서 라벨을 붙이려 했는데, 어느 게 Kan이고 Amp였는지 헷갈려서 못 적었어요.",
-                readingHint: "확정타. 분주하면서 바로 라벨을 붙이지 않아 조합 정보를 잃었다.",
+                readingHint: "분주하면서 바로 라벨을 붙이지 않아 조합 정보를 잃었다.",
                 isEvidence: true, decisive: true,
                 source: "실험방법 ⑪·⑫" }
             ],
@@ -3308,9 +3308,9 @@ window.GAME_CONTENT = {
                 readingHint: "같은 조합인데 탁도가 낮다 → 시간이 부족해 세포수가 적다는 뜻이다.",
                 isEvidence: true,
                 source: "강의 이론 슬라이드 3·16(탁도=세포수)" },
-              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술",
                 body: "다음 수업까지 못 기다릴 것 같아서 오후에 잠깐 열어 6시간 만에 꺼내 봤어요.",
-                readingHint: "확정타. 20~24시간을 채우지 않아 균이 대수기 후반까지 자라지 못했다.",
+                readingHint: "20~24시간을 채우지 않아 균이 대수기 후반까지 자라지 못했다.",
                 isEvidence: true, decisive: true,
                 source: "실험방법 ⑨ · 강의 이론 슬라이드 1(다음 날 확인)" }
             ],
@@ -3857,10 +3857,10 @@ window.GAME_CONTENT = {
             tags: ["2종","pBI5ΔRTD","pUC19"]
           },
           {
-            qid: "w03p_x02", type: "ox", level: 1, points: 7, limitSec: 8,
-            q: "이 실험의 모든 원심분리는 13,000 rpm으로 한다.",
-            answer: true,
-            explain: "맞습니다. 회전수는 13,000 rpm으로 고정이며, 시간만 단계에 따라 1분 또는 15분으로 다릅니다.",
+            qid: "w03p_x21", type: "ox", level: 1, points: 7, limitSec: 8,
+            q: "이 실험의 모든 원심분리는 5,000 rpm으로 한다.",
+            answer: false,
+            explain: "아닙니다. 회전수는 13,000 rpm으로 고정이며, 시간만 단계에 따라 1분 또는 15분으로 다릅니다.",
             source: "강의 이론 슬라이드 13 · 실험방법 ③⑦⑨⑩⑪⑬",
             tags: ["13,000 rpm","원심분리","고정"]
           },
@@ -3905,10 +3905,10 @@ window.GAME_CONTENT = {
             tags: ["용출","낮은 염","Elution"]
           },
           {
-            qid: "w03p_x08", type: "ox", level: 2, points: 9, limitSec: 8,
-            q: "S3 중화 후 생기는 흰 덩어리는 큰 염색체·단백질이 침전한 것이다.",
-            answer: true,
-            explain: "맞습니다. 중화로 pH를 되돌리면 큰 염색체·단백질이 흰 덩어리로 침전하고, 작은 플라스미드는 위 맑은 층에 남습니다.",
+            qid: "w03p_x22", type: "ox", level: 2, points: 9, limitSec: 8,
+            q: "S3 중화 후 생기는 흰 덩어리는 플라스미드 DNA가 침전한 것이다.",
+            answer: false,
+            explain: "아닙니다. 중화로 pH를 되돌리면 큰 염색체·단백질이 흰 덩어리로 침전하고, 작은 플라스미드는 위 맑은 층(상등액)에 남습니다.",
             source: "강의 이론 슬라이드 10",
             tags: ["중화","흰 덩어리","침전"]
           },
@@ -4087,9 +4087,9 @@ window.GAME_CONTENT = {
                 readingHint: "시약이 문제였다면 옆 조도 오염됐을 것 → 이 조의 '섞는 방법'이 문제다.",
                 isEvidence: true,
                 source: "강의 이론 슬라이드 15(뒤집기만)" },
-              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술",
                 body: "시간을 아끼려고 S2·S3에서 뒤집는 대신 vortex를 돌렸어요. 그게 문제가 될 줄 몰랐어요.",
-                readingHint: "확정타. vortex로 염색체 DNA가 잘려 플라스미드에 섞였다.",
+                readingHint: "vortex로 염색체 DNA가 잘려 플라스미드에 섞였다.",
                 isEvidence: true, decisive: true,
                 source: "강의 이론 슬라이드 18(vortex 금지 — 염색체 DNA가 잘린다)" }
             ],
@@ -4144,9 +4144,9 @@ window.GAME_CONTENT = {
                 readingHint: "침전물이 컬럼으로 넘어가 막힘·탁도를 일으킨 신호다.",
                 isEvidence: true,
                 source: "강의 이론 슬라이드 16(상등액만 넘긴다)" },
-              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술",
                 body: "상등액을 최대한 많이 옮기려고 바닥까지 긁듯이 뽑았어요. 흰 게 좀 같이 들어간 것 같아요.",
-                readingHint: "확정타. 침전물을 함께 옮겨 순도가 떨어졌다.",
+                readingHint: "침전물을 함께 옮겨 순도가 떨어졌다.",
                 isEvidence: true, decisive: true,
                 source: "강의 이론 슬라이드 18(상등액만 채취 — 침전물이 딸려가지 않게)" }
             ],
@@ -4200,9 +4200,9 @@ window.GAME_CONTENT = {
                 readingHint: "차이는 '건조 스핀을 했느냐'뿐이다.",
                 isEvidence: true,
                 source: "강의 이론 슬라이드 11·16" },
-              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술",
                 body: "세척하고 나서 바로 용출 buffer를 넣었어요. 빈 컬럼을 한 번 더 돌리는 걸 깜빡했어요.",
-                readingHint: "확정타. 건조 스핀 누락으로 세척액이 남아 순도가 떨어졌다.",
+                readingHint: "건조 스핀 누락으로 세척액이 남아 순도가 떨어졌다.",
                 isEvidence: true, decisive: true,
                 source: "실험방법 ⑪(건조 스핀)" }
             ],
@@ -4256,9 +4256,9 @@ window.GAME_CONTENT = {
                 readingHint: "무게가 안 맞을 때 나타나는 전형적인 진동이다.",
                 isEvidence: true,
                 source: "강의 이론 슬라이드 18(무게 평형)" },
-              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술",
                 body: "튜브가 하나뿐이어서 반대편에 균형 맞추는 튜브를 안 넣고 그냥 돌렸어요.",
-                readingHint: "확정타. 무게 평형을 맞추지 않아 진동·파손이 났다.",
+                readingHint: "무게 평형을 맞추지 않아 진동·파손이 났다.",
                 isEvidence: true, decisive: true,
                 source: "실험방법 ③⑦⑨(무게 평형을 맞추어 넣고)" }
             ],
@@ -4312,9 +4312,9 @@ window.GAME_CONTENT = {
                 readingHint: "2종을 동시에 다루다 라벨을 헷갈리기 쉬운 배치였다.",
                 isEvidence: true,
                 source: "강의 이론 슬라이드 18(라벨 확실히 — 2종을 뒤바꾸지 않게)" },
-              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술",
                 body: "두 배양액을 거의 동시에 넣었는데, pBI5ΔRTD랑 pUC19 튜브를 바꿔 넣은 것 같아요.",
-                readingHint: "확정타. 시작 단계에서 두 배양액을 반대 튜브에 넣었다.",
+                readingHint: "시작 단계에서 두 배양액을 반대 튜브에 넣었다.",
                 isEvidence: true, decisive: true,
                 source: "강의 이론 슬라이드 18(2종 뒤바꿈 주의)" }
             ],
@@ -4369,9 +4369,9 @@ window.GAME_CONTENT = {
                 readingHint: "섞는 방법은 문제가 아니다 → vortex 절단이 아니라 다른 원인이다.",
                 isEvidence: true,
                 source: "강의 이론 슬라이드 9(뒤집기만)" },
-              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술",
                 body: "S2 넣고 5분 안에 넘어가야 하는 줄 몰라서, 20분쯤 그대로 뒀다가 중화했어요.",
-                readingHint: "확정타. S2를 오래 둬서 플라스미드가 손상됐다.",
+                readingHint: "S2를 오래 둬서 플라스미드가 손상됐다.",
                 isEvidence: true, decisive: true,
                 source: "강의 이론 슬라이드 18(S2 오래 두면 플라스미드 손상)" }
             ],
@@ -4965,10 +4965,10 @@ window.GAME_CONTENT = {
             tags: ["supercoiled","nicked","이동 속도"]
           },
           {
-            qid: "w04p_x07", type: "ox", level: 1, points: 7, limitSec: 8,
-            q: "A260 흡광도가 1이면 dsDNA 농도는 50 µg/mL이다.",
-            answer: true,
-            explain: "맞습니다. A260 = 1은 이중가닥 DNA 50 µg/mL에 해당합니다.",
+            qid: "w04p_x21", type: "ox", level: 1, points: 7, limitSec: 8,
+            q: "A260 흡광도가 1이면 dsDNA 농도는 20 µg/mL이다.",
+            answer: false,
+            explain: "아닙니다. A260 = 1은 이중가닥 DNA(dsDNA) 50 µg/mL에 해당합니다.",
             source: "강의 이론 슬라이드 11",
             tags: ["A260","50 µg/mL","농도"]
           },
@@ -5154,9 +5154,9 @@ window.GAME_CONTENT = {
                 readingHint: "차이는 'RedSafe를 넣었느냐'뿐이다.",
                 isEvidence: true,
                 source: "강의 이론 슬라이드 9" },
-              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술",
                 body: "겔을 빨리 굳히려고 RedSafe 넣는 걸 깜빡하고 바로 부었어요. 그래서 UV에서 아무것도 안 보인 것 같아요.",
-                readingHint: "확정타. RedSafe 누락으로 DNA가 발색하지 못했다.",
+                readingHint: "RedSafe 누락으로 DNA가 발색하지 못했다.",
                 isEvidence: true, decisive: true,
                 source: "강의 이론 슬라이드 9(끼어든 RedSafe가 빛을 낸다)" }
             ],
@@ -5210,9 +5210,9 @@ window.GAME_CONTENT = {
                 readingHint: "염·유기물이 아니라면 남은 오염원은 단백질 쪽이다.",
                 isEvidence: true,
                 source: "강의 이론 슬라이드 12(A260/A230 — 염·유기물)" },
-              { id: "k4", order: 4, label: "단서 ④ — 추출 회고 (확정타)",
+              { id: "k4", order: 4, label: "단서 ④ — 추출 회고",
                 body: "3주차 추출 때 단백질을 씻어 내는 과정이 부족했던 것 같다고 함(정제가 덜 됨).",
-                readingHint: "확정타. 단백질이 잔류해 A260/A280이 낮아졌다.",
+                readingHint: "단백질이 잔류해 A260/A280이 낮아졌다.",
                 isEvidence: true, decisive: true,
                 source: "강의 이론 슬라이드 12(낮으면 단백질 잔류 — 정제 부족)" }
             ],
@@ -5266,9 +5266,9 @@ window.GAME_CONTENT = {
                 readingHint: "측정 자체는 정상이다 → 시료에 무언가 남아 있는 것이다.",
                 isEvidence: true,
                 source: "실험방법 [2]①" },
-              { id: "k4", order: 4, label: "단서 ④ — 추출 회고 (확정타)",
+              { id: "k4", order: 4, label: "단서 ④ — 추출 회고",
                 body: "3주차 추출에서 세척·건조 과정을 서둘러 마쳐 에탄올·염이 덜 날아간 것 같다고 함.",
-                readingHint: "확정타. 세척·건조 부족으로 염·유기물이 남아 A260/A230이 낮아졌다.",
+                readingHint: "세척·건조 부족으로 염·유기물이 남아 A260/A230이 낮아졌다.",
                 isEvidence: true, decisive: true,
                 source: "강의 이론 슬라이드 12(원인 — 세척 부족·건조 부족)" }
             ],
@@ -5322,9 +5322,9 @@ window.GAME_CONTENT = {
                 readingHint: "기준(blank)이 없거나 창 오염이 있을 때 나타나는 전형적 신호다.",
                 isEvidence: true,
                 source: "강의 이론 슬라이드 18" },
-              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술",
                 body: "시간이 없어서 증류수 blank를 안 잡고 바로 쟀어요. 측정 창도 한 번도 안 닦았어요.",
-                readingHint: "확정타. blank 미설정·창 미세척으로 측정이 기준을 잃어 값이 튀었다.",
+                readingHint: "blank 미설정·창 미세척으로 측정이 기준을 잃어 값이 튀었다.",
                 isEvidence: true, decisive: true,
                 source: "강의 이론 슬라이드 18(증류수 blank·측정 창 매번 닦기)" }
             ],
@@ -5378,9 +5378,9 @@ window.GAME_CONTENT = {
                 readingHint: "자외선을 직접 쬐었을 때 나타나는 증상이다.",
                 isEvidence: true,
                 source: "강의 이론 슬라이드 18" },
-              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술",
                 body: "밴드를 더 잘 보려고 차단창을 열고 그냥 눈으로 봤어요. 보호 장구도 안 했어요.",
-                readingHint: "확정타. 차단창을 열고 UV에 직접 노출됐다.",
+                readingHint: "차단창을 열고 UV에 직접 노출됐다.",
                 isEvidence: true, decisive: true,
                 source: "강의 이론 슬라이드 18(눈·피부 차단)" }
             ],
@@ -5434,9 +5434,9 @@ window.GAME_CONTENT = {
                 readingHint: "차이는 '웰을 큰 것으로 만들었느냐'뿐이다.",
                 isEvidence: true,
                 source: "강의 이론 슬라이드 18" },
-              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술",
                 body: "콤을 큰 걸 써야 하는 줄 모르고 작은 웰로 만들었어요. 그래서 시료가 다 안 들어가고 넘쳤어요.",
-                readingHint: "확정타. 작은 웰 콤을 써서 로딩이 넘쳤다.",
+                readingHint: "작은 웰 콤을 써서 로딩이 넘쳤다.",
                 isEvidence: true, decisive: true,
                 source: "강의 이론 슬라이드 18(콤은 큰 웰로 — 로딩이 쉽다)" }
             ],
@@ -6232,9 +6232,9 @@ window.GAME_CONTENT = {
                 readingHint: "차이는 'Taq를 넣었느냐'뿐이다.",
                 isEvidence: true,
                 source: "강의 이론 슬라이드 15" },
-              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술",
                 body: "Taq를 얼음에서 꺼내다가 깜빡하고 안 넣었어요. 그래서 아무 밴드도 안 나온 것 같아요.",
-                readingHint: "확정타. Taq 누락으로 합성이 진행되지 못했다.",
+                readingHint: "Taq 누락으로 합성이 진행되지 못했다.",
                 isEvidence: true, decisive: true,
                 source: "강의 이론 슬라이드 15·18" }
             ],
@@ -6288,9 +6288,9 @@ window.GAME_CONTENT = {
                 readingHint: "어닐링 온도만 바꿨더니 성공했다 → 원인은 어닐링 온도다.",
                 isEvidence: true,
                 source: "강의 이론 슬라이드 9" },
-              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술",
                 body: "어닐링 온도를 신장이랑 같은 72℃로 잘못 입력했어요. 프라이머가 안 붙었나 봐요.",
-                readingHint: "확정타. 어닐링 온도 과다로 프라이머가 결합하지 못했다.",
+                readingHint: "어닐링 온도 과다로 프라이머가 결합하지 못했다.",
                 isEvidence: true, decisive: true,
                 source: "강의 이론 슬라이드 9" }
             ],
@@ -6344,9 +6344,9 @@ window.GAME_CONTENT = {
                 readingHint: "Mg²⁺ 양만 정상으로 돌렸더니 깨끗해졌다 → 원인은 Mg²⁺ 과다다.",
                 isEvidence: true,
                 source: "강의 이론 슬라이드 17" },
-              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술",
                 body: "buffer가 부족한 것 같아서 MgCl₂를 한 번 더 넣었어요. 그래서 이상한 밴드가 많이 나온 것 같아요.",
-                readingHint: "확정타. Mg²⁺ 과다로 비특이 증폭이 일어났다.",
+                readingHint: "Mg²⁺ 과다로 비특이 증폭이 일어났다.",
                 isEvidence: true, decisive: true,
                 source: "강의 이론 슬라이드 17" }
             ],
@@ -6399,9 +6399,9 @@ window.GAME_CONTENT = {
                 readingHint: "차이는 반복 횟수뿐이다 → 원인은 사이클 수다.",
                 isEvidence: true,
                 source: "강의 이론 슬라이드 11" },
-              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술",
                 body: "시간을 아끼려고 반복을 5회로 줄였어요. 그래서 밴드가 흐리게 나온 것 같아요.",
-                readingHint: "확정타. 사이클 부족으로 증폭량이 모자랐다.",
+                readingHint: "사이클 부족으로 증폭량이 모자랐다.",
                 isEvidence: true, decisive: true,
                 source: "강의 이론 슬라이드 11" }
             ],
@@ -6454,9 +6454,9 @@ window.GAME_CONTENT = {
                 readingHint: "변성 온도만 바꿨더니 성공했다 → 원인은 변성 온도다.",
                 isEvidence: true,
                 source: "강의 이론 슬라이드 8" },
-              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술",
                 body: "변성 온도를 실수로 50℃로 낮게 넣었어요. 가닥이 안 풀려서 아무것도 안 나온 것 같아요.",
-                readingHint: "확정타. 변성 온도가 낮아 이중가닥이 분리되지 못했다.",
+                readingHint: "변성 온도가 낮아 이중가닥이 분리되지 못했다.",
                 isEvidence: true, decisive: true,
                 source: "강의 이론 슬라이드 8" }
             ],
@@ -6510,9 +6510,9 @@ window.GAME_CONTENT = {
                 readingHint: "안내문이 맨손 접촉을 금지하고 있었다 → 수칙 위반이다.",
                 isEvidence: true,
                 source: "강의 이론 슬라이드 22" },
-              { id: "k4", order: 4, label: "단서 ④ — 학생 진술 (확정타)",
+              { id: "k4", order: 4, label: "단서 ④ — 학생 진술",
                 body: "뚜껑이 그렇게 뜨거운 줄 모르고 맨손으로 만졌어요.",
-                readingHint: "확정타. 고온 뚜껑에 맨손이 닿아 화상을 입었다.",
+                readingHint: "고온 뚜껑에 맨손이 닿아 화상을 입었다.",
                 isEvidence: true, decisive: true,
                 source: "강의 이론 슬라이드 13·22" }
             ],
@@ -7107,10 +7107,10 @@ window.GAME_CONTENT = {
             tags: ["PE wash","에탄올"]
           },
           {
-            qid: "w06p_x08", type: "ox", level: 1, points: 7, limitSec: 8,
-            q: "전기영동은 135 V에서 20분간 진행한다.",
-            answer: true,
-            explain: "맞습니다. PCR product를 겔에 모두 로딩하고 135 V에서 20분간 전기영동합니다.",
+            qid: "w06p_x21", type: "ox", level: 1, points: 7, limitSec: 8,
+            q: "전기영동은 135 V에서 60분간 진행한다.",
+            answer: false,
+            explain: "아닙니다. PCR product를 겔에 모두 로딩하고 135 V에서 20분간 전기영동합니다.",
             source: "강의 이론 슬라이드 10",
             tags: ["135 V","20분"]
           },
@@ -7123,18 +7123,18 @@ window.GAME_CONTENT = {
             tags: ["60℃","겔 용해"]
           },
           {
-            qid: "w06p_x10", type: "ox", level: 1, points: 7, limitSec: 8,
-            q: "겔 절단은 UV 장치로 밴드를 확인하며 칼로 목적 밴드만 오려낸다.",
-            answer: true,
-            explain: "맞습니다. UV로 밴드 위치를 확인하며 칼로 목적 DNA fragment만 최소로 오려냅니다.",
+            qid: "w06p_x22", type: "ox", level: 1, points: 7, limitSec: 8,
+            q: "겔 절단은 UV 장치로 밴드를 확인하며, 목적 밴드 주변 겔까지 넉넉하게 크게 오려낸다.",
+            answer: false,
+            explain: "아닙니다. UV로 밴드 위치를 확인하며 칼로 목적 DNA fragment만 최소 크기로 오려냅니다.",
             source: "강의 이론 슬라이드 11",
             tags: ["UV","겔 절단"]
           },
           {
-            qid: "w06p_x11", type: "ox", level: 2, points: 9, limitSec: 8,
-            q: "용출로 최종 확보하는 용액의 총량은 40 µL이다.",
-            answer: true,
-            explain: "맞습니다. Elution buffer 20 µL씩 넣어 원심하며 총 40 µL를 확보합니다.",
+            qid: "w06p_x23", type: "ox", level: 2, points: 9, limitSec: 8,
+            q: "용출로 최종 확보하는 용액의 총량은 80 µL이다.",
+            answer: false,
+            explain: "아닙니다. Elution buffer 20 µL씩 넣어 원심하며 총 40 µL를 확보합니다.",
             source: "강의 이론 슬라이드 15",
             tags: ["40 µL","용출"]
           },
@@ -7287,9 +7287,9 @@ window.GAME_CONTENT = {
                 readingHint: "차이는 '겔을 완전히 녹였느냐'뿐이다.",
                 isEvidence: true,
                 source: "강의 이론 슬라이드 12" },
-              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술",
                 body: "시간을 아끼려고 다 녹기 전에 꺼냈어요. 덩어리가 좀 남았는데 그냥 진행했어요.",
-                readingHint: "확정타. 겔 미완전 용해로 회수율이 떨어졌다.",
+                readingHint: "겔 미완전 용해로 회수율이 떨어졌다.",
                 isEvidence: true, decisive: true,
                 source: "강의 이론 슬라이드 12·19" }
             ],
@@ -7343,9 +7343,9 @@ window.GAME_CONTENT = {
                 readingHint: "건조 단계만 지켰더니 순도가 좋아졌다 → 원인은 에탄올 잔류다.",
                 isEvidence: true,
                 source: "강의 이론 슬라이드 14" },
-              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술",
                 body: "하층액 버리고 바로 용출했어요. 빈 칼럼 한 번 더 돌리는 걸 깜빡했어요.",
-                readingHint: "확정타. 에탄올을 덜 말려 순도가 나빠졌다.",
+                readingHint: "에탄올을 덜 말려 순도가 나빠졌다.",
                 isEvidence: true, decisive: true,
                 source: "강의 이론 슬라이드 14·19" }
             ],
@@ -7399,9 +7399,9 @@ window.GAME_CONTENT = {
                 readingHint: "DNA가 칼럼에 안 붙고 통과했다 → 흡착 실패다.",
                 isEvidence: true,
                 source: "강의 이론 슬라이드 7·13" },
-              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술",
                 body: "QG buffer가 어디 있는지 몰라서 그냥 증류수로 녹였어요. 그래서 하나도 안 붙은 것 같아요.",
-                readingHint: "확정타. 높은 염이 없어 흡착이 일어나지 못했다.",
+                readingHint: "높은 염이 없어 흡착이 일어나지 못했다.",
                 isEvidence: true, decisive: true,
                 source: "강의 이론 슬라이드 7·8" }
             ],
@@ -7455,9 +7455,9 @@ window.GAME_CONTENT = {
                 readingHint: "UV 확인 후 정확히 오렸더니 성공했다 → 원인은 겔 절단이다.",
                 isEvidence: true,
                 source: "강의 이론 슬라이드 11" },
-              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술",
                 body: "UV 켜기 귀찮아서 대충 이쯤이겠지 하고 오렸어요. 목적 밴드가 없는 데를 자른 것 같아요.",
-                readingHint: "확정타. 목적 밴드가 없는 부위를 오려 fragment를 놓쳤다.",
+                readingHint: "목적 밴드가 없는 부위를 오려 fragment를 놓쳤다.",
                 isEvidence: true, decisive: true,
                 source: "강의 이론 슬라이드 11" }
             ],
@@ -7511,9 +7511,9 @@ window.GAME_CONTENT = {
                 readingHint: "낮은 염으로 바꿨더니 회수됐다 → 원인은 용출 용액이다.",
                 isEvidence: true,
                 source: "강의 이론 슬라이드 15" },
-              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술",
                 body: "용출도 QG buffer로 하는 줄 알고 넣었어요. DNA가 안 떨어져서 하나도 안 나온 것 같아요.",
-                readingHint: "확정타. 높은 염으로 용출해 DNA가 실리카에서 떨어지지 못했다.",
+                readingHint: "높은 염으로 용출해 DNA가 실리카에서 떨어지지 못했다.",
                 isEvidence: true, decisive: true,
                 source: "강의 이론 슬라이드 7·15" }
             ],
@@ -7567,9 +7567,9 @@ window.GAME_CONTENT = {
                 readingHint: "안내문이 UV 차단을 요구하고 있었다 → 수칙 위반이다.",
                 isEvidence: true,
                 source: "강의 이론 슬라이드 19" },
-              { id: "k4", order: 4, label: "단서 ④ — 학생 진술 (확정타)",
+              { id: "k4", order: 4, label: "단서 ④ — 학생 진술",
                 body: "밴드가 잘 안 보여서 차단창을 치우고 가까이서 봤어요. 그 뒤로 눈이 아파요.",
-                readingHint: "확정타. 차단창 없이 UV에 노출돼 눈이 손상됐다.",
+                readingHint: "차단창 없이 UV에 노출돼 눈이 손상됐다.",
                 isEvidence: true, decisive: true,
                 source: "강의 이론 슬라이드 11·19" }
             ],
@@ -8144,10 +8144,10 @@ window.GAME_CONTENT = {
             tags: ["넣는 순서"]
           },
           {
-            qid: "w07p_o06", type: "ox", level: 1, points: 7, limitSec: 8,
-            q: "완성된 재조합 Vector는 시료 5 µL로 전기영동해 확인한다.",
-            answer: true,
-            explain: "맞습니다. 완성된 시료 5 µL만 이용해 전기영동으로 확인합니다.",
+            qid: "w07p_o21", type: "ox", level: 1, points: 7, limitSec: 8,
+            q: "완성된 재조합 Vector는 시료 15 µL로 전기영동해 확인한다.",
+            answer: false,
+            explain: "아닙니다. 완성된 시료 중 5 µL만 이용해 전기영동으로 확인합니다.",
             source: "실험방법 07 [1] ③",
             tags: ["전기영동","5 µL"]
           },
@@ -8192,10 +8192,10 @@ window.GAME_CONTENT = {
             tags: ["-80℃ 보관"]
           },
           {
-            qid: "w07p_o12", type: "ox", level: 1, points: 7, limitSec: 8,
-            q: "Competent cell은 1.5 mL E-tube에 100 µL씩 소분한다.",
-            answer: true,
-            explain: "맞습니다. 형질전환 1회 분량인 100 µL씩 소분해 보관합니다.",
+            qid: "w07p_o22", type: "ox", level: 1, points: 7, limitSec: 8,
+            q: "Competent cell은 1.5 mL E-tube에 50 µL씩 소분한다.",
+            answer: false,
+            explain: "아닙니다. 형질전환 1회 분량인 100 µL씩 소분해 보관합니다.",
             source: "실험방법 07 [2] ⑥",
             tags: ["소분","100 µL"]
           },
@@ -8341,9 +8341,9 @@ window.GAME_CONTENT = {
                 readingHint: "차이는 '상온 30분 교반을 했느냐'뿐이다.",
                 isEvidence: true,
                 source: "실험방법 07 [1] ②" },
-              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술",
                 body: "빨리 끝내려고 섞자마자 바로 다음으로 넘어갔어요. 30분 기다리는 걸 안 했어요.",
-                readingHint: "확정타. 반응 시간을 안 줘 결합 효율이 떨어졌다.",
+                readingHint: "반응 시간을 안 줘 결합 효율이 떨어졌다.",
                 isEvidence: true, decisive: true,
                 source: "실험방법 07 [1] ②" }
             ],
@@ -8397,9 +8397,9 @@ window.GAME_CONTENT = {
                 readingHint: "차이는 '얼음 위에서 저온을 유지했느냐'뿐이다.",
                 isEvidence: true,
                 source: "실험방법 07 [2] ⑤" },
-              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술",
                 body: "사진 찍느라 얼음에서 꺼내 실험대에 한참 뒀어요. 그동안 용액이 미지근해졌어요.",
-                readingHint: "확정타. 저온을 못 지켜 competent 상태가 나빠졌다.",
+                readingHint: "저온을 못 지켜 competent 상태가 나빠졌다.",
                 isEvidence: true, decisive: true,
                 source: "실험방법 07 [2] ⑤" }
             ],
@@ -8453,9 +8453,9 @@ window.GAME_CONTENT = {
                 readingHint: "CaCl₂로 바꿨더니 잘 됐다 → 원인은 처리 용액이다.",
                 isEvidence: true,
                 source: "강의 이론(Competent cell)" },
-              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술",
                 body: "CaCl₂ 대신 그냥 증류수로 풀었어요. 세포막 중화가 안 돼서 DNA가 안 들어간 것 같아요.",
-                readingHint: "확정타. 중화가 안 돼 DNA 흡수율이 낮았다.",
+                readingHint: "중화가 안 돼 DNA 흡수율이 낮았다.",
                 isEvidence: true, decisive: true,
                 source: "강의 이론(Competent cell)" }
             ],
@@ -8509,9 +8509,9 @@ window.GAME_CONTENT = {
                 readingHint: "목적 fragment가 반응에 안 들어갔다 → 재조합할 DNA가 없었다.",
                 isEvidence: true,
                 source: "실험방법 07 [1] ①" },
-              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술",
                 body: "물이랑 벡터만 넣고 PCR product 넣는 걸 깜빡했어요. 그래서 붙을 게 없었나 봐요.",
-                readingHint: "확정타. 목적 fragment가 없어 재조합이 일어나지 못했다.",
+                readingHint: "목적 fragment가 없어 재조합이 일어나지 못했다.",
                 isEvidence: true, decisive: true,
                 source: "실험방법 07 [1] ①" }
             ],
@@ -8565,9 +8565,9 @@ window.GAME_CONTENT = {
                 readingHint: "차이는 '-80℃에 보관했느냐'뿐이다.",
                 isEvidence: true,
                 source: "실험방법 07 [2] ⑦" },
-              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술",
                 body: "-80℃ 자리가 없어서 그냥 냉장고에 뒀어요. 일주일 지나니까 세포가 안 살아난 것 같아요.",
-                readingHint: "확정타. 보관 온도가 맞지 않아 세포가 상했다.",
+                readingHint: "보관 온도가 맞지 않아 세포가 상했다.",
                 isEvidence: true, decisive: true,
                 source: "실험방법 07 [2] ⑦" }
             ],
@@ -8620,9 +8620,9 @@ window.GAME_CONTENT = {
                 readingHint: "세포가 펠릿으로 안 가라앉았다 → 원심이 약했다.",
                 isEvidence: true,
                 source: "실험방법 07 [2] ②" },
-              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술",
                 body: "숫자를 잘못 눌러서 400 rpm으로 돌렸어요. 그래서 세포가 안 가라앉았나 봐요.",
-                readingHint: "확정타. 원심 회전수가 너무 낮아 균체 회수에 실패했다.",
+                readingHint: "원심 회전수가 너무 낮아 균체 회수에 실패했다.",
                 isEvidence: true, decisive: true,
                 source: "실험방법 07 [2] ②" }
             ],
@@ -9183,10 +9183,10 @@ window.GAME_CONTENT = {
             tags: ["형질전환"]
           },
           {
-            qid: "w08p_o02", type: "ox", level: 1, points: 7, limitSec: 8,
-            q: "Heat-shock은 42℃에서 30초간 준다.",
-            answer: true,
-            explain: "맞습니다. 42℃ 항온수조에서 30초간 heat-shock합니다.",
+            qid: "w08p_o21", type: "ox", level: 1, points: 7, limitSec: 8,
+            q: "Heat-shock은 42℃에서 5분간 준다.",
+            answer: false,
+            explain: "아닙니다. 42℃ 항온수조에서 30초간 heat-shock합니다.",
             source: "실험방법 08 [1] ③",
             tags: ["heat-shock","42℃"]
           },
@@ -9255,18 +9255,18 @@ window.GAME_CONTENT = {
             tags: ["48시간"]
           },
           {
-            qid: "w08p_o11", type: "ox", level: 1, points: 7, limitSec: 8,
-            q: "회복배양은 SOC 배지에서 37℃로 1시간 한다.",
-            answer: true,
-            explain: "맞습니다. S.O.C. 배지를 넣고 37℃ 진탕배양기 225 rpm에서 1시간 회복배양합니다.",
+            qid: "w08p_o22", type: "ox", level: 1, points: 7, limitSec: 8,
+            q: "회복배양은 SOC 배지에서 37℃로 24시간 한다.",
+            answer: false,
+            explain: "아닙니다. S.O.C. 배지를 넣고 37℃ 진탕배양기 225 rpm에서 1시간 회복배양합니다.",
             source: "실험방법 08 [1] ④",
             tags: ["회복배양","1시간"]
           },
           {
-            qid: "w08p_o12", type: "ox", level: 1, points: 7, limitSec: 8,
-            q: "Competent cell에 DNA를 넣은 뒤 얼음에 30분간 둔다.",
-            answer: true,
-            explain: "맞습니다. DNA를 넣고 혼합한 뒤 얼음에 30분간 둡니다.",
+            qid: "w08p_o23", type: "ox", level: 1, points: 7, limitSec: 8,
+            q: "Competent cell에 DNA를 넣은 뒤 얼음에 3분간 둔다.",
+            answer: false,
+            explain: "아닙니다. DNA를 넣고 혼합한 뒤 얼음에 30분간 둡니다.",
             source: "실험방법 08 [1] ①②",
             tags: ["얼음 30분"]
           },
@@ -9412,9 +9412,9 @@ window.GAME_CONTENT = {
                 readingHint: "차이는 'heat-shock을 했느냐'뿐이다.",
                 isEvidence: true,
                 source: "실험방법 08 [1] ③" },
-              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술",
                 body: "항온수조 순서를 놓쳐서 heat-shock을 안 하고 넘어갔어요. 그래서 DNA가 세포에 안 들어간 것 같아요.",
-                readingHint: "확정타. heat-shock을 건너뛰어 DNA가 세포에 들어가지 못했다.",
+                readingHint: "heat-shock을 건너뛰어 DNA가 세포에 들어가지 못했다.",
                 isEvidence: true, decisive: true,
                 source: "실험방법 08 [1] ③" }
             ],
@@ -9468,9 +9468,9 @@ window.GAME_CONTENT = {
                 readingHint: "대조까지 실패 → DNA 종류 문제가 아니라 세포 자체가 상했을 가능성.",
                 isEvidence: true,
                 source: "실험방법 08 [1] ②" },
-              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술",
                 body: "다른 조 기다린다고 42℃에 한참 뒀어요. 얼음으로 바로 안 옮겼어요.",
-                readingHint: "확정타. 42℃에 오래 둬 세포가 죽었다.",
+                readingHint: "42℃에 오래 둬 세포가 죽었다.",
                 isEvidence: true, decisive: true,
                 source: "실험방법 08 [1] ③" }
             ],
@@ -9524,9 +9524,9 @@ window.GAME_CONTENT = {
                 readingHint: "회복배양을 넣었더니 성공했다 → 원인은 회복배양 생략이다.",
                 isEvidence: true,
                 source: "실험방법 08 [1] ④" },
-              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술",
                 body: "시간이 없어서 SOC 넣고 바로 도말했어요. 1시간 배양을 안 했어요.",
-                readingHint: "확정타. 저항 단백질이 발현될 시간이 없어 항생제에 다 죽었다.",
+                readingHint: "저항 단백질이 발현될 시간이 없어 항생제에 다 죽었다.",
                 isEvidence: true, decisive: true,
                 source: "실험방법 08 [1] ④" }
             ],
@@ -9580,9 +9580,9 @@ window.GAME_CONTENT = {
                 readingHint: "두 평판을 서로 바꿔 도말했다 → 항생제 짝이 어긋났다.",
                 isEvidence: true,
                 source: "실험방법 08 [2] ③" },
-              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술",
                 body: "Kan하고 Amp 평판을 헷갈려서 반대로 도말했어요. 그래서 둘 다 안 자란 것 같아요.",
-                readingHint: "확정타. 저항 유전자와 평판 항생제가 맞지 않아 세포가 죽었다.",
+                readingHint: "저항 유전자와 평판 항생제가 맞지 않아 세포가 죽었다.",
                 isEvidence: true, decisive: true,
                 source: "실험방법 08 [2] ③" }
             ],
@@ -9636,9 +9636,9 @@ window.GAME_CONTENT = {
                 readingHint: "차이는 'IPTG·X-gal을 도말했느냐'뿐이다.",
                 isEvidence: true,
                 source: "실험방법 08 [2] ①" },
-              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술",
                 body: "X-gal 도말하는 걸 깜빡했어요. 그래서 색이 안 나와서 흰지 파란지 알 수가 없어요.",
-                readingHint: "확정타. X-gal이 없어 발색이 안 돼 Blue/White를 구분할 수 없다.",
+                readingHint: "X-gal이 없어 발색이 안 돼 Blue/White를 구분할 수 없다.",
                 isEvidence: true, decisive: true,
                 source: "실험방법 08 [2] ①" }
             ],
@@ -9692,9 +9692,9 @@ window.GAME_CONTENT = {
                 readingHint: "원리상 흰색이 삽입 성공이다 → 파란색을 성공이라 본 것은 오독이다.",
                 isEvidence: true,
                 source: "강의 이론(Blue-White screening)" },
-              { id: "k4", order: 4, label: "단서 ④ — 조원 진술 (확정타)",
+              { id: "k4", order: 4, label: "단서 ④ — 조원 진술",
                 body: "파란색이 눈에 띄어서 그게 성공인 줄 알았어요. 흰색이 삽입 성공인 걸 반대로 알았어요.",
-                readingHint: "확정타. Blue/White 판독을 반대로 해석했다.",
+                readingHint: "Blue/White 판독을 반대로 해석했다.",
                 isEvidence: true, decisive: true,
                 source: "강의 이론(Blue-White screening)" }
             ],
