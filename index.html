@@ -1299,19 +1299,22 @@ function reportLocalCopy(sid, data, wk){
   });
   return lite;
 }
-function saveReport(sid, data){
+function saveReport(sid, data, wk){
   /* 2026-09-26(O-0067 B6): 교수 신원(학번 없음)·빈 학번으로는 보고서를 저장하지 않는다(교수 미리보기 안전장치). */
   if(!sid || (state && state.role === "prof")) return false;
+  /* 🔴 2026-09-27(O-0074 N1): 저장 주차는 「보고서를 연 주차」(호출부가 넘긴 wk)로 고정한다.
+     예전엔 전역 ACTIVE_WEEK 를 썼기 때문에, 화면을 떠난 뒤 늦게 도는 자동저장·사진 처리 콜백이 옮겨 간 주차 보고서를 덮어썼다. */
+  wk = wk || ACTIVE_WEEK;
   var cloud = !!(window.GLR && GLR.on);
   var localOk = false;
   /* 클라우드 모드: 로컬에는 '가벼운 사본'(사진=경로)만 저장한다(base64 누적으로 기기가 꽉 차는 것을 막는다). */
-  try{ localStorage.setItem(reportKey(sid), JSON.stringify(cloud ? reportLocalCopy(sid, data) : data)); localOk = true; }catch(e){ localOk = false; }
+  try{ localStorage.setItem(reportKey(sid, wk), JSON.stringify(cloud ? reportLocalCopy(sid, data, wk) : data)); localOk = true; }catch(e){ localOk = false; }
   /* 클라우드(서버) 모드: 사진은 Storage 버킷에, 경로만 표에 올린다. 서버로는 base64 를 그대로 보낸다(syncReport).
    * 이 기기 localStorage 가 꽉 차 로컬 사본 저장이 실패해도 서버 업로드는 계속 진행해 사진이 유실되지 않게 한다
    * (새로고침하면 서버에서 되받는다). */
   /* 🔴 2026-09-27(O-0068 B3): 서버로는 「저장용 사본」을 보낸다 — 화면 표시용으로 내려받은 사진(서버에 이미 있는 그 파일과
      글자 하나까지 같은 데이터)은 base64 대신 원래 서버 경로로 보내 재업로드하지 않는다. 판정이 조금이라도 애매하면 예전처럼 업로드한다. */
-  if(cloud){ try{ GLR.syncReport(sid, GLR.storageCopy(data, ACTIVE_WEEK, sid), ACTIVE_WEEK); }catch(e){} return true; }
+  if(cloud){ try{ GLR.syncReport(sid, GLR.storageCopy(data, wk, sid), wk); }catch(e){} return true; }
   return localOk;   /* 로컬 전용 모드: 로컬 저장 성공 여부가 곧 결과(실패 시 호출부가 롤백) */
 }
 /* 보고서에 작성 흔적이 있는가 — 텍스트 섹션 또는 업로드한 사진 */
@@ -1666,8 +1669,14 @@ function noteList(){ return Object.keys(state.wrongNotes).filter(function(qid){ 
 var cur = "lobby";
 var navStack = [];
 var ctx = {};
+/* 🔴 2026-09-27(O-0074 N1) 보고서 저장 주차 고정 — 대기 중 자동저장·열린 보고서 기록
+ *   REPORT_PENDING : 입력 뒤 700ms 자동저장이 아직 안 돈 것 {R, flush}. 화면을 떠날 때(go·logout·보고서 다시 그림) 즉시 그 보고서 주차로 저장한다.
+ *   REPORT_LATEST  : "학번|주차" → 가장 최근에 연(편집 가능한) 보고서 {R, live, collect}. 늦게 끝난 사진 처리 콜백이 같은 주차의 최신 데이터에 사진을 넣게 한다. */
+var REPORT_PENDING = null, REPORT_LATEST = {}, REPORT_TOK = 0;
+function flushReportPending(){ var p = REPORT_PENDING; REPORT_PENDING = null; if(p && p.flush){ try{ p.flush(); }catch(e){} } }
 function go(name, push){
   if(SCREENS.indexOf(name) < 0){ if(window.console) console.error("정의되지 않은 화면: " + name); return; }
+  flushReportPending();   /* O-0074 N1: 떠나기 전, 보고서 화면에 남은 입력을 그 보고서 주차로 바로 저장 */
   if(push !== false && cur !== name) navStack.push(cur);
   cur = name;
   SCREENS.forEach(function(s){ var e = $("sc-" + s); if(e) e.classList.toggle("active", s === name); });
@@ -1871,6 +1880,8 @@ function showLogin(){
 }
 /* 로그아웃 — 세션을 지우고 로그인 화면으로. 진도·보고서는 기기에 그대로 남는다. */
 function logout(){
+  flushReportPending();   /* O-0074 N1: 로그아웃 전에 대기 중 자동저장을 먼저 끝낸다(출입증이 지워지기 전) */
+  REPORT_LATEST = {};
   clearSession();
   if(window.GLR && GLR.on){ GLR.stopTeamPoll(); GLR.clearTok(); }
   if(window.GLR) GLR.photoLedger = {};   /* O-0068 B3 */   /* 🟡 서버 출입증도 지운다(공용 PC 안전) + 폴링 중단 */
@@ -2079,7 +2090,11 @@ RENDER.lobby = function(){
   h += '<div class="hub-ic">📝</div><div class="hub-bd">';
   h += '<div class="hub-t">① 실험 결과보고서 작성' + exBadge + '</div>';
   h += '<div class="hub-d">A4 서식에 맞춰 작성하고 제출합니다. (A4 미리보기·워드·PDF는 교수님 확인 화면에서 내려받습니다)</div>';
-  h += '<div class="hub-st">' + (rep.submitted ? '<b>제출함</b> · ' + esc(rep.submittedAt || "") : (repHasText ? '작성 중 (임시 저장됨)' : '아직 시작 안 함')) + '</div>';
+  /* 🔴 O-0074 N3: 상태 문구는 교수 확인 화면과 같은 판정(reportStatusOf)을 쓴다 — 마감 뒤 미제출·내용 있음 = 제출(미완성). */
+  var repSt = reportStatusOf(rep, lab.id);
+  h += '<div class="hub-st">' + (repSt === "제출" ? '<b>제출함</b> · ' + esc(rep.submittedAt || "")
+       : repSt === "제출(미완성)" ? '<b>제출(미완성)</b>' + (rep.submitted ? ' · ' + esc(rep.submittedAt || "") : ' — 제출 기한이 지나 작성한 내용 그대로 처리됐어요')
+       : repSt === "작성중" ? '작성 중 (임시 저장됨)' : '아직 시작 안 함') + '</div>';
   /* 제출 기한 문구 + 기한 경과 시 「작성 시작」 비활성화 (2주차 등 기한이 설정된 주차에만) —
      교수 미리보기(isProf)에는 비활성화·경과 표시를 적용하지 않는다(교수는 언제나 학생 화면을 열어볼 수 있어야 함). */
   var dlEff = effectiveDeadline(lab.id);
@@ -2671,10 +2686,17 @@ function printBulkReports(wk){
 
 RENDER.report = function(){
   var sc = $("sc-report");
+  flushReportPending();   /* O-0074 N1: 다시 그리기 전에(지금 화면이 아직 남아 있을 때) 대기 중 자동저장을 끝낸다 */
+  sc.removeAttribute("data-rtok");   /* 새로 그리는 동안 예전 편집 화면 표식 무효화 */
   if(!ctx.report){ ctx.report = { sid: state.studentId, name: state.studentName, readonly: state.role === "prof", view: "edit" }; }
   var R = ctx.report;
-  var def = reportDef(R.week);   /* 양식은 「지금 여는 보고서의 주차」를 따른다(교수=DASH_WEEK, 학생=미지정→ACTIVE_WEEK) */
-  if(!R.data){ R.data = loadReport(R.sid, R.week); }
+  /* 🔴 O-0074 N1: 이 보고서의 주차를 여는 순간 고정한다(학생=지금 ACTIVE_WEEK). 이후 저장은 전부 R.week 로 한다. */
+  if(!R.week) R.week = ACTIVE_WEEK;
+  var def = reportDef(R.week);   /* 양식은 「지금 여는 보고서의 주차」를 따른다(교수=DASH_WEEK, 학생=여는 순간의 ACTIVE_WEEK) */
+  if(!R.data){
+    R.data = loadReport(R.sid, R.week);
+    if(!R.readonly && R.sid){ REPORT_LATEST[R.sid + "|" + R.week] = { R:R, live:function(){ return false; }, collect:null }; }   /* O-0074 N1 */
+  }
   /* 🔵 사진 지연 로드: 미러에는 경로만 있으므로, 이 보고서를 실제로 여는 지금 사진을 받아 온다.
      상태·집계 표는 사진 없이도 정확했고(그 덕에 폰에서도 전량 표시), 사진 다운로드는 지금 보는 이 한 건에만 든다. */
   if(window.GLR && GLR.on && R.data && !R.data._photosResolved && !R._resolving){
@@ -2766,9 +2788,14 @@ RENDER.report = function(){
   h += '<p class="small" style="margin-top:10px">※ ' + ((window.GLR&&GLR.on) ? '작성·사진은 서버에 저장돼 기기가 바뀌어도 이어집니다.' : '이 기기 저장 모드 — 작성 내용이 이 기기 안에만 남습니다.') + (readonly ? ' PDF는 인쇄 대화상자에서 "PDF로 저장"을 고르세요.' : ' 제출하면 교수 확인 화면에 기록됩니다.') + '</p>';
 
   sc.innerHTML = h;
+  /* O-0074 N1: 이 편집 화면의 표식 — 화면이 바뀐 뒤 늦게 도는 콜백이 다른 화면의 입력칸을 읽지 않게 한다. */
+  var myTok = String(++REPORT_TOK);
+  sc.setAttribute("data-rtok", myTok);
+  function live(){ return cur === "report" && ctx.report === R && R.view !== "preview" && sc.getAttribute("data-rtok") === myTok; }
 
   function collect(){
     if(readonly) return data;
+    if(!live()) return R.data;   /* O-0074 N1: 이 화면이 더는 떠 있지 않으면 입력칸을 읽지 않는다(저장된 데이터 그대로) */
     var d = R.data;
     if(!d.meta) d.meta = {};
     if($("rfDate")) d.meta.date = ($("rfDate").value || "").trim();
@@ -2789,10 +2816,11 @@ RENDER.report = function(){
      ⚠️ 여기서는 새 저장·제출만 막는다. 마감 전에 이미 전송 큐(GLR.q)에 들어간 사진 업로드·재시도는 건드리지 않는다. */
   function reportSaveBlocked(){
     if(readonly || !state || state.role !== "student") return false;
-    var wkB = R.week || ACTIVE_WEEK;
+    var wkB = R.week;   /* O-0074 N1: 연 주차로 고정 */
     if(!reportDeadlinePassed(wkB)) return false;
     var msg = "제출 기한이 지나 저장·제출되지 않습니다.";
     toast(msg);
+    if(!live()) return true;   /* O-0074 N1: 다른 화면으로 넘어간 뒤면 화면은 건드리지 않는다 */
     if(!sc.querySelector("#rfDlBlock")){
       var box = document.createElement("div");
       box.id = "rfDlBlock"; box.className = "card tight"; box.style.cssText = "border-color:#f3b4b4;background:#fdecec";
@@ -2805,11 +2833,14 @@ RENDER.report = function(){
     sc.querySelectorAll("#rfSave,#rfSubmit,[data-imgpick],[data-imgdel]").forEach(function(el){ el.disabled = true; });
     return true;
   }
+  var saveTimer = null;
   function persist(silent){
+    if(saveTimer){ clearTimeout(saveTimer); saveTimer = null; }   /* O-0074 N1: 지금 저장하므로 대기 중 자동저장은 없앤다 */
+    if(REPORT_PENDING && REPORT_PENDING.R === R) REPORT_PENDING = null;
     if(reportSaveBlocked()) return collect();   /* 기한 경과: 저장하지 않는다(화면 표시용으로만 모음) */
     var d = collect();
     d.savedAt = today();
-    var ok = saveReport(R.sid, d);
+    var ok = saveReport(R.sid, d, R.week);
     if(!silent) toast(ok ? "임시 저장했습니다." : "저장이 막혀 있습니다(브라우저 설정).");
     return d;
   }
@@ -2821,16 +2852,21 @@ RENDER.report = function(){
   if($("rfSubmit")) $("rfSubmit").onclick = function(){
     if(reportSaveBlocked()) return;   /* O-0067 B2 */
     var d = collect(); d.submitted = true; d.submittedAt = today(); d.savedAt = today();
-    saveReport(R.sid, d); R.data = d;
+    saveReport(R.sid, d, R.week); R.data = d;
     toast("보고서를 제출했습니다. (교수 확인 화면에 기록됩니다)");
     if(!reduced) showReward({ face:"celebrate", kicker:"결과보고서 제출", title:"제출 완료", sub:curLab().weekLabel + " " + curLab().title + " 결과보고서", hold:2600 });
     RENDER.report();
   };
   /* 편집 중 자동 저장(입력 멈춤 시) */
   if(!readonly){
-    var saveTimer = null;
+    REPORT_LATEST[R.sid + "|" + R.week] = { R:R, live:live, collect:collect };   /* O-0074 N1: 이 주차의 최신 편집 화면 */
     sc.querySelectorAll("textarea,[data-tbl],#rfDate,#rfTeam").forEach(function(el){
-      el.oninput = function(){ if(saveTimer) clearTimeout(saveTimer); saveTimer = setTimeout(function(){ persist(true); }, 700); };
+      el.oninput = function(){
+        if(saveTimer) clearTimeout(saveTimer);
+        saveTimer = setTimeout(function(){ saveTimer = null; persist(true); }, 700);
+        /* O-0074 N1: 700ms 안에 화면을 떠나면(go·logout·다시 그림) 취소가 아니라 그 자리에서 이 보고서 주차로 저장한다. */
+        REPORT_PENDING = { R:R, flush:function(){ if(saveTimer) persist(true); } };
+      };
     });
     /* 이미지 업로드 슬롯 바인딩 */
     sc.querySelectorAll("[data-imgpick]").forEach(function(b){
@@ -2845,22 +2881,28 @@ RENDER.report = function(){
         toast("사진 처리 중…");
         resizeImageFile(file, 1280, function(durl, err){
           if(err || !durl){ toast(err || "사진을 불러오지 못했습니다."); return; }
+          /* 🔴 O-0074 N1: 사진 처리 중 화면을 떠나도 사진은 「고른 그 주차·그 학생」 보고서에만 저장한다. */
+          if(!state || String(state.studentId || "") !== String(R.sid)){ toast("로그인이 바뀌어 사진을 저장하지 않았습니다."); return; }
           if(reportSaveBlocked()) return;           /* 변환 도중 기한이 지난 경우 */
-          collect();                               /* 고찰 등 현재 입력 보존 */
-          var d = R.data;
+          /* 같은 주차 보고서를 그 사이 다시 열었다면 그 최신 화면의 데이터에 넣는다(예전 데이터로 덮어쓰지 않게). */
+          var T = REPORT_LATEST[R.sid + "|" + R.week];
+          if(!T || !T.R || !T.R.data) T = { R:R, live:live, collect:collect };
+          var tLive = !!(T.live && T.live());
+          if(tLive && T.collect) T.collect();      /* 고찰 등 현재 입력 보존(화면이 떠 있을 때만) */
+          var d = T.R.data;
           if(!d.images) d.images = {};
           if(!Array.isArray(d.images[key])) d.images[key] = [];
           var prev = d.images[key][idx] || "";
           d.images[key][idx] = durl;
           d.savedAt = today();
-          var ok = saveReport(R.sid, d);
+          var ok = saveReport(R.sid, d, R.week);
           if(!ok){
             d.images[key][idx] = prev;              /* 롤백 */
             toast("사진이 너무 커 저장하지 못했습니다. 더 작은 사진(또는 더 적은 장수)으로 올려 주세요.");
             return;
           }
           toast("사진 추가됨 — 서버에 저장 중…");
-          RENDER.report();                          /* 미리보기 갱신 (슬롯 상태 "저장 중…" 즉시 표시) */
+          if(tLive) RENDER.report();                /* 미리보기 갱신 (슬롯 상태 "저장 중…" 즉시 표시) — 그 보고서 화면이 떠 있을 때만(O-0074 N1) */
         });
       };
     });
@@ -2874,7 +2916,7 @@ RENDER.report = function(){
           var d = R.data;
           if(d.images && Array.isArray(d.images[key])) d.images[key][idx] = "";
           d.savedAt = today();
-          saveReport(R.sid, d);
+          saveReport(R.sid, d, R.week);
           toast("사진을 삭제했습니다.");
           RENDER.report();
         }, { yes:"삭제" });
@@ -2901,9 +2943,9 @@ function renderReportPreview(sc, R, def){
   $("rvWord").onclick = function(){ downloadReportWord(R.sid, R.name, data, R.week); };
   $("rvPdf").onclick = function(){ printReportPDF(R.sid, R.name, data, R.week); };
   if($("rvSubmit")) $("rvSubmit").onclick = function(){
-    if(state.role === "student" && reportDeadlinePassed(R.week || ACTIVE_WEEK)){ toast("제출 기한이 지나 저장·제출되지 않습니다."); return; }   /* O-0067 B2 */
+    if(state.role === "student" && reportDeadlinePassed(R.week)){ toast("제출 기한이 지나 저장·제출되지 않습니다."); return; }   /* O-0067 B2 */
     data.submitted = true; data.submittedAt = today(); data.savedAt = today();
-    saveReport(R.sid, data); toast("보고서를 제출했습니다.");
+    saveReport(R.sid, data, R.week); toast("보고서를 제출했습니다.");
     RENDER.report();
   };
   $("rvHub").onclick = function(){ go(state.role==="prof"?"profdash":"lobby"); };
@@ -4874,7 +4916,7 @@ var GLR = {
       var arr=imgs[key]; if(!Array.isArray(arr)) return;
       arr.forEach(function(val, idx){
         if(val && typeof val==="string" && val.indexOf("data:")!==0 && val.indexOf("/")!==-1){
-          tasks.push(self.fetchPhoto(val).then(function(d){ arr[idx]=d; self.ledgerSet(val, d); }, function(){}));   /* O-0068 B3: 내려받은 파일 = 서버에 있음 */
+          tasks.push(self.fetchPhoto(val).then(function(d){ if(arr[idx]===val) arr[idx]=d; self.ledgerSet(val, d); }, function(){}));   /* O-0074 N1: 받는 사이 그 칸에 새 사진이 들어왔으면 덮지 않는다 */   /* O-0068 B3: 내려받은 파일 = 서버에 있음 */
         }
       });
     });
@@ -5096,6 +5138,9 @@ var GLR = {
         arr.forEach(function(val, idx){
           if(val && typeof val==="string" && val.indexOf("data:")===0){
             var path=job.week+"/"+job.sid+"/"+key+"_"+idx+".jpg";
+            /* 🔴 O-0074 N2: 이 작업이 큐에 들어간 뒤 앞선 작업이 「바로 이 사진」을 이 경로에 올려 확정했다면(장부 내용 일치+okPhoto)
+               다시 올리지 않고 경로로 바꾼다. 내용이 조금이라도 다르면(교체한 새 사진) 예전처럼 올린다(B3 유지). */
+            if(self.ledgerMatch(path, val)){ imgs[key][idx]=path; photos[key][idx]=path; return; }
             photos[key][idx]="";   /* 성공하면 경로로, 실패하면 빈칸으로 남긴다(경로는 2xx 성공 뒤에만) */
             tasks.push({key:key, idx:idx, path:path, durl:val});
           }else{ photos[key][idx]=(val||""); }
