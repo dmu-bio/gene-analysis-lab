@@ -392,6 +392,15 @@ th.nw{white-space:nowrap}
 .revrow .qt{font-size:14px;font-weight:700}
 .revrow .rs{font-size:12.5px;color:var(--tx3);margin-top:3px}
 .revrow .ex{font-size:13px;color:var(--tx2);margin-top:6px;border-top:1px dashed var(--line2);padding-top:6px}
+/* O-0079: 결과 화면 추리 단서 풀이(접기) */
+.rv-clues{margin-top:8px;font-size:13px}
+.rv-clues summary{cursor:pointer;font-weight:800;color:var(--mint);padding:4px 0}
+.rv-clue{border:1px solid var(--line);border-radius:9px;padding:7px 9px;margin-top:6px;background:var(--card);overflow-wrap:anywhere}
+.rv-clue.ev{border-left:4px solid var(--green)}
+.rv-clue .lb{font-weight:800;font-size:13px}
+.rv-clue .rh{font-size:12.5px;color:var(--tx2);margin-top:4px}
+.rv-clue .tagok{font-size:11px;font-weight:800;color:var(--green);white-space:nowrap}
+.rv-clue .tagme{font-size:11px;font-weight:800;color:var(--amber);white-space:nowrap}
 .revrow .rp{flex:0 0 auto;font-size:12px;font-weight:800;color:var(--amber)}
 
 .cert{position:relative;overflow:hidden;border:2px solid var(--gold);border-radius:16px;padding:20px 18px;margin:0 0 12px;
@@ -4391,7 +4400,8 @@ function paintMissionReason(it){
     var c = cs.clues[ci];
     h += '<div class="clue"><div class="lb">' + esc(clueLabelAt(c.label, d)) + '</div>';
     h += '<div class="bd pre">' + esc(c.body) + '</div>';
-    if(c.readingHint) h += '<div class="rh">읽는 법 — ' + esc(c.readingHint) + '</div>';
+    /* 2026-09-28(O-0079): 「읽는 법」(readingHint)은 판단을 대신 말해 주므로 문제 화면에는 넣지 않는다(DOM 에도 없음).
+       답을 낸 뒤 결과 화면(paintMissionResult → reasonCluesReview)에서 같은 순서·번호로 보여 준다. */
     h += '</div>';
   });
   h += '</div>';
@@ -4442,7 +4452,8 @@ function submitMissionReason(it){
   }
   var earned = it.points * frac;
   M.answers.push({ kind: "reason", cs: cs, points: it.points, suspect: M.subSuspect, evidence: M.subEvidence.slice(),
-    right: right, evHit: evHit, tier: tier, earned: earned });
+    right: right, evHit: evHit, tier: tier, earned: earned,
+    clueOrder: (Array.isArray(M.clueOrder) ? M.clueOrder.slice() : null) });   /* O-0079: 결과 화면에서 문제 화면과 같은 단서 순서·번호로 보이려고 기억(화면 표시용, 저장 안 함) */
   advanceMission();
 }
 function advanceMission(){
@@ -4467,6 +4478,24 @@ function finishMission(){
   paintTop();
   if(pass) showReward({ face:"celebrate", kicker:"미션 합격", title:score + "점 · 합격!", sub:curLab().weekLabel + " 보고서 점수를 받았어요", hold:3200 });
   paintMissionResult();
+}
+/* 2026-09-28(O-0079): 결과 화면의 추리 단서 풀이 — 문제 화면과 같은 순서·번호(①~④)로 단서마다 「읽는 법」을 보여 준다.
+   정답 근거 단서는 초록 표시, 학생이 고른 근거는 "내가 고름" 표시. 길어서 접기(details)로 둔다. */
+function reasonCluesReview(a){
+  var cs = a.cs, clues = cs.clues || [];
+  if(!clues.length) return "";
+  var ord = isPermOf(a.clueOrder, clues.length) ? a.clueOrder : clues.map(function(_, k){ return k; });
+  var ev = (cs.answer && cs.answer.evidence) || [], mine = a.evidence || [];
+  var h = '<details class="rv-clues"><summary>단서별 읽는 법 보기</summary>';
+  ord.forEach(function(ci, d){
+    var c = clues[ci], isEv = ev.indexOf(c.id) >= 0, isMine = mine.indexOf(c.id) >= 0;
+    h += '<div class="rv-clue' + (isEv ? ' ev' : '') + '"><div class="lb">' + esc(clueLabelAt(c.label, d)) +
+      (isEv ? ' <span class="tagok">정답 근거</span>' : '') + (isMine ? ' <span class="tagme">내가 고름</span>' : '') + '</div>';
+    if(c.readingHint) h += '<div class="rh">읽는 법 — ' + esc(c.readingHint) + '</div>';
+    h += '</div>';
+  });
+  h += '</details>';
+  return h;
 }
 function paintMissionResult(){
   var M = ctx.mission;
@@ -4530,6 +4559,7 @@ function paintMissionResult(){
         '<div class="qt">' + esc(cs.no || "") + ' · ' + esc(cs.title || "") + '</div>' +
         '<div class="rs">' + esc(tierTxt) + ' (근거 ' + a.evHit + '/2)</div>' +
         '<div class="ex">정답 원인 — <b>' + esc(sus ? sus.label : "") + '</b><br>' + esc(cs.debrief || "") + '<br><span style="color:var(--tx3)">출처 · ' + esc(cs.source || "") + '</span></div>' +
+        reasonCluesReview(a) +
         '</div><div class="rp">' + Math.round(a.earned) + '/' + a.points + '</div></div>';
     }
   });
