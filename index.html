@@ -5030,7 +5030,9 @@ var GLR = {
   readSnapshot:function(){ try{ return JSON.parse(localStorage.getItem(this.SNAPKEY)||"null"); }catch(e){ return null; } },
 
   fetchPhoto:function(path){
-    return fetch(GLCONF.url+"/storage/v1/object/"+GLCONF.bucket+"/"+path, { headers:this.hdr(false) })
+    /* O-0099(2026-09-29): 같은 경로에 사진을 바꿔 올려도(x-upsert) 같은 로그인 동안에는 예전 사진이 내려오는 것을 실서버에서 확인했다
+       (cache:"no-store"로도 안 풀리고, 주소 뒤 ?t= 만 풀림). 매번 다른 주소로 받아 늘 서버의 지금 사진을 받는다. */
+    return fetch(GLCONF.url+"/storage/v1/object/"+GLCONF.bucket+"/"+path+"?t="+Date.now(), { headers:this.hdr(false) })
       .then(function(res){ if(!res.ok) throw res.status; return res.blob(); }).then(glBlobToDataUrl);
   },
   uploadPhoto:function(path, durl){
