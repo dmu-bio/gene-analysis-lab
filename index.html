@@ -63,6 +63,15 @@ button,input,textarea{font-family:inherit;font-size:16px;color:inherit}
 .tb-barlbl{font-size:10px;color:var(--tx3);margin-top:2px;letter-spacing:.02em}
 .notice{background:var(--amberdk);border-top:1px solid #e6d3a8;color:#8a6516;font-size:12.5px;line-height:1.45;padding:7px 14px;text-align:center}
 .notice b{color:var(--amber)}
+/* 새 버전 새로고침 안내(O-0121) — 상단 바 안, 한 줄. 공통 .btn(width:100%)을 쓰지 않는다. */
+.verbar{display:flex;align-items:center;justify-content:center;gap:10px;background:#e7f0ff;border-top:1px solid #b8cff3;
+  color:#123b73;font-size:13px;line-height:1.45;padding:7px 14px}
+.verbar[hidden]{display:none}
+.verbar .vb-msg{flex:0 1 auto;min-width:0}
+.verbar .vb-msg b{color:#1d56b8}
+.verbar .vb-btn{flex:0 0 auto;width:auto;min-height:36px;padding:6px 14px;border-radius:10px;border:1px solid #1d56b8;
+  background:#1d56b8;color:#fff;font-size:13px;font-weight:800;white-space:nowrap;cursor:pointer}
+.verbar .vb-btn[disabled]{opacity:.65;cursor:default}
 
 /* ---------- 화면 ---------- */
 main{position:relative;z-index:1;padding:16px 0 132px}
@@ -603,6 +612,10 @@ th.nw{white-space:nowrap}
     </div>
   </div>
   <div class="notice" id="notice"><b>실습 보고서 대체 미션 (시제품)</b></div>
+  <div class="verbar" id="verBar" role="status" aria-live="polite" hidden>
+    <span class="vb-msg" id="verMsg">앱이 새로 바뀌었어요. 저장한 뒤 <b>[새로고침]</b>을 눌러 주세요.</span>
+    <button type="button" class="vb-btn" id="verBtn">새로고침</button>
+  </div>
 </header>
 
 <main>
@@ -704,6 +717,17 @@ var C = window.GAME_CONTENT;
  *   ⚠️ 실제 수업/배포 전에는 반드시 false 로 되돌린다 — 이 한 줄만 바꾸면 원래 날짜 잠금으로 복귀.
  * ========================================================================*/
 var TEST_OPEN_ALL = false;  /* 테스트용 날짜 잠금 해제. 실제 수업/배포 전 false 로 바꿀 것 */
+
+/* ==========================================================================
+ * 🔄 빌드 번호 — 새 버전 새로고침 안내 (2026-10-01 O-0121)
+ *   앱이 열려 있는 동안 서버의 version.json 을 가끔 읽어, 그 번호가 이 값보다 크면
+ *   화면 위에 「앱이 새로 바뀌었어요. 저장한 뒤 [새로고침]을 눌러 주세요.」 안내를 띄운다.
+ *   ⚠️ 배포할 때마다(index.html·content.js 를 고칠 때마다) 이 값과 version.json 의 "build" 를
+ *      똑같이 올린다 — 손으로 고치지 말고 `python bump_build.py` 한 번이면 둘 다 맞춰진다.
+ *      형식: YYYYMMDDNN(날짜 + 그날 순번 2자리). 숫자가 클수록 새 버전.
+ *      배포 전 확인: `python bump_build.py --check` (둘이 다르면 오류로 멈춘다).
+ * ========================================================================*/
+var APP_BUILD = "2026100101";
 
 /* ==========================================================================
  * 활성 주차 — 지금은 2주차(w02 · 세포배양)만 열려 있다.
@@ -1684,6 +1708,8 @@ var ctx = {};
  *   REPORT_PENDING : 입력 뒤 700ms 자동저장이 아직 안 돈 것 {R, flush}. 화면을 떠날 때(go·logout·보고서 다시 그림) 즉시 그 보고서 주차로 저장한다.
  *   REPORT_LATEST  : "학번|주차" → 가장 최근에 연(편집 가능한) 보고서 {R, live, collect}. 늦게 끝난 사진 처리 콜백이 같은 주차의 최신 데이터에 사진을 넣게 한다. */
 var REPORT_PENDING = null, REPORT_LATEST = {}, REPORT_TOK = 0;
+/* O-0121: 지금 변환 중인 사진 {번호: 시작시각} — [새로고침] 전에 변환·저장이 끝나기를 기다린다(고른 사진이 저장 전에 날아가지 않게). */
+var PHOTO_PROC = {}, PHOTO_PROC_N = 0;
 function flushReportPending(){ var p = REPORT_PENDING; REPORT_PENDING = null; if(p && p.flush){ try{ p.flush(); }catch(e){} } }
 function go(name, push){
   if(SCREENS.indexOf(name) < 0){ if(window.console) console.error("정의되지 않은 화면: " + name); return; }
@@ -2896,7 +2922,9 @@ RENDER.report = function(){
         if(reportSaveBlocked()){ inp.value = ""; return; }   /* O-0067 B2: 기한 경과 후 새 사진 저장 차단 */
         var key = inp.getAttribute("data-imgfile"), idx = parseInt(inp.getAttribute("data-idx"), 10);
         toast("사진 처리 중…");
+        var procId = ++PHOTO_PROC_N; PHOTO_PROC[procId] = Date.now();   /* O-0121 */
         resizeImageFile(file, 1280, function(durl, err){
+          delete PHOTO_PROC[procId];   /* O-0121: 변환 끝(성공·실패 모두). 아래 saveReport 는 같은 흐름에서 바로 돈다. */
           if(err || !durl){ toast(err || "사진을 불러오지 못했습니다."); return; }
           /* 🔴 O-0074 N1: 사진 처리 중 화면을 떠나도 사진은 「고른 그 주차·그 학생」 보고서에만 저장한다. */
           if(!state || String(state.studentId || "") !== String(R.sid)){ toast("로그인이 바뀌어 사진을 저장하지 않았습니다."); return; }
@@ -5484,6 +5512,131 @@ function boot(){
   bootRemote();
 }
 boot();
+
+/* ==========================================================================
+ * 🔄 새 버전 새로고침 안내 (2026-10-01 O-0121)
+ *   배경: 새로고침하지 않은 학생이 고치기 전 옛 화면을 계속 써서 사진이 재업로드됐다(9/30 점검).
+ *   · 확인 시점: 앱 시작 · 화면 복귀(visibilitychange/pageshow) · 5분마다. version.json 은 캐시를 건너뛰고 읽는다.
+ *   · 서버 build > APP_BUILD 일 때만 상단 바에 안내를 띄운다(같거나 작으면 숨김 — CDN 지연으로 옛 파일이 와도 오판 안 함).
+ *   · 자동 새로고침은 하지 않는다(작성 중 유실 위험). 학생·교수가 [새로고침]을 누를 때만:
+ *       ① 진행 중 미션이면 멈춤(마친 뒤 누르도록 안내)
+ *       ② 보고서 입력 대기분 즉시 저장(flushReportPending) · 변환 중 사진이 끝나기를 기다림
+ *       ③ 서버 모드: 전송 대기 큐가 비고(pump 완료) 실패 목록이 없을 때까지 기다림(최대 30초)
+ *       ④ 하나라도 못 보냈으면 새로고침하지 않고 안내 · 다 보냈으면 content.js 등을 캐시 무시로 다시 받고 ?v=빌드 주소로 새로 연다.
+ * ========================================================================*/
+var VER = { server:"", last:0, busy:false, timer:null };
+var VER_WAIT_MS = 30000, VER_POLL_MS = 5 * 60 * 1000, VER_MIN_GAP_MS = 20000;
+function verBuildNum(s){ s = String(s || ""); return /^\d{10}$/.test(s) ? Number(s) : 0; }
+function verShow(){
+  var bar = $("verBar"); if(!bar) return;
+  if(bar.hidden){ bar.hidden = false; }
+}
+function verHide(){ var bar = $("verBar"); if(bar && !VER.busy) bar.hidden = true; }
+function verSetBtn(txt, disabled){ var b = $("verBtn"); if(b){ b.textContent = txt; b.disabled = !!disabled; } }
+function verMsg(html){ var m = $("verMsg"); if(m) m.innerHTML = html; }
+var VER_MSG_DEFAULT = '앱이 새로 바뀌었어요. 저장한 뒤 <b>[새로고침]</b>을 눌러 주세요.';
+function verCheck(force){
+  try{
+    if(!/^https?:$/.test(location.protocol) || !window.fetch) return;
+    var now = Date.now();
+    if(!force && now - VER.last < VER_MIN_GAP_MS) return;
+    VER.last = now;
+    fetch("version.json?t=" + now, { cache:"no-store" }).then(function(r){ return r.ok ? r.json() : null; }).then(function(j){
+      var sb = verBuildNum(j && j.build), mine = verBuildNum(APP_BUILD);
+      if(sb && mine && sb > mine){ VER.server = String(j.build); verShow(); }
+      else if(sb && mine && sb <= mine){ verHide(); }
+    }).catch(function(){ /* 오프라인 등 — 조용히 넘기고 다음 확인 때 다시 본다(안내 여부만의 문제, 데이터 무관) */ });
+  }catch(e){}
+}
+/* 아직 저장·전송이 끝나지 않은 것이 있는가 — 있으면 그 이유 문구, 없으면 "" */
+function verPendingReason(){
+  var now = Date.now();
+  var photoBusy = Object.keys(PHOTO_PROC).some(function(k){ return now - PHOTO_PROC[k] < 60000; });
+  if(photoBusy) return "photo";
+  if(window.GLR && GLR.on){
+    if(GLR.q && GLR.q.length) return "queue";
+    if(GLR.busy) return "queue";
+  }
+  return "";
+}
+function verFail(html){
+  VER.busy = false;
+  verSetBtn("새로고침", false);
+  verMsg('🔴 ' + html);
+  if(window.toast) toast("새로고침하지 않았어요 — 화면 위 안내를 봐 주세요.");
+  try{ if(window.GLR && GLR.on) GLR.showQ(); }catch(e){}
+}
+function verReloadNow(){
+  var b = VER.server || APP_BUILD;
+  var done = false;
+  function open(){
+    if(done) return; done = true;
+    try{
+      var u = new URL(location.href);
+      u.searchParams.set("v", b);
+      location.replace(u.toString());
+    }catch(e){ location.reload(); }
+  }
+  /* 같은 주소의 content.js 등을 네트워크에서 다시 받아 브라우저 캐시를 새것으로 바꿔 둔다(GitHub Pages 캐시 최대 10분 대비). */
+  try{
+    var files = ["content.js", "assets/dgl_sprites.js", "manifest.json"];
+    Promise.all(files.map(function(f){ return fetch(f, { cache:"reload" }).catch(function(){}); })).then(open, open);
+    setTimeout(open, 6000);
+  }catch(e){ open(); }
+}
+function verRefresh(){
+  if(VER.busy) return;
+  /* ① 미션 푸는 중에는 새로고침하지 않는다(푸는 회차가 끊긴다). */
+  if(cur === "mission" && ctx.mission && ctx.mission.phase === "run"){
+    toast("미션을 마친 뒤 [새로고침]을 눌러 주세요.");
+    return;
+  }
+  VER.busy = true;
+  verMsg(VER_MSG_DEFAULT);
+  verSetBtn("저장 중…", true);
+  /* ② 보고서 화면에 남은 입력을 그 보고서 주차로 바로 저장(→ 서버 모드면 전송 큐에 들어간다) */
+  try{ flushReportPending(); }catch(e){}
+  /* 전송은 기존 pump 흐름에 맡긴다 — 여기서는 한 번만 깨우고(이미 돌고 있으면 아무 일 없음), 재시도 간격(5초)·횟수는 건드리지 않는다. */
+  try{ if(window.GLR && GLR.on && GLR.q && GLR.q.length && !GLR.busy) GLR.pump(); }catch(e){}
+  var t0 = Date.now();
+  (function wait(){
+    var why = verPendingReason();
+    if(!why){
+      /* ③ 다 보냈다 — 단, 서버가 거부했거나 여러 번 실패한 작업이 남아 있으면 새로고침하지 않는다. */
+      if(window.GLR && GLR.on && GLR.failed && GLR.failed.length){
+        verFail('아직 서버로 보내지 못한 자료가 있어 새로고침하지 않았어요. <span style="font-weight:400">맨 위 붉은 안내를 확인해 주세요. 작성한 내용은 이 기기에 보관돼 있습니다.</span>');
+        return;
+      }
+      verSetBtn("새로고침 중…", true);
+      verReloadNow();
+      return;
+    }
+    if(why === "queue" && window.GLR && GLR.on){
+      if(!(GLR.tok && GLR.tok.access_token)){
+        verFail('로그인이 만료돼 아직 보내지 못한 자료가 있어요. <span style="font-weight:400">다시 로그인하면 자동으로 보낸 뒤 새로고침할 수 있습니다.</span>');
+        return;
+      }
+    }
+    if(Date.now() - t0 > VER_WAIT_MS){
+      verFail(why === "photo"
+        ? '사진 처리가 아직 끝나지 않아 새로고침하지 않았어요. <span style="font-weight:400">사진칸에 「서버에 저장됨」이 보인 뒤 다시 눌러 주세요.</span>'
+        : '아직 서버로 보내는 중인 자료가 있어 새로고침하지 않았어요. <span style="font-weight:400">네트워크를 확인하고, 맨 위 「보내는 중」 표시가 사라진 뒤 다시 눌러 주세요.</span>');
+      return;
+    }
+    setTimeout(wait, 400);
+  })();
+}
+(function verInit(){
+  try{
+    var b = $("verBtn"); if(b) b.onclick = verRefresh;
+    verCheck(true);
+    document.addEventListener("visibilitychange", function(){ if(document.visibilityState === "visible") verCheck(false); });
+    window.addEventListener("pageshow", function(e){ if(e && e.persisted) verCheck(true); });
+    VER.timer = setInterval(function(){ verCheck(true); }, VER_POLL_MS);
+    /* 검증용 노출(동작에는 쓰지 않음) */
+    window.GL_BUILD = APP_BUILD; window.glVerCheck = verCheck;
+  }catch(e){}
+})();
 
 })();
 </script>
