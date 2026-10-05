@@ -8720,7 +8720,7 @@ window.GAME_CONTENT = {
             key: "discussion", no: 5, label: "고찰",
             type: "text",
             rows: 8,
-            hint: "재조합 DNA(Vector) 제조와 competent cell 제조가 잘 됐는지 판정하고, 각각의 원리와 연결해 결과를 해석하세요. 재조합은 TA cloning 원리(PCR 산물의 A와 Vector의 T 상보결합)와 반응 조건(상온 30분)에, competent cell은 세포막 중화(CaCl₂)·저온 유지·보관(-80℃)에 연결해 적습니다. 잘 안 됐다면 그 원인(반응 시간 부족·PCR product 누락·온도 상승·CaCl₂ 미사용·보관 온도 등)을 추정해 적습니다."
+            hint: "재조합 DNA(Vector) 제조와 competent cell 제조를 실험방법대로 진행했는지 실험 과정(반응액 조성·반응 조건·온도 유지)을 근거로 돌아보고, 각각의 원리와 연결해 적으세요. 재조합은 TA cloning 원리(PCR 산물의 A와 Vector의 T 상보결합)와 반응 조건(상온 30분)에, competent cell은 세포막 중화(CaCl₂)·저온 유지·보관(-80℃)에 연결해 적습니다. 실험방법과 다르게 진행한 부분이 있다면 그것이 결과에 줄 영향(반응 시간 부족·PCR product 누락·온도 상승·CaCl₂ 미사용·보관 온도 등)을 추정해 적습니다."
           }
         ],
         source: "실험방법 07 [1]①②·[2]③⑤⑥ · 강의계획서 세부 7주차 · 대표님 지시(O-0059, 사진4 + 고찰: ①재조합 DNA 반응액을 넣은 PCR tube(O-0248) ②CaCl₂ 30 mL 2개 ③Glycerol CaCl₂ 5 mL 1개 ④100 µL 소분)"
