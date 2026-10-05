@@ -7925,7 +7925,7 @@ window.GAME_CONTENT = {
             choices: ["약 3.9 kb", "50 kb", "300 bp", "1 Mb"],
             answer: 0,
             explain: "이번에 쓰는 TOPO TA cloning vector의 크기는 약 3.9 kb입니다.",
-            source: "강의 이론(재조합 및 형질전환) — TOPO TA cloning vector (크기: 2026-09-26 대표님 지정, 추후 확인)",
+            source: "강의 이론(재조합 및 형질전환) — TOPO TA cloning vector (크기: 2026-09-26 교수님 지정, 추후 확인)",
             tags: ["약 3.9 kb","vector 크기"]
           },
           {
@@ -8654,7 +8654,7 @@ window.GAME_CONTENT = {
       /* ------------------------------------------------------------------
        * report(w07) — 실험보고서 (사진4 + 고찰, w05·w06과 동일 엔진)
        *   ① 재조합 DNA(Vector) 반응액을 넣은 PCR tube 사진  ②~④ Competent cell 제조 과정 사진  ⑤ 고찰
-       *   2026-10-05 대표님 지시(O-0248): 실험방법 07 개정(반응액 9 µL, 확인 절차 삭제)에 맞춰 ①의 문구만 바꿈(키·칸 수 그대로).
+       *   2026-10-05 교수님 지시(O-0248): 실험방법 07 개정(반응액 9 µL, 확인 절차 삭제)에 맞춰 ①의 문구만 바꿈(키·칸 수 그대로).
        * ----------------------------------------------------------------*/
       report: {
         stageId: "w07",
@@ -8675,7 +8675,7 @@ window.GAME_CONTENT = {
           { key: "sid", label: "학번", value: "", fixed: false, hint: "로그인 학번" },
           { key: "name", label: "이름", value: "", fixed: false, hint: "로그인 이름" }
         ],
-        /* 2026-09-26 대표님 지시(O-0059): 사진 4장 + 고찰.
+        /* 2026-09-26 교수님 지시(O-0059): 사진 4장 + 고찰.
          *   ①재조합 DNA(Vector) 반응액을 넣은 PCR tube(O-0248로 문구 변경) · ②Competent cell 제조① 30 mL 2개(실험방법 07 [2]③)
          *   ③Competent cell 제조② 5 mL 1개(⑤) · ④Competent cell 제조③ 100 µL 소분(⑥) · 고찰.
          * type:"images"는 conditions 개수만큼 이미지 업로드 슬롯을 그린다(w05·w06과 동일 엔진). */
@@ -8723,7 +8723,7 @@ window.GAME_CONTENT = {
             hint: "재조합 DNA(Vector) 제조와 competent cell 제조를 실험방법대로 진행했는지 실험 과정(반응액 조성·반응 조건·온도 유지)을 근거로 돌아보고, 각각의 원리와 연결해 적으세요. 재조합은 TA cloning 원리(PCR 산물의 A와 Vector의 T 상보결합)와 반응 조건(상온 30분)에, competent cell은 세포막 중화(CaCl₂)·저온 유지·보관(-80℃)에 연결해 적습니다. 실험방법과 다르게 진행한 부분이 있다면 그것이 결과에 줄 영향(반응 시간 부족·PCR product 누락·온도 상승·CaCl₂ 미사용·보관 온도 등)을 추정해 적습니다."
           }
         ],
-        source: "실험방법 07 [1]①②·[2]③⑤⑥ · 강의계획서 세부 7주차 · 대표님 지시(O-0059, 사진4 + 고찰: ①재조합 DNA 반응액을 넣은 PCR tube(O-0248) ②CaCl₂ 30 mL 2개 ③Glycerol CaCl₂ 5 mL 1개 ④100 µL 소분)"
+        source: "실험방법 07 [1]①②·[2]③⑤⑥ · 강의계획서 세부 7주차 · 교수님 지시(O-0059, 사진4 + 고찰: ①재조합 DNA 반응액을 넣은 PCR tube(O-0248) ②CaCl₂ 30 mL 2개 ③Glycerol CaCl₂ 5 mL 1개 ④100 µL 소분)"
       }
     },
     w08: {
@@ -8734,10 +8734,12 @@ window.GAME_CONTENT = {
        *   원리·개념(형질전환·heat-shock·Blue/White 선별) = 유전공학실험 강의 이론(재조합 및 형질전환).
        *   ⚠️ 실험방법 08 [1]①의 "6주차에 제작한 Vector"는 Vector 제조 주차(7주차)와 어긋나는 오기로 보여,
        *      여기서는 "지난 실험(7주차)에서 제작한 Vector"로 표기했다. 수치는 2026-2 실험방법을 따랐다. 지어낸 값 없음.
-       *   2026-10-05 대표님 지시(O-0250): 7주차 재조합 반응액이 총 9 µL로 바뀌어(O-0248), [1]①의 "7주차에 제작한 Vector" 양을
+       *   2026-10-05 교수님 지시(O-0250): 7주차 재조합 반응액이 총 9 µL로 바뀌어(O-0248), [1]①의 "7주차에 제작한 Vector" 양을
        *      10 µL → 9 µL로 고쳤다. [1]②의 pUC19 plasmid는 10 µL 그대로다(둘을 "DNA 10 µL"로 뭉뚱그려 쓰지 않는다).
-       *      ⚠️ 원본 PDF(실험방법 08)는 2026-10-05 현재 아직 "Vector 10 µL"로 적혀 있다 — 이 값은 대표님 말씀이 우선이다.
+       *      ⚠️ 원본 PDF(실험방법 08)는 2026-10-05 현재 아직 "Vector 10 µL"로 적혀 있다 — 이 값은 교수님 말씀이 우선이다.
        *      (같은 날 확인: 현재 PDF [1]①은 "7주차에 제작한 Vector"로 적혀 있다.)
+       *   2026-10-05 교수님 추가 지시("pUC19도 동일하게 9 µL로 다 통일해, 8주차에서"): [1]②의 pUC19 plasmid도 9 µL로 고쳤다.
+       *      이제 Vector·pUC19 둘 다 9 µL다(위의 "pUC19는 그대로" 메모는 이 지시로 바뀜). ⚠️ 원본 PDF는 아직 둘 다 "10 µL"다.
        * ----------------------------------------------------------------*/
       learn: {
         stageId: "w08",
@@ -8768,11 +8770,11 @@ window.GAME_CONTENT = {
             id: "L2", title: "DNA를 넣기 — competent cell에 Vector·pUC19 섞기", kind: "내용",
             body:
               "얼음에 둔 competent cell TOP10F′ 100 µL 한 개에는 지난 실험(7주차)에서 만든 재조합 DNA(Vector) 9 µL를 넣고, 또 하나의 " +
-              "competent cell에는 pUC19 plasmid 10 µL를 넣습니다(라벨링을 확실히 해 구분). 각각 뚜껑을 닫고 가볍게 혼합한 뒤 얼음에 " +
+              "competent cell에는 pUC19 plasmid 9 µL를 넣습니다(라벨링을 확실히 해 구분). 각각 뚜껑을 닫고 가볍게 혼합한 뒤 얼음에 " +
               "30분 둡니다. pUC19는 잘 알려진 대조용 plasmid로, 형질전환 자체가 잘 일어났는지 확인하는 데 씁니다. 이 단계는 DNA가 " +
               "세포막 가까이 충분히 붙도록 저온에서 기다리는 과정입니다.",
-            keyNumbers: ["competent cell TOP10F′ 100 µL 2개 준비", "① 재조합 DNA(Vector) 9 µL · ② pUC19 10 µL", "각각 혼합 후 얼음 30분(라벨링 구분)", "pUC19 = 형질전환 확인용 대조 plasmid"],
-            source: "실험방법 08 [1] ①② (Vector 9 µL: 교수님 지시 2026-10-05)"
+            keyNumbers: ["competent cell TOP10F′ 100 µL 2개 준비", "① 재조합 DNA(Vector) 9 µL · ② pUC19 9 µL", "각각 혼합 후 얼음 30분(라벨링 구분)", "pUC19 = 형질전환 확인용 대조 plasmid"],
+            source: "실험방법 08 [1] ①② (Vector·pUC19 9 µL: 교수님 지시 2026-10-05)"
           },
           {
             id: "L3", title: "Heat-shock — 42℃ 30초로 DNA 밀어넣기", kind: "핵심",
@@ -8814,7 +8816,7 @@ window.GAME_CONTENT = {
               "흰색(White) 콜로니가 됩니다. IPTG는 꺼져 있는 앞조각(lacZα) 유전자를 켜 줍니다. 따라서 흰색 콜로니 = 목적 DNA 삽입 " +
               "성공, 파란색 콜로니 = 삽입되지 않은 빈 벡터입니다.",
             keyNumbers: ["숙주(TOP10F′) = 뒷조각 · 플라스미드 = 앞조각(lacZα)", "둘이 만나야 효소 완성(α-상보성) → X-gal 분해 → 파란색(빈 벡터)", "목적 DNA가 lacZα에 끼워짐 → 앞조각 끊김 → 흰색(삽입 성공)", "IPTG = 꺼져 있는 앞조각(lacZα) 유전자를 켜 줌"],
-            source: "강의 이론(재조합 및 형질전환) — Blue-White screening · 2026-09-26 대표님 지정 설명(α-상보성)"
+            source: "강의 이론(재조합 및 형질전환) — Blue-White screening · 2026-09-26 교수님 지정 설명(α-상보성)"
           },
           {
             id: "L7", title: "배양·판독 + 안전 — 48시간 뒤 콜로니 확인", kind: "내용",
@@ -8829,10 +8831,10 @@ window.GAME_CONTENT = {
         ],
         takeaways: [
           "형질전환(Transformation)은 외부 DNA를 세포에 넣어 유전적 변화를 일으키는 것이다(1928 Griffith). 지난 주(7주차)에 만든 재조합 DNA(Vector)와 competent cell(TOP10F′)을 만나게 해, 앞의 모든 실험을 하나의 결과로 잇는 마지막 확인 단계다.",
-          "핵심 절차 — competent cell 100 µL에 Vector 9 µL(또는 대조 pUC19 10 µL)를 넣고 얼음 30분 → 42℃ 30초 heat-shock → 즉시 얼음 2분 → SOC 250 µL 넣고 37℃·225 rpm 1시간 회복배양 → 13,000 rpm 1분 원심·SOC 100 µL 재현탁 → 선별평판 도말(Vector→Kan, pUC19→Amp) → 37℃ 48시간 배양. heat-shock은 세포막에 모공을 만들어 DNA를 넣고, 회복배양은 항생제 저항 단백질을 발현시킨다.",
+          "핵심 절차 — competent cell 100 µL에 Vector 9 µL(또는 대조 pUC19 9 µL)를 넣고 얼음 30분 → 42℃ 30초 heat-shock → 즉시 얼음 2분 → SOC 250 µL 넣고 37℃·225 rpm 1시간 회복배양 → 13,000 rpm 1분 원심·SOC 100 µL 재현탁 → 선별평판 도말(Vector→Kan, pUC19→Amp) → 37℃ 48시간 배양. heat-shock은 세포막에 모공을 만들어 DNA를 넣고, 회복배양은 항생제 저항 단백질을 발현시킨다.",
           "Blue/White 선별로 성공을 판정한다. 숙주 대장균(TOP10F′)은 β-galactosidase의 뒷조각을, 플라스미드는 앞조각(lacZα)을 가지고 있어 둘이 만나야 효소가 된다(α-상보성) → X-gal 분해 → 파란색. 목적 DNA가 lacZα에 끼워지면 앞조각이 끊겨 → 흰색. IPTG는 꺼져 있는 앞조각 유전자를 켜 준다. 흰색=삽입 성공, 파란색=삽입 안 된 빈 벡터. 항생제 평판에 콜로니가 자랐으면 형질전환(저항 획득) 성공이다."
         ],
-        source: "실험방법 08 (형질전환) 전문 (Vector 9 µL: 교수님 지시 2026-10-05) · 강의 이론(재조합 및 형질전환) · 강의계획서 세부"
+        source: "실험방법 08 (형질전환) 전문 (Vector·pUC19 9 µL: 교수님 지시 2026-10-05) · 강의 이론(재조합 및 형질전환) · 강의계획서 세부"
       },
 
       /* ------------------------------------------------------------------
@@ -8855,7 +8857,7 @@ window.GAME_CONTENT = {
         ],
 
         numbers: [
-          { step: "DNA 넣기", value: "competent cell 100 µL + Vector 9 µL(또는 pUC19 10 µL) · 얼음 30분" },
+          { step: "DNA 넣기", value: "competent cell 100 µL + Vector 9 µL(또는 pUC19 9 µL) · 얼음 30분" },
           { step: "Heat-shock", value: "42℃ 항온수조 30초 → 즉시 얼음 2분" },
           { step: "회복배양", value: "S.O.C. 배지 250 µL · 37℃ 진탕 225 rpm · 1시간" },
           { step: "선별평판", value: "Kan 50 µg/mL · Amp 100 µg/mL 평판 각 1개" },
@@ -8891,7 +8893,7 @@ window.GAME_CONTENT = {
 
         closing: "42℃ 30초 heat-shock으로 세포막에 잠깐 구멍을 내 DNA를 넣고, SOC로 회복시켜 항생제 저항을 준비시킨 뒤, 항생제·X-gal 평판에 도말한다. 48시간 뒤 콜로니가 자랐으면 형질전환 성공, 흰색이면(앞조각이 끊겨 효소가 되지 못함) 목적 DNA 삽입 성공이다. 한 학기 배양→추출→정량→PCR→회수→재조합의 모든 결과가 이 콜로니 하나로 확인된다",
         report: "회복배양이 끝난 형질전환 배양액 2개(Vector·pUC19)와 48시간 배양한 평판배지 결과 2개(Kanamycin 평판·Ampicillin 평판)를 나란히 찍고, 콜로니 유무와 색(Blue/White)으로 형질전환·재조합 성공 여부를 고찰과 함께 보고서에 남긴다 (다음 실험 시작 전 제출)",
-        source: "실험방법 08 (Vector 9 µL: 교수님 지시 2026-10-05) · 강의 이론(재조합 및 형질전환)"
+        source: "실험방법 08 (Vector·pUC19 9 µL: 교수님 지시 2026-10-05) · 강의 이론(재조합 및 형질전환)"
       },
 
       /* ------------------------------------------------------------------
@@ -8973,17 +8975,17 @@ window.GAME_CONTENT = {
             q: "실험군 competent cell에 넣는 DNA는?",
             choices: ["지난 실험(7주차)에서 만든 재조합 DNA(Vector) 9 µL", "게놈 DNA 9 µL", "프라이머 9 µL", "RNA 9 µL"],
             answer: 0,
-            explain: "실험군에는 지난 주(7주차) 만든 재조합 DNA(Vector) 9 µL를 넣습니다. 대조용 pUC19 plasmid는 10 µL를 넣습니다.",
-            source: "실험방법 08 [1] ① (Vector 9 µL: 교수님 지시 2026-10-05)",
+            explain: "실험군에는 지난 주(7주차) 만든 재조합 DNA(Vector) 9 µL를 넣습니다. 대조용 pUC19 plasmid도 9 µL를 넣습니다.",
+            source: "실험방법 08 [1] ① (Vector·pUC19 9 µL: 교수님 지시 2026-10-05)",
             tags: ["Vector","9 µL"]
           },
           {
             qid: "w08p_m05", type: "mc", level: 1, points: 7, limitSec: 20,
             q: "형질전환 확인용 대조로 다른 competent cell에 넣는 plasmid는?",
-            choices: ["pUC19 10 µL", "TOPO Vector 10 µL", "pBI5ΔRTD 10 µL", "물 10 µL"],
+            choices: ["pUC19 9 µL", "TOPO Vector 9 µL", "pBI5ΔRTD 9 µL", "물 9 µL"],
             answer: 0,
-            explain: "또 하나의 competent cell에는 대조용 pUC19 plasmid 10 µL를 넣습니다(라벨링 구분).",
-            source: "실험방법 08 [1] ②",
+            explain: "또 하나의 competent cell에는 대조용 pUC19 plasmid 9 µL를 넣습니다(라벨링 구분).",
+            source: "실험방법 08 [1] ② (Vector·pUC19 9 µL: 교수님 지시 2026-10-05)",
             tags: ["pUC19","대조"]
           },
           {
@@ -9109,7 +9111,7 @@ window.GAME_CONTENT = {
             choices: ["숙주의 뒷조각과 플라스미드의 앞조각(lacZα)이 만나 효소가 완성돼야 한다", "플라스미드 혼자 효소를 모두 만들면 된다", "목적 DNA가 lacZα에 끼워져야 한다", "X-gal 없이 IPTG만 있으면 된다"],
             answer: 0,
             explain: "숙주 대장균(TOP10F′)의 뒷조각과 플라스미드의 앞조각(lacZα)이 만나야 효소가 완성되고(α-상보성), 이 효소가 X-gal을 분해해 파란색이 됩니다.",
-            source: "강의 이론(재조합 및 형질전환) — Blue-White screening · 2026-09-26 대표님 지정 설명(α-상보성)",
+            source: "강의 이론(재조합 및 형질전환) — Blue-White screening · 2026-09-26 교수님 지정 설명(α-상보성)",
             tags: ["α-상보성","파란색","앞조각·뒷조각"]
           },
           {
@@ -9246,7 +9248,7 @@ window.GAME_CONTENT = {
             q: "pUC19 혼자서 β-galactosidase를 모두 만든다.",
             answer: false,
             explain: "아닙니다. pUC19에는 앞조각(lacZα)만 있어서, 숙주 대장균의 뒷조각과 만나야 효소가 완성됩니다(α-상보성).",
-            source: "강의 이론(재조합 및 형질전환) — Blue-White screening · 2026-09-26 대표님 지정 설명(α-상보성)",
+            source: "강의 이론(재조합 및 형질전환) — Blue-White screening · 2026-09-26 교수님 지정 설명(α-상보성)",
             tags: ["α-상보성","pUC19","앞조각"]
           },
           {
@@ -9409,7 +9411,7 @@ window.GAME_CONTENT = {
                 body: "Vector 9 µL, SOC 250 µL, Kan 평판 도말 등 나머지는 규정대로였음.",
                 readingHint: "다른 조건은 정상이다 → heat-shock만 빠졌다.",
                 isEvidence: false,
-                source: "실험방법 08 [1]·[2] (Vector 9 µL: 교수님 지시 2026-10-05)" },
+                source: "실험방법 08 [1]·[2] (Vector·pUC19 9 µL: 교수님 지시 2026-10-05)" },
               { id: "k3", order: 3, label: "단서 ③ — 옆 조 비교",
                 body: "42℃ 30초 heat-shock을 정확히 한 옆 조는 Kan 평판에 콜로니가 자랐음.",
                 readingHint: "차이는 'heat-shock을 했느냐'뿐이다.",
@@ -9462,10 +9464,10 @@ window.GAME_CONTENT = {
                 isEvidence: true, decisive: true,
                 source: "실험방법 08 [1] ③ · 강의 이론(Heat-shock)" },
               { id: "k2", order: 2, label: "단서 ② — 앞뒤 조건",
-                body: "DNA 양(Vector 9 µL · pUC19 10 µL), 얼음 30분, SOC 250 µL·37℃ 1시간 회복배양은 규정대로였음.",
+                body: "DNA 양(9 µL), 얼음 30분, SOC 250 µL·37℃ 1시간 회복배양은 규정대로였음.",
                 readingHint: "다른 조건은 정상이다 → heat-shock 시간 관리만 문제다.",
                 isEvidence: false,
-                source: "실험방법 08 [1] (Vector 9 µL: 교수님 지시 2026-10-05)" },
+                source: "실험방법 08 [1] (Vector·pUC19 9 µL: 교수님 지시 2026-10-05)" },
               { id: "k3", order: 3, label: "단서 ③ — 대조(pUC19)도 실패",
                 body: "형질전환이 잘됐는지 확인하는 pUC19 대조 평판에도 콜로니가 거의 없었음.",
                 readingHint: "대조까지 실패 → DNA 종류 문제가 아니라 세포 자체가 상했을 가능성.",
@@ -9481,8 +9483,8 @@ window.GAME_CONTENT = {
               { id: "s1", mark: "ㄱ", label: "heat-shock 후 즉시 얼음으로 옮기지 않고 42℃에 오래 둬 세포가 죽었다", correct: true },
               { id: "s2", mark: "ㄴ", label: "SOC로 37℃ 1시간 회복배양했다", correct: false,
                 debrief: "회복배양은 올바른 절차입니다 — 원인이 아닙니다." },
-              { id: "s3", mark: "ㄷ", label: "Vector 9 µL · pUC19 10 µL를 넣었다", correct: false,
-                debrief: "Vector 9 µL · pUC19 10 µL는 규정 부피입니다 — 원인이 아닙니다." },
+              { id: "s3", mark: "ㄷ", label: "DNA를 9 µL 넣었다", correct: false,
+                debrief: "9 µL는 규정 부피입니다 — 원인이 아닙니다." },
               { id: "s4", mark: "ㄹ", label: "얼음에 30분 두었다", correct: false,
                 debrief: "DNA 넣고 얼음 30분은 정상 절차입니다 — 원인이 아닙니다." }
             ],
@@ -9751,7 +9753,7 @@ window.GAME_CONTENT = {
           { key: "sid", label: "학번", value: "", fixed: false, hint: "로그인 학번" },
           { key: "name", label: "이름", value: "", fixed: false, hint: "로그인 이름" }
         ],
-        /* 2026-09-26 대표님 지시(O-0059): 사진 2열×2줄 + 고찰.
+        /* 2026-09-26 교수님 지시(O-0059): 사진 2열×2줄 + 고찰.
          *   줄1 [형질전환 배양액(S.O.C. 회복배양 후)] 왼쪽=Vector · 오른쪽=pUC19 (실험방법 08 [1] ④)
          *   줄2 [평판배지 결과(48시간 배양 후)]      왼쪽=Kanamycin 평판(Vector) · 오른쪽=Ampicillin 평판(pUC19) ([2] ③④)
          * cols:2 = 편집폼에서 폰 폭이어도 2열 고정(index.html .img-grid-2). A4·PDF는 원래 2열 격자라 그대로 나란히. */
@@ -9785,7 +9787,7 @@ window.GAME_CONTENT = {
             hint: "두 평판의 콜로니 유무와 색(Blue/White)으로 형질전환·재조합 성공 여부를 판정하고, 원리와 연결해 해석하세요. 항생제 평판에 콜로니가 자란 것은 형질전환(저항 획득) 성공을 뜻하고, 흰색 콜로니는 목적 DNA 삽입 성공(파란색은 삽입 안 된 원래 vector)을 뜻합니다. 콜로니가 없거나 색 구분이 안 됐다면 그 원인(heat-shock·회복배양·평판 짝·IPTG/X-gal 등)을 추정해 적습니다."
           }
         ],
-        source: "실험방법 08 [1]④·[2]③④ · 강의 이론(재조합 및 형질전환) · 대표님 지시(O-0059, 사진 2열×2줄 + 고찰: 형질전환 배양액 Vector|pUC19 · 평판배지 결과 Kan(Vector)|Amp(pUC19))"
+        source: "실험방법 08 [1]④·[2]③④ · 강의 이론(재조합 및 형질전환) · 교수님 지시(O-0059, 사진 2열×2줄 + 고찰: 형질전환 배양액 Vector|pUC19 · 평판배지 결과 Kan(Vector)|Amp(pUC19))"
       }
     }
   }

@@ -12191,7 +12191,7 @@ var GLR = {
          사진 전용 경고를 우선 띄운다 — 사진은 이 기기에 보관돼 있어 다시 임시저장하면 재전송된다(유실 아님). */
       var photoFail = this.failed.some(function(j){ return j && j.op==="report" && self._reportHasBase64(j.data); });
       if(photoFail){ this.bar('🔴 사진 전송에 실패했습니다. <span style="font-weight:400">네트워크를 확인한 뒤 사진을 다시 임시저장해 주세요. 작성 내용과 사진은 이 기기에 안전하게 보관돼 있어 다시 저장하면 재전송됩니다.</span>',"red"); return; }
-      this.bar('🔴 서버가 저장을 거부한 것이 <b>'+this.failed.length+'건</b> 있습니다. <span style="font-weight:400">소장에게 알려 주세요.</span>',"red"); return;
+      this.bar('🔴 서버가 저장을 거부한 것이 <b>'+this.failed.length+'건</b> 있습니다. <span style="font-weight:400">교수님께 알려 주세요.</span>',"red"); return;
     }
     /* 🔵 전송 대기 자료를 이 기기에 임시 보관조차 못 한 경우(저장공간 부족) — 조용히 넘기지 않고 알린다. */
     if(this.qPersistFailed && this.q.length){ this.bar('🔴 이 기기 저장공간이 부족해 <b>전송 대기 자료를 임시 보관하지 못했습니다.</b> <span style="font-weight:400">전송이 끝날 때까지(위 “보내는 중” 표시가 사라질 때까지) 창을 닫지 마세요.</span>',"red"); return; }
