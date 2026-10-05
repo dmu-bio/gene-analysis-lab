@@ -7925,7 +7925,7 @@ window.GAME_CONTENT = {
             choices: ["약 3.9 kb", "50 kb", "300 bp", "1 Mb"],
             answer: 0,
             explain: "이번에 쓰는 TOPO TA cloning vector의 크기는 약 3.9 kb입니다.",
-            source: "강의 이론(재조합 및 형질전환) — TOPO TA cloning vector (크기: 2026-09-26 교수님 지정, 추후 확인)",
+            source: "강의 이론(재조합 및 형질전환) — TOPO TA cloning vector (크기 약 3.9 kb: 교수님 지정)",
             tags: ["약 3.9 kb","vector 크기"]
           },
           {
