@@ -7721,12 +7721,11 @@ window.GAME_CONTENT = {
           {
             id: "L5", title: "재조합 DNA(Vector) 제조 — 순서·부피·조건", kind: "내용",
             body:
-              "재조합 DNA는 멸균된 PCR tube에 네 용액을 순서대로 넣어 만듭니다 — ① 증류수(Distilled water) 6 µL → ② Salt solution " +
-              "3 µL → ③ PCR product 6 µL → ④ TOPO Vector 3 µL, 총 18 µL입니다(PCR product는 6주차에 회수한 목적 fragment). " +
-              "네 용액을 모두 넣어 섞은 뒤, DNA 합성(결합) 효율을 높이기 위해 상온에서 30분간 천천히 교반합니다. 반응이 끝나면 완성된 " +
-              "시료 5 µL만 덜어 전기영동으로 재조합 DNA가 제대로 만들어졌는지 확인합니다.",
-            keyNumbers: ["순서 = 증류수 6 → Salt solution 3 → PCR product 6 → TOPO Vector 3 µL (총 18 µL)", "PCR product = 6주차 회수 fragment", "반응 = 상온 30분 천천히 교반(결합 효율↑)", "확인 = 완성 시료 5 µL 전기영동"],
-            source: "실험방법 07 [1] ①②③"
+              "재조합 DNA는 멸균된 PCR tube에 네 용액을 순서대로 넣어 만듭니다 — ① 증류수(Distilled water) 3 µL → ② Salt solution " +
+              "1.5 µL → ③ PCR product 3 µL → ④ TOPO Vector 1.5 µL, 총 9 µL입니다(PCR product는 6주차에 회수한 목적 fragment). " +
+              "네 용액을 모두 넣어 섞은 뒤, DNA 합성(결합) 효율을 높이기 위해 상온에서 30분간 천천히 교반합니다.",
+            keyNumbers: ["순서 = 증류수 3 → Salt solution 1.5 → PCR product 3 → TOPO Vector 1.5 µL (총 9 µL)", "용기 = 멸균된 PCR tube", "PCR product = 6주차 회수 fragment", "반응 = 상온 30분 천천히 교반(결합 효율↑)"],
+            source: "실험방법 07 [1] ①②"
           },
           {
             id: "L6", title: "Competent cell이란 — 왜 CaCl₂로 처리하나", kind: "핵심",
@@ -7754,7 +7753,7 @@ window.GAME_CONTENT = {
         ],
         takeaways: [
           "오늘은 다음 주 형질전환을 위해 두 가지를 만든다 — ① 재조합 DNA(Vector): 6주차에 회수한 목적 fragment(PCR product)를 TOPO Vector에 붙인 DNA(표적 유전자 + Vector). ② Competent cell: 이 재조합 DNA를 받아줄 대장균 TOP10F′를 CaCl₂로 처리한 세포.",
-          "재조합 DNA는 TOPO TA cloning으로 만든다. Taq는 proofreading이 없어 PCR 산물 3' 말단에 A를 붙이고, T가 돌출된 TOPO Vector와 A-T 상보결합해 높은 효율로 결합한다(TOPO = Topoisomerase I, vector 약 3.9 kb). 반응액은 증류수 6·Salt solution 3·PCR product 6·TOPO Vector 3 µL(총 18 µL)를 순서대로 넣고 상온 30분 교반한 뒤 5 µL로 전기영동해 확인한다.",
+          "재조합 DNA는 TOPO TA cloning으로 만든다. Taq는 proofreading이 없어 PCR 산물 3' 말단에 A를 붙이고, T가 돌출된 TOPO Vector와 A-T 상보결합해 높은 효율로 결합한다(TOPO = Topoisomerase I, vector 약 3.9 kb). 반응액은 증류수 3·Salt solution 1.5·PCR product 3·TOPO Vector 1.5 µL(총 9 µL)를 순서대로 넣고 상온 30분 교반해 만든다.",
           "Competent cell은 세포막(음전하)과 DNA(음전하)의 반발을 CaCl₂(Ca²⁺)로 중화해 DNA 흡수율을 높인 세포다. 200 mL 배양액을 50 mL 코니칼 4개로 나눠 얼음 20분→4℃·4,000 rpm·5분 원심→100 mM CaCl₂ 처리(2차는 15% Glycerol 포함)→100 µL씩 소분→-80℃ 보관하며, 모든 조작을 얼음 위에서 빠르게 한다."
         ],
         source: "실험방법 07 (Vector 및 Competent cell 제조) 전문 · 강의계획서 세부 7주차 · 강의 이론(재조합 및 형질전환)·실험방법 11(Competent cell)"
@@ -7780,9 +7779,8 @@ window.GAME_CONTENT = {
         ],
 
         numbers: [
-          { step: "재조합 반응액", value: "증류수 6 → Salt solution 3 → PCR product 6 → TOPO Vector 3 µL (총 18 µL)" },
+          { step: "재조합 반응액", value: "증류수 3 → Salt solution 1.5 → PCR product 3 → TOPO Vector 1.5 µL (총 9 µL)" },
           { step: "재조합 반응", value: "상온 30분 천천히 교반(결합 효율↑)" },
-          { step: "재조합 확인", value: "완성 시료 5 µL 전기영동" },
           { step: "TOPO vector 크기", value: "약 3.9 kb" },
           { step: "배양액 분주", value: "TOP10F′ 200 mL → 50 mL 코니칼 4개 · 얼음 20분" },
           { step: "원심분리", value: "4℃ · 4,000 rpm · 5분(상등액 제거) · 얼음 20분 후 반복" },
@@ -7802,8 +7800,8 @@ window.GAME_CONTENT = {
 
         expected: {
           good: [
-            "재조합 반응액 18 µL를 순서대로 넣고 상온 30분 교반 → 재조합 DNA 완성",
-            "완성 시료 5 µL 전기영동 → 재조합 DNA가 확인됨",
+            "멸균된 PCR tube에 네 용액을 순서대로 빠짐없이 넣음 → 재조합 반응액 9 µL 조성",
+            "상온 30분 천천히 교반 → 재조합 DNA 완성",
             "저온을 유지하며 CaCl₂ 처리 → 외부 DNA를 잘 흡수하는 competent cell 완성",
             "100 µL씩 소분해 -80℃ 보관 → 다음 주 형질전환 재료 확보"
           ],
@@ -7816,7 +7814,7 @@ window.GAME_CONTENT = {
         },
 
         closing: "오늘은 '넣을 것'과 '받을 것'을 각각 준비하는 날이다. 6주차 회수 fragment를 TOPO Vector에 붙여 재조합 DNA를 만들고(TA cloning), 대장균 TOP10F′를 CaCl₂로 처리해 competent cell을 만든다. 모든 조작을 얼음 위에서 빠르게 하고 -80℃에 보관한 뒤, 다음 주(8주차) 이 둘을 만나게 하는 것이 형질전환이다",
-        report: "재조합 DNA(Vector) 제조 확인 사진 1장과 Competent cell 제조 사진 3장(CaCl₂ 처리 30 mL 2개 · 15% Glycerol CaCl₂ 5 mL 1개 · 100 µL 소분)을 찍고, 두 준비가 잘 됐는지 고찰과 함께 보고서에 남긴다 (다음 실험 시작 전 제출)",
+        report: "재조합 DNA(Vector) 반응액을 넣은 PCR tube 사진 1장과 Competent cell 제조 사진 3장(CaCl₂ 처리 30 mL 2개 · 15% Glycerol CaCl₂ 5 mL 1개 · 100 µL 소분)을 찍고, 두 준비가 잘 됐는지 고찰과 함께 보고서에 남긴다 (다음 실험 시작 전 제출)",
         source: "실험방법 07 · 강의계획서 세부 7주차 · 강의 이론(재조합 및 형질전환)·실험방법 11"
       },
 
@@ -7978,11 +7976,11 @@ window.GAME_CONTENT = {
           {
             qid: "w07p_m13", type: "mc", level: 1, points: 7, limitSec: 20,
             q: "재조합 반응액의 총 부피는?",
-            choices: ["18 µL", "6 µL", "50 µL", "100 µL"],
+            choices: ["9 µL", "3 µL", "50 µL", "100 µL"],
             answer: 0,
-            explain: "증류수 6 + Salt solution 3 + PCR product 6 + TOPO Vector 3 = 총 18 µL입니다.",
+            explain: "증류수 3 + Salt solution 1.5 + PCR product 3 + TOPO Vector 1.5 = 총 9 µL입니다.",
             source: "실험방법 07 [1] ①",
-            tags: ["총 18 µL"]
+            tags: ["총 9 µL"]
           },
           {
             qid: "w07p_m14", type: "mc", level: 2, points: 9, limitSec: 20,
@@ -7994,13 +7992,13 @@ window.GAME_CONTENT = {
             tags: ["상온 30분","교반"]
           },
           {
-            qid: "w07p_m15", type: "mc", level: 1, points: 7, limitSec: 20,
-            q: "완성된 재조합 Vector가 잘 만들어졌는지 확인하는 방법은?",
-            choices: ["시료 5 µL를 전기영동", "냄새를 맡음", "무게를 잼", "색을 봄"],
+            qid: "w07p_m27", type: "mc", level: 1, points: 7, limitSec: 20,   /* O-0248: 옛 w07p_m15(5 µL 전기영동 확인 — 절차 삭제) 자리 */
+            q: "재조합 반응액에 넣는 TOPO Vector의 양은?",
+            choices: ["1.5 µL", "3 µL", "6 µL", "9 µL"],
             answer: 0,
-            explain: "완성된 시료 5 µL만 이용해 전기영동으로 재조합 DNA가 제대로 만들어졌는지 확인합니다.",
-            source: "실험방법 07 [1] ③",
-            tags: ["전기영동 확인","5 µL"]
+            explain: "재조합 반응액에는 TOPO Vector 1.5 µL를 넣습니다(증류수 3 · Salt solution 1.5 · PCR product 3 · TOPO Vector 1.5 = 총 9 µL).",
+            source: "실험방법 07 [1] ①",
+            tags: ["TOPO Vector","1.5 µL"]
           },
           {
             qid: "w07p_m16", type: "mc", level: 1, points: 7, limitSec: 20,
@@ -8131,7 +8129,7 @@ window.GAME_CONTENT = {
             qid: "w07p_o04", type: "ox", level: 1, points: 7, limitSec: 8,
             q: "재조합 반응액은 증류수·Salt solution·PCR product·TOPO Vector로 구성한다.",
             answer: true,
-            explain: "맞습니다. 이 네 가지를 순서대로 넣어 총 18 µL의 재조합 반응액을 만듭니다.",
+            explain: "맞습니다. 이 네 가지를 순서대로 넣어 총 9 µL의 재조합 반응액을 만듭니다.",
             source: "실험방법 07 [1] ①",
             tags: ["반응액 구성"]
           },
@@ -8144,12 +8142,12 @@ window.GAME_CONTENT = {
             tags: ["넣는 순서"]
           },
           {
-            qid: "w07p_o21", type: "ox", level: 1, points: 7, limitSec: 8,
-            q: "완성된 재조합 Vector는 시료 15 µL로 전기영동해 확인한다.",
+            qid: "w07p_o23", type: "ox", level: 1, points: 7, limitSec: 8,   /* O-0248: 옛 w07p_o21(15 µL 전기영동 — 절차 삭제) 자리 */
+            q: "재조합 반응액에 넣는 Salt solution은 3 µL이다.",
             answer: false,
-            explain: "아닙니다. 완성된 시료 중 5 µL만 이용해 전기영동으로 확인합니다.",
-            source: "실험방법 07 [1] ③",
-            tags: ["전기영동","5 µL"]
+            explain: "아닙니다. Salt solution은 1.5 µL를 넣습니다(3 µL는 증류수와 PCR product의 양입니다).",
+            source: "실험방법 07 [1] ①",
+            tags: ["Salt solution","1.5 µL"]
           },
           {
             qid: "w07p_o07", type: "ox", level: 1, points: 7, limitSec: 8,
@@ -8204,18 +8202,18 @@ window.GAME_CONTENT = {
           {
             qid: "w07p_n01", type: "num", level: 2, points: 9, limitSec: 30,
             q: "재조합 반응액의 총 부피는 몇 µL인가?",
-            answer: 18, unit: "µL", tolerance: 0,
-            explain: "증류수 6 + Salt solution 3 + PCR product 6 + TOPO Vector 3 = 총 18 µL입니다.",
+            answer: 9, unit: "µL", tolerance: 0,
+            explain: "증류수 3 + Salt solution 1.5 + PCR product 3 + TOPO Vector 1.5 = 총 9 µL입니다.",
             source: "실험방법 07 [1] ①",
-            tags: ["18","총 부피"]
+            tags: ["9","총 부피"]
           },
           {
             qid: "w07p_n02", type: "num", level: 1, points: 7, limitSec: 30,
             q: "재조합 반응액에 넣는 PCR product는 몇 µL인가?",
-            answer: 6, unit: "µL", tolerance: 0,
-            explain: "재조합 반응액에는 PCR product 6 µL를 넣습니다.",
+            answer: 3, unit: "µL", tolerance: 0,
+            explain: "재조합 반응액에는 PCR product 3 µL를 넣습니다.",
             source: "실험방법 07 [1] ①",
-            tags: ["PCR product","6"]
+            tags: ["PCR product","3"]
           },
           {
             qid: "w07p_n03", type: "num", level: 2, points: 9, limitSec: 30,
@@ -8263,12 +8261,12 @@ window.GAME_CONTENT = {
             tags: ["넣는 순서"]
           },
           {
-            qid: "w07p_r02", type: "order", level: 2, points: 9, limitSec: 45,
+            qid: "w07p_r07", type: "order", level: 2, points: 9, limitSec: 45,   /* O-0248: 옛 w07p_r02(…→5 µL 전기영동 확인 — 절차 삭제) 자리 */
             q: "재조합 DNA(Vector) 제조 과정을 순서대로 맞춰 보세요.",
-            steps: ["상온 30분 천천히 교반", "반응액(4용액) 조성", "완성 시료 5 µL 전기영동 확인"],
-            answer: [1, 0, 2],
-            explain: "반응액 조성 → 상온 30분 교반 → 완성 시료 5 µL 전기영동 확인 순서입니다.",
-            source: "실험방법 07 [1] ①②③",
+            steps: ["상온에서 30분간 천천히 교반", "멸균된 PCR tube에 네 용액을 순서대로 넣기", "용액을 모두 넣은 뒤 혼합"],
+            answer: [1, 2, 0],
+            explain: "멸균된 PCR tube에 네 용액을 순서대로 넣기 → 모두 넣은 뒤 혼합 → 상온에서 30분간 천천히 교반 순서입니다.",
+            source: "실험방법 07 [1] ①②",
             tags: ["Vector 제조 순서"]
           },
           {
@@ -8316,43 +8314,43 @@ window.GAME_CONTENT = {
           {
             caseId: "w07_r01",
             no: "Case 01",
-            title: "재조합 효율이 낮다 — 반응 시간을 너무 짧게 줬다",
+            title: "재조합 반응을 일찍 끝냈다 — 반응 시간을 너무 짧게 줬다",
             subtitle: "7주차 Vector 제조 — 상온 30분을 지키지 않고 금방 꺼냈다",
             weeks: "7주차",
             points: 15,
             brief:
-              "한 조가 만든 재조합 Vector의 결합 효율이 옆 조보다 크게 낮았습니다. 재조합 반응 기록을 확인하니 이상했습니다. " +
+              "한 조가 재조합 DNA(Vector) 제조를 다른 조보다 훨씬 일찍 끝냈습니다. 재조합 반응 기록을 확인하니 이상했습니다. " +
               "무엇이 잘못됐는지 밝히세요.",
             freeClues: 3,
             extraClueCostXp: 20,
             clues: [
               { id: "k1", order: 1, label: "단서 ① — 반응 시간 기록",
-                body: "반응액 18 µL를 순서대로 넣긴 했으나, 상온 30분 교반을 하지 않고 섞자마자 바로 다음 단계로 넘어감.",
+                body: "반응액 9 µL를 순서대로 넣긴 했으나, 상온 30분 교반을 하지 않고 섞자마자 바로 다음 단계로 넘어감.",
                 readingHint: "재조합 반응은 상온 30분 교반으로 결합 효율을 높인다 — 시간을 안 주면 효율이 떨어진다. 결정타일 수 있다.",
                 isEvidence: true, decisive: true,
                 source: "실험방법 07 [1] ②" },
               { id: "k2", order: 2, label: "단서 ② — 반응액 조성",
-                body: "증류수 6·Salt solution 3·PCR product 6·TOPO Vector 3 µL(총 18 µL)를 순서대로 정확히 넣었음.",
+                body: "증류수 3·Salt solution 1.5·PCR product 3·TOPO Vector 1.5 µL(총 9 µL)를 순서대로 정확히 넣었음.",
                 readingHint: "반응액 부피·순서는 정상이다 → 조성 문제는 아니다.",
                 isEvidence: false,
                 source: "실험방법 07 [1] ①" },
               { id: "k3", order: 3, label: "단서 ③ — 옆 조 비교",
-                body: "같은 시료로 상온 30분을 지킨 옆 조는 결합 효율이 정상이었음.",
+                body: "같은 시료를 쓴 옆 조는 용액을 모두 넣어 섞은 뒤 상온에서 30분간 천천히 교반했음.",
                 readingHint: "차이는 '상온 30분 교반을 했느냐'뿐이다.",
                 isEvidence: true,
                 source: "실험방법 07 [1] ②" },
               { id: "k4", order: 4, label: "단서 ④ — 조원 진술",
                 body: "빨리 끝내려고 섞자마자 바로 다음으로 넘어갔어요. 30분 기다리는 걸 안 했어요.",
-                readingHint: "반응 시간을 안 줘 결합 효율이 떨어졌다.",
+                readingHint: "반응 시간을 주지 않아 결합 효율을 높이지 못했다.",
                 isEvidence: true, decisive: true,
                 source: "실험방법 07 [1] ②" }
             ],
             suspects: [
-              { id: "s1", mark: "ㄱ", label: "상온 30분 교반을 하지 않아 DNA 결합 효율이 떨어졌다", correct: true },
-              { id: "s2", mark: "ㄴ", label: "PCR product를 6 µL 넣었다", correct: false,
-                debrief: "PCR product 6 µL는 규정 부피입니다(단서 ②) — 실패 원인이 아닙니다." },
-              { id: "s3", mark: "ㄷ", label: "TOPO Vector를 3 µL 넣었다", correct: false,
-                debrief: "TOPO Vector 3 µL는 규정 부피입니다 — 원인이 아닙니다." },
+              { id: "s1", mark: "ㄱ", label: "상온 30분 교반을 하지 않아 DNA 결합 효율을 높이지 못했다", correct: true },
+              { id: "s2", mark: "ㄴ", label: "PCR product를 3 µL 넣었다", correct: false,
+                debrief: "PCR product 3 µL는 규정 부피입니다 — 원인이 아닙니다." },
+              { id: "s3", mark: "ㄷ", label: "TOPO Vector를 1.5 µL 넣었다", correct: false,
+                debrief: "TOPO Vector 1.5 µL는 규정 부피입니다 — 원인이 아닙니다." },
               { id: "s4", mark: "ㄹ", label: "증류수를 가장 먼저 넣었다", correct: false,
                 debrief: "증류수를 먼저 넣는 것은 올바른 순서입니다 — 원인이 아닙니다." }
             ],
@@ -8484,12 +8482,12 @@ window.GAME_CONTENT = {
           {
             caseId: "w07_r04",
             no: "Case 04",
-            title: "재조합이 거의 안 됐다 — PCR product를 빠뜨렸다",
+            title: "재조합 DNA가 만들어지지 않았다 — PCR product를 빠뜨렸다",
             subtitle: "7주차 Vector 제조 — 목적 fragment 없이 반응했다",
             weeks: "7주차",
             points: 15,
             brief:
-              "한 조의 재조합 반응 결과에서 재조합 DNA가 거의 확인되지 않았습니다. 반응액 조성을 확인하니 이상했습니다. " +
+              "한 조가 재조합 반응을 마친 뒤 실험대를 정리하다가, 이번 반응으로는 재조합 DNA가 만들어질 수 없었다는 것을 알게 됐습니다. 반응액 조성을 확인하니 이상했습니다. " +
               "무엇이 잘못됐는지 밝히세요.",
             freeClues: 3,
             extraClueCostXp: 20,
@@ -8519,8 +8517,8 @@ window.GAME_CONTENT = {
               { id: "s1", mark: "ㄱ", label: "PCR product(목적 fragment)를 빠뜨려 재조합할 대상이 없었다", correct: true },
               { id: "s2", mark: "ㄴ", label: "상온 30분 교반을 했다", correct: false,
                 debrief: "상온 30분 교반은 올바른 절차입니다 — 원인이 아닙니다." },
-              { id: "s3", mark: "ㄷ", label: "증류수를 6 µL 넣었다", correct: false,
-                debrief: "증류수 6 µL는 규정 부피입니다 — 원인이 아닙니다." },
+              { id: "s3", mark: "ㄷ", label: "증류수를 3 µL 넣었다", correct: false,
+                debrief: "증류수 3 µL는 규정 부피입니다 — 원인이 아닙니다." },
               { id: "s4", mark: "ㄹ", label: "TOPO Vector를 넣었다", correct: false,
                 debrief: "TOPO Vector를 넣는 것은 정상 절차입니다 — 원인이 아닙니다." }
             ],
@@ -8530,7 +8528,7 @@ window.GAME_CONTENT = {
               "자체가 없어 재조합이 일어나지 않습니다. 재조합이 안 되면 반응액에 목적 fragment(PCR product)를 넣었는지 먼저 " +
               "확인해야 합니다.",
             prescription: [
-              "재조합 반응액에 목적 fragment(PCR product) 6 µL를 반드시 넣는다",
+              "재조합 반응액에 목적 fragment(PCR product) 3 µL를 반드시 넣는다",
               "반응액 4가지(증류수·Salt solution·PCR product·TOPO Vector)를 순서대로 빠짐없이 넣는다",
               "재조합이 안 되면 PCR product 누락 여부를 먼저 점검한다"
             ],
@@ -8654,8 +8652,9 @@ window.GAME_CONTENT = {
       },
 
       /* ------------------------------------------------------------------
-       * report(w07) — 실험보고서 (사진2 + 고찰, w05·w06과 동일 엔진)
-       *   ① 재조합 DNA(Vector) 제조 확인(전기영동) 사진  ② Competent cell 제조 과정 사진  ③ 고찰
+       * report(w07) — 실험보고서 (사진4 + 고찰, w05·w06과 동일 엔진)
+       *   ① 재조합 DNA(Vector) 반응액을 넣은 PCR tube 사진  ②~④ Competent cell 제조 과정 사진  ⑤ 고찰
+       *   2026-10-05 대표님 지시(O-0248): 실험방법 07 개정(반응액 9 µL, 확인 절차 삭제)에 맞춰 ①의 문구만 바꿈(키·칸 수 그대로).
        * ----------------------------------------------------------------*/
       report: {
         stageId: "w07",
@@ -8677,17 +8676,17 @@ window.GAME_CONTENT = {
           { key: "name", label: "이름", value: "", fixed: false, hint: "로그인 이름" }
         ],
         /* 2026-09-26 대표님 지시(O-0059): 사진 4장 + 고찰.
-         *   ①재조합 DNA(Vector) 제조 확인 · ②Competent cell 제조① 30 mL 2개(실험방법 07 [2]③)
+         *   ①재조합 DNA(Vector) 반응액을 넣은 PCR tube(O-0248로 문구 변경) · ②Competent cell 제조① 30 mL 2개(실험방법 07 [2]③)
          *   ③Competent cell 제조② 5 mL 1개(⑤) · ④Competent cell 제조③ 100 µL 소분(⑥) · 고찰.
          * type:"images"는 conditions 개수만큼 이미지 업로드 슬롯을 그린다(w05·w06과 동일 엔진). */
         sections: [
           {
-            key: "vector", no: 1, label: "사진 ① — 재조합 DNA(Vector) 제조 확인",
+            key: "vector", no: 1, label: "사진 ① — 재조합 DNA(Vector) 제조: 반응액을 넣은 PCR tube",
             type: "images",
             slotNos: ["①"],   /* O-0067 B12: 칸 번호를 섹션 사진 번호와 맞춤(공통 "1)" 대신) */
-            hint: "재조합 DNA(Vector) 제조와 관련된 사진을 1장 올린다. 완성된 시료 5 µL를 전기영동해 재조합 DNA를 확인한 결과 사진, 또는 반응액을 조성한 장면을 담는다.",
+            hint: "재조합 DNA 반응액(증류수·Salt solution·PCR product·TOPO Vector, 총 9 µL)을 넣은 PCR tube를 찍어 1장 올린다(실험방법 07 [1] ①②).",
             conditions: [
-              "재조합 DNA(Vector) 제조 확인 사진"
+              "재조합 DNA 반응액을 넣은 PCR tube 사진"
             ]
           },
           {
@@ -8724,7 +8723,7 @@ window.GAME_CONTENT = {
             hint: "재조합 DNA(Vector) 제조와 competent cell 제조가 잘 됐는지 판정하고, 각각의 원리와 연결해 결과를 해석하세요. 재조합은 TA cloning 원리(PCR 산물의 A와 Vector의 T 상보결합)와 반응 조건(상온 30분)에, competent cell은 세포막 중화(CaCl₂)·저온 유지·보관(-80℃)에 연결해 적습니다. 잘 안 됐다면 그 원인(반응 시간 부족·PCR product 누락·온도 상승·CaCl₂ 미사용·보관 온도 등)을 추정해 적습니다."
           }
         ],
-        source: "실험방법 07 [1]③·[2]③⑤⑥ · 강의계획서 세부 7주차 · 대표님 지시(O-0059, 사진4 + 고찰: ①재조합 DNA 제조 확인 ②CaCl₂ 30 mL 2개 ③Glycerol CaCl₂ 5 mL 1개 ④100 µL 소분)"
+        source: "실험방법 07 [1]①②·[2]③⑤⑥ · 강의계획서 세부 7주차 · 대표님 지시(O-0059, 사진4 + 고찰: ①재조합 DNA 반응액을 넣은 PCR tube(O-0248) ②CaCl₂ 30 mL 2개 ③Glycerol CaCl₂ 5 mL 1개 ④100 µL 소분)"
       }
     },
     w08: {
