@@ -7660,6 +7660,9 @@ window.GAME_CONTENT = {
        *   절차·수치·시약명·온도·부피 = 2026-2 (실험방법) 07. Vector 및 Competent cell 제조 · 강의계획서 세부 7주차.
        *   원리·개념(재조합·TA cloning·competent cell 중화 등) = 유전공학실험 강의 이론(재조합 및 형질전환)·실험방법 11(Competent cell).
        *   ⚠️ 수치가 옛 자료와 다르면 2026-2 실험방법을 따랐다. 지어낸 값 없음.
+       *   2026-10-06 교수님 지시: 실험방법 07 최종본에 맞춤 — [2] 배양액 100 mL·50 mL 코니칼 2개,
+       *      100 mM CaCl₂ 각각 20 mL 뒤 얼음 20분(1차 CaCl₂ 뒤 코니칼을 합치던 단계는 삭제),
+       *      15% Glycerol CaCl₂ 5 mL 1개 뒤 얼음 10분, 1.5 mL E-tube 10개에 100 µL씩 소분. ([1]은 변동 없음)
        * ----------------------------------------------------------------*/
       learn: {
         stageId: "w07",
@@ -7741,20 +7744,20 @@ window.GAME_CONTENT = {
           {
             id: "L7", title: "Competent cell 제조 절차 + 저온 유지·보관", kind: "내용",
             body:
-              "대장균 TOP10F′(실험방법서 표기: TOP10F) 배양액 200 mL를 50 mL 코니칼 튜브 4개에 나눠 담고 얼음에 20분 둡니다. 이어 4℃·4,000 rpm·5분 " +
-              "원심분리 후 상등액을 버리고, 차갑게 식힌 100 mM CaCl₂ 15 mL씩으로 풀어 두 개씩 합쳐 30 mL 2개로 만듭니다. 다시 " +
-              "얼음에 20분 둔 뒤 같은 조건으로 원심·상등액 제거하고, 이번엔 15% Glycerol이 든 100 mM CaCl₂ 2.5 mL씩으로 풀어 두 " +
-              "코니칼을 합쳐 5 mL 1개로 만듭니다. 이 용액을 멸균·저온의 1.5 mL E-tube에 100 µL씩 소분해(형질전환 1회 분량) " +
-              "-80℃ Deepfreezer에 보관합니다. 모든 조작은 온도가 오르지 않게 얼음 위에서 빠르게 진행하며, 15% Glycerol은 -80℃에서 " +
+              "대장균 TOP10F′(실험방법서 표기: TOP10F) 배양액 100 mL를 50 mL 코니칼 튜브 2개에 나눠 담고 얼음에 20분 둡니다. 이어 4℃·4,000 rpm·5분 " +
+              "원심분리 후 상등액을 버리고, 차갑게 식힌 100 mM CaCl₂를 각각 20 mL씩 넣어 마이크로피펫으로 풀어 준 뒤 얼음에 20분 둡니다. 다시 " +
+              "같은 조건으로 원심·상등액 제거하고, 이번엔 15% Glycerol이 든 100 mM CaCl₂ 2.5 mL씩으로 풀어 두 " +
+              "코니칼을 합쳐 5 mL 1개로 만든 뒤 얼음에 10분 둡니다. 이 용액을 멸균·저온의 1.5 mL E-tube 10개에 100 µL씩 소분해(형질전환 1회 분량) " +
+              "-80℃ Deepfreezer에 보관합니다. 모든 작업은 온도가 오르지 않게 빠르게 진행하고 얼음에 두며, 15% Glycerol은 -80℃에서 " +
               "얼려 보관할 때 세포 손상을 줄이는 역할을 합니다.",
-            keyNumbers: ["배양액 200 mL → 50 mL 코니칼 4개 · 얼음 20분", "원심 = 4℃ · 4,000 rpm · 5분(상등액 제거)", "1차 100 mM CaCl₂ 15 mL씩 → 30 mL 2개 → 2차 15% Glycerol 포함 2.5 mL씩 → 5 mL 1개", "소분 100 µL씩 · -80℃ 보관 · 전 과정 얼음 위"],
+            keyNumbers: ["배양액 100 mL → 50 mL 코니칼 2개 · 얼음 20분", "원심 = 4℃ · 4,000 rpm · 5분(상등액 제거)", "1차 100 mM CaCl₂ 각각 20 mL · 얼음 20분 → 2차 15% Glycerol 포함 2.5 mL씩 → 5 mL 1개 · 얼음 10분", "소분 E-tube 10개에 100 µL씩 · -80℃ 보관 · 작업은 빠르게, 얼음에"],
             source: "실험방법 07 [2] ①~⑦ · 실험방법 11"
           }
         ],
         takeaways: [
           "오늘은 다음 주 형질전환을 위해 두 가지를 만든다 — ① 재조합 DNA(Vector): 6주차에 회수한 목적 fragment(PCR product)를 TOPO Vector에 붙인 DNA(표적 유전자 + Vector). ② Competent cell: 이 재조합 DNA를 받아줄 대장균 TOP10F′를 CaCl₂로 처리한 세포.",
           "재조합 DNA는 TOPO TA cloning으로 만든다. Taq는 proofreading이 없어 PCR 산물 3' 말단에 A를 붙이고, T가 돌출된 TOPO Vector와 A-T 상보결합해 높은 효율로 결합한다(TOPO = Topoisomerase I, vector 약 3.9 kb). 반응액은 증류수 3·Salt solution 1.5·PCR product 3·TOPO Vector 1.5 µL(총 9 µL)를 순서대로 넣고 상온 30분 교반해 만든다.",
-          "Competent cell은 세포막(음전하)과 DNA(음전하)의 반발을 CaCl₂(Ca²⁺)로 중화해 DNA 흡수율을 높인 세포다. 200 mL 배양액을 50 mL 코니칼 4개로 나눠 얼음 20분→4℃·4,000 rpm·5분 원심→100 mM CaCl₂ 처리(2차는 15% Glycerol 포함)→100 µL씩 소분→-80℃ 보관하며, 모든 조작을 얼음 위에서 빠르게 한다."
+          "Competent cell은 세포막(음전하)과 DNA(음전하)의 반발을 CaCl₂(Ca²⁺)로 중화해 DNA 흡수율을 높인 세포다. 100 mL 배양액을 50 mL 코니칼 2개로 나눠 얼음 20분→4℃·4,000 rpm·5분 원심→100 mM CaCl₂ 20 mL씩 넣고 얼음 20분→다시 원심→15% Glycerol 포함 CaCl₂ 2.5 mL씩(합쳐 5 mL 1개)·얼음 10분→E-tube 10개에 100 µL씩 소분→-80℃ 보관하며, 모든 작업을 빠르게 하고 얼음에 둔다."
         ],
         source: "실험방법 07 (Vector 및 Competent cell 제조) 전문 · 강의계획서 세부 7주차 · 강의 이론(재조합 및 형질전환)·실험방법 11(Competent cell)"
       },
@@ -7775,26 +7778,26 @@ window.GAME_CONTENT = {
           { h: "TA cloning 원리", d: "Taq는 proofreading이 없어 PCR 산물 3' 말단에 A 돌출 → T가 돌출된 T-Vector와 A-T 상보결합 → 높은 효율. Topoisomerase I(TOPO)이 결합을 도움" },
           { h: "TOPO Vector", d: "약 3.9 kb · ori(복제원점) · MCS(앞조각 lacZα 안의 cloning 부위) · Kanamycin 저항 유전자(선별 표지)" },
           { h: "Competent cell이란", d: "외부 DNA를 잘 흡수하도록 처리한 세포. 세포막(음전하)과 DNA(음전하)가 반발하므로 CaCl₂(Ca²⁺)로 중화해 흡수율을 높인다" },
-          { h: "저온 유지·보관", d: "모든 조작을 얼음 위에서 빠르게. 100 µL씩 소분해 -80℃ Deepfreezer 보관(15% Glycerol이 동결 시 세포 손상을 줄임)" }
+          { h: "저온 유지·보관", d: "모든 작업을 빠르게 하고 얼음에 둔다. E-tube 10개에 100 µL씩 소분해 -80℃ Deepfreezer 보관(15% Glycerol이 동결 시 세포 손상을 줄임)" }
         ],
 
         numbers: [
           { step: "재조합 반응액", value: "증류수 3 → Salt solution 1.5 → PCR product 3 → TOPO Vector 1.5 µL (총 9 µL)" },
           { step: "재조합 반응", value: "상온 30분 천천히 교반(결합 효율↑)" },
           { step: "TOPO vector 크기", value: "약 3.9 kb" },
-          { step: "배양액 분주", value: "TOP10F′ 200 mL → 50 mL 코니칼 4개 · 얼음 20분" },
-          { step: "원심분리", value: "4℃ · 4,000 rpm · 5분(상등액 제거) · 얼음 20분 후 반복" },
-          { step: "1차 CaCl₂", value: "100 mM CaCl₂ 15 mL씩 → 두 개씩 혼합 30 mL 2개" },
-          { step: "2차 CaCl₂", value: "100 mM CaCl₂(15% Glycerol 포함) 2.5 mL씩 → 5 mL 1개" },
-          { step: "소분·보관", value: "1.5 mL E-tube에 100 µL씩 · -80℃ Deepfreezer" }
+          { step: "배양액 분주", value: "TOP10F′ 100 mL → 50 mL 코니칼 2개 · 얼음 20분" },
+          { step: "원심분리", value: "4℃ · 4,000 rpm · 5분(상등액 제거) · 1차 CaCl₂·얼음 20분 뒤 한 번 더" },
+          { step: "1차 CaCl₂", value: "100 mM CaCl₂ 각각 20 mL씩 → 풀어 준 뒤 얼음 20분" },
+          { step: "2차 CaCl₂", value: "100 mM CaCl₂(15% Glycerol 포함) 2.5 mL씩 → 5 mL 1개 → 얼음 10분" },
+          { step: "소분·보관", value: "1.5 mL E-tube 10개에 100 µL씩 · -80℃ Deepfreezer" }
         ],
 
         cautions: [
-          "전 과정 저온 — 모든 조작을 얼음 위에서 빠르게(온도가 오르면 competent 상태가 나빠진다)",
+          "전 과정 저온 — 모든 작업을 빠르게 하고 얼음에 둔다(분주 뒤 20분 · 1차 CaCl₂ 뒤 20분 · 2차 CaCl₂ 뒤 10분). 온도가 오르면 competent 상태가 나빠진다",
           "넣는 순서 — 재조합 반응액은 증류수 → Salt solution → PCR product → TOPO Vector 순서로",
           "완전 혼합·상온 30분 — 결합 효율을 높이려면 상온에서 30분 천천히 교반",
           "원심 조건 — 4℃·4,000 rpm·5분(저온 원심분리기)을 지킨다",
-          "보관 — 100 µL씩 소분해 -80℃ Deepfreezer(냉장 아님)",
+          "보관 — E-tube 10개에 100 µL씩 소분해 -80℃ Deepfreezer(냉장 아님)",
           "라벨·소분 — 형질전환 1회 분량으로 나눠 필요할 때 하나씩 꺼내 쓴다"
         ],
 
@@ -7803,7 +7806,7 @@ window.GAME_CONTENT = {
             "멸균된 PCR tube에 네 용액을 순서대로 빠짐없이 넣음 → 재조합 반응액 9 µL 조성",
             "상온 30분 천천히 교반 → 재조합 DNA 완성",
             "저온을 유지하며 CaCl₂ 처리 → 외부 DNA를 잘 흡수하는 competent cell 완성",
-            "100 µL씩 소분해 -80℃ 보관 → 다음 주 형질전환 재료 확보"
+            "E-tube 10개에 100 µL씩 소분해 -80℃ 보관 → 다음 주 형질전환 재료 확보"
           ],
           suspect: [
             "재조합 효율이 낮다 → 반응 시간(상온 30분)·순서·부피를 지켰는지 의심",
@@ -7814,7 +7817,7 @@ window.GAME_CONTENT = {
         },
 
         closing: "오늘은 '넣을 것'과 '받을 것'을 각각 준비하는 날이다. 6주차 회수 fragment를 TOPO Vector에 붙여 재조합 DNA를 만들고(TA cloning), 대장균 TOP10F′를 CaCl₂로 처리해 competent cell을 만든다. 모든 조작을 얼음 위에서 빠르게 하고 -80℃에 보관한 뒤, 다음 주(8주차) 이 둘을 만나게 하는 것이 형질전환이다",
-        report: "재조합 DNA(Vector) 반응액을 넣은 PCR tube 사진 1장과 Competent cell 제조 사진 3장(CaCl₂ 처리 30 mL 2개 · 15% Glycerol CaCl₂ 5 mL 1개 · 100 µL 소분)을 찍고, 두 준비가 잘 됐는지 고찰과 함께 보고서에 남긴다 (다음 실험 시작 전 제출)",
+        report: "재조합 DNA(Vector) 반응액을 넣은 PCR tube 사진 1장과 Competent cell 제조 사진 3장(100 mM CaCl₂ 20 mL씩 넣은 코니칼 2개 · 15% Glycerol CaCl₂ 5 mL 1개 · E-tube 10개에 100 µL 소분)을 찍고, 두 준비가 잘 됐는지 고찰과 함께 보고서에 남긴다 (다음 실험 시작 전 제출)",
         source: "실험방법 07 · 강의계획서 세부 7주차 · 강의 이론(재조합 및 형질전환)·실험방법 11"
       },
 
@@ -8041,18 +8044,18 @@ window.GAME_CONTENT = {
             q: "Competent cell 제조에서 모든 조작을 얼음 위(저온)에서 하는 이유는?",
             choices: ["온도가 오르면 세포 상태(competent)가 나빠지므로", "얼음이 세포를 죽이려고", "빛을 차단하려고", "무게를 줄이려고"],
             answer: 0,
-            explain: "온도가 오르면 competent 상태가 나빠지므로, 모든 작업을 빠르게 하고 얼음에 꽂아 온도가 올라가지 않게 합니다.",
-            source: "실험방법 07 [2] ③⑤",
+            explain: "온도가 오르면 competent 상태가 나빠지므로, 모든 작업을 빠르게 진행하고 얼음에 넣어 둡니다(1차 CaCl₂ 뒤 얼음 20분 · 2차 CaCl₂ 뒤 얼음 10분).",
+            source: "실험방법 07 [2] ③⑤ · 실험방법 11",
             tags: ["저온 유지","얼음"]
           },
           {
             qid: "w07p_m21", type: "mc", level: 1, points: 7, limitSec: 20,
-            q: "TOP10F′ 배양액 200 mL를 처음에 나눠 담는 용기는?",
-            choices: ["50 mL 코니칼 튜브 4개", "1.5 mL E-tube 1개", "250 mL 삼각플라스크 1개", "페트리디쉬 1개"],
+            q: "TOP10F′ 배양액 100 mL를 처음에 나눠 담는 용기는?",
+            choices: ["50 mL 코니칼 튜브 2개", "1.5 mL E-tube 1개", "250 mL 삼각플라스크 1개", "페트리디쉬 1개"],
             answer: 0,
-            explain: "배양액 200 mL를 50 mL 코니칼 튜브 4개에 나누어 담고 얼음에 20분 둡니다.",
+            explain: "배양액 100 mL를 50 mL 코니칼 튜브 2개에 나누어 담고 얼음에 20분 둡니다.",
             source: "실험방법 07 [2] ①",
-            tags: ["50 mL 코니칼","4개"]
+            tags: ["50 mL 코니칼","2개"]
           },
           {
             qid: "w07p_m22", type: "mc", level: 2, points: 9, limitSec: 20,
@@ -8226,10 +8229,10 @@ window.GAME_CONTENT = {
           {
             qid: "w07p_n04", type: "num", level: 2, points: 9, limitSec: 30,
             q: "1차로 넣는 100 mM CaCl₂ 용액은 코니칼당 몇 mL인가?",
-            answer: 15, unit: "mL", tolerance: 0,
-            explain: "차갑게 식힌 100 mM CaCl₂ 용액을 15 mL씩 넣고 풀어 두 개씩 합쳐 30 mL 2개로 만듭니다.",
+            answer: 20, unit: "mL", tolerance: 0,
+            explain: "차갑게 식힌 100 mM CaCl₂ 용액을 각각 20 mL씩 넣고 마이크로피펫으로 풀어 준 뒤 얼음에 20분 둡니다.",
             source: "실험방법 07 [2] ③",
-            tags: ["15","CaCl2"]
+            tags: ["20","CaCl2"]
           },
           {
             qid: "w07p_n05", type: "num", level: 1, points: 7, limitSec: 30,
@@ -8272,19 +8275,19 @@ window.GAME_CONTENT = {
           {
             qid: "w07p_r03", type: "order", level: 2, points: 9, limitSec: 45,
             q: "Competent cell 제조 앞부분을 순서대로 맞춰 보세요.",
-            steps: ["4℃·4,000 rpm·5분 원심 후 상등액 제거", "배양액 200 mL를 50 mL 코니칼 4개에 분주·얼음 20분", "100 mM CaCl₂ 15 mL씩 넣어 30 mL 2개로"],
+            steps: ["4℃·4,000 rpm·5분 원심 후 상등액 제거", "배양액 100 mL를 50 mL 코니칼 2개에 분주·얼음 20분", "100 mM CaCl₂ 20 mL씩 넣어 풀어 준 뒤 얼음 20분"],
             answer: [1, 0, 2],
-            explain: "배양액 분주·얼음 20분 → 원심·상등액 제거 → CaCl₂ 15 mL씩(30 mL 2개) 순서입니다.",
+            explain: "배양액 분주·얼음 20분 → 원심·상등액 제거 → CaCl₂ 20 mL씩 넣어 풀어 준 뒤 얼음 20분 순서입니다.",
             source: "실험방법 07 [2] ①②③",
             tags: ["competent 제조 순서"]
           },
           {
             qid: "w07p_r04", type: "order", level: 3, points: 11, limitSec: 45,
             q: "Competent cell 제조 뒷부분을 순서대로 맞춰 보세요.",
-            steps: ["-80℃ Deepfreezer 보관", "얼음 20분 후 다시 원심·상등액 제거", "15% Glycerol 포함 CaCl₂ 2.5 mL씩 → 5 mL 1개", "1.5 mL E-tube에 100 µL씩 소분"],
+            steps: ["-80℃ Deepfreezer 보관", "1차 CaCl₂ 처리·얼음 20분 뒤 다시 원심·상등액 제거", "15% Glycerol 포함 CaCl₂ 2.5 mL씩 → 5 mL 1개 · 얼음 10분", "1.5 mL E-tube 10개에 100 µL씩 소분"],
             answer: [1, 2, 3, 0],
-            explain: "얼음 20분 후 재원심 → 15% Glycerol CaCl₂로 5 mL 1개 → 100 µL씩 소분 → -80℃ 보관 순서입니다.",
-            source: "실험방법 07 [2] ④⑤⑥⑦",
+            explain: "1차 CaCl₂ 처리·얼음 20분 뒤 재원심 → 15% Glycerol CaCl₂로 5 mL 1개·얼음 10분 → E-tube 10개에 100 µL씩 소분 → -80℃ 보관 순서입니다.",
+            source: "실험방법 07 [2] ③④⑤⑥⑦",
             tags: ["competent 제조 순서"]
           },
           {
@@ -8381,8 +8384,8 @@ window.GAME_CONTENT = {
             extraClueCostXp: 20,
             clues: [
               { id: "k1", order: 1, label: "단서 ① — 온도 관리 기록",
-                body: "CaCl₂ 처리 도중 코니칼을 얼음에서 꺼내 상온 실험대에 오래 올려두어 용액 온도가 올라갔음.",
-                readingHint: "competent 제조는 모든 조작을 얼음 위에서 해야 한다 — 온도가 오르면 세포 상태가 나빠진다. 결정타일 수 있다.",
+                body: "100 mM CaCl₂로 풀어 준 뒤 얼음에 20분 넣어 두는 단계에서, 코니칼을 얼음에서 꺼내 상온 실험대에 오래 올려두어 용액 온도가 올라갔음.",
+                readingHint: "competent 제조는 모든 작업을 빠르게 하고 얼음에 넣어 두어야 한다 — 온도가 오르면 세포 상태가 나빠진다. 결정타일 수 있다.",
                 isEvidence: true, decisive: true,
                 source: "실험방법 07 [2] ③⑤" },
               { id: "k2", order: 2, label: "단서 ② — 시약·원심 조건",
@@ -8416,7 +8419,7 @@ window.GAME_CONTENT = {
               "competent 상태가 나빠져 DNA를 잘 흡수하지 못하고, 결국 다음 주 형질전환에서 콜로니가 거의 생기지 않습니다. 형질전환 " +
               "효율이 낮으면 competent 제조 때 저온을 유지했는지 점검해야 합니다.",
             prescription: [
-              "competent 제조는 모든 조작을 얼음 위에서 빠르게 한다",
+              "competent 제조는 모든 작업을 빠르게 하고 정해진 시간 동안 얼음에 둔다(1차 CaCl₂ 뒤 20분 · 2차 CaCl₂ 뒤 10분)",
               "얼음에서 꺼내 상온에 오래 두지 않는다",
               "형질전환이 잘 안 되면 competent 제조 때 온도 관리를 먼저 점검한다"
             ],
@@ -8655,6 +8658,7 @@ window.GAME_CONTENT = {
        * report(w07) — 실험보고서 (사진4 + 고찰, w05·w06과 동일 엔진)
        *   ① 재조합 DNA(Vector) 반응액을 넣은 PCR tube 사진  ②~④ Competent cell 제조 과정 사진  ⑤ 고찰
        *   2026-10-05 교수님 지시(O-0248): 실험방법 07 개정(반응액 9 µL, 확인 절차 삭제)에 맞춰 ①의 문구만 바꿈(키·칸 수 그대로).
+       *   2026-10-06 교수님 지시: 실험방법 07 최종본에 맞춰 ②(CaCl₂ 20 mL씩 넣은 코니칼 2개)·④(E-tube 10개)의 문구만 바꿈(키·칸 수 그대로).
        * ----------------------------------------------------------------*/
       report: {
         stageId: "w07",
@@ -8676,8 +8680,8 @@ window.GAME_CONTENT = {
           { key: "name", label: "이름", value: "", fixed: false, hint: "로그인 이름" }
         ],
         /* 2026-09-26 교수님 지시(O-0059): 사진 4장 + 고찰.
-         *   ①재조합 DNA(Vector) 반응액을 넣은 PCR tube(O-0248로 문구 변경) · ②Competent cell 제조① 30 mL 2개(실험방법 07 [2]③)
-         *   ③Competent cell 제조② 5 mL 1개(⑤) · ④Competent cell 제조③ 100 µL 소분(⑥) · 고찰.
+         *   ①재조합 DNA(Vector) 반응액을 넣은 PCR tube(O-0248로 문구 변경) · ②Competent cell 제조① CaCl₂ 20 mL씩 넣은 코니칼 2개(실험방법 07 [2]③, 2026-10-06 문구 변경)
+         *   ③Competent cell 제조② 5 mL 1개(⑤) · ④Competent cell 제조③ E-tube 10개에 100 µL 소분(⑥, 2026-10-06 문구 변경) · 고찰.
          * type:"images"는 conditions 개수만큼 이미지 업로드 슬롯을 그린다(w05·w06과 동일 엔진). */
         sections: [
           {
@@ -8690,12 +8694,12 @@ window.GAME_CONTENT = {
             ]
           },
           {
-            key: "compcacl", no: 2, label: "사진 ② — Competent cell 제조 1단계: 100 mM CaCl₂로 풀어 30 mL 2개로 만든 것",
+            key: "compcacl", no: 2, label: "사진 ② — Competent cell 제조 1단계: 100 mM CaCl₂ 20 mL씩 넣어 풀어 준 코니칼 튜브 2개",
             type: "images",
             slotNos: ["②"],
-            hint: "미리 차갑게 식혀둔 100 mM CaCl₂ 용액을 15 mL씩 넣고 마이크로피펫으로 풀어준 뒤, 두 개씩 혼합하여 30 mL 2개로 만든 코니칼 튜브를 찍어 1장 올린다(실험방법 07 [2] ③).",
+            hint: "미리 차갑게 식혀둔 100 mM CaCl₂ 용액을 각각 20 mL씩 넣고 마이크로피펫으로 풀어준 코니칼 튜브 2개를 찍어 1장 올린다(실험방법 07 [2] ③).",
             conditions: [
-              "100 mM CaCl₂ 처리 후 30 mL 2개 (1단계)"
+              "100 mM CaCl₂ 20 mL씩 넣어 풀어 준 코니칼 튜브 2개 (1단계)"
             ]
           },
           {
@@ -8708,12 +8712,12 @@ window.GAME_CONTENT = {
             ]
           },
           {
-            key: "compaliquot", no: 4, label: "사진 ④ — Competent cell 제조 3단계: 1.5 mL E-tube에 100 µL씩 소분한 최종 모습",
+            key: "compaliquot", no: 4, label: "사진 ④ — Competent cell 제조 3단계: 1.5 mL E-tube 10개에 100 µL씩 소분한 최종 모습",
             type: "images",
             slotNos: ["④"],
-            hint: "멸균하여 미리 차갑게 식혀둔 1.5 mL E-tube에 100 µL씩 소분한 최종 competent cell을 찍어 1장 올린다(실험방법 07 [2] ⑥).",
+            hint: "멸균하여 미리 차갑게 식혀둔 1.5 mL E-tube 10개에 100 µL씩 소분한 최종 competent cell을 찍어 1장 올린다(실험방법 07 [2] ⑥).",
             conditions: [
-              "1.5 mL E-tube에 100 µL씩 소분 (3단계)"
+              "1.5 mL E-tube 10개에 100 µL씩 소분 (3단계)"
             ]
           },
           {
@@ -8723,7 +8727,7 @@ window.GAME_CONTENT = {
             hint: "재조합 DNA(Vector) 제조와 competent cell 제조를 실험방법대로 진행했는지 실험 과정(반응액 조성·반응 조건·온도 유지)을 근거로 돌아보고, 각각의 원리와 연결해 적으세요. 재조합은 TA cloning 원리(PCR 산물의 A와 Vector의 T 상보결합)와 반응 조건(상온 30분)에, competent cell은 세포막 중화(CaCl₂)·저온 유지·보관(-80℃)에 연결해 적습니다. 실험방법과 다르게 진행한 부분이 있다면 그것이 결과에 줄 영향(반응 시간 부족·PCR product 누락·온도 상승·CaCl₂ 미사용·보관 온도 등)을 추정해 적습니다."
           }
         ],
-        source: "실험방법 07 [1]①②·[2]③⑤⑥ · 강의계획서 세부 7주차 · 교수님 지시(O-0059, 사진4 + 고찰: ①재조합 DNA 반응액을 넣은 PCR tube(O-0248) ②CaCl₂ 30 mL 2개 ③Glycerol CaCl₂ 5 mL 1개 ④100 µL 소분)"
+        source: "실험방법 07 [1]①②·[2]③⑤⑥ · 강의계획서 세부 7주차 · 교수님 지시(O-0059, 사진4 + 고찰: ①재조합 DNA 반응액을 넣은 PCR tube(O-0248) ②CaCl₂ 20 mL씩 넣은 코니칼 2개 ③Glycerol CaCl₂ 5 mL 1개 ④E-tube 10개에 100 µL 소분 — ②④ 문구: 실험방법 07 2026-10-06 최종본)"
       }
     },
     w08: {
