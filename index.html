@@ -727,7 +727,7 @@ var TEST_OPEN_ALL = false;  /* 테스트용 날짜 잠금 해제. 실제 수업/
  *      형식: YYYYMMDDNN(날짜 + 그날 순번 2자리). 숫자가 클수록 새 버전.
  *      배포 전 확인: `python bump_build.py --check` (둘이 다르면 오류로 멈춘다).
  * ========================================================================*/
-var APP_BUILD = "2026100601";
+var APP_BUILD = "2026100701";
 
 /* ==========================================================================
  * 활성 주차 — 지금은 2주차(w02 · 세포배양)만 열려 있다.
@@ -3991,10 +3991,90 @@ function judge(q, pick){
  *   · perm = [원래 인덱스, …] (화면 위→아래 순서). "위 셋 모두" 같은 위치 의존 보기는 항상 맨 뒤에 고정.
  * ========================================================================*/
 var PIN_LAST_RE = /^(위|앞)의?\s*(셋|넷|둘|세|네|두)?\s*(개|가지|보기|것)?\s*(모두|전부)|모두\s?(옳|맞|해당)|해당\s?없음|정답\s?없음/;
-function mcPerm(q){
+/* bal(선택) = 회차 균형 장부(newSlotBal). 주면 정답이 놓일 자리를 장부에서 받아 오고, 나머지 보기는 그대로 무작위로 섞는다. */
+function mcPerm(q, bal){
   var n = (q && Array.isArray(q.choices)) ? q.choices.length : 0, free = [], pin = [];
   for(var i = 0; i < n; i++){ (PIN_LAST_RE.test(String(q.choices[i])) ? pin : free).push(i); }
-  return shuffle(free).concat(pin);
+  var ai = q ? q.answer : -1;
+  if(!bal || typeof ai !== "number" || ai < 0 || ai >= n) return shuffle(free).concat(pin);
+  var pi = pin.indexOf(ai);
+  if(pi >= 0){ slotNote(bal, n, free.length + pi); return shuffle(free).concat(pin); }   /* 정답이 「위 셋 모두」류 → 자리는 맨 뒤 고정, 장부에만 적는다 */
+  var others = shuffle(free.filter(function(x){ return x !== ai; }));
+  var allowed = []; for(var a = 0; a < free.length; a++) allowed.push(a);
+  var t = slotNext(bal, n, allowed);
+  if(t < 0 || t > others.length) t = Math.floor(Math.random() * (others.length + 1));
+  others.splice(t, 0, ai);
+  return others.concat(pin);
+}
+/* ==========================================================================
+ * 🎯 회차 단위 정답 자리 균형 (2026-10-07, O-0283)
+ *   보기 순서는 이미 문항을 낼 때마다 섞지만(전체로는 자리마다 약 25%), 순수 무작위라서
+ *   한 번의 미션·한 바퀴의 학습 안에서는 우연히 같은 번호가 여러 번 겹치는 일이 잦았다
+ *   (미션 1회에 같은 번호 4개 이상 16~24%, 학습 30문 중 같은 번호 3연속 45~55%).
+ *   → 「정답이 놓이는 자리」만 회차 장부에서 뽑는다. 주차·문항과 무관한 공통 처리라서
+ *      모든 주차와 앞으로 추가될 주차에 그대로 적용된다(주차별 설정 없음).
+ *   · 장부(bal) = 자리 수(k)별 카드 더미. 자리마다 같은 장수의 카드를 넣고 섞어 한 장씩 뽑는다.
+ *       - 미션(문항 수를 미리 앎)  : 자리마다 ceil((문항 수+1)/k) 장 → 한 번호가 그 장수를 넘지 못한다.
+ *       - 학습(끝없이 이어짐)      : 자리마다 2장, 2장 남으면 새 더미(끝 카드가 뻔히 읽히지 않게).
+ *   · 같은 번호가 3번 연달아 나오지 않게 한다(2번 연속까지는 허용 — 「직전과 다른 번호」로 찍는 것을 막기 위해).
+ *   · 채점·저장과는 무관하다(표시 순서만 정한다). 문항별로 길게 보면 여전히 자리마다 고르다.
+ * ========================================================================*/
+function newSlotBal(expect){ return { decks: {}, last: -1, run: 0, expect: (typeof expect === "number" && expect > 0) ? expect : 0 }; }
+function slotDeck(bal, k){
+  var copies = bal.expect ? Math.max(1, Math.ceil((bal.expect + 1) / k)) : 2, d = [];
+  for(var c = 0; c < copies; c++){ for(var p = 0; p < k; p++) d.push(p); }
+  return shuffle(d);
+}
+/* 정답 자리가 pos 로 정해졌음을 장부에 적는다(연속 횟수 갱신 + 그 자리 카드 한 장 소모). */
+function slotNote(bal, k, pos){
+  if(!bal) return;
+  var d = bal.decks[k];
+  if(d){ var j = d.indexOf(pos); if(j >= 0) d.splice(j, 1); }
+  if(pos === bal.last) bal.run++; else { bal.last = pos; bal.run = 1; }
+}
+/* 다음 문항의 정답 자리를 뽑는다. allowed = 정답이 놓일 수 있는 화면 자리(0부터) 목록. */
+function slotNext(bal, k, allowed){
+  if(!Array.isArray(allowed) || !allowed.length) return -1;
+  function ok(p){ return allowed.indexOf(p) >= 0 && !(bal.run >= 2 && p === bal.last); }
+  var keep = bal.expect ? 0 : Math.max(1, Math.floor(k / 2));
+  var d = bal.decks[k], pick = -1, i, tries;
+  for(tries = 0; tries < 2 && pick < 0; tries++){
+    if(!d || d.length <= keep || tries > 0) d = bal.decks[k] = slotDeck(bal, k);
+    for(i = 0; i < d.length; i++){ if(ok(d[i])){ pick = d[i]; break; } }
+  }
+  if(pick < 0){   /* 더미로 못 정하면(보기 수가 매우 적을 때 등) 허용 자리 안에서 무작위 — 3연속만 가능하면 피한다 */
+    var c = allowed.filter(function(p){ return !(bal.run >= 2 && p === bal.last); });
+    if(!c.length) c = allowed;
+    pick = c[Math.floor(Math.random() * c.length)];
+  }
+  slotNote(bal, k, pick);
+  return pick;
+}
+/* 추리 원인 후보 표시 순서 — 정답 원인이 놓일 자리를 장부에서 받고, 나머지 후보는 무작위. */
+function susOrderFor(cs, bal){
+  var sus = (cs && cs.suspects) || [], n = sus.length, ai = -1, i;
+  for(i = 0; i < n; i++){ if(cs.answer && sus[i] && sus[i].id === cs.answer.suspect){ ai = i; break; } }
+  if(!bal || ai < 0) return shuffledIdx(n);
+  var others = [], allowed = [];
+  for(i = 0; i < n; i++){ if(i !== ai) others.push(i); allowed.push(i); }
+  others = shuffle(others);
+  var t = slotNext(bal, n, allowed);
+  if(t < 0 || t > others.length) t = Math.floor(Math.random() * (others.length + 1));
+  others.splice(t, 0, ai);
+  return others;
+}
+/* 추리 단서 표시 순서 — 무작위. 단, 같은 미션의 직전 추리와 「근거 단서 자리 조합」이 똑같으면 다시 섞는다. */
+function evKeyOf(cs, ord){
+  var ev = (cs && cs.answer && cs.answer.evidence) || [], pos = [];
+  ord.forEach(function(ci, d){ if(cs.clues[ci] && ev.indexOf(cs.clues[ci].id) >= 0) pos.push(d); });
+  return pos.join("+");
+}
+function clueOrderFor(cs, M){
+  var n = ((cs && cs.clues) || []).length, ord = shuffledIdx(n), guard = 0;
+  if(!M) return ord;
+  while(n > 2 && M.lastEvKey && evKeyOf(cs, ord) === M.lastEvKey && guard < 8){ ord = shuffledIdx(n); guard++; }
+  M.lastEvKey = evKeyOf(cs, ord);
+  return ord;
 }
 function isPermOf(p, n){
   if(!Array.isArray(p) || p.length !== n) return false;
@@ -4119,6 +4199,12 @@ function pickLearnQ(){
     var f = pool.filter(function(q){ return q.qid !== ctx.lquiz.lastQid; });
     if(f.length) pool = f;
   }
+  /* O-0283: OX 정답이 같은 쪽으로 3번 연달아 나왔으면, 다음 문항은 그 쪽 OX 를 뒤로 미룬다(낼 문항이 그것뿐이면 그대로 낸다).
+     학습 퀴즈는 정답·오답과 무관하게 진행 수만 세므로 평가에는 영향이 없다. 미션의 문항 뽑기는 건드리지 않는다. */
+  if(ctx.lquiz && ctx.lquiz.oxRun >= 3){
+    var g = pool.filter(function(q){ return !(q.type === "ox" && q.answer === ctx.lquiz.oxLast); });
+    if(g.length) pool = g;
+  }
   return shuffle(pool)[0];
 }
 RENDER.lquiz = function(){
@@ -4134,7 +4220,12 @@ function loadLearnQ(){
   ctx.lquiz.pick = null;
   ctx.lquiz.last = null;
   ctx.lquiz.order = (q.type === "order") ? { placed: [], pool: orderPoolFor(q) } : null;   /* O-0075 #1: 단계 제시 순서 섞기 */
-  ctx.lquiz.perm = (q.type === "mc") ? mcPerm(q) : null;                                  /* O-0075 #1: 보기 순서 섞기(문항을 낼 때마다 새로) */
+  if(!ctx.lquiz.bal) ctx.lquiz.bal = newSlotBal();                                        /* O-0283: 학습 한 바퀴 안에서 정답 번호가 몰리지 않게 하는 장부 */
+  ctx.lquiz.perm = (q.type === "mc") ? mcPerm(q, ctx.lquiz.bal) : null;                   /* O-0075 #1: 보기 순서 섞기(문항을 낼 때마다 새로) */
+  if(q.type === "ox"){                                                                    /* O-0283: OX 정답 연속 횟수(pickLearnQ 가 읽는다) */
+    if(ctx.lquiz.oxLast === q.answer) ctx.lquiz.oxRun = (ctx.lquiz.oxRun || 0) + 1;
+    else { ctx.lquiz.oxLast = q.answer; ctx.lquiz.oxRun = 1; }
+  }
   paintLQ();
 }
 function paintLQ(){
@@ -4327,10 +4418,13 @@ function paintMissionIntro(){
 }
 function startMission(){
   var items = buildMission();
+  /* O-0283: 이번 회차에서 「번호 자리」가 있는 문항(4지선다 + 추리 원인) 수를 세어 균형 장부를 만든다. */
+  var nSlot = items.filter(function(it){ return it.kind === "reason" || (it.kind === "timed" && it.q.type === "mc"); }).length;
   ctx.mission = {
     phase: "run", items: items, i: 0,
     answers: [], order: null,
-    subEvidence: [], subSuspect: null
+    subEvidence: [], subSuspect: null,
+    bal: newSlotBal(nSlot), lastEvKey: null
   };
   state.mission.attempts = (state.mission.attempts || 0) + 1;
   saveState();
@@ -4340,9 +4434,10 @@ function initMissionItem(){
   var M = ctx.mission, it = M.items[M.i];
   M.order = (it.kind === "timed" && it.q.type === "order") ? { placed: [], pool: orderPoolFor(it.q) } : null;
   /* O-0075 #1: 문항을 낼 때마다 보기·원인·단서 표시 순서를 새로 섞는다(채점은 원래 인덱스·id). 재도전하면 startMission→새로 섞임. */
-  M.perm = (it.kind === "timed" && it.q.type === "mc") ? mcPerm(it.q) : null;
-  M.susOrder = (it.kind === "reason") ? shuffledIdx((it.cs.suspects || []).length) : null;
-  M.clueOrder = (it.kind === "reason") ? shuffledIdx((it.cs.clues || []).length) : null;
+  /* O-0283: 정답이 놓이는 자리는 회차 장부(M.bal)에서 받는다 — 한 회차 안에서 같은 번호로 몰리지 않게. */
+  M.perm = (it.kind === "timed" && it.q.type === "mc") ? mcPerm(it.q, M.bal) : null;
+  M.susOrder = (it.kind === "reason") ? susOrderFor(it.cs, M.bal) : null;
+  M.clueOrder = (it.kind === "reason") ? clueOrderFor(it.cs, M) : null;
   /* 문항이 처음 열린 시각을 고정해 둔다 — 순서·숫자 문항이 다시 그려져도 제한시간이 리셋되지 않게 한다. */
   M.itemStart = Date.now();
   if(it.kind === "reason"){
