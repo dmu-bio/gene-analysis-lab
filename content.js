@@ -8752,7 +8752,7 @@ window.GAME_CONTENT = {
        *      문항 교체: w08p_m11(정답에 225 rpm) → w08p_m28, w08p_r03(평판 준비 순서) → w08p_r07. 옛 qid는 다시 쓰지 않는다.
        *      출처에 붙여 두었던 "9 µL: 교수님 지시" 꼬리표는 원본 PDF가 9 µL가 되어 지웠다(출처는 실험방법 08 단계 번호만).
        *   2026-10-12 교수님 추가 지시(O-0443): (1) 화면 문구의 배지 이름을 실험방법 08 표기대로 "S.O.C."로 통일(tags 는 화면에 안 나와 그대로).
-       *      (2) 8주차는 학생 각자 실험이므로 추리 6건의 "한 조가…"를 "한 학생이…"로(단서 종류 이름·id·정답·근거는 그대로).
+       *      (2) 8주차는 학생 각자 실험이므로 추리 6건의 "한 조가…"를 "한 학생이…"로, 단서 이름도 「조원 진술」→「본인 진술」·「옆 조 비교」→「옆 학생 비교」로(8주차만. id·정답·근거는 그대로).
        *      (3) 보고서 마감은 10/23(금) 23:59 — index.html REPORT_DEADLINE.w08.
        * ----------------------------------------------------------------*/
       learn: {
@@ -9429,12 +9429,12 @@ window.GAME_CONTENT = {
                 readingHint: "다른 조건은 정상이다 → heat-shock만 빠졌다.",
                 isEvidence: false,
                 source: "실험방법 08 [1]·[2]" },
-              { id: "k3", order: 3, label: "단서 ③ — 옆 조 비교",
-                body: "42℃ 30초 heat-shock을 정확히 한 옆 조 학생은 Kan 평판에 콜로니가 자랐음.",
+              { id: "k3", order: 3, label: "단서 ③ — 옆 학생 비교",
+                body: "42℃ 30초 heat-shock을 정확히 한 옆 학생은 Kan 평판에 콜로니가 자랐음.",
                 readingHint: "차이는 'heat-shock을 했느냐'뿐이다.",
                 isEvidence: true,
                 source: "실험방법 08 [1] ③" },
-              { id: "k4", order: 4, label: "단서 ④ — 조원 진술",
+              { id: "k4", order: 4, label: "단서 ④ — 본인 진술",
                 body: "항온수조 순서를 놓쳐서 heat-shock을 안 하고 넘어갔어요. 그래서 DNA가 세포에 안 들어간 것 같아요.",
                 readingHint: "heat-shock을 건너뛰어 DNA가 세포에 들어가지 못했다.",
                 isEvidence: true, decisive: true,
@@ -9490,7 +9490,7 @@ window.GAME_CONTENT = {
                 readingHint: "대조까지 실패 → DNA 종류 문제가 아니라 세포 자체가 상했을 가능성.",
                 isEvidence: true,
                 source: "실험방법 08 [1] ②" },
-              { id: "k4", order: 4, label: "단서 ④ — 조원 진술",
+              { id: "k4", order: 4, label: "단서 ④ — 본인 진술",
                 body: "다른 학생 기다린다고 42℃에 한참 뒀어요. 얼음으로 바로 안 옮겼어요.",
                 readingHint: "42℃에 오래 둬 세포가 죽었다.",
                 isEvidence: true, decisive: true,
@@ -9546,7 +9546,7 @@ window.GAME_CONTENT = {
                 readingHint: "회복배양을 넣었더니 성공했다 → 원인은 회복배양 생략이다.",
                 isEvidence: true,
                 source: "실험방법 08 [1] ④" },
-              { id: "k4", order: 4, label: "단서 ④ — 조원 진술",
+              { id: "k4", order: 4, label: "단서 ④ — 본인 진술",
                 body: "시간이 없어서 S.O.C. 넣고 바로 도말했어요. 1시간 배양을 안 했어요.",
                 readingHint: "저항 단백질이 발현될 시간이 없어 항생제에 다 죽었다.",
                 isEvidence: true, decisive: true,
@@ -9602,7 +9602,7 @@ window.GAME_CONTENT = {
                 readingHint: "두 평판을 서로 바꿔 도말했다 → 항생제 짝이 어긋났다.",
                 isEvidence: true,
                 source: "실험방법 08 [2] ④" },
-              { id: "k4", order: 4, label: "단서 ④ — 조원 진술",
+              { id: "k4", order: 4, label: "단서 ④ — 본인 진술",
                 body: "Kan하고 Amp 평판을 헷갈려서 반대로 도말했어요. 그래서 둘 다 안 자란 것 같아요.",
                 readingHint: "저항 유전자와 평판 항생제가 맞지 않아 세포가 죽었다.",
                 isEvidence: true, decisive: true,
@@ -9653,12 +9653,12 @@ window.GAME_CONTENT = {
                 readingHint: "형질전환 자체는 성공(콜로니 자람) → 문제는 색 판정이다.",
                 isEvidence: false,
                 source: "실험방법 08 [1]·[2]" },
-              { id: "k3", order: 3, label: "단서 ③ — 옆 조 비교",
-                body: "IPTG·X-gal을 40 µL씩 도말한 옆 조 학생은 파란색·흰색 콜로니가 뚜렷이 구분됐음.",
+              { id: "k3", order: 3, label: "단서 ③ — 옆 학생 비교",
+                body: "IPTG·X-gal을 40 µL씩 도말한 옆 학생은 파란색·흰색 콜로니가 뚜렷이 구분됐음.",
                 readingHint: "차이는 'IPTG·X-gal을 도말했느냐'뿐이다.",
                 isEvidence: true,
                 source: "실험방법 08 [2] ①②" },
-              { id: "k4", order: 4, label: "단서 ④ — 조원 진술",
+              { id: "k4", order: 4, label: "단서 ④ — 본인 진술",
                 body: "X-gal 도말하는 걸 깜빡했어요. 그래서 색이 안 나와서 흰지 파란지 알 수가 없어요.",
                 readingHint: "X-gal이 없어 발색이 안 돼 Blue/White를 구분할 수 없다.",
                 isEvidence: true, decisive: true,
@@ -9714,7 +9714,7 @@ window.GAME_CONTENT = {
                 readingHint: "원리상 흰색이 삽입 성공이다 → 파란색을 성공이라 본 것은 오독이다.",
                 isEvidence: true,
                 source: "강의 이론(Blue-White screening)" },
-              { id: "k4", order: 4, label: "단서 ④ — 조원 진술",
+              { id: "k4", order: 4, label: "단서 ④ — 본인 진술",
                 body: "파란색이 눈에 띄어서 그게 성공인 줄 알았어요. 흰색이 삽입 성공인 걸 반대로 알았어요.",
                 readingHint: "Blue/White 판독을 반대로 해석했다.",
                 isEvidence: true, decisive: true,
