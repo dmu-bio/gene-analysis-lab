@@ -8744,6 +8744,12 @@ window.GAME_CONTENT = {
        *      (같은 날 확인: 현재 PDF [1]①은 "7주차에 제작한 Vector"로 적혀 있다.)
        *   2026-10-05 교수님 추가 지시("pUC19도 동일하게 9 µL로 다 통일해, 8주차에서"): [1]②의 pUC19 plasmid도 9 µL로 고쳤다.
        *      이제 Vector·pUC19 둘 다 9 µL다(위의 "pUC19는 그대로" 메모는 이 지시로 바뀜). ⚠️ 원본 PDF는 아직 둘 다 "10 µL"다.
+       *   2026-10-12 교수님이 실험방법 08을 최종 수정(O-0440). 이제 원본 PDF도 [1]①②가 "7주차에 제작한 Vector"·9 µL다
+       *      (위 ⚠️ 메모들은 지난 일). 바뀐 점 두 가지를 앱에 맞췄다.
+       *      (1) [1]④ 회복배양에서 "225 rpm" 표기가 빠졌다 → "37℃ 진탕 배양기에서 1시간".
+       *      (2) [2]가 4단계 → 5단계: ① 평판 준비 + IPTG 40 µL 도말·5분 건조  ② X-gal 40 µL 도말·약 10분 건조
+       *          (X-gal은 DMSO에 녹아 있어 Agar에 흡수가 느림)  ③ 원심·재현탁  ④ 도말(Vector→Kan, pUC19→Amp)  ⑤ 37℃ 48시간 배양.
+       *      문항 교체: w08p_m11(정답에 225 rpm) → w08p_m28, w08p_r03(평판 준비 순서) → w08p_r07. 옛 qid는 다시 쓰지 않는다.
        * ----------------------------------------------------------------*/
       learn: {
         stageId: "w08",
@@ -8794,22 +8800,24 @@ window.GAME_CONTENT = {
             id: "L4", title: "회복배양 — SOC 배지로 살려내기", kind: "핵심",
             body:
               "heat-shock으로 스트레스를 받은 세포를 바로 항생제 배지에 놓으면 죽어 버립니다. 그래서 각 혼합물에 37℃로 데운 S.O.C. " +
-              "배지 250 µL를 넣고, 37℃ 진탕배양기에서 225 rpm으로 1시간 회복배양합니다. 이 1시간 동안 세포가 회복하면서, vector가 가진 " +
+              "배지 250 µL를 넣고, 37℃ 진탕 배양기에서 1시간 회복배양합니다. 이 1시간 동안 세포가 회복하면서, vector가 가진 " +
               "항생제 저항 유전자가 발현되어 저항 단백질을 만듭니다. 이 단백질이 있어야 다음 단계의 항생제 선별평판에서 살아남을 수 " +
               "있습니다. 즉 회복배양은 '세포를 살리고 + 항생제 저항을 준비시키는' 단계입니다.",
-            keyNumbers: ["S.O.C. 배지 250 µL 첨가(각 혼합물)", "37℃ 진탕배양기 225 rpm · 1시간", "목적: 세포 회복 + 항생제 저항 단백질 발현", "이 준비가 있어야 선별평판에서 생존"],
+            keyNumbers: ["S.O.C. 배지 250 µL 첨가(각 혼합물)", "37℃ 진탕 배양기 · 1시간", "목적: 세포 회복 + 항생제 저항 단백질 발현", "이 준비가 있어야 선별평판에서 생존"],
             source: "실험방법 08 [1] ④ · 강의 이론"
           },
           {
             id: "L5", title: "선별평판 준비·도말 — 항생제로 골라내기", kind: "내용",
             body:
               "형질전환된 세포만 골라내기 위해 두 장의 선별평판을 준비합니다 — Kanamycin(50 µg/mL) LB 고체평판 1개와 Ampicillin(100 " +
-              "µg/mL) LB 고체평판 1개입니다. 각 평판에 IPTG(100 mM)와 X-gal(40 mg/mL)을 각 40 µL씩 표면에 도말하고 건조합니다. " +
+              "µg/mL) LB 고체평판 1개입니다. 각 평판에 먼저 IPTG(100 mM) 40 µL를 넣고 스프레더로 도말한 뒤 5분간 말립니다. 이어서 " +
+              "X-gal(40 mg/mL) 40 µL를 넣고 도말한 뒤 약 10분간 말립니다. X-gal은 DMSO에 녹아 있어 배지(Agar)에 스며드는 속도가 " +
+              "느리기 때문에 더 오래 말립니다. " +
               "회복배양이 끝난 혼합물은 13,000 rpm에서 1분 원심분리해 상등액을 제거하고 깨끗한 S.O.C. 배지 100 µL로 풀어준 뒤, 평판에 " +
               "전체를 도말합니다. 단, 재조합 DNA(Vector)를 삽입한 배양액은 Kanamycin 평판에, pUC19를 삽입한 배양액은 Ampicillin " +
               "평판에 도말합니다(각 vector가 가진 저항 유전자에 맞춥니다).",
-            keyNumbers: ["Kan(50 µg/mL) 평판 + Amp(100 µg/mL) 평판", "각 평판에 IPTG(100 mM)·X-gal(40 mg/mL) 각 40 µL 도말·건조", "회복배양 후 13,000 rpm 1분 원심 → SOC 100 µL 재현탁", "도말: Vector→Kan 평판 · pUC19→Amp 평판"],
-            source: "실험방법 08 [2] ①②③"
+            keyNumbers: ["Kan(50 µg/mL) 평판 + Amp(100 µg/mL) 평판", "IPTG(100 mM) 40 µL 도말 → 5분 건조", "X-gal(40 mg/mL) 40 µL 도말 → 약 10분 건조(DMSO에 녹아 있어 흡수가 느림)", "회복배양 후 13,000 rpm 1분 원심 → SOC 100 µL 재현탁", "도말: Vector→Kan 평판 · pUC19→Amp 평판"],
+            source: "실험방법 08 [2] ①②③④"
           },
           {
             id: "L6", title: "Blue/White 선별 — 앞조각+뒷조각(α-상보성)으로 색 판정", kind: "핵심",
@@ -8830,12 +8838,12 @@ window.GAME_CONTENT = {
               "(흰색이면 목적 DNA 삽입 성공, 파란색이면 삽입 안 됨). 안전·품질 수칙 — 재조합체(GMO)이므로 BL1 규정에 따라 취급·폐기하고, " +
               "라벨링을 확실히 해 Vector·pUC19 평판을 헷갈리지 않게 하며, heat-shock 시간(30초)과 회복배양(1시간)을 정확히 지킵니다.",
             keyNumbers: ["배양 = 37℃ · 뚜껑 아래로 · 48시간", "판독 ① 콜로니 유무(형질전환 성공 여부)", "판독 ② 콜로니 색(흰색=삽입 성공 · 파란색=삽입 안 됨)", "안전: GMO·BL1 취급/폐기 · 라벨링 · 시간 엄수"],
-            source: "실험방법 08 [2] ④ · 강의 이론 · 강의계획서 세부(BL1·GMO)"
+            source: "실험방법 08 [2] ⑤ · 강의 이론 · 강의계획서 세부(BL1·GMO)"
           }
         ],
         takeaways: [
           "형질전환(Transformation)은 외부 DNA를 세포에 넣어 유전적 변화를 일으키는 것이다(1928 Griffith). 지난 주(7주차)에 만든 재조합 DNA(Vector)와 competent cell(TOP10F′)을 만나게 해, 앞의 모든 실험을 하나의 결과로 잇는 마지막 확인 단계다.",
-          "핵심 절차 — competent cell 100 µL에 Vector 9 µL(또는 대조 pUC19 9 µL)를 넣고 얼음 30분 → 42℃ 30초 heat-shock → 즉시 얼음 2분 → SOC 250 µL 넣고 37℃·225 rpm 1시간 회복배양 → 13,000 rpm 1분 원심·SOC 100 µL 재현탁 → 선별평판 도말(Vector→Kan, pUC19→Amp) → 37℃ 48시간 배양. heat-shock은 세포막에 모공을 만들어 DNA를 넣고, 회복배양은 항생제 저항 단백질을 발현시킨다.",
+          "핵심 절차 — competent cell 100 µL에 Vector 9 µL(또는 대조 pUC19 9 µL)를 넣고 얼음 30분 → 42℃ 30초 heat-shock → 즉시 얼음 2분 → SOC 250 µL 넣고 37℃ 진탕 배양기에서 1시간 회복배양 → 13,000 rpm 1분 원심·SOC 100 µL 재현탁 → 선별평판 도말(Vector→Kan, pUC19→Amp) → 37℃ 48시간 배양. heat-shock은 세포막에 모공을 만들어 DNA를 넣고, 회복배양은 항생제 저항 단백질을 발현시킨다.",
           "Blue/White 선별로 성공을 판정한다. 숙주 대장균(TOP10F′)은 β-galactosidase의 뒷조각을, 플라스미드는 앞조각(lacZα)을 가지고 있어 둘이 만나야 효소가 된다(α-상보성) → X-gal 분해 → 파란색. 목적 DNA가 lacZα에 끼워지면 앞조각이 끊겨 → 흰색. IPTG는 꺼져 있는 앞조각 유전자를 켜 준다. 흰색=삽입 성공, 파란색=삽입 안 된 빈 벡터. 항생제 평판에 콜로니가 자랐으면 형질전환(저항 획득) 성공이다."
         ],
         source: "실험방법 08 (형질전환) 전문 (Vector·pUC19 9 µL: 교수님 지시 2026-10-05) · 강의 이론(재조합 및 형질전환) · 강의계획서 세부"
@@ -8854,7 +8862,7 @@ window.GAME_CONTENT = {
         concepts: [
           { h: "형질전환이란", d: "외부 DNA를 세포에 도입해 유전적 변화를 일으키는 것(1928 Griffith 폐렴 쌍구균 실험). 만든 재조합 DNA를 대장균에 넣어 증식·발현시킨다" },
           { h: "Heat-shock", d: "42℃ 30초로 세포막에 순간적 모공을 만들어 삼투압으로 DNA를 흡수시키는 방법. 직후 즉시 얼음 2분(시간 엄수 — 오래 두면 세포 사멸)" },
-          { h: "회복배양", d: "SOC 배지 250 µL 넣고 37℃·225 rpm 1시간. 세포를 회복시키고 항생제 저항 단백질을 발현시켜 선별평판에서 살아남게 함" },
+          { h: "회복배양", d: "SOC 배지 250 µL 넣고 37℃ 진탕 배양기에서 1시간. 세포를 회복시키고 항생제 저항 단백질을 발현시켜 선별평판에서 살아남게 함" },
           { h: "항생제 선별", d: "Vector(재조합 DNA)→Kanamycin 평판, pUC19→Ampicillin 평판. vector의 저항 유전자를 받은(형질전환된) 세포만 콜로니를 만듦" },
           { h: "Blue/White 선별(α-상보성)", d: "숙주(TOP10F′)의 뒷조각 + 플라스미드의 앞조각(lacZα)이 만나야 효소 완성 → X-gal 분해 → 파란색(빈 벡터). 목적 DNA가 lacZα에 끼워지면 앞조각이 끊겨 → 흰색(삽입 성공). IPTG는 꺼져 있는 앞조각 유전자를 켜 줌" },
           { h: "판독", d: "37℃ 뚜껑 아래로 48시간 배양 후, ① 콜로니 유무(형질전환 성공)와 ② 색(흰색=삽입 성공)으로 판정" }
@@ -8863,9 +8871,9 @@ window.GAME_CONTENT = {
         numbers: [
           { step: "DNA 넣기", value: "competent cell 100 µL + Vector 9 µL(또는 pUC19 9 µL) · 얼음 30분" },
           { step: "Heat-shock", value: "42℃ 항온수조 30초 → 즉시 얼음 2분" },
-          { step: "회복배양", value: "S.O.C. 배지 250 µL · 37℃ 진탕 225 rpm · 1시간" },
+          { step: "회복배양", value: "S.O.C. 배지 250 µL · 37℃ 진탕 배양기 · 1시간" },
           { step: "선별평판", value: "Kan 50 µg/mL · Amp 100 µg/mL 평판 각 1개" },
-          { step: "IPTG·X-gal 도말", value: "IPTG 100 mM · X-gal 40 mg/mL 각 40 µL씩 표면 도말·건조" },
+          { step: "IPTG·X-gal 도말", value: "IPTG 100 mM 40 µL 도말 → 5분 건조 → X-gal 40 mg/mL 40 µL 도말 → 약 10분 건조(X-gal은 DMSO에 녹아 있어 흡수가 느림)" },
           { step: "원심·재현탁", value: "13,000 rpm 1분 → 상등액 제거 → S.O.C. 100 µL로 풀어줌" },
           { step: "도말", value: "Vector → Kan 평판 · pUC19 → Amp 평판(전체 도말)" },
           { step: "배양·판독", value: "37℃ · 뚜껑 아래로 · 48시간 → 콜로니 유무·색 확인" }
@@ -9038,15 +9046,6 @@ window.GAME_CONTENT = {
             tags: ["SOC","250 µL"]
           },
           {
-            qid: "w08p_m11", type: "mc", level: 2, points: 9, limitSec: 20,
-            q: "회복배양의 조건으로 옳은 것은?",
-            choices: ["37℃ 진탕배양기 225 rpm에서 1시간", "4℃에서 30분", "60℃에서 20분", "상온에서 하룻밤"],
-            answer: 0,
-            explain: "S.O.C. 배지를 넣고 37℃ 진탕배양기에서 225 rpm으로 1시간 회복배양합니다.",
-            source: "실험방법 08 [1] ④",
-            tags: ["37℃","225 rpm","1시간"]
-          },
-          {
             qid: "w08p_m12", type: "mc", level: 2, points: 9, limitSec: 20,
             q: "회복배양(SOC·37℃·1시간)을 하는 이유는?",
             choices: ["세포를 회복시키고 항생제 저항 단백질을 발현시키려고", "DNA를 증폭하려고", "colony를 파랗게 만들려고", "세포를 죽이려고"],
@@ -9078,8 +9077,8 @@ window.GAME_CONTENT = {
             q: "꺼져 있는 앞조각(lacZα) 유전자를 켜 주는 물질은?",
             choices: ["IPTG", "Kanamycin", "Glycerol", "Ampicillin"],
             answer: 0,
-            explain: "IPTG는 꺼져 있는 앞조각(lacZα) 유전자를 켜 줍니다. 그래서 Blue-White 선별 때 X-gal과 함께 평판에 도말합니다.",
-            source: "강의 이론(Blue-White screening) · 실험방법 08 [2] ①",
+            explain: "IPTG는 꺼져 있는 앞조각(lacZα) 유전자를 켜 줍니다. 그래서 Blue-White 선별 때 평판에 IPTG를 먼저 도말하고, 이어서 X-gal을 도말합니다.",
+            source: "강의 이론(Blue-White screening) · 실험방법 08 [2] ①②",
             tags: ["IPTG","유도"]
           },
           {
@@ -9124,7 +9123,7 @@ window.GAME_CONTENT = {
             choices: ["Kanamycin 평판", "Ampicillin 평판", "항생제 없는 평판", "X-gal만 있는 평판"],
             answer: 0,
             explain: "재조합 DNA(Vector)를 삽입한 배양액은 Kanamycin이 든 평판에 도말합니다.",
-            source: "실험방법 08 [2] ③",
+            source: "실험방법 08 [2] ④",
             tags: ["Kan 평판","Vector"]
           },
           {
@@ -9133,7 +9132,7 @@ window.GAME_CONTENT = {
             choices: ["Ampicillin 평판", "Kanamycin 평판", "항생제 없는 평판", "물 평판"],
             answer: 0,
             explain: "pUC19를 삽입한 배양액은 Ampicillin이 든 평판에 도말합니다.",
-            source: "실험방법 08 [2] ③",
+            source: "실험방법 08 [2] ④",
             tags: ["Amp 평판","pUC19"]
           },
           {
@@ -9150,9 +9149,18 @@ window.GAME_CONTENT = {
             q: "각 선별평판에 IPTG와 X-gal을 얼마씩 도말하는가?",
             choices: ["각 40 µL씩", "각 250 µL씩", "각 5 µL씩", "각 1 mL씩"],
             answer: 0,
-            explain: "IPTG(100 mM)와 X-gal(40 mg/mL)을 각 40 µL씩 배지 위에 도말하고 건조합니다.",
-            source: "실험방법 08 [2] ①",
+            explain: "IPTG(100 mM) 40 µL를 먼저 도말해 5분간 건조하고, 이어서 X-gal(40 mg/mL) 40 µL를 도말해 약 10분간 건조합니다.",
+            source: "실험방법 08 [2] ①②",
             tags: ["40 µL","IPTG","X-gal"]
+          },
+          {
+            qid: "w08p_m28", type: "mc", level: 2, points: 9, limitSec: 20,
+            q: "X-gal을 도말한 뒤에는 IPTG 때(5분)보다 오래, 약 10분간 건조시킨다. 그 이유는?",
+            choices: ["X-gal은 DMSO에 녹아 있어 Agar에 흡수가 느리기 때문에", "X-gal을 IPTG보다 훨씬 많이 넣기 때문에", "X-gal이 마르는 동안 항생제가 만들어지기 때문에", "X-gal은 마르면서 파란색으로 변해야 하기 때문에"],
+            answer: 0,
+            explain: "X-gal은 DMSO에 녹아 있어 Agar에 흡수가 느립니다. 그래서 충분히 스며들도록 약 10분간 건조시킵니다(IPTG는 도말 후 5분, 넣는 양은 둘 다 40 µL).",
+            source: "실험방법 08 [2] ①②",
+            tags: ["X-gal","DMSO","건조 약 10분"]
           },
           {
             qid: "w08p_m24", type: "mc", level: 2, points: 9, limitSec: 20,
@@ -9160,7 +9168,7 @@ window.GAME_CONTENT = {
             choices: ["깨끗한 S.O.C. 배지 100 µL", "증류수 1 mL", "CaCl₂ 용액", "에탄올"],
             answer: 0,
             explain: "13,000 rpm 1분 원심분리 후 상등액을 제거하고 깨끗한 S.O.C. 배지 100 µL로 풀어줍니다.",
-            source: "실험방법 08 [2] ②",
+            source: "실험방법 08 [2] ③",
             tags: ["SOC 100 µL","재현탁"]
           },
           {
@@ -9169,7 +9177,7 @@ window.GAME_CONTENT = {
             choices: ["37℃에서 뚜껑이 아래로 가도록 48시간", "4℃에서 48시간", "60℃에서 1시간", "상온에서 30분"],
             answer: 0,
             explain: "37℃ 배양기에서 뚜껑이 아래로 가도록 48시간 배양한 뒤 콜로니를 확인합니다.",
-            source: "실험방법 08 [2] ④",
+            source: "실험방법 08 [2] ⑤",
             tags: ["37℃","48시간"]
           },
           {
@@ -9178,7 +9186,7 @@ window.GAME_CONTENT = {
             choices: ["13,000 rpm에서 1분", "4,000 rpm에서 5분", "13,000 rpm에서 30분", "400 rpm에서 1분"],
             answer: 0,
             explain: "배양이 끝난 혼합물을 13,000 rpm에서 1분간 원심분리한 뒤 상등액을 제거합니다.",
-            source: "실험방법 08 [2] ②",
+            source: "실험방법 08 [2] ③",
             tags: ["13000 rpm","1분"]
           },
 
@@ -9244,7 +9252,7 @@ window.GAME_CONTENT = {
             q: "재조합 DNA(Vector)를 삽입한 대장균은 Ampicillin 평판에 도말한다.",
             answer: false,
             explain: "아닙니다. 재조합 DNA(Vector)는 Kanamycin 평판에, pUC19는 Ampicillin 평판에 도말합니다.",
-            source: "실험방법 08 [2] ③",
+            source: "실험방법 08 [2] ④",
             tags: ["Kan 평판"]
           },
           {
@@ -9260,14 +9268,14 @@ window.GAME_CONTENT = {
             q: "도말한 평판은 37℃에서 48시간 배양한다.",
             answer: true,
             explain: "맞습니다. 37℃ 배양기에서 뚜껑이 아래로 가도록 48시간 배양합니다.",
-            source: "실험방법 08 [2] ④",
+            source: "실험방법 08 [2] ⑤",
             tags: ["48시간"]
           },
           {
             qid: "w08p_o22", type: "ox", level: 1, points: 7, limitSec: 8,
             q: "회복배양은 SOC 배지에서 37℃로 24시간 한다.",
             answer: false,
-            explain: "아닙니다. S.O.C. 배지를 넣고 37℃ 진탕배양기 225 rpm에서 1시간 회복배양합니다.",
+            explain: "아닙니다. S.O.C. 배지를 넣고 37℃ 진탕 배양기에서 1시간 회복배양합니다.",
             source: "실험방법 08 [1] ④",
             tags: ["회복배양","1시간"]
           },
@@ -9310,7 +9318,7 @@ window.GAME_CONTENT = {
             q: "배양이 끝난 혼합물의 원심분리 회전수는 몇 rpm인가?",
             answer: 13000, unit: "rpm", tolerance: 0,
             explain: "13,000 rpm에서 1분간 원심분리합니다.",
-            source: "실험방법 08 [2] ②",
+            source: "실험방법 08 [2] ③",
             tags: ["13000","rpm"]
           },
           {
@@ -9318,7 +9326,7 @@ window.GAME_CONTENT = {
             q: "도말한 평판을 37℃에서 몇 시간 배양하는가?",
             answer: 48, unit: "시간", tolerance: 0,
             explain: "37℃에서 뚜껑이 아래로 가도록 48시간 배양합니다.",
-            source: "실험방법 08 [2] ④",
+            source: "실험방법 08 [2] ⑤",
             tags: ["48","배양"]
           },
           {
@@ -9348,16 +9356,16 @@ window.GAME_CONTENT = {
             steps: ["선별평판에 도말", "37℃ 뚜껑 아래로 48시간 배양", "13,000 rpm 1분 원심·상등액 제거", "SOC 100 µL로 재현탁"],
             answer: [2, 3, 0, 1],
             explain: "13,000 rpm 원심·상등액 제거 → SOC 100 µL 재현탁 → 선별평판 도말 → 37℃ 48시간 배양 순서입니다.",
-            source: "실험방법 08 [2] ②③④",
+            source: "실험방법 08 [2] ③④⑤",
             tags: ["분석 순서"]
           },
           {
-            qid: "w08p_r03", type: "order", level: 1, points: 7, limitSec: 45,
+            qid: "w08p_r07", type: "order", level: 1, points: 7, limitSec: 45,
             q: "선별평판 준비 과정을 순서대로 맞춰 보세요.",
-            steps: ["IPTG·X-gal 각 40 µL 도말", "Kan·Amp LB 고체평판 준비", "건조"],
-            answer: [1, 0, 2],
-            explain: "Kan·Amp 평판 준비 → IPTG·X-gal 40 µL씩 도말 → 건조 순서입니다.",
-            source: "실험방법 08 [2] ①",
+            steps: ["X-gal 40 µL 도말 후 약 10분 건조", "Kan·Amp LB 고체평판 준비", "IPTG 40 µL 도말 후 5분 건조"],
+            answer: [1, 2, 0],
+            explain: "Kan·Amp 평판 준비 → IPTG 40 µL 도말 후 5분 건조 → X-gal 40 µL 도말 후 약 10분 건조 순서입니다.",
+            source: "실험방법 08 [2] ①②",
             tags: ["평판 준비 순서"]
           },
           {
@@ -9578,7 +9586,7 @@ window.GAME_CONTENT = {
                 body: "재조합 DNA(Vector·Kanamycin 저항)를 삽입한 배양액을 Kanamycin이 아니라 Ampicillin 평판에 도말함.",
                 readingHint: "Vector는 Kan 저항 유전자를 가지므로 Kan 평판에서 산다 — Amp 평판에서는 못 산다. 결정타일 수 있다.",
                 isEvidence: true, decisive: true,
-                source: "실험방법 08 [2] ③" },
+                source: "실험방법 08 [2] ④" },
               { id: "k2", order: 2, label: "단서 ② — 앞 단계",
                 body: "heat-shock·회복배양·원심·재현탁은 모두 규정대로였음.",
                 readingHint: "형질전환 과정 자체는 정상이다 → 평판 짝만 문제다.",
@@ -9588,12 +9596,12 @@ window.GAME_CONTENT = {
                 body: "같은 조가 pUC19를 Kanamycin 평판에 도말했더니 그쪽도 콜로니가 없었음(pUC19는 Amp 저항).",
                 readingHint: "두 평판을 서로 바꿔 도말했다 → 항생제 짝이 어긋났다.",
                 isEvidence: true,
-                source: "실험방법 08 [2] ③" },
+                source: "실험방법 08 [2] ④" },
               { id: "k4", order: 4, label: "단서 ④ — 조원 진술",
                 body: "Kan하고 Amp 평판을 헷갈려서 반대로 도말했어요. 그래서 둘 다 안 자란 것 같아요.",
                 readingHint: "저항 유전자와 평판 항생제가 맞지 않아 세포가 죽었다.",
                 isEvidence: true, decisive: true,
-                source: "실험방법 08 [2] ③" }
+                source: "실험방법 08 [2] ④" }
             ],
             suspects: [
               { id: "s1", mark: "ㄱ", label: "Vector(Kan 저항)를 Amp 평판에 도말하는 등 평판 짝을 바꿔 세포가 살지 못했다", correct: true },
@@ -9614,7 +9622,7 @@ window.GAME_CONTENT = {
               "평판·튜브 라벨을 확실히 해 짝을 바꾸지 않는다",
               "형질전환은 정상인데 콜로니가 없으면 평판 짝(항생제)을 먼저 점검한다"
             ],
-            source: "실험방법 08 [2] ③",
+            source: "실험방법 08 [2] ④",
             tags: ["평판 짝 오류","항생제 불일치"]
           },
           {
@@ -9634,7 +9642,7 @@ window.GAME_CONTENT = {
                 body: "선별평판에 IPTG(100 mM)와 X-gal(40 mg/mL)을 도말하지 않고 항생제만 든 평판을 사용함.",
                 readingHint: "Blue/White 색은 X-gal이 β-galactosidase에 분해돼 나온다 — X-gal이 없으면 색이 안 난다. 결정타일 수 있다.",
                 isEvidence: true, decisive: true,
-                source: "실험방법 08 [2] ① · 강의 이론(Blue-White)" },
+                source: "실험방법 08 [2] ①② · 강의 이론(Blue-White)" },
               { id: "k2", order: 2, label: "단서 ② — 형질전환 과정",
                 body: "heat-shock·회복배양·도말·48시간 배양은 정상이었고, 콜로니는 잘 자랐음.",
                 readingHint: "형질전환 자체는 성공(콜로니 자람) → 문제는 색 판정이다.",
@@ -9644,12 +9652,12 @@ window.GAME_CONTENT = {
                 body: "IPTG·X-gal을 40 µL씩 도말한 옆 조는 파란색·흰색 콜로니가 뚜렷이 구분됐음.",
                 readingHint: "차이는 'IPTG·X-gal을 도말했느냐'뿐이다.",
                 isEvidence: true,
-                source: "실험방법 08 [2] ①" },
+                source: "실험방법 08 [2] ①②" },
               { id: "k4", order: 4, label: "단서 ④ — 조원 진술",
                 body: "X-gal 도말하는 걸 깜빡했어요. 그래서 색이 안 나와서 흰지 파란지 알 수가 없어요.",
                 readingHint: "X-gal이 없어 발색이 안 돼 Blue/White를 구분할 수 없다.",
                 isEvidence: true, decisive: true,
-                source: "실험방법 08 [2] ①" }
+                source: "실험방법 08 [2] ②" }
             ],
             suspects: [
               { id: "s1", mark: "ㄱ", label: "선별평판에 IPTG·X-gal을 도말하지 않아 Blue/White 색이 나오지 않았다", correct: true },
@@ -9666,11 +9674,11 @@ window.GAME_CONTENT = {
               "평판에 IPTG·X-gal을 도말하지 않으면 콜로니가 자라도 색이 나지 않아 삽입 여부(흰색/파란색)를 구분할 수 없습니다. 색 " +
               "판정이 안 되면 IPTG·X-gal 도말을 빠뜨리지 않았는지 확인해야 합니다.",
             prescription: [
-              "선별평판에 IPTG(100 mM)·X-gal(40 mg/mL)을 각 40 µL씩 도말·건조한다",
+              "선별평판에 IPTG(100 mM) 40 µL를 도말해 5분 건조하고, 이어서 X-gal(40 mg/mL) 40 µL를 도말해 약 10분 건조한다",
               "X-gal 도말을 빠뜨리지 않는다(색이 안 남)",
               "색 구분이 안 되면 IPTG·X-gal 도말 여부를 먼저 점검한다"
             ],
-            source: "실험방법 08 [2] ① · 강의 이론(Blue-White)",
+            source: "실험방법 08 [2] ①② · 강의 이론(Blue-White)",
             tags: ["X-gal 누락","색 구분 실패"]
           },
           {
@@ -9759,7 +9767,7 @@ window.GAME_CONTENT = {
         ],
         /* 2026-09-26 교수님 지시(O-0059): 사진 2열×2줄 + 고찰.
          *   줄1 [형질전환 배양액(S.O.C. 회복배양 후)] 왼쪽=Vector · 오른쪽=pUC19 (실험방법 08 [1] ④)
-         *   줄2 [평판배지 결과(48시간 배양 후)]      왼쪽=Kanamycin 평판(Vector) · 오른쪽=Ampicillin 평판(pUC19) ([2] ③④)
+         *   줄2 [평판배지 결과(48시간 배양 후)]      왼쪽=Kanamycin 평판(Vector) · 오른쪽=Ampicillin 평판(pUC19) ([2] ④⑤)
          * cols:2 = 편집폼에서 폰 폭이어도 2열 고정(index.html .img-grid-2). A4·PDF는 원래 2열 격자라 그대로 나란히. */
         sections: [
           {
@@ -9767,7 +9775,7 @@ window.GAME_CONTENT = {
             type: "images",
             cols: 2,
             slotNos: ["①", "②"],   /* O-0067 B12: 칸 번호를 섹션 사진 번호와 맞춤 */
-            hint: "S.O.C. 배지 250 µL를 넣고 37℃ 진탕 배양기에서 225 rpm으로 1시간 회복배양을 마친 배양액을 찍는다(실험방법 08 [1] ④). 왼쪽 칸에는 재조합 DNA(Vector)를 넣은 대장균 배양액, 오른쪽 칸에는 pUC19를 넣은 대장균 배양액을 올린다(라벨이 보이게).",
+            hint: "S.O.C. 배지 250 µL를 넣고 37℃ 진탕 배양기에서 1시간 회복배양을 마친 배양액을 찍는다(실험방법 08 [1] ④). 왼쪽 칸에는 재조합 DNA(Vector)를 넣은 대장균 배양액, 오른쪽 칸에는 pUC19를 넣은 대장균 배양액을 올린다(라벨이 보이게).",
             conditions: [
               "Vector 넣은 배양액",
               "pUC19 넣은 배양액"
@@ -9778,7 +9786,7 @@ window.GAME_CONTENT = {
             type: "images",
             cols: 2,
             slotNos: ["③", "④"],
-            hint: "37℃ 배양기에서 뚜껑이 아래로 가도록 48시간 배양한 평판배지 결과를 찍는다(실험방법 08 [2] ④). 왼쪽 칸에는 Vector를 도말한 Kanamycin 평판, 오른쪽 칸에는 pUC19를 도말한 Ampicillin 평판을 올린다. 콜로니 유무와 색(흰색/파란색)이 보이게 찍는다.",
+            hint: "37℃ 배양기에서 뚜껑이 아래로 가도록 48시간 배양한 평판배지 결과를 찍는다(실험방법 08 [2] ⑤). 왼쪽 칸에는 Vector를 도말한 Kanamycin 평판, 오른쪽 칸에는 pUC19를 도말한 Ampicillin 평판을 올린다. 콜로니 유무와 색(흰색/파란색)이 보이게 찍는다.",
             conditions: [
               "Kanamycin 평판 (Vector)",
               "Ampicillin 평판 (pUC19)"
@@ -9791,7 +9799,7 @@ window.GAME_CONTENT = {
             hint: "두 평판의 콜로니 유무와 색(Blue/White)으로 형질전환·재조합 성공 여부를 판정하고, 원리와 연결해 해석하세요. 항생제 평판에 콜로니가 자란 것은 형질전환(저항 획득) 성공을 뜻하고, 흰색 콜로니는 목적 DNA 삽입 성공(파란색은 삽입 안 된 원래 vector)을 뜻합니다. 콜로니가 없거나 색 구분이 안 됐다면 그 원인(heat-shock·회복배양·평판 짝·IPTG/X-gal 등)을 추정해 적습니다."
           }
         ],
-        source: "실험방법 08 [1]④·[2]③④ · 강의 이론(재조합 및 형질전환) · 교수님 지시(O-0059, 사진 2열×2줄 + 고찰: 형질전환 배양액 Vector|pUC19 · 평판배지 결과 Kan(Vector)|Amp(pUC19))"
+        source: "실험방법 08 [1]④·[2]④⑤ · 강의 이론(재조합 및 형질전환) · 교수님 지시(O-0059, 사진 2열×2줄 + 고찰: 형질전환 배양액 Vector|pUC19 · 평판배지 결과 Kan(Vector)|Amp(pUC19))"
       }
     }
   }
