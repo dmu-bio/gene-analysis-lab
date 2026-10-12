@@ -8751,6 +8751,9 @@ window.GAME_CONTENT = {
        *          (X-gal은 DMSO에 녹아 있어 Agar에 흡수가 느림)  ③ 원심·재현탁  ④ 도말(Vector→Kan, pUC19→Amp)  ⑤ 37℃ 48시간 배양.
        *      문항 교체: w08p_m11(정답에 225 rpm) → w08p_m28, w08p_r03(평판 준비 순서) → w08p_r07. 옛 qid는 다시 쓰지 않는다.
        *      출처에 붙여 두었던 "9 µL: 교수님 지시" 꼬리표는 원본 PDF가 9 µL가 되어 지웠다(출처는 실험방법 08 단계 번호만).
+       *   2026-10-12 교수님 추가 지시(O-0443): (1) 화면 문구의 배지 이름을 실험방법 08 표기대로 "S.O.C."로 통일(tags 는 화면에 안 나와 그대로).
+       *      (2) 8주차는 학생 각자 실험이므로 추리 6건의 "한 조가…"를 "한 학생이…"로(단서 종류 이름·id·정답·근거는 그대로).
+       *      (3) 보고서 마감은 10/23(금) 23:59 — index.html REPORT_DEADLINE.w08.
        * ----------------------------------------------------------------*/
       learn: {
         stageId: "w08",
@@ -8761,7 +8764,7 @@ window.GAME_CONTENT = {
           note:
             "이 한 질문에 스스로 답할 수 있게 되는 것이 오늘 학습의 목표입니다. 형질전환(Transformation)은 외부 DNA를 세포에 " +
             "넣어 유전적 변화를 일으키는 것입니다. 지난 주(7주차)에 만든 재조합 DNA(Vector)와 competent cell을 만나게 해, 42℃ " +
-            "짧은 heat-shock으로 DNA를 세포 안에 넣고, SOC 배지로 회복배양한 뒤, 항생제·X-gal이 든 선별평판에 도말합니다. 48시간 " +
+            "짧은 heat-shock으로 DNA를 세포 안에 넣고, S.O.C. 배지로 회복배양한 뒤, 항생제·X-gal이 든 선별평판에 도말합니다. 48시간 " +
             "배양 후 생긴 콜로니의 유무와 색(Blue/White)으로 형질전환과 재조합의 성공 여부를 판정합니다. 이것이 한 학기 클로닝 " +
             "파이프라인의 마지막 확인 단계입니다.",
           source: "실험방법 08 [1]·[2] · 강의 이론(재조합 및 형질전환)"
@@ -8798,7 +8801,7 @@ window.GAME_CONTENT = {
             source: "실험방법 08 [1] ③ · 강의 이론(Heat-shock method)"
           },
           {
-            id: "L4", title: "회복배양 — SOC 배지로 살려내기", kind: "핵심",
+            id: "L4", title: "회복배양 — S.O.C. 배지로 살려내기", kind: "핵심",
             body:
               "heat-shock으로 스트레스를 받은 세포를 바로 항생제 배지에 놓으면 죽어 버립니다. 그래서 각 혼합물에 37℃로 유지 중인 S.O.C. " +
               "배지 250 µL를 넣고, 37℃ 진탕 배양기에서 1시간 회복배양합니다. 이 1시간 동안 세포가 회복하면서, vector가 가진 " +
@@ -8817,7 +8820,7 @@ window.GAME_CONTENT = {
               "회복배양이 끝난 혼합물은 13,000 rpm에서 1분 원심분리해 상등액을 제거하고 깨끗한 S.O.C. 배지 100 µL로 풀어준 뒤, 평판에 " +
               "전체를 도말합니다. 단, 재조합 DNA(Vector)를 삽입한 배양액은 Kanamycin 평판에, pUC19를 삽입한 배양액은 Ampicillin " +
               "평판에 도말합니다(각 vector가 가진 저항 유전자에 맞춥니다).",
-            keyNumbers: ["Kan(50 µg/mL) 평판 + Amp(100 µg/mL) 평판", "IPTG(100 mM) 40 µL 도말 → 5분 건조", "X-gal(40 mg/mL) 40 µL 도말 → 약 10분 건조(DMSO에 녹아 있어 흡수가 느림)", "회복배양 후 13,000 rpm 1분 원심 → SOC 100 µL 재현탁", "도말: Vector→Kan 평판 · pUC19→Amp 평판"],
+            keyNumbers: ["Kan(50 µg/mL) 평판 + Amp(100 µg/mL) 평판", "IPTG(100 mM) 40 µL 도말 → 5분 건조", "X-gal(40 mg/mL) 40 µL 도말 → 약 10분 건조(DMSO에 녹아 있어 흡수가 느림)", "회복배양 후 13,000 rpm 1분 원심 → S.O.C. 100 µL 재현탁", "도말: Vector→Kan 평판 · pUC19→Amp 평판"],
             source: "실험방법 08 [2] ①②③④"
           },
           {
@@ -8844,7 +8847,7 @@ window.GAME_CONTENT = {
         ],
         takeaways: [
           "형질전환(Transformation)은 외부 DNA를 세포에 넣어 유전적 변화를 일으키는 것이다(1928 Griffith). 지난 주(7주차)에 만든 재조합 DNA(Vector)와 competent cell(TOP10F′)을 만나게 해, 앞의 모든 실험을 하나의 결과로 잇는 마지막 확인 단계다.",
-          "핵심 절차 — competent cell 100 µL에 Vector 9 µL(또는 대조 pUC19 9 µL)를 넣고 얼음 30분 → 42℃ 30초 heat-shock → 즉시 얼음 2분 → SOC 250 µL 넣고 37℃ 진탕 배양기에서 1시간 회복배양 → 13,000 rpm 1분 원심·SOC 100 µL 재현탁 → 선별평판 도말(Vector→Kan, pUC19→Amp) → 37℃ 48시간 배양. heat-shock은 세포막에 모공을 만들어 DNA를 넣고, 회복배양은 항생제 저항 단백질을 발현시킨다.",
+          "핵심 절차 — competent cell 100 µL에 Vector 9 µL(또는 대조 pUC19 9 µL)를 넣고 얼음 30분 → 42℃ 30초 heat-shock → 즉시 얼음 2분 → S.O.C. 250 µL 넣고 37℃ 진탕 배양기에서 1시간 회복배양 → 13,000 rpm 1분 원심·S.O.C. 100 µL 재현탁 → 선별평판 도말(Vector→Kan, pUC19→Amp) → 37℃ 48시간 배양. heat-shock은 세포막에 모공을 만들어 DNA를 넣고, 회복배양은 항생제 저항 단백질을 발현시킨다.",
           "Blue/White 선별로 성공을 판정한다. 숙주 대장균(TOP10F′)은 β-galactosidase의 뒷조각을, 플라스미드는 앞조각(lacZα)을 가지고 있어 둘이 만나야 효소가 된다(α-상보성) → X-gal 분해 → 파란색. 목적 DNA가 lacZα에 끼워지면 앞조각이 끊겨 → 흰색. IPTG는 꺼져 있는 앞조각 유전자를 켜 준다. 흰색=삽입 성공, 파란색=삽입 안 된 빈 벡터. 항생제 평판에 콜로니가 자랐으면 형질전환(저항 획득) 성공이다."
         ],
         source: "실험방법 08 (형질전환) 전문 · 강의 이론(재조합 및 형질전환) · 강의계획서 세부"
@@ -8863,7 +8866,7 @@ window.GAME_CONTENT = {
         concepts: [
           { h: "형질전환이란", d: "외부 DNA를 세포에 도입해 유전적 변화를 일으키는 것(1928 Griffith 폐렴 쌍구균 실험). 만든 재조합 DNA를 대장균에 넣어 증식·발현시킨다" },
           { h: "Heat-shock", d: "42℃ 30초로 세포막에 순간적 모공을 만들어 삼투압으로 DNA를 흡수시키는 방법. 직후 즉시 얼음 2분(시간 엄수 — 오래 두면 세포 사멸)" },
-          { h: "회복배양", d: "SOC 배지 250 µL 넣고 37℃ 진탕 배양기에서 1시간. 세포를 회복시키고 항생제 저항 단백질을 발현시켜 선별평판에서 살아남게 함" },
+          { h: "회복배양", d: "S.O.C. 배지 250 µL 넣고 37℃ 진탕 배양기에서 1시간. 세포를 회복시키고 항생제 저항 단백질을 발현시켜 선별평판에서 살아남게 함" },
           { h: "항생제 선별", d: "Vector(재조합 DNA)→Kanamycin 평판, pUC19→Ampicillin 평판. vector의 저항 유전자를 받은(형질전환된) 세포만 콜로니를 만듦" },
           { h: "Blue/White 선별(α-상보성)", d: "숙주(TOP10F′)의 뒷조각 + 플라스미드의 앞조각(lacZα)이 만나야 효소 완성 → X-gal 분해 → 파란색(빈 벡터). 목적 DNA가 lacZα에 끼워지면 앞조각이 끊겨 → 흰색(삽입 성공). IPTG는 꺼져 있는 앞조각 유전자를 켜 줌" },
           { h: "판독", d: "37℃ 뚜껑 아래로 48시간 배양 후, ① 콜로니 유무(형질전환 성공)와 ② 색(흰색=삽입 성공)으로 판정" }
@@ -8882,7 +8885,7 @@ window.GAME_CONTENT = {
 
         cautions: [
           "Heat-shock 시간 엄수 — 42℃ 30초 후 즉시 얼음 2분(오래 두면 세포가 죽는다)",
-          "회복배양 필수 — SOC로 37℃ 1시간, 건너뛰면 항생제 저항이 발현 못 해 콜로니가 안 생긴다",
+          "회복배양 필수 — S.O.C.로 37℃ 1시간, 건너뛰면 항생제 저항이 발현 못 해 콜로니가 안 생긴다",
           "평판 짝 맞추기 — Vector는 Kan 평판, pUC19는 Amp 평판(바꾸면 콜로니가 안 생긴다)",
           "라벨링 — Vector·pUC19 튜브와 평판을 확실히 구분",
           "IPTG·X-gal 도말 — 안 넣으면 Blue/White 색 구분이 안 된다",
@@ -8898,14 +8901,14 @@ window.GAME_CONTENT = {
             "콜로니 유무와 색으로 형질전환·재조합의 성패를 판정"
           ],
           suspect: [
-            "콜로니가 하나도 없다 → heat-shock 시간·회복배양(SOC 1시간)·평판 짝을 지켰는지 의심",
+            "콜로니가 하나도 없다 → heat-shock 시간·회복배양(S.O.C. 1시간)·평판 짝을 지켰는지 의심",
             "파란색만 나온다 → 앞조각(lacZα)이 온전한 빈 벡터(삽입 안 됨)는 아닌지 의심",
             "색 구분이 안 된다 → IPTG·X-gal을 평판에 도말했는지 점검",
             "대조(pUC19)도 안 자란다 → competent cell 상태·heat-shock 조건을 점검"
           ]
         },
 
-        closing: "42℃ 30초 heat-shock으로 세포막에 잠깐 구멍을 내 DNA를 넣고, SOC로 회복시켜 항생제 저항을 준비시킨 뒤, 항생제·X-gal 평판에 도말한다. 48시간 뒤 콜로니가 자랐으면 형질전환 성공, 흰색이면(앞조각이 끊겨 효소가 되지 못함) 목적 DNA 삽입 성공이다. 한 학기 배양→추출→정량→PCR→회수→재조합의 모든 결과가 이 콜로니 하나로 확인된다",
+        closing: "42℃ 30초 heat-shock으로 세포막에 잠깐 구멍을 내 DNA를 넣고, S.O.C.로 회복시켜 항생제 저항을 준비시킨 뒤, 항생제·X-gal 평판에 도말한다. 48시간 뒤 콜로니가 자랐으면 형질전환 성공, 흰색이면(앞조각이 끊겨 효소가 되지 못함) 목적 DNA 삽입 성공이다. 한 학기 배양→추출→정량→PCR→회수→재조합의 모든 결과가 이 콜로니 하나로 확인된다",
         report: "회복배양이 끝난 형질전환 배양액 2개(Vector·pUC19)와 48시간 배양한 평판배지 결과 2개(Kanamycin 평판·Ampicillin 평판)를 나란히 찍고, 콜로니 유무와 색(Blue/White)으로 형질전환·재조합 성공 여부를 고찰과 함께 보고서에 남긴다 (다음 실험 시작 전 제출)",
         source: "실험방법 08 · 강의 이론(재조합 및 형질전환)"
       },
@@ -9049,7 +9052,7 @@ window.GAME_CONTENT = {
           },
           {
             qid: "w08p_m12", type: "mc", level: 2, points: 9, limitSec: 20,
-            q: "회복배양(SOC·37℃·1시간)을 하는 이유는?",
+            q: "회복배양(S.O.C.·37℃·1시간)을 하는 이유는?",
             choices: ["세포를 회복시키고 항생제 저항 단백질을 발현시키려고", "DNA를 증폭하려고", "colony를 파랗게 만들려고", "세포를 죽이려고"],
             answer: 0,
             explain: "회복배양 동안 세포가 회복하고 vector의 항생제 저항 유전자가 발현돼, 이후 선별평판에서 살아남을 수 있습니다.",
@@ -9227,7 +9230,7 @@ window.GAME_CONTENT = {
           },
           {
             qid: "w08p_o05", type: "ox", level: 2, points: 9, limitSec: 8,
-            q: "SOC 회복배양은 항생제 저항 단백질을 발현시키기 위한 것이다.",
+            q: "S.O.C. 회복배양은 항생제 저항 단백질을 발현시키기 위한 것이다.",
             answer: true,
             explain: "맞습니다. 회복배양 동안 세포가 회복하고 항생제 저항 유전자가 발현됩니다.",
             source: "강의 이론 · 실험방법 08 [1] ④",
@@ -9275,7 +9278,7 @@ window.GAME_CONTENT = {
           },
           {
             qid: "w08p_o22", type: "ox", level: 1, points: 7, limitSec: 8,
-            q: "회복배양은 SOC 배지에서 37℃로 24시간 한다.",
+            q: "회복배양은 S.O.C. 배지에서 37℃로 24시간 한다.",
             answer: false,
             explain: "아닙니다. S.O.C. 배지를 넣고 37℃ 진탕 배양기에서 1시간 회복배양합니다.",
             source: "실험방법 08 [1] ④",
@@ -9346,18 +9349,18 @@ window.GAME_CONTENT = {
           {
             qid: "w08p_r01", type: "order", level: 2, points: 9, limitSec: 45,
             q: "형질전환(DNA 넣기~회복배양) 과정을 순서대로 맞춰 보세요.",
-            steps: ["42℃ 30초 heat-shock", "SOC 250 µL 넣고 37℃ 1시간 회복배양", "competent cell에 DNA 넣고 얼음 30분", "즉시 얼음 2분"],
+            steps: ["42℃ 30초 heat-shock", "S.O.C. 250 µL 넣고 37℃ 1시간 회복배양", "competent cell에 DNA 넣고 얼음 30분", "즉시 얼음 2분"],
             answer: [2, 0, 3, 1],
-            explain: "DNA 넣고 얼음 30분 → 42℃ 30초 heat-shock → 즉시 얼음 2분 → SOC 넣고 37℃ 1시간 회복배양 순서입니다.",
+            explain: "DNA 넣고 얼음 30분 → 42℃ 30초 heat-shock → 즉시 얼음 2분 → S.O.C. 넣고 37℃ 1시간 회복배양 순서입니다.",
             source: "실험방법 08 [1] ①②③④",
             tags: ["형질전환 순서"]
           },
           {
             qid: "w08p_r02", type: "order", level: 3, points: 11, limitSec: 45,
             q: "회복배양 이후(원심~배양) 과정을 순서대로 맞춰 보세요.",
-            steps: ["선별평판에 도말", "37℃ 뚜껑 아래로 48시간 배양", "13,000 rpm 1분 원심·상등액 제거", "SOC 100 µL로 재현탁"],
+            steps: ["선별평판에 도말", "37℃ 뚜껑 아래로 48시간 배양", "13,000 rpm 1분 원심·상등액 제거", "S.O.C. 100 µL로 재현탁"],
             answer: [2, 3, 0, 1],
-            explain: "13,000 rpm 원심·상등액 제거 → SOC 100 µL 재현탁 → 선별평판 도말 → 37℃ 48시간 배양 순서입니다.",
+            explain: "13,000 rpm 원심·상등액 제거 → S.O.C. 100 µL 재현탁 → 선별평판 도말 → 37℃ 48시간 배양 순서입니다.",
             source: "실험방법 08 [2] ③④⑤",
             tags: ["분석 순서"]
           },
@@ -9411,23 +9414,23 @@ window.GAME_CONTENT = {
             weeks: "8주차",
             points: 15,
             brief:
-              "한 조의 Kanamycin 평판에 48시간 뒤에도 콜로니가 하나도 없었습니다. 형질전환 과정을 확인하니 이상했습니다. " +
+              "한 학생의 Kanamycin 평판에 48시간 뒤에도 콜로니가 하나도 없었습니다. 형질전환 과정을 확인하니 이상했습니다. " +
               "무엇이 잘못됐는지 밝히세요.",
             freeClues: 3,
             extraClueCostXp: 20,
             clues: [
               { id: "k1", order: 1, label: "단서 ① — 과정 기록",
-                body: "competent cell에 Vector를 넣고 얼음에 30분 둔 뒤, 42℃ 30초 heat-shock을 하지 않고 바로 SOC를 넣어 배양함.",
+                body: "competent cell에 Vector를 넣고 얼음에 30분 둔 뒤, 42℃ 30초 heat-shock을 하지 않고 바로 S.O.C.를 넣어 배양함.",
                 readingHint: "heat-shock이 세포막에 모공을 만들어 DNA를 넣는다 — 건너뛰면 DNA가 세포에 못 들어간다. 결정타일 수 있다.",
                 isEvidence: true, decisive: true,
                 source: "실험방법 08 [1] ③ · 강의 이론(Heat-shock)" },
               { id: "k2", order: 2, label: "단서 ② — 시약·평판",
-                body: "Vector 9 µL, SOC 250 µL, Kan 평판 도말 등 나머지는 규정대로였음.",
+                body: "Vector 9 µL, S.O.C. 250 µL, Kan 평판 도말 등 나머지는 규정대로였음.",
                 readingHint: "다른 조건은 정상이다 → heat-shock만 빠졌다.",
                 isEvidence: false,
                 source: "실험방법 08 [1]·[2]" },
               { id: "k3", order: 3, label: "단서 ③ — 옆 조 비교",
-                body: "42℃ 30초 heat-shock을 정확히 한 옆 조는 Kan 평판에 콜로니가 자랐음.",
+                body: "42℃ 30초 heat-shock을 정확히 한 옆 조 학생은 Kan 평판에 콜로니가 자랐음.",
                 readingHint: "차이는 'heat-shock을 했느냐'뿐이다.",
                 isEvidence: true,
                 source: "실험방법 08 [1] ③" },
@@ -9439,8 +9442,8 @@ window.GAME_CONTENT = {
             ],
             suspects: [
               { id: "s1", mark: "ㄱ", label: "42℃ 30초 heat-shock을 건너뛰어 DNA가 세포에 들어가지 못했다", correct: true },
-              { id: "s2", mark: "ㄴ", label: "SOC 배지를 250 µL 넣었다", correct: false,
-                debrief: "SOC 250 µL는 규정 부피입니다(단서 ②) — 원인이 아닙니다." },
+              { id: "s2", mark: "ㄴ", label: "S.O.C. 배지를 250 µL 넣었다", correct: false,
+                debrief: "S.O.C. 250 µL는 규정 부피입니다(단서 ②) — 원인이 아닙니다." },
               { id: "s3", mark: "ㄷ", label: "Vector를 9 µL 넣었다", correct: false,
                 debrief: "Vector 9 µL는 규정 부피입니다 — 원인이 아닙니다." },
               { id: "s4", mark: "ㄹ", label: "Kanamycin 평판에 도말했다", correct: false,
@@ -9467,7 +9470,7 @@ window.GAME_CONTENT = {
             weeks: "8주차",
             points: 15,
             brief:
-              "한 조의 두 평판 모두 콜로니가 거의 없었습니다. heat-shock 단계 기록을 확인하니 이상했습니다. " +
+              "한 학생의 두 평판 모두 콜로니가 거의 없었습니다. heat-shock 단계 기록을 확인하니 이상했습니다. " +
               "무엇이 잘못됐는지 밝히세요.",
             freeClues: 3,
             extraClueCostXp: 20,
@@ -9478,7 +9481,7 @@ window.GAME_CONTENT = {
                 isEvidence: true, decisive: true,
                 source: "실험방법 08 [1] ③ · 강의 이론(Heat-shock)" },
               { id: "k2", order: 2, label: "단서 ② — 앞뒤 조건",
-                body: "DNA 양(9 µL), 얼음 30분, SOC 250 µL·37℃ 1시간 회복배양은 규정대로였음.",
+                body: "DNA 양(9 µL), 얼음 30분, S.O.C. 250 µL·37℃ 1시간 회복배양은 규정대로였음.",
                 readingHint: "다른 조건은 정상이다 → heat-shock 시간 관리만 문제다.",
                 isEvidence: false,
                 source: "실험방법 08 [1]" },
@@ -9488,14 +9491,14 @@ window.GAME_CONTENT = {
                 isEvidence: true,
                 source: "실험방법 08 [1] ②" },
               { id: "k4", order: 4, label: "단서 ④ — 조원 진술",
-                body: "다른 조 기다린다고 42℃에 한참 뒀어요. 얼음으로 바로 안 옮겼어요.",
+                body: "다른 학생 기다린다고 42℃에 한참 뒀어요. 얼음으로 바로 안 옮겼어요.",
                 readingHint: "42℃에 오래 둬 세포가 죽었다.",
                 isEvidence: true, decisive: true,
                 source: "실험방법 08 [1] ③" }
             ],
             suspects: [
               { id: "s1", mark: "ㄱ", label: "heat-shock 후 즉시 얼음으로 옮기지 않고 42℃에 오래 둬 세포가 죽었다", correct: true },
-              { id: "s2", mark: "ㄴ", label: "SOC로 37℃ 1시간 회복배양했다", correct: false,
+              { id: "s2", mark: "ㄴ", label: "S.O.C.로 37℃ 1시간 회복배양했다", correct: false,
                 debrief: "회복배양은 올바른 절차입니다 — 원인이 아닙니다." },
               { id: "s3", mark: "ㄷ", label: "DNA를 9 µL 넣었다", correct: false,
                 debrief: "9 µL는 규정 부피입니다 — 원인이 아닙니다." },
@@ -9519,17 +9522,17 @@ window.GAME_CONTENT = {
             caseId: "w08_r03",
             no: "Case 03",
             title: "콜로니가 없다 — 회복배양을 건너뛰었다",
-            subtitle: "8주차 형질전환 — SOC 회복배양 없이 바로 도말했다",
+            subtitle: "8주차 형질전환 — S.O.C. 회복배양 없이 바로 도말했다",
             weeks: "8주차",
             points: 15,
             brief:
-              "한 조의 Kanamycin 평판에 콜로니가 자라지 않았습니다. heat-shock까지는 정상이었는데 그 뒤가 이상했습니다. " +
+              "한 학생의 Kanamycin 평판에 콜로니가 자라지 않았습니다. heat-shock까지는 정상이었는데 그 뒤가 이상했습니다. " +
               "무엇이 잘못됐는지 밝히세요.",
             freeClues: 3,
             extraClueCostXp: 20,
             clues: [
               { id: "k1", order: 1, label: "단서 ① — 회복배양 기록",
-                body: "heat-shock 후 SOC 배지로 37℃ 1시간 회복배양을 하지 않고, 곧바로 항생제 평판에 도말함.",
+                body: "heat-shock 후 S.O.C. 배지로 37℃ 1시간 회복배양을 하지 않고, 곧바로 항생제 평판에 도말함.",
                 readingHint: "회복배양 동안 항생제 저항 단백질이 발현돼야 항생제 평판에서 산다 — 건너뛰면 다 죽는다. 결정타일 수 있다.",
                 isEvidence: true, decisive: true,
                 source: "실험방법 08 [1] ④ · 강의 이론" },
@@ -9539,32 +9542,32 @@ window.GAME_CONTENT = {
                 isEvidence: false,
                 source: "실험방법 08 [1] ③" },
               { id: "k3", order: 3, label: "단서 ③ — 재실험 결과",
-                body: "SOC로 37℃ 1시간 회복배양을 지킨 재실험에서는 콜로니가 자랐음.",
+                body: "S.O.C.로 37℃ 1시간 회복배양을 지킨 재실험에서는 콜로니가 자랐음.",
                 readingHint: "회복배양을 넣었더니 성공했다 → 원인은 회복배양 생략이다.",
                 isEvidence: true,
                 source: "실험방법 08 [1] ④" },
               { id: "k4", order: 4, label: "단서 ④ — 조원 진술",
-                body: "시간이 없어서 SOC 넣고 바로 도말했어요. 1시간 배양을 안 했어요.",
+                body: "시간이 없어서 S.O.C. 넣고 바로 도말했어요. 1시간 배양을 안 했어요.",
                 readingHint: "저항 단백질이 발현될 시간이 없어 항생제에 다 죽었다.",
                 isEvidence: true, decisive: true,
                 source: "실험방법 08 [1] ④" }
             ],
             suspects: [
-              { id: "s1", mark: "ㄱ", label: "SOC 회복배양(37℃ 1시간)을 건너뛰어 항생제 저항이 발현되지 못했다", correct: true },
+              { id: "s1", mark: "ㄱ", label: "S.O.C. 회복배양(37℃ 1시간)을 건너뛰어 항생제 저항이 발현되지 못했다", correct: true },
               { id: "s2", mark: "ㄴ", label: "42℃ 30초 heat-shock을 했다", correct: false,
                 debrief: "heat-shock은 올바른 절차입니다 — 원인이 아닙니다." },
               { id: "s3", mark: "ㄷ", label: "Kanamycin 평판에 도말했다", correct: false,
                 debrief: "Vector는 Kan 평판에 도말하는 것이 맞습니다 — 원인이 아닙니다." },
-              { id: "s4", mark: "ㄹ", label: "SOC 배지를 넣었다", correct: false,
-                debrief: "SOC를 넣은 것 자체는 맞으나, 넣고 37℃ 1시간 배양을 안 한 것이 문제입니다 — 이 항목만으로는 원인이 아닙니다." }
+              { id: "s4", mark: "ㄹ", label: "S.O.C. 배지를 넣었다", correct: false,
+                debrief: "S.O.C.를 넣은 것 자체는 맞으나, 넣고 37℃ 1시간 배양을 안 한 것이 문제입니다 — 이 항목만으로는 원인이 아닙니다." }
             ],
             answer: { suspect: "s1", evidence: ["k1", "k4"] },
             debrief:
-              "heat-shock으로 DNA가 들어가도, SOC 배지에서 37℃ 1시간 회복배양을 해야 세포가 회복하고 항생제 저항 단백질을 " +
+              "heat-shock으로 DNA가 들어가도, S.O.C. 배지에서 37℃ 1시간 회복배양을 해야 세포가 회복하고 항생제 저항 단백질을 " +
               "발현합니다. 이 단계를 건너뛰고 바로 항생제 평판에 도말하면 저항이 아직 없어 세포가 다 죽어 콜로니가 생기지 않습니다. " +
               "heat-shock은 정상인데 콜로니가 없으면 회복배양을 지켰는지 점검해야 합니다.",
             prescription: [
-              "heat-shock 후 SOC 배지로 37℃ 1시간 회복배양을 반드시 한다",
+              "heat-shock 후 S.O.C. 배지로 37℃ 1시간 회복배양을 반드시 한다",
               "시간을 아끼려고 회복배양을 건너뛰지 않는다",
               "heat-shock은 정상인데 콜로니가 없으면 회복배양을 점검한다"
             ],
@@ -9579,7 +9582,7 @@ window.GAME_CONTENT = {
             weeks: "8주차",
             points: 15,
             brief:
-              "한 조가 재조합 DNA(Vector) 형질전환은 잘했는데, 도말한 평판에 콜로니가 없었습니다. 도말 기록을 확인하니 이상했습니다. " +
+              "한 학생이 재조합 DNA(Vector) 형질전환은 잘했는데, 도말한 평판에 콜로니가 없었습니다. 도말 기록을 확인하니 이상했습니다. " +
               "무엇이 잘못됐는지 밝히세요.",
             freeClues: 3,
             extraClueCostXp: 20,
@@ -9595,7 +9598,7 @@ window.GAME_CONTENT = {
                 isEvidence: false,
                 source: "실험방법 08 [1]·[2]" },
               { id: "k3", order: 3, label: "단서 ③ — pUC19 평판",
-                body: "같은 조가 pUC19를 Kanamycin 평판에 도말했더니 그쪽도 콜로니가 없었음(pUC19는 Amp 저항).",
+                body: "같은 학생이 pUC19를 Kanamycin 평판에 도말했더니 그쪽도 콜로니가 없었음(pUC19는 Amp 저항).",
                 readingHint: "두 평판을 서로 바꿔 도말했다 → 항생제 짝이 어긋났다.",
                 isEvidence: true,
                 source: "실험방법 08 [2] ④" },
@@ -9609,7 +9612,7 @@ window.GAME_CONTENT = {
               { id: "s1", mark: "ㄱ", label: "Vector(Kan 저항)를 Amp 평판에 도말하는 등 평판 짝을 바꿔 세포가 살지 못했다", correct: true },
               { id: "s2", mark: "ㄴ", label: "42℃ 30초 heat-shock을 했다", correct: false,
                 debrief: "heat-shock은 올바른 절차입니다 — 원인이 아닙니다." },
-              { id: "s3", mark: "ㄷ", label: "SOC로 37℃ 1시간 회복배양했다", correct: false,
+              { id: "s3", mark: "ㄷ", label: "S.O.C.로 37℃ 1시간 회복배양했다", correct: false,
                 debrief: "회복배양은 올바른 절차입니다 — 원인이 아닙니다." },
               { id: "s4", mark: "ㄹ", label: "13,000 rpm 1분 원심했다", correct: false,
                 debrief: "13,000 rpm 1분 원심은 규정 조건입니다 — 원인이 아닙니다." }
@@ -9635,7 +9638,7 @@ window.GAME_CONTENT = {
             weeks: "8주차",
             points: 15,
             brief:
-              "한 조는 콜로니가 잘 자랐는데, 파란색·흰색 구분이 전혀 되지 않아 재조합 성공 여부를 판정할 수 없었습니다. 평판 준비를 " +
+              "한 학생은 콜로니가 잘 자랐는데, 파란색·흰색 구분이 전혀 되지 않아 재조합 성공 여부를 판정할 수 없었습니다. 평판 준비를 " +
               "확인하니 이상했습니다. 무엇이 잘못됐는지 밝히세요.",
             freeClues: 3,
             extraClueCostXp: 20,
@@ -9651,7 +9654,7 @@ window.GAME_CONTENT = {
                 isEvidence: false,
                 source: "실험방법 08 [1]·[2]" },
               { id: "k3", order: 3, label: "단서 ③ — 옆 조 비교",
-                body: "IPTG·X-gal을 40 µL씩 도말한 옆 조는 파란색·흰색 콜로니가 뚜렷이 구분됐음.",
+                body: "IPTG·X-gal을 40 µL씩 도말한 옆 조 학생은 파란색·흰색 콜로니가 뚜렷이 구분됐음.",
                 readingHint: "차이는 'IPTG·X-gal을 도말했느냐'뿐이다.",
                 isEvidence: true,
                 source: "실험방법 08 [2] ①②" },
@@ -9667,7 +9670,7 @@ window.GAME_CONTENT = {
                 debrief: "37℃ 48시간 배양은 규정 조건입니다 — 원인이 아닙니다." },
               { id: "s3", mark: "ㄷ", label: "Kanamycin 평판을 썼다", correct: false,
                 debrief: "Vector에 Kan 평판은 맞습니다 — 색 구분 실패의 원인이 아닙니다." },
-              { id: "s4", mark: "ㄹ", label: "SOC로 회복배양했다", correct: false,
+              { id: "s4", mark: "ㄹ", label: "S.O.C.로 회복배양했다", correct: false,
                 debrief: "회복배양은 올바른 절차입니다 — 원인이 아닙니다." }
             ],
             answer: { suspect: "s1", evidence: ["k1", "k4"] },
@@ -9691,7 +9694,7 @@ window.GAME_CONTENT = {
             weeks: "8주차",
             points: 15,
             brief:
-              "한 조가 보고서에 '파란색 콜로니가 재조합 성공'이라고 적었습니다. 판독 근거를 확인하니 해석이 뒤집혀 있었습니다. " +
+              "한 학생이 보고서에 '파란색 콜로니가 재조합 성공'이라고 적었습니다. 판독 근거를 확인하니 해석이 뒤집혀 있었습니다. " +
               "무엇이 잘못됐는지 밝히세요.",
             freeClues: 3,
             extraClueCostXp: 20,
