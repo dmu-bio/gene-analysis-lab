@@ -8750,6 +8750,7 @@ window.GAME_CONTENT = {
        *      (2) [2]가 4단계 → 5단계: ① 평판 준비 + IPTG 40 µL 도말·5분 건조  ② X-gal 40 µL 도말·약 10분 건조
        *          (X-gal은 DMSO에 녹아 있어 Agar에 흡수가 느림)  ③ 원심·재현탁  ④ 도말(Vector→Kan, pUC19→Amp)  ⑤ 37℃ 48시간 배양.
        *      문항 교체: w08p_m11(정답에 225 rpm) → w08p_m28, w08p_r03(평판 준비 순서) → w08p_r07. 옛 qid는 다시 쓰지 않는다.
+       *      출처에 붙여 두었던 "9 µL: 교수님 지시" 꼬리표는 원본 PDF가 9 µL가 되어 지웠다(출처는 실험방법 08 단계 번호만).
        * ----------------------------------------------------------------*/
       learn: {
         stageId: "w08",
@@ -8784,7 +8785,7 @@ window.GAME_CONTENT = {
               "30분 둡니다. pUC19는 잘 알려진 대조용 plasmid로, 형질전환 자체가 잘 일어났는지 확인하는 데 씁니다. 이 단계는 DNA가 " +
               "세포막 가까이 충분히 붙도록 저온에서 기다리는 과정입니다.",
             keyNumbers: ["competent cell TOP10F′ 100 µL 2개 준비", "① 재조합 DNA(Vector) 9 µL · ② pUC19 9 µL", "각각 혼합 후 얼음 30분(라벨링 구분)", "pUC19 = 형질전환 확인용 대조 plasmid"],
-            source: "실험방법 08 [1] ①② (Vector·pUC19 9 µL: 교수님 지시 2026-10-05)"
+            source: "실험방법 08 [1] ①②"
           },
           {
             id: "L3", title: "Heat-shock — 42℃ 30초로 DNA 밀어넣기", kind: "핵심",
@@ -8799,7 +8800,7 @@ window.GAME_CONTENT = {
           {
             id: "L4", title: "회복배양 — SOC 배지로 살려내기", kind: "핵심",
             body:
-              "heat-shock으로 스트레스를 받은 세포를 바로 항생제 배지에 놓으면 죽어 버립니다. 그래서 각 혼합물에 37℃로 데운 S.O.C. " +
+              "heat-shock으로 스트레스를 받은 세포를 바로 항생제 배지에 놓으면 죽어 버립니다. 그래서 각 혼합물에 37℃로 유지 중인 S.O.C. " +
               "배지 250 µL를 넣고, 37℃ 진탕 배양기에서 1시간 회복배양합니다. 이 1시간 동안 세포가 회복하면서, vector가 가진 " +
               "항생제 저항 유전자가 발현되어 저항 단백질을 만듭니다. 이 단백질이 있어야 다음 단계의 항생제 선별평판에서 살아남을 수 " +
               "있습니다. 즉 회복배양은 '세포를 살리고 + 항생제 저항을 준비시키는' 단계입니다.",
@@ -8846,7 +8847,7 @@ window.GAME_CONTENT = {
           "핵심 절차 — competent cell 100 µL에 Vector 9 µL(또는 대조 pUC19 9 µL)를 넣고 얼음 30분 → 42℃ 30초 heat-shock → 즉시 얼음 2분 → SOC 250 µL 넣고 37℃ 진탕 배양기에서 1시간 회복배양 → 13,000 rpm 1분 원심·SOC 100 µL 재현탁 → 선별평판 도말(Vector→Kan, pUC19→Amp) → 37℃ 48시간 배양. heat-shock은 세포막에 모공을 만들어 DNA를 넣고, 회복배양은 항생제 저항 단백질을 발현시킨다.",
           "Blue/White 선별로 성공을 판정한다. 숙주 대장균(TOP10F′)은 β-galactosidase의 뒷조각을, 플라스미드는 앞조각(lacZα)을 가지고 있어 둘이 만나야 효소가 된다(α-상보성) → X-gal 분해 → 파란색. 목적 DNA가 lacZα에 끼워지면 앞조각이 끊겨 → 흰색. IPTG는 꺼져 있는 앞조각 유전자를 켜 준다. 흰색=삽입 성공, 파란색=삽입 안 된 빈 벡터. 항생제 평판에 콜로니가 자랐으면 형질전환(저항 획득) 성공이다."
         ],
-        source: "실험방법 08 (형질전환) 전문 (Vector·pUC19 9 µL: 교수님 지시 2026-10-05) · 강의 이론(재조합 및 형질전환) · 강의계획서 세부"
+        source: "실험방법 08 (형질전환) 전문 · 강의 이론(재조합 및 형질전환) · 강의계획서 세부"
       },
 
       /* ------------------------------------------------------------------
@@ -8885,6 +8886,7 @@ window.GAME_CONTENT = {
           "평판 짝 맞추기 — Vector는 Kan 평판, pUC19는 Amp 평판(바꾸면 콜로니가 안 생긴다)",
           "라벨링 — Vector·pUC19 튜브와 평판을 확실히 구분",
           "IPTG·X-gal 도말 — 안 넣으면 Blue/White 색 구분이 안 된다",
+          "X-gal 건조 — DMSO에 녹아 있어 Agar에 흡수가 느리므로 약 10분간 충분히 말린다",
           "GMO·BL1 — 재조합체이므로 규정에 따라 취급·폐기한다"
         ],
 
@@ -8905,7 +8907,7 @@ window.GAME_CONTENT = {
 
         closing: "42℃ 30초 heat-shock으로 세포막에 잠깐 구멍을 내 DNA를 넣고, SOC로 회복시켜 항생제 저항을 준비시킨 뒤, 항생제·X-gal 평판에 도말한다. 48시간 뒤 콜로니가 자랐으면 형질전환 성공, 흰색이면(앞조각이 끊겨 효소가 되지 못함) 목적 DNA 삽입 성공이다. 한 학기 배양→추출→정량→PCR→회수→재조합의 모든 결과가 이 콜로니 하나로 확인된다",
         report: "회복배양이 끝난 형질전환 배양액 2개(Vector·pUC19)와 48시간 배양한 평판배지 결과 2개(Kanamycin 평판·Ampicillin 평판)를 나란히 찍고, 콜로니 유무와 색(Blue/White)으로 형질전환·재조합 성공 여부를 고찰과 함께 보고서에 남긴다 (다음 실험 시작 전 제출)",
-        source: "실험방법 08 (Vector·pUC19 9 µL: 교수님 지시 2026-10-05) · 강의 이론(재조합 및 형질전환)"
+        source: "실험방법 08 · 강의 이론(재조합 및 형질전환)"
       },
 
       /* ------------------------------------------------------------------
@@ -8988,7 +8990,7 @@ window.GAME_CONTENT = {
             choices: ["지난 실험(7주차)에서 만든 재조합 DNA(Vector) 9 µL", "게놈 DNA 9 µL", "프라이머 9 µL", "RNA 9 µL"],
             answer: 0,
             explain: "실험군에는 지난 주(7주차) 만든 재조합 DNA(Vector) 9 µL를 넣습니다. 대조용 pUC19 plasmid도 9 µL를 넣습니다.",
-            source: "실험방법 08 [1] ① (Vector·pUC19 9 µL: 교수님 지시 2026-10-05)",
+            source: "실험방법 08 [1] ①",
             tags: ["Vector","9 µL"]
           },
           {
@@ -8997,7 +8999,7 @@ window.GAME_CONTENT = {
             choices: ["pUC19 9 µL", "TOPO Vector 9 µL", "pBI5ΔRTD 9 µL", "물 9 µL"],
             answer: 0,
             explain: "또 하나의 competent cell에는 대조용 pUC19 plasmid 9 µL를 넣습니다(라벨링 구분).",
-            source: "실험방법 08 [1] ② (Vector·pUC19 9 µL: 교수님 지시 2026-10-05)",
+            source: "실험방법 08 [1] ②",
             tags: ["pUC19","대조"]
           },
           {
@@ -9041,7 +9043,7 @@ window.GAME_CONTENT = {
             q: "Heat-shock 후 넣어주는 회복 배지는?",
             choices: ["S.O.C. 배지 250 µL", "LB 고체배지", "증류수 250 µL", "CaCl₂ 용액"],
             answer: 0,
-            explain: "37℃로 데운 S.O.C. 배지 250 µL를 각 혼합물에 넣어 회복배양을 준비합니다.",
+            explain: "37℃로 유지 중인 S.O.C. 배지 250 µL를 각 혼합물에 넣어 회복배양을 준비합니다.",
             source: "실험방법 08 [1] ④",
             tags: ["SOC","250 µL"]
           },
@@ -9309,7 +9311,7 @@ window.GAME_CONTENT = {
             qid: "w08p_n03", type: "num", level: 2, points: 9, limitSec: 30,
             q: "Heat-shock 후 넣는 S.O.C. 배지는 몇 µL인가?",
             answer: 250, unit: "µL", tolerance: 0,
-            explain: "37℃로 데운 S.O.C. 배지 250 µL를 각 혼합물에 넣습니다.",
+            explain: "37℃로 유지 중인 S.O.C. 배지 250 µL를 각 혼합물에 넣습니다.",
             source: "실험방법 08 [1] ④",
             tags: ["250","SOC"]
           },
@@ -9423,7 +9425,7 @@ window.GAME_CONTENT = {
                 body: "Vector 9 µL, SOC 250 µL, Kan 평판 도말 등 나머지는 규정대로였음.",
                 readingHint: "다른 조건은 정상이다 → heat-shock만 빠졌다.",
                 isEvidence: false,
-                source: "실험방법 08 [1]·[2] (Vector·pUC19 9 µL: 교수님 지시 2026-10-05)" },
+                source: "실험방법 08 [1]·[2]" },
               { id: "k3", order: 3, label: "단서 ③ — 옆 조 비교",
                 body: "42℃ 30초 heat-shock을 정확히 한 옆 조는 Kan 평판에 콜로니가 자랐음.",
                 readingHint: "차이는 'heat-shock을 했느냐'뿐이다.",
@@ -9479,7 +9481,7 @@ window.GAME_CONTENT = {
                 body: "DNA 양(9 µL), 얼음 30분, SOC 250 µL·37℃ 1시간 회복배양은 규정대로였음.",
                 readingHint: "다른 조건은 정상이다 → heat-shock 시간 관리만 문제다.",
                 isEvidence: false,
-                source: "실험방법 08 [1] (Vector·pUC19 9 µL: 교수님 지시 2026-10-05)" },
+                source: "실험방법 08 [1]" },
               { id: "k3", order: 3, label: "단서 ③ — 대조(pUC19)도 실패",
                 body: "형질전환이 잘됐는지 확인하는 pUC19 대조 평판에도 콜로니가 거의 없었음.",
                 readingHint: "대조까지 실패 → DNA 종류 문제가 아니라 세포 자체가 상했을 가능성.",
