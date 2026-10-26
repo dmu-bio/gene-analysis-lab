@@ -408,6 +408,57 @@ th.nw{white-space:nowrap}
 .peval b{color:var(--tx)}
 @media (prefers-reduced-motion: reduce){ .bigcard{transition:none} }
 
+/* ---------- 📝 프로젝트 2단계 · 주제 선정서 (O-0635) ---------- */
+.tf-top{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:0 0 10px;font-size:15px}
+.tf-rep{color:var(--tx2);font-size:14px}
+.tf-pill{display:inline-block;font-size:12px;font-weight:800;padding:3px 10px;border-radius:999px;border:1px solid var(--line);background:var(--card3);color:var(--tx3);white-space:nowrap}
+.tf-pill.amber{background:var(--amberdk);border-color:#e6d3a8;color:#7a5410}
+.tf-pill.ok{background:var(--greendk);border-color:#bfe2cd;color:var(--green)}
+.tf-pill.yel{background:#ffe9a6;border-color:#e0b84a;color:#5c4400}
+.tf-note{border-radius:12px;padding:11px 13px;margin:0 0 10px;font-size:14px;line-height:1.55;background:var(--mintdk);border:1px solid #c3ddf5;color:var(--tx)}
+.tf-note.amber{background:var(--amberdk);border-color:#e6d3a8;color:#6b4a10}
+.tf-note.yel{background:#fff1c4;border-color:#e0b84a;color:#4d3a00}
+.tf-note.red{background:var(--reddk);border-color:#efb3b3;color:#7a2020}
+.tf-note b{color:inherit}
+.tf-card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin:0 0 10px}
+.tf-l{display:block;font-weight:800;font-size:14.5px;margin:14px 0 5px;line-height:1.4}
+.tf-l small{font-weight:500;color:var(--tx3);margin-left:5px;font-size:12.5px}
+.tf-req{color:var(--red)}
+.tf-in{display:block;width:100%;font:inherit;font-size:16px;padding:11px 12px;border:1px solid var(--line2);border-radius:12px;background:#fff;color:var(--tx);line-height:1.5}
+textarea.tf-in{min-height:110px;resize:vertical}
+.tf-in:focus{outline:2px solid var(--mint);outline-offset:1px}
+.tf-in.bad{border-color:var(--red);background:#fff7f7}
+.tf-c{text-align:right;font-size:12px;color:var(--tx3);margin-top:2px}
+.tf-help{font-size:13px;color:var(--tx3);margin:3px 0 0;line-height:1.5}
+.tf-links input{margin-bottom:7px}
+.tf-role{display:flex;gap:8px;align-items:center;margin-bottom:7px}
+.tf-role span{flex:0 0 64px;font-size:14px}
+.tf-ro{background:var(--card2);border:1px dashed var(--line2);border-radius:12px;padding:10px 12px;min-height:44px;white-space:pre-wrap;font-size:15.5px;line-height:1.55}
+.tf-ro.empty{color:var(--tx3)}
+.tf-ro a{color:var(--mint);word-break:break-all}
+.tf-bar{position:sticky;bottom:0;background:rgba(255,255,255,.96);border-top:1px solid var(--line);margin:14px -14px 0;padding:8px 14px calc(8px + env(safe-area-inset-bottom));z-index:5}
+.tf-sv{font-size:13px;color:var(--tx3);min-height:20px;line-height:1.4}
+.tf-sv.ok{color:var(--green)}
+.tf-sv.warn{color:var(--red);font-weight:700}
+.tf-btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}
+.tf-btns .btn{flex:1 1 130px;width:auto;margin:0}
+.tf-taken span{display:inline-block;background:var(--card3);border-radius:8px;padding:3px 9px;margin:3px 5px 3px 0;font-size:13.5px}
+.tf-hand{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.tf-hand .btn{flex:1 1 120px;width:auto;margin:0}
+.tf-list{margin:0 0 6px}
+.tf-lrow{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:0 0 6px;cursor:pointer;min-height:44px}
+.tf-lrow:active{background:var(--card3)}
+.tf-l1{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:15px}
+.tf-l2{margin-top:4px;font-size:15px;line-height:1.45;overflow-wrap:anywhere}
+.tf-det{background:var(--card2);padding:10px 12px;border-radius:12px;margin:0 0 8px;overflow-wrap:anywhere}
+details.tf-mine{margin:8px 0}
+details.tf-mine summary{cursor:pointer;font-weight:700}
+@media (prefers-reduced-motion: no-preference){
+  .tf-flash{animation:tfFl .8s ease-out}
+  @keyframes tfFl{from{background:#fff2a8}to{background:var(--card2)}}
+  .tf-sv{transition:color .2s}
+}
+
 /* ---------- 학습(읽는) 카드 ---------- */
 .learncard{border:1px solid var(--line)}
 .lc-head{display:flex;gap:8px;align-items:center;margin-bottom:8px;flex-wrap:wrap}
@@ -690,6 +741,8 @@ th.nw{white-space:nowrap}
   <div class="wrap">
     <section id="sc-home"     class="screen"></section>
     <section id="sc-project"  class="screen"></section>
+    <section id="sc-topic"    class="screen"></section>
+    <section id="sc-topicsprof" class="screen"></section>
     <section id="sc-labs"     class="screen active"></section>
     <section id="sc-lobby"    class="screen"></section>
     <section id="sc-team"     class="screen"></section>
@@ -797,7 +850,7 @@ var TEST_OPEN_ALL = false;  /* 테스트용 날짜 잠금 해제. 실제 수업/
  *      형식: YYYYMMDDNN(날짜 + 그날 순번 2자리). 숫자가 클수록 새 버전.
  *      배포 전 확인: `python bump_build.py --check` (둘이 다르면 오류로 멈춘다).
  * ========================================================================*/
-var APP_BUILD = "2026102608";
+var APP_BUILD = "2026102613";
 
 /* ==========================================================================
  * 활성 주차 — 지금은 2주차(w02 · 세포배양)만 열려 있다.
@@ -1022,9 +1075,14 @@ function setWeekOpenLocal(id, on){
  *     1단계(p10)는 서버 값과 상관없이 항상 열림(코드), 2~4단계는 교수님이 수업 시간에 연다.
  * ========================================================================*/
 var HOME_SPLIT = true;
+/* O-0635 2단계: 조별 주제 선정서 + 조 편성 확정. false 로 바꾸면 2단계는 예전처럼 「곧 열려요」 안내만 나오고,
+   교수 화면의 선정서·조 편성 확정 줄도 숨는다(서버 표·함수는 그대로 두어도 무해). 되돌리는 스위치. */
+var TOPIC_FORM = true;
 function studentHome(){ return HOME_SPLIT ? "home" : "labs"; }
 function parentScreen(name){
   if(name === "home") return "home";
+  if(TOPIC_FORM && name === "topic") return "project";
+  if(TOPIC_FORM && name === "topicsprof") return "profdash";
   if(HOME_SPLIT && (name === "labs" || name === "project" || name === "team")) return "home";
   return "labs";
 }
@@ -1597,10 +1655,12 @@ function MISSION_REASON(){ return (POOL && POOL.info && POOL.info.mission && POO
 /* ==========================================================================
  * checkContent() — 로드 시 자동 실행되는 자체 검증 (새 화면·pool 반영)
  * ========================================================================*/
-var SCREENS = ["home","project","labs","lobby","team","report","learn","lquiz","mission","notes","growth","summary","profdash","roster","outputs"];
+var SCREENS = ["home","project","topic","topicsprof","labs","lobby","team","report","learn","lquiz","mission","notes","growth","summary","profdash","roster","outputs"];
 var NAV_EDGES = {
   home:     ["labs","project","team","profdash"],
-  project:  ["team","home"],
+  project:  ["team","home","topic"],
+  topic:    ["project","team"],
+  topicsprof: ["profdash"],
   labs:     ["lobby","profdash","team","home"],
   lobby:    ["labs","report","learn","lquiz","mission","notes","growth","summary"],
   team:     ["labs","home"],
@@ -1611,7 +1671,7 @@ var NAV_EDGES = {
   notes:    ["lquiz","lobby"],
   growth:   ["lobby","notes"],
   summary:  ["lobby"],
-  profdash: ["labs","home","report","lobby","roster","outputs"],
+  profdash: ["labs","home","report","lobby","roster","outputs","topicsprof"],
   roster:   ["profdash"],
   outputs:  ["profdash"]
 };
@@ -1820,6 +1880,7 @@ var PHOTO_PROC = {}, PHOTO_PROC_N = 0;
 function flushReportPending(){ var p = REPORT_PENDING; REPORT_PENDING = null; if(p && p.flush){ try{ p.flush(); }catch(e){} } }
 function go(name, push){
   if(SCREENS.indexOf(name) < 0){ if(window.console) console.error("정의되지 않은 화면: " + name); return; }
+  if(TOPIC_FORM && tfOnNav(name, push) === false) return;   /* O-0635: 주제 선정서에서 나갈 때 저장·확인 */
   flushReportPending();   /* O-0074 N1: 떠나기 전, 보고서 화면에 남은 입력을 그 보고서 주차로 바로 저장 */
   if(push !== false){
     /* 처음 화면·실습 목록으로 되돌아가는 링크는 쌓지 않고 그 자리로 되감는다(그래야 [←]가 제자리 돌기를 하지 않는다) */
@@ -1842,6 +1903,8 @@ function back(){
 var TITLES = {
   home: "유전자분석",
   project: "팀프로젝트",
+  topic: "주제 선정서",
+  topicsprof: "주제 선정서 현황",
   labs: HOME_SPLIT ? "실습" : "유전자분석",
   lobby: "실습 허브",
   team: "우리 조",
@@ -1903,7 +1966,7 @@ function paintTop(){
   $("tbSub").textContent = who;
   $("backBtn").style.visibility = (cur === "home" || cur === "profdash" || (cur === "labs" && !HOME_SPLIT)) ? "hidden" : "visible";
   $("notice").innerHTML = "<b>" + esc(notice) + "</b>";
-  $("notice").style.display = (cur === "home" || cur === "project" || cur === "team") ? "none" : "";   /* O-0635: 성적 반영 안내 띠는 실습·미션 화면용 — 처음 화면·프로젝트·우리 조에서는 숨김 */
+  $("notice").style.display = (cur === "home" || cur === "project" || cur === "team" || cur === "topic" || cur === "topicsprof") ? "none" : "";   /* O-0635: 성적 반영 안내 띠는 실습·미션 화면용 — 처음 화면·프로젝트·우리 조에서는 숨김 */
 
   /* HUD 아바타 — 항상 연구원 동그래. 한 번만 그린다. */
   if(!coliMiniPainted){ $("coliMini").innerHTML = coli("idle", "static"); coliMiniPainted = true; }
@@ -1918,6 +1981,9 @@ function paintTop(){
   }else if(cur === "project"){
     if(bar) bar.style.width = "0%";
     if(bl) bl.textContent = "프로젝트";
+  }else if(cur === "topic" || cur === "topicsprof"){
+    if(bar) bar.style.width = "0%";
+    if(bl) bl.textContent = "주제 선정서";
   }else if(cur === "profdash"){
     if(bar) bar.style.width = "0%";
     if(bl) bl.textContent = "확인";
@@ -2128,6 +2194,7 @@ function scoreCardHTML(){
 
 /* 로그아웃 — 세션을 지우고 로그인 화면으로. 진도·보고서는 기기에 그대로 남는다. */
 function logout(){
+  if(TOPIC_FORM) tfReset();   /* O-0635 */
   flushReportPending();   /* O-0074 N1: 로그아웃 전에 대기 중 자동저장을 먼저 끝낸다(출입증이 지워지기 전) */
   REPORT_LATEST = {};
   clearSession();
@@ -2314,7 +2381,7 @@ function teamLineHTML(){
   }else if(nTeams >= TEAM_MAX){
     warn = true; tx = '우리 조 · 모든 조(' + TEAM_MAX + '조)가 구성되었어요';
   }else{
-    warn = true; tx = '우리 조가 아직 없어요 · <b>조 만들기</b>';
+    warn = true; tx = teamLocked() ? '조 편성이 확정됐어요 · 조가 없으면 <b>교수님께 말씀해 주세요</b>' : '우리 조가 아직 없어요 · <b>조 만들기</b>';
   }
   return '<button class="teamline' + (warn ? ' warn' : '') + '" type="button" data-go="team"><span aria-hidden="true">👥</span><span class="tl-tx">' + tx + '</span><span class="tl-ar" aria-hidden="true">›</span></button>';
 }
@@ -2394,7 +2461,19 @@ function projectStepBody(st, viewOnlyProf){
     b += '<div class="ps-todo none">이번 주에 따로 작성하거나 낼 것은 없어요. <b>우리 조가 어떤 사례를 할지 생각해 오세요.</b></div>';
   }else if(st.id === "p11"){
     b += '<ul><li>조 대표 1명이 앱에 <b>최종 주제와 선정 이유</b>를 올려요.</li><li>조원은 앱에서 확인해요.</li></ul>';
-    b += '<div class="ps-todo">입력 화면은 곧 열려요. 수업 시간에 안내해 드릴게요.</div>';
+    if(TOPIC_FORM){
+      if(viewOnlyProf || state.role === "prof"){
+        b += '<button class="btn primary center" type="button" data-go="topicsprof">📝 주제 선정서 현황 보기</button>';
+      }else if(meIsEarly()){
+        b += '<div class="ps-todo none">' + esc(EARLY_PROJ_MSG) + '</div>';
+      }else{
+        b += tfPeekLine();
+        b += '<button class="btn primary center" type="button" data-go="topic" style="margin-top:8px">📝 주제 선정서 쓰기 · 보기</button>';
+        setTimeout(tfPeek, 0);
+      }
+    }else{
+      b += '<div class="ps-todo">입력 화면은 곧 열려요. 수업 시간에 안내해 드릴게요.</div>';
+    }
   }else if(st.id === "p13"){
     b += '<ul><li>교수님과 <b>진행 상황</b>을 이야기해요.</li><li><b>평가 방법</b>은 교수님이 직접 안내해요.</li></ul>';
     b += '<div class="ps-todo none">학생이 따로 작성할 것은 없어요.</div>';
@@ -2439,6 +2518,821 @@ RENDER.project = function(){
   sc.innerHTML = h;
   bindGo(sc);
 };
+
+/* ==========================================================================
+ * 📝 프로젝트 2단계 — 조별 주제 선정서 (2026-10-26 교수님 지시, 지시번호 O-0635)
+ *   · TOPIC_FORM=false 로 바꾸면 이 기능 전체가 꺼진다(2단계는 예전처럼 「준비 중」 안내만, 교수 화면의 선정서·조 편성 확정 줄도 숨김).
+ *   · 조 대표 1명만 쓰고, 조원은 같은 화면에서 읽기 전용으로 본다. 정본은 서버 한 줄(gl_topic_forms, 조당 1행).
+ *   · 쓰기는 서버 함수(RPC gl_topic_*)로만 한다 — 대표 확인·마감·rev(동시 수정)·글자 수를 서버가 지킨다.
+ *   · 제출 전: 자동저장(1.5초) + [임시저장]. 제출 뒤: 자동저장 끄고 [수정 저장]으로만(교수님이 마감하기 전까지).
+ *   · 저장은 기존 전송 큐를 쓰지 않고 결과를 바로 받는 직접 호출(충돌·마감을 바로 알아야 해서).
+ *     인터넷이 끊기면 이 기기에 보조 사본을 두고 자동으로 다시 보낸다.
+ *   · 설계: _jobs_output\20261026_gene_app_project_step2_topic\DESIGN.md
+ * ========================================================================*/
+var TF_LIM = { topic:60, tech:80, reason:500, background:600, year:4, recent:300, link:200, role:60 };
+var TF_LABEL = { topic:"주제명", tech:"핵심 유전공학 기술", reason:"선정 이유", background:"배경", year:"발표·승인 연도(숫자 4자리)", recent:"최근 5년 이내 근거", links:"출처 링크(http 로 시작, 1개 이상)" };
+var TF = {
+  tid:"", row:null, taken:[], dup:false, open:false, loaded:false, loadErr:"",
+  form:null, dirty:false, saving:false, again:null, offline:false, seenRev:0,
+  conflict:null, showServer:false, lostForm:null, lostMsg:"", restored:false, missing:[],
+  editing:false, showHand:false, leaveOk:false, needLoad:false, claiming:false,
+  autoT:null, retryT:null, pollOn:false, pollT:null, comp:false, flash:{}, peek:null, peekAt:0, bound:false
+};
+function tfWho(s){ return String(s) === "prof" ? "교수님" : nameOfSid(s); }
+function tfMe(){ return String(state && state.studentId || ""); }
+function tfTeam(){ var m = tfMe(); return m ? teamOf(m) : null; }
+function tfNewForm(){ return { topic:"", tech:"", reason:"", background:"", year:"", recent:"", links:["","",""], roles:{} }; }
+function tfFormFrom(d){
+  d = d || {}; var f = tfNewForm();
+  ["topic","tech","reason","background","year","recent"].forEach(function(k){ f[k] = String(d[k] == null ? "" : d[k]); });
+  var l = Array.isArray(d.links) ? d.links : [];
+  for(var i = 0; i < 3; i++) f.links[i] = String(l[i] || "");
+  if(d.roles && typeof d.roles === "object") Object.keys(d.roles).forEach(function(k){ f.roles[k] = String(d.roles[k]); });
+  return f;
+}
+function tfNormLink(s){
+  s = String(s || "").trim(); if(!s) return "";
+  if(!/^https?:\/\//i.test(s) && /^[^\s\/]+\.[^\s]+$/.test(s)) s = "https://" + s;
+  return s.slice(0, TF_LIM.link);
+}
+function tfPayload(f){
+  var links = []; (f.links || []).forEach(function(x){ var n = tfNormLink(x); if(n) links.push(n); });
+  var roles = {}; Object.keys(f.roles || {}).forEach(function(k){ var v = String(f.roles[k] || "").trim(); if(v) roles[k] = v.slice(0, TF_LIM.role); });
+  return {
+    topic:String(f.topic || "").trim(), tech:String(f.tech || "").trim(), reason:String(f.reason || "").trim(),
+    background:String(f.background || "").trim(), year:String(f.year || "").trim(), recent:String(f.recent || "").trim(),
+    links:links, roles:roles
+  };
+}
+function tfCanon(o){
+  if(o === null || typeof o !== "object") return JSON.stringify(o === undefined ? null : o);
+  if(Array.isArray(o)) return "[" + o.map(tfCanon).join(",") + "]";
+  return "{" + Object.keys(o).sort().map(function(k){ return JSON.stringify(k) + ":" + tfCanon(o[k]); }).join(",") + "}";
+}
+/* 서버가 돌려준 data 를 화면 payload 와 같은 모양(빈 칸 포함)으로 맞춰 비교한다 */
+function tfServerPayload(d){ return tfPayload(tfFormFrom(d)); }
+function tfMissing(f){
+  var p = tfPayload(f), miss = [], yr = new Date().getFullYear();
+  ["topic","tech","reason","background"].forEach(function(k){ if(!p[k]) miss.push(k); });
+  if(!/^\d{4}$/.test(p.year) || Number(p.year) < 1990 || Number(p.year) > yr + 1) miss.push("year");
+  if(!p.recent) miss.push("recent");
+  if(!p.links.some(function(x){ return /^https?:\/\/\S+$/i.test(x); })) miss.push("links");
+  return miss;
+}
+function tfHM(iso){
+  if(!iso) return ""; var d = new Date(iso); if(isNaN(d.getTime())) return "";
+  var k = kstParts(d); return pad2(k.h) + ":" + pad2(k.mi);
+}
+function tfLocalKey(){ return "dmu_gene_topic_local_" + tfMe() + "_" + TF.tid; }
+function tfSaveLocal(){
+  if(!TF.editing || !TF.form || !TF.tid) return;
+  try{ localStorage.setItem(tfLocalKey(), JSON.stringify({ base:TF.seenRev, at:Date.now(), form:TF.form })); }catch(e){}
+}
+function tfLoadLocal(){ try{ return JSON.parse(localStorage.getItem(tfLocalKey()) || "null"); }catch(e){ return null; } }
+function tfClearLocal(){ try{ localStorage.removeItem(tfLocalKey()); }catch(e){} }
+/* 서버가 closed 라고 했을 때 사람 말: 2단계가 아직 안 열렸는지, 마감됐는지 구분 */
+function tfClosedMsg(){ return projectStepOpen("p11") ? "쓰기가 마감됐어요. 고칠 내용이 있으면 교수님께 말씀해 주세요." : "아직 열리지 않았어요. 수업 시간에 열어 드려요."; }
+function tfErrText(err){
+  if(err && err.kind === "net") return "지금 접속이 되지 않아요. 잠시 뒤 다시 해 주세요.";
+  if(err && err.kind === "auth") return "로그인이 만료됐어요. 다시 로그인해 주세요.";
+  var m = String((err && err.msg) || ""); if(/gl_topic|function|does not exist|schema cache/i.test(m)) return "주제 선정서는 아직 준비 중이에요. 수업 시간에 안내해 드릴게요.";
+  return "불러오지 못했어요. 잠시 뒤 다시 해 주세요.";
+}
+var TF_CODE_MSG = {
+  not_member:"우리 조 정보를 찾지 못했어요. 교수님께 말씀해 주세요.", no_rep:"아직 대표가 없어요.", closed:"지금은 쓸 수 없어요.",
+  not_rep:"지금은 대표만 쓸 수 있어요.", invalid:"빈 칸이 있거나 연도·링크 형식이 올바르지 않아요.", bad_target:"그 조원에게는 넘길 수 없어요.", auth:"로그인이 필요해요."
+};
+
+/* ---- 화면 이동 감시: 떠나기 전 저장/확인 (go() 가 맨 앞에서 부른다) ---- */
+function tfOnNav(name, push){
+  if(cur === "topic" && name !== "topic"){
+    if(TF.editing && TF.dirty && TF.row && TF.row.status === "submitted" && !TF.leaveOk){
+      askConfirm("저장하지 않은 수정이 있어요.\n[수정 저장]을 누르지 않고 나가면 이 수정은 교수님께 가지 않아요. (이 기기에는 남아 있어요)", function(){
+        TF.leaveOk = true; go(name, push); TF.leaveOk = false;
+      }, { yes:"그냥 나가기", no:"계속 고치기", yesClass:"ghost" });
+      return false;
+    }
+    if(TF.editing && TF.dirty && TF.row && TF.row.status !== "submitted"){
+      if(TF.autoT){ clearTimeout(TF.autoT); TF.autoT = null; }
+      tfSave({ auto:true });
+    }
+    tfSaveLocal();
+  }
+  if(name === "topic" && cur !== "topic"){ TF.needLoad = true; }
+  return true;
+}
+function tfReset(){
+  if(TF.autoT) clearTimeout(TF.autoT); if(TF.retryT) clearTimeout(TF.retryT); if(TF.pollT) clearTimeout(TF.pollT);
+  TF.tid = ""; TF.row = null; TF.taken = []; TF.dup = false; TF.loaded = false; TF.loadErr = ""; TF.form = null; TF.dirty = false;
+  TF.saving = false; TF.again = null; TF.offline = false; TF.conflict = null; TF.showServer = false; TF.lostForm = null; TF.lostMsg = "";
+  TF.restored = false; TF.missing = []; TF.editing = false; TF.showHand = false; TF.pollOn = false; TF.pollT = null; TF.peek = null; TF.peekAt = 0; TF.flash = {};
+}
+
+/* ---- 서버에서 내 조 선정서 읽기 ---- */
+function tfLoad(done){
+  var t = tfTeam(); if(!t){ if(done) done(); return; }
+  GLR.rpc("gl_topic_view", { p_team:t.id }).then(function(res){
+    if(!res || !res.ok){ TF.loadErr = (res && TF_CODE_MSG[res.code]) || "불러오지 못했어요."; TF.loaded = false; }
+    else{ TF.loadErr = ""; tfApplyView(res, true); }
+    if(done) done();
+  }, function(err){ TF.loadErr = tfErrText(err); TF.loaded = false; if(done) done(); });
+}
+/* 서버 응답을 상태에 반영 (전체 읽기) */
+function tfApplyView(res, initial){
+  TF.row = res.row || null; TF.taken = Array.isArray(res.taken) ? res.taken : []; TF.dup = !!res.dup; TF.open = !!res.open; TF.loaded = true;
+  if(TF.row){
+    TF.seenRev = Number(TF.row.rev) || 0;
+    if(String(TF.row.rep_sid) === tfMe()){
+      if(initial || !TF.form) TF.form = tfFormFrom(TF.row.data);
+      if(initial) tfMaybeRestoreLocal();
+    }
+  }
+}
+/* 이 기기에 저장되지 않은 글이 남아 있으면 불러온다(오프라인·앱 종료 대비) */
+function tfMaybeRestoreLocal(){
+  var loc = tfLoadLocal(); if(!loc || !loc.form || !TF.row) return;
+  var srv = tfCanon(tfServerPayload(TF.row.data)), mine = tfCanon(tfPayload(tfFormFrom(loc.form)));
+  if(srv === mine){ tfClearLocal(); return; }
+  if(Number(loc.base) === TF.seenRev){ TF.form = tfFormFrom(loc.form); TF.dirty = true; TF.restored = true; }
+  else{ TF.form = tfFormFrom(loc.form); TF.dirty = true; TF.restored = true; TF.conflict = { type:"other" }; TF.showServer = false; }
+}
+
+/* ---- 입력 읽기·저장 ---- */
+function tfRead(){
+  if(!TF.editing || !TF.form) return;
+  var g = function(id){ var e = $(id); return e ? e.value : null; };
+  ["topic","tech","reason","background","year","recent"].forEach(function(k){ var v = g("tf_" + k); if(v !== null) TF.form[k] = v; });
+  for(var i = 0; i < 3; i++){ var v = g("tf_l" + i); if(v !== null) TF.form.links[i] = v; }
+  var sc = $("sc-topic");
+  if(sc) sc.querySelectorAll("[data-role]").forEach(function(e){ TF.form.roles[e.getAttribute("data-role")] = e.value; });
+}
+function tfSvText(){
+  var r = TF.row, who = r && r.saved_by ? tfWho(r.saved_by) : "";
+  if(TF.saving) return { c:"", t:"저장 중…" };
+  if(TF.offline) return { c:"warn", t:"⚠ 아직 서버에 저장되지 않았어요. 이 기기에는 보관 중이고, 인터넷이 돌아오면 자동으로 다시 보내요." };
+  if(r && r.status === "submitted"){
+    if(TF.dirty) return { c:"warn", t:"저장하지 않은 수정이 있어요 — [수정 저장]을 눌러 주세요." };
+    return { c:"ok", t:"제출됨 " + tfHM(r.submitted_at || r.saved_at) + " · 마지막 저장 " + tfHM(r.saved_at) + " " + who + " (고치면 [수정 저장]을 눌러 주세요)" };
+  }
+  if(TF.dirty) return { c:"", t:"입력 중… 잠시 뒤 자동으로 임시저장돼요." };
+  if(r && r.saved_by && r.data && Object.keys(r.data).length) return { c:"ok", t:"✓ 임시저장됨(제출 전) " + tfHM(r.saved_at) + " · " + who };
+  return { c:"", t:"아직 저장 전이에요. 쓰는 대로 임시저장돼요." };
+}
+function tfPaintSv(){
+  var el = $("tfSv"); if(!el) return; var s = tfSvText();
+  el.className = "tf-sv" + (s.c ? " " + s.c : ""); el.textContent = s.t;
+  var b = $("tfSaveEdit"); if(b) b.disabled = !(TF.dirty && !TF.saving);
+}
+function tfPaintTaken(){
+  var el = $("tfTaken"); if(el) el.innerHTML = tfTakenInner();
+}
+function tfOnInput(e){
+  if(!TF.editing) return;
+  var t = e.target; if(!t || !t.id && !t.hasAttribute("data-role")) return;
+  tfRead(); TF.dirty = true; TF.restored = false;
+  var cEl = t.id ? $("c_" + t.id) : null; if(cEl) cEl.textContent = String(t.value.length) + "/" + t.getAttribute("maxlength");
+  if(t.classList.contains("bad")) t.classList.remove("bad");
+  tfSaveLocal();
+  tfSchedule();
+  tfPaintSv();
+}
+function tfSchedule(){
+  if(!TF.row || TF.row.status === "submitted") return;      /* 제출 뒤에는 자동저장 없음 */
+  if(TF.comp) return;                                      /* 한글 조합 중에는 기다린다 */
+  if(TF.autoT) clearTimeout(TF.autoT);
+  TF.autoT = setTimeout(function(){ TF.autoT = null; tfSave({ auto:true }); }, 1500);
+}
+function tfSave(o){
+  o = o || {};
+  var me = tfMe();
+  if(!TF.row || String(TF.row.rep_sid) !== me || !TF.form) return;
+  if(TF.conflict && !o.force) return;                       /* 충돌 해결 전에는 저장하지 않는다 */
+  if(TF.saving){ TF.again = o; return; }
+  tfRead();
+  var payload = tfPayload(TF.form);
+  TF.saving = true; tfPaintSv();
+  GLR.rpc("gl_topic_save", { p_team:TF.tid, p_seen_rev:TF.seenRev, p_data:payload, p_submit:!!o.submit }).then(function(res){
+    TF.saving = false;
+    if(TF.offline){ TF.offline = false; GLR.bar("", ""); }
+    tfAfterSave(res || {}, o, payload);
+  }, function(err){
+    TF.saving = false;
+    if(err && err.kind === "auth"){ toast(tfErrText(err)); tfPaintSv(); return; }
+    TF.offline = true; tfSaveLocal(); tfPaintSv();
+    if(o.submit) toast("제출되지 않았어요. 인터넷을 확인하고 다시 눌러 주세요.");
+    if(TF.retryT) clearTimeout(TF.retryT);
+    TF.retryT = setTimeout(function(){ TF.retryT = null; if(cur === "topic" && TF.dirty) tfSave({ auto:true }); }, 10000);
+  });
+}
+function tfAfterSave(res, o, payload){
+  if(res.ok){
+    TF.seenRev = Number(res.rev) || (TF.seenRev + 1);
+    TF.row.rev = TF.seenRev; TF.row.status = res.status; TF.row.saved_at = res.saved_at; TF.row.saved_by = tfMe(); TF.row.data = payload;
+    if(o.submit && !TF.row.submitted_at) TF.row.submitted_at = res.saved_at;
+    if(TF.row.status === "submitted") TF.row.submitted_at = TF.row.submitted_at || res.saved_at;
+    TF.dup = !!res.dup;
+    var nowSame = tfCanon(tfPayload(TF.form)) === tfCanon(payload);
+    if(nowSame){ TF.dirty = false; tfClearLocal(); }
+    TF.conflict = null; TF.restored = false;
+    if(o.submit){
+      var tt = $("toast"); if(tt) tt.classList.remove("on");     /* 앞서 뜬 「빈 칸이 있어요」 같은 안내가 완료 화면에 남지 않게 */
+      var topic = payload.topic;
+      showReward({ face:"celebrate", kicker:"주제 선정서 제출", title:"제출 완료", sub:(tfTeam() ? tfTeam().no + "조 · " : "") + topic, hold:2600 });
+      RENDER.topic();
+    }else if(!o.auto){
+      toast(TF.row.status === "submitted" ? "수정 저장했어요. 교수님께도 반영돼요." : "임시저장했어요. (아직 제출 전이에요)");
+      tfPaintSv(); tfPaintTaken();
+    }else{ tfPaintSv(); tfPaintTaken(); }
+    if(TF.again){ var a = TF.again; TF.again = null; if(TF.dirty) tfSave(a); }
+    return;
+  }
+  TF.again = null;
+  if(res.code === "stale"){
+    TF.conflict = { type:"other" };
+    tfLoadKeepForm(function(){ RENDER.topic(); });
+  }else if(res.code === "not_rep"){
+    TF.lostForm = TF.dirty ? tfFormFrom(TF.form) : null; TF.conflict = { type:"rep" };
+    tfLoadKeepForm(function(){ RENDER.topic(); });
+  }else if(res.code === "closed"){
+    TF.open = false; toast(tfClosedMsg()); tfLoadKeepForm(function(){ RENDER.topic(); });
+  }else if(res.code === "invalid"){
+    TF.missing = tfMissing(TF.form); toast(TF_CODE_MSG.invalid); RENDER.topic();
+  }else{
+    toast(TF_CODE_MSG[res.code] || "저장하지 못했어요."); tfPaintSv();
+  }
+}
+/* 서버 최신 글을 받되 내가 쓰던 글(TF.form)은 그대로 둔다 */
+function tfLoadKeepForm(done){
+  tfRead();
+  GLR.rpc("gl_topic_view", { p_team:TF.tid }).then(function(res){
+    if(res && res.ok){ TF.row = res.row || null; TF.taken = res.taken || []; TF.dup = !!res.dup; TF.open = !!res.open; TF.loaded = true; }
+    if(done) done();
+  }, function(){ if(done) done(); });
+}
+
+/* ---- 대표 시작 · 넘기기 ---- */
+function tfClaim(){
+  var t = tfTeam(); if(!t || TF.claiming) return;
+  askConfirm(t.no + "조 대표가 됩니다.\n다른 조원은 읽기만 할 수 있어요. 대표는 나중에 다른 조원에게 넘길 수 있어요.", function(){
+    TF.claiming = true;
+    GLR.rpc("gl_topic_claim", { p_team:t.id }).then(function(res){
+      TF.claiming = false;
+      if(!res || !res.ok){ toast(res && res.code === "closed" ? tfClosedMsg() : (TF_CODE_MSG[res && res.code] || "대표로 시작하지 못했어요.")); return; }
+      if(res.mine){ TF.lostMsg = ""; TF.form = null; tfLoad(function(){ if(TF.row && !TF.form) TF.form = tfFormFrom(TF.row.data); RENDER.topic(); }); }
+      else{
+        TF.lostMsg = "방금 " + (res.rep_name || nameOfSid(res.rep)) + "님이 대표가 되었어요.";
+        tfLoad(function(){ RENDER.topic(); });
+      }
+    }, function(err){ TF.claiming = false; toast(tfErrText(err)); });
+  }, { yes:"대표로 시작", yesClass:"primary" });
+}
+function tfHandover(sid){
+  if(TF.dirty){ toast(TF.row && TF.row.status === "submitted" ? "먼저 [수정 저장]을 눌러 저장한 뒤 넘겨 주세요." : "먼저 [임시저장]을 눌러 저장한 뒤 넘겨 주세요."); return; }
+  var nm = nameOfSid(sid);
+  askConfirm(nm + "님에게 대표를 넘길까요?\n지금 옆에 있는 조원에게 넘기세요. 넘기면 내 화면은 읽기 전용이 돼요.", function(){
+    GLR.rpc("gl_topic_set_rep", { p_team:TF.tid, p_new_sid:String(sid) }).then(function(res){
+      if(!res || !res.ok){ toast(res && res.code === "closed" ? tfClosedMsg() : (TF_CODE_MSG[res && res.code] || "넘기지 못했어요.")); return; }
+      TF.showHand = false; TF.form = null; TF.editing = false; TF.lostMsg = ""; toast(nm + "님이 대표가 되었어요.");
+      tfLoad(function(){ RENDER.topic(); });
+    }, function(err){ toast(tfErrText(err)); });
+  }, { yes:"넘기기", yesClass:"primary" });
+}
+function tfSubmit(){
+  tfRead();
+  var miss = tfMissing(TF.form); TF.missing = miss;
+  if(miss.length){
+    tfMarkMissing();
+    toast("빈 칸이 있어요: " + miss.map(function(k){ return TF_LABEL[k]; }).join(", "));
+    return;
+  }
+  var again = TF.row && TF.row.status === "returned";
+  askConfirm((again ? "다시 제출할까요?" : "교수님께 제출할까요?") + "\n제출 뒤에도 교수님이 마감하기 전까지는 고칠 수 있어요.", function(){
+    if(TF.autoT){ clearTimeout(TF.autoT); TF.autoT = null; }
+    tfSave({ submit:true });
+  }, { yes:again ? "다시 제출" : "제출하기", yesClass:"primary" });
+}
+function tfMarkMissing(){
+  var first = null;
+  TF.missing.forEach(function(k){
+    var id = (k === "links") ? "tf_l0" : "tf_" + k, e = $(id);
+    if(e){ e.classList.add("bad"); if(!first) first = e; }
+  });
+  if(first){ try{ first.scrollIntoView({ block:"center", behavior:"smooth" }); first.focus(); }catch(e){} }
+}
+
+/* ---- 폴링 (이 화면에 있을 때만) ---- */
+function tfPollLoop(){
+  if(TF.pollT) clearTimeout(TF.pollT);
+  var rep = TF.row && String(TF.row.rep_sid) === tfMe();
+  TF.pollT = setTimeout(function(){
+    TF.pollT = null;
+    if(cur !== "topic" || !window.GLR || !GLR.on || state.role !== "student"){ TF.pollOn = false; return; }
+    tfPollOnce(function(){ tfPollLoop(); });
+  }, rep ? 20000 : 8000);
+}
+function tfPollOnce(done){
+  if(TF.saving || TF.claiming || !TF.tid){ if(done) done(); return; }
+  GLR.rpc("gl_topic_view", { p_team:TF.tid }).then(function(res){
+    if(res && res.ok) tfPollApply(res);
+    if(done) done();
+  }, function(){ if(done) done(); });
+}
+function tfPollApply(res){
+  if(cur !== "topic") return;
+  var me = tfMe(), old = TF.row, nw = res.row || null;
+  var takenChanged = tfCanon(TF.taken) !== tfCanon(res.taken || []);
+  TF.taken = res.taken || []; TF.dup = !!res.dup;
+  var openChanged = TF.open !== !!res.open; TF.open = !!res.open;
+  var iAmRep = old && String(old.rep_sid) === me;
+  var structural = openChanged || (!old) !== (!nw) || (old && nw && (String(old.rep_sid) !== String(nw.rep_sid) || old.status !== nw.status ||
+      tfCanon(old.review || {}) !== tfCanon(nw.review || {})));
+  if(iAmRep && nw){
+    if(String(nw.rep_sid) !== me){                           /* 대표가 바뀜 */
+      TF.lostForm = TF.dirty ? tfFormFrom(TF.form) : null; TF.conflict = { type:"rep" }; TF.lostMsg = ""; TF.row = nw; TF.editing = false; RENDER.topic(); return;
+    }
+    if(Number(nw.rev) !== TF.seenRev){
+      if(TF.saving) return;
+      var sameAsOld = tfCanon(nw.data || {}) === tfCanon(old.data || {});
+      var sameAsMine = TF.form && tfCanon(tfServerPayload(nw.data)) === tfCanon(tfPayload(TF.form));
+      if(sameAsOld || sameAsMine){                           /* 내용은 그대로(교수님 조치·내 다른 저장) → 번호만 맞춘다 */
+        TF.seenRev = Number(nw.rev); TF.row = nw; if(sameAsMine){ TF.dirty = false; tfClearLocal(); }
+        if(structural) RENDER.topic(); else{ tfPaintSv(); tfPaintTaken(); }
+      }else{
+        TF.conflict = { type:"other" }; TF.row = nw; RENDER.topic();
+      }
+      return;
+    }
+    TF.row = nw;
+    if(structural) RENDER.topic(); else if(takenChanged || TF.dup) tfPaintTaken();
+    return;
+  }
+  /* 대표가 아닌 조원 / 대표 없음 */
+  var changed = (!old) !== (!nw) || (old && nw && Number(old.rev) !== Number(nw.rev)) || structural || takenChanged;
+  if(changed){
+    TF.flash = {};
+    if(old && nw && old.data && nw.data){
+      var a = tfServerPayload(old.data), b = tfServerPayload(nw.data);
+      Object.keys(b).forEach(function(k){ if(tfCanon(a[k]) !== tfCanon(b[k])) TF.flash[k] = 1; });
+    }
+    TF.row = nw; if(nw && String(nw.rep_sid) === me && !TF.form) TF.form = tfFormFrom(nw.data);
+    RENDER.topic();
+  }
+}
+
+/* ---- 화면 조각 ---- */
+function tfPill(row){
+  if(!row) return '<span class="tf-pill">작성 전</span>';
+  if(row.status === "submitted") return '<span class="tf-pill ok">제출됨 ' + esc(tfHM(row.submitted_at || row.saved_at)) + '</span>';
+  if(row.status === "returned") return '<span class="tf-pill yel">보완 요청</span>';
+  return '<span class="tf-pill amber">작성 중</span>';
+}
+function tfTakenInner(){
+  var h = '<b>먼저 제출된 주제들</b>';
+  if(TF.taken.length) h += '<div class="tf-taken">' + TF.taken.map(function(t){ return '<span>' + esc(t) + '</span>'; }).join("") + '</div>';
+  else h += '<div class="tf-help" style="margin:4px 0">아직 제출한 조가 없어요.</div>';
+  h += '<div class="tf-help">같은 주제는 <b>먼저 제출한 조</b>가 가져가요. 늦게 낸 조는 다른 주제로 바꿔야 해요.</div>';
+  if(TF.dup) h += '<div class="tf-note amber" style="margin:8px 0 0">앞서 제출된 주제와 같아요. 다른 주제로 바꿔 주세요.</div>';
+  h += '<div class="tf-help">※ <b>같은 글자일 때만</b> 찾아요(띄어쓰기·대소문자는 무시해요). 표현이 다른 비슷한 주제는 교수님이 확인해요.</div>';
+  return h;
+}
+function tfRo(label, val, key){
+  var f = (TF.flash && TF.flash[key]) ? " tf-flash" : "";
+  return (label ? '<label class="tf-l">' + label + '</label>' : '') + '<div class="tf-ro' + (val ? '' : ' empty') + f + '">' + (val ? esc(val) : '아직 쓰지 않았어요') + '</div>';
+}
+function tfRoLinks(links, flash){
+  var ok = (links || []).filter(function(x){ return /^https?:\/\/\S+$/i.test(x); });
+  var f = flash ? " tf-flash" : "";
+  if(!ok.length) return '<label class="tf-l">출처 링크</label><div class="tf-ro empty' + f + '">아직 쓰지 않았어요</div>';
+  return '<label class="tf-l">출처 링크</label><div class="tf-ro' + f + '">' + ok.map(function(u, i){
+    return (i + 1) + '. <a href="' + esc(u) + '" target="_blank" rel="noopener noreferrer">' + esc(u) + '</a>'; }).join("<br>") + '</div>';
+}
+/* 읽기 전용 본문 (조원 화면 · 마감 · 교수 상세 공용) */
+function tfReadonlyBody(data, members){
+  var p = tfServerPayload(data || {}), h = "";
+  h += tfRo("주제명(사례명)", p.topic, "topic") + tfRo("핵심 유전공학 기술", p.tech, "tech") + tfRo("선정 이유", p.reason, "reason");
+  h += tfRo("배경", p.background, "background") + tfRo("발표·승인 연도", p.year, "year") + tfRo("최근 5년 이내 근거", p.recent, "recent");
+  h += tfRoLinks(p.links, TF.flash && TF.flash.links);
+  h += '<label class="tf-l">역할 분담 <small>점수에 반영되지 않아요</small></label>' + (members || []).map(function(s){
+    return '<div class="tf-help" style="font-size:14px;color:var(--tx)">' + esc(nameOfSid(s)) + ' — ' + esc(p.roles[String(s)] || "-") + '</div>'; }).join("");
+  return h;
+}
+function tfField(key, label, lim, tall, help){
+  var v = TF.form[key] || "", bad = TF.missing.indexOf(key) >= 0 ? " bad" : "";
+  var inp = tall
+    ? '<textarea id="tf_' + key + '" class="tf-in' + bad + '" maxlength="' + lim + '">' + esc(v) + '</textarea>'
+    : '<input type="text" id="tf_' + key + '" class="tf-in' + bad + '" maxlength="' + lim + '" value="' + esc(v) + '"' + (key === "year" ? ' inputmode="numeric" pattern="[0-9]*" autocomplete="off"' : '') + '>';
+  return '<label class="tf-l" for="tf_' + key + '">' + label + ' <span class="tf-req">*</span><small>' + lim + '자</small></label>' + inp +
+    '<div class="tf-c" id="c_tf_' + key + '">' + v.length + '/' + lim + '</div>' + (help ? '<div class="tf-help">' + help + '</div>' : '');
+}
+function tfEditBody(t, status){
+  var h = "";
+  h += '<div class="tf-card" id="tfTaken">' + tfTakenInner() + '</div>';
+  h += tfField("topic", "주제명(사례명)", TF_LIM.topic, false, "");
+  h += tfField("tech", "핵심 유전공학 기술", TF_LIM.tech, false, "");
+  h += tfField("reason", "선정 이유", TF_LIM.reason, true, "");
+  h += tfField("background", "배경 <small>(어떤 문제를 풀려고 나왔나)</small>", TF_LIM.background, true, "");
+  h += tfField("year", "발표·승인 연도", TF_LIM.year, false, "숫자 4자리로 적어요. 예) 2024");
+  h += tfField("recent", "최근 5년 이내 근거 <small>(언제, 무엇이 발표·승인됐나)</small>", TF_LIM.recent, true,
+        "최근 5년 이내 사례를 권해요. <b>AI와 접목한 사례라면 어떤 점이 접목인지 적어도 돼요.</b>");
+  var lb = TF.missing.indexOf("links") >= 0 ? " bad" : "";
+  h += '<label class="tf-l">출처 링크 <span class="tf-req">*</span><small>1개 이상, 최대 3개 · https:// 로 시작</small></label><div class="tf-links">';
+  for(var i = 0; i < 3; i++) h += '<input type="text" id="tf_l' + i + '" class="tf-in' + (i === 0 ? lb : '') + '" inputmode="url" autocomplete="off" maxlength="' + TF_LIM.link + '" placeholder="https://" value="' + esc(TF.form.links[i] || "") + '">';
+  h += '</div>';
+  h += '<label class="tf-l">역할 분담 <small>점수에 반영되지 않아요 · 선택</small></label>';
+  t.members.forEach(function(s){
+    h += '<div class="tf-role"><span>' + esc(nameOfSid(s)) + '</span><input type="text" class="tf-in" data-role="' + esc(String(s)) + '" maxlength="' + TF_LIM.role + '" placeholder="맡은 일" value="' + esc(TF.form.roles[String(s)] || "") + '"></div>';
+  });
+  return h;
+}
+
+/* ---- 학생 화면 ---- */
+RENDER.topic = function(){
+  var sc = $("sc-topic"); if(!sc) return;
+  var h = '<button class="btn sm ghost" type="button" data-go="project" style="margin-bottom:10px;text-align:left">← 프로젝트로</button>';
+  var fin = function(){ sc.innerHTML = h; bindGo(sc); };
+  var tfBind = function(){ bindGo(sc); tfBindEvents(sc); };
+  if(!TOPIC_FORM){ h += '<div class="tf-note">주제 선정서는 아직 준비 중이에요.</div>'; return fin(); }
+  if(state.role === "prof"){
+    h += '<div class="tf-note">교수님은 <b>주제 선정서 9조 현황</b>에서 조별 글을 볼 수 있어요.</div><button class="btn primary center" type="button" data-go="topicsprof">📝 9조 현황 보기</button>'; return fin();
+  }
+  if(meIsEarly()){ h += '<div class="tf-note">' + esc(EARLY_PROJ_MSG) + '</div>'; return fin(); }
+  if(!(window.GLR && GLR.on)){ h += '<div class="tf-note amber">주제 선정서는 서버에 연결되어 있을 때만 쓸 수 있어요. 잠시 뒤 앱을 새로고침해 주세요.</div>'; return fin(); }
+  var t = tfTeam();
+  if(!t){ h += '<div class="tf-note amber">먼저 우리 조가 있어야 주제 선정서를 쓸 수 있어요.</div><button class="btn primary center" type="button" data-go="team">우리 조 만들기 →</button>'; return fin(); }
+  if(TF.tid !== t.id){ tfReset(); TF.tid = t.id; TF.needLoad = true; }
+  if(!projectStepOpen("p11") ){
+    h += '<div class="tf-note">2단계 <b>주제 선정서</b>는 수업 시간에 열어 드려요 (11주차 · 11/4 예정).</div>'; return fin();
+  }
+  if(TF.needLoad){
+    TF.needLoad = false; TF.lostMsg = ""; TF.loaded = false; TF.form = null; TF.conflict = null; TF.editing = false; TF.showServer = false; TF.lostForm = null; TF.missing = [];
+    h += '<div class="tf-note">불러오는 중이에요…</div>'; fin();
+    tfLoad(function(){ if(cur === "topic") RENDER.topic(); });
+    return;
+  }
+  if(!TF.loaded){
+    h += '<div class="tf-note red">' + esc(TF.loadErr || "불러오지 못했어요.") + '</div><button class="btn primary center" type="button" id="tfRetry">다시 불러오기</button>'; fin();
+    if($("tfRetry")) $("tfRetry").onclick = function(){ TF.needLoad = true; RENDER.topic(); };
+    return;
+  }
+  if(!TF.pollOn){ TF.pollOn = true; tfPollLoop(); }
+  var me = tfMe(), row = TF.row, status = row ? row.status : "none";
+  var iAmRep = !!row && String(row.rep_sid) === me;
+  var canWrite = iAmRep && (TF.open || status === "returned") && !(TF.conflict && TF.conflict.type === "rep");
+  var repName = row ? nameOfSid(row.rep_sid) : "";
+  TF.editing = canWrite;
+  if(canWrite) TF.lostMsg = "";            /* 내가 대표가 되면 「방금 ○○님이 대표가 되었어요」 안내는 지운다 */
+  if(canWrite && !TF.form) TF.form = tfFormFrom(row.data);
+
+  h += '<div class="tf-top"><b>' + t.no + '조</b><span class="tf-rep">' + (row ? '대표 ' + esc(repName) + (iAmRep ? ' (나)' : '') : '대표 아직 없음') + '</span>' + tfPill(row) + '</div>';
+  var reviewC = row && row.status === "returned";
+  if(reviewC){
+    var cm = row.review && row.review.comment ? String(row.review.comment) : "교수님이 다시 확인하고 싶은 부분이 있어요. 내용을 살펴보고 고쳐서 [다시 제출]해 주세요.";
+    h += '<div class="tf-note yel"><b>다시 써 주세요</b><br>교수님 코멘트: ' + esc(cm).replace(/\n/g, "<br>") + '</div>';
+  }
+
+  if(TF.lostMsg){ h += '<div class="tf-note amber"><b>' + esc(TF.lostMsg) + '</b><br>이 화면은 읽기 전용이에요.</div>'; }
+
+  /* 충돌 안내 */
+  if(TF.conflict && TF.conflict.type === "other"){
+    h += '<div class="tf-note red">⚠️ <b>다른 기기에서 방금 저장했어요.</b><br>지금 쓰신 글은 아래 칸에 <b>그대로 있어요</b> — 사라지지 않았어요.' +
+         '<div class="tf-btns"><button class="btn sm" type="button" id="tfSeeSrv">' + (TF.showServer ? '방금 저장된 것 닫기' : '방금 저장된 것 보기') + '</button>' +
+         '<button class="btn sm danger" type="button" id="tfOver">내 글로 덮어쓰기</button></div></div>';
+    if(TF.showServer && row){ h += '<div class="tf-card"><b>방금 저장된 글 (' + esc(tfHM(row.saved_at)) + ' · ' + esc(tfWho(row.saved_by || "")) + ')</b>' + tfReadonlyBody(row.data, t.members) + '</div>'; }
+  }
+  if(TF.conflict && TF.conflict.type === "rep"){
+    h += '<div class="tf-note red">⚠️ <b>대표가 바뀌었어요.</b><br>이제 <b>' + esc(repName) + '</b>님만 쓸 수 있어요. 이 화면은 읽기 전용이에요.</div>';
+    if(TF.lostForm){
+      var lp = tfPayload(TF.lostForm), txt = ["주제명: " + lp.topic, "핵심 기술: " + lp.tech, "선정 이유: " + lp.reason, "배경: " + lp.background, "연도: " + lp.year, "근거: " + lp.recent, "링크: " + lp.links.join(" ")].join("\n");
+      h += '<details class="tf-mine"><summary>내가 쓰던 글 (저장되지 않았어요 · 복사할 수 있어요)</summary><textarea class="tf-in" readonly style="min-height:150px">' + esc(txt) + '</textarea></details>';
+    }
+  }
+  if(TF.restored && canWrite && !TF.conflict){
+    h += '<div class="tf-note amber">저장되지 않은 글이 이 기기에 남아 있어서 불러왔어요. ' + (status === "submitted" ? '<b>[수정 저장]</b>을 눌러 주세요.' : '<b>잠시 뒤 자동으로 저장돼요.</b>') + '</div>';
+  }
+
+  if(status === "none"){
+    if(TF.open){
+      h += '<div class="tf-card" style="text-align:center;padding:20px 14px"><div style="font-size:40px" aria-hidden="true">📝</div><b>우리 조 주제 선정서</b>' +
+           '<p class="muted" style="margin:6px 0 14px">조원끼리 이야기해서 <b>한 명</b>이 대표로 시작해 주세요.<br>대표만 쓰고, 나머지 조원은 같은 내용을 볼 수 있어요.</p>' +
+           '<button class="btn primary center" type="button" id="tfClaim">내가 대표로 시작</button></div>';
+    }else{
+      h += '<div class="tf-note amber">🔒 쓰기가 <b>마감</b>됐어요. 우리 조는 대표를 정하지 않았어요. 교수님께 말씀해 주세요.</div>';
+    }
+    h += '<div class="tf-help">조원: ' + t.members.map(function(s){ return esc(nameOfSid(s)) + (String(s) === me ? '(나)' : ''); }).join(" · ") + '</div>';
+    h += '<div class="tf-card" id="tfTaken" style="margin-top:12px">' + tfTakenInner() + '</div>';
+    sc.innerHTML = h; tfBind(); if($("tfClaim")) $("tfClaim").onclick = tfClaim; return;
+  }
+
+  if(canWrite){
+    /* 쓰기 모드 — 대표 */
+    if(status === "submitted") h += '<div class="tf-note">제출했어요. 교수님이 <b>마감</b>하기 전까지 고칠 수 있어요. 고친 뒤에는 <b>[수정 저장]</b>을 눌러야 반영돼요.</div>';
+    else h += '<div class="tf-note">내가 대표예요. 쓰는 대로 <b>임시저장</b>되고, 조원은 같은 내용을 볼 수 있어요. <b>[제출하기]를 눌러야 교수님께 제출돼요.</b></div>';
+    h += tfEditBody(t, status);
+    h += '<div class="tf-bar"><div class="tf-sv" id="tfSv" aria-live="polite"></div><div class="tf-btns">';
+    if(status === "submitted") h += '<button class="btn primary center" type="button" id="tfSaveEdit" disabled>수정 저장</button>';
+    else h += '<button class="btn center" type="button" id="tfDraft">💾 임시저장</button><button class="btn primary center" type="button" id="tfSubmit">' + (status === "returned" ? "다시 제출" : "제출하기") + '</button>';
+    h += '<button class="btn sm ghost center" type="button" id="tfHandBtn">대표 넘기기</button></div>';
+    if(TF.showHand){
+      h += '<div class="tf-hand">' + t.members.filter(function(s){ return String(s) !== me; }).map(function(s){
+        return '<button class="btn sm center" type="button" data-hand="' + esc(String(s)) + '">' + esc(nameOfSid(s)) + '님에게 넘기기</button>'; }).join("") + '</div>';
+    }
+    h += '</div>';
+    sc.innerHTML = h; tfBind(); tfPaintSv();
+  }else{
+    /* 읽기 모드 — 조원 · 마감 · 대표가 바뀐 옛 대표 */
+    if(!TF.open && status !== "returned") h += '<div class="tf-note amber">🔒 쓰기가 <b>마감</b>됐어요. 내용은 그대로 볼 수 있어요.<br><span class="tf-help">고칠 내용이 있으면 교수님께 말씀해 주세요.</span></div>';
+    else if(!iAmRep) h += '<div class="tf-note"><b>대표 1명만 쓸 수 있어요.</b> 고치고 싶은 내용은 대표에게 말하거나 [대표 넘기기]를 부탁하세요.<br><span class="tf-help">대표와 연락이 안 되면 교수님께 말씀해 주세요.</span></div>';
+    if(status === "submitted" && !iAmRep) h += '<div class="tf-note">대표(' + esc(repName) + ')가 <b>제출한 글</b>이에요. 조원 모두가 같은 내용을 보고 있어요.</div>';
+    if(status !== "submitted" && TF.open && !iAmRep) h += '<div class="tf-card" id="tfTaken">' + tfTakenInner() + '</div>';
+    h += tfReadonlyBody(row ? row.data : {}, t.members);
+    if(row) h += '<div class="tf-help" style="margin-top:12px">마지막 저장: ' + esc(tfWho(row.saved_by || row.rep_sid)) + ' · ' + esc(tfHM(row.saved_at)) + (status === "submitted" ? '' : ' · 8초마다 자동으로 새로 보여 줘요') + '</div>';
+    sc.innerHTML = h; tfBind();
+  }
+  if($("tfClaim")) $("tfClaim").onclick = tfClaim;
+  if($("tfSeeSrv")) $("tfSeeSrv").onclick = function(){ tfRead(); TF.showServer = !TF.showServer; RENDER.topic(); };
+  if($("tfOver")) $("tfOver").onclick = function(){
+    askConfirm("내 글로 덮어쓸까요?\n다른 기기에서 저장한 글이 지금 쓰던 글로 바뀌어요.", function(){
+      tfRead(); TF.seenRev = Number(TF.row && TF.row.rev) || TF.seenRev; TF.conflict = null; TF.showServer = false;
+      tfSave({ force:true });
+      RENDER.topic();
+    }, { yes:"덮어쓰기", yesClass:"danger" });
+  };
+  if($("tfDraft")) $("tfDraft").onclick = function(){ if(TF.autoT){ clearTimeout(TF.autoT); TF.autoT = null; } tfRead(); tfSave({}); };
+  if($("tfSubmit")) $("tfSubmit").onclick = tfSubmit;
+  if($("tfSaveEdit")) $("tfSaveEdit").onclick = function(){ tfRead(); tfSave({}); };
+  if($("tfHandBtn")) $("tfHandBtn").onclick = function(){ tfRead(); TF.showHand = !TF.showHand; RENDER.topic(); };
+  sc.querySelectorAll("[data-hand]").forEach(function(b){ b.onclick = function(){ tfHandover(b.getAttribute("data-hand")); }; });
+  TF.flash = {};
+  if(canWrite && TF.restored && TF.dirty && !TF.conflict){ tfSchedule(); if(TF.row && TF.row.status === "submitted") TF.restored = false; }
+  if(canWrite) tfPaintSv();
+};
+function tfBindEvents(sc){
+  sc.oninput = tfOnInput;
+  if(!TF.bound){
+    TF.bound = true;
+    sc.addEventListener("focusout", function(e){
+      var t = e.target;
+      if(t && t.id && /^tf_l[0-2]$/.test(t.id)){ var n = tfNormLink(t.value); if(n !== t.value){ t.value = n; tfRead(); } }
+      if(TF.editing && TF.dirty && TF.row && TF.row.status !== "submitted" && !TF.comp){ if(TF.autoT){ clearTimeout(TF.autoT); TF.autoT = null; } tfSave({ auto:true }); }
+    });
+    sc.addEventListener("compositionstart", function(){ TF.comp = true; }, true);
+    sc.addEventListener("compositionend", function(){ TF.comp = false; if(TF.dirty) tfSchedule(); }, true);
+    window.addEventListener("online", function(){ if(cur === "topic" && TF.dirty && TF.offline) tfSave({ auto:true }); });
+    document.addEventListener("visibilitychange", function(){
+      if(cur !== "topic" || !TF.editing) return;
+      if(document.visibilityState === "hidden"){ tfRead(); tfSaveLocal(); tfKeepalive(); }
+      else if(TF.tid){ tfPollOnce(); }
+    });
+    window.addEventListener("pagehide", function(){ if(cur === "topic" && TF.editing){ tfRead(); tfSaveLocal(); tfKeepalive(); } });
+  }
+}
+/* 앱을 닫거나 백그라운드로 보낼 때 마지막 입력을 한 번 더 보내 본다(제출 전 글만, 성공을 보장하지는 않으므로 이 기기 보조 사본도 둔다) */
+function tfKeepalive(){
+  if(!(TF.editing && TF.dirty && TF.row && TF.row.status !== "submitted" && !TF.saving && !TF.conflict && window.GLR && GLR.on)) return;
+  try{
+    fetch(GLCONF.url + "/rest/v1/rpc/gl_topic_save", { method:"POST", keepalive:true, headers:GLR.hdr(true),
+      body:JSON.stringify({ p_team:TF.tid, p_seen_rev:TF.seenRev, p_data:tfPayload(TF.form), p_submit:false }) });
+  }catch(e){}
+}
+/* 프로젝트 화면의 2단계 카드에 우리 조 상태를 보여 주기 위한 가벼운 확인(30초에 한 번) */
+function tfPeek(){
+  if(!TOPIC_FORM || !(window.GLR && GLR.on) || !state || state.role !== "student" || meIsEarly() || !projectStepOpen("p11")) return;
+  var t = tfTeam(); if(!t) return;
+  if(Date.now() - TF.peekAt < 30000) return;
+  TF.peekAt = Date.now();
+  GLR.rpc("gl_topic_view", { p_team:t.id }).then(function(res){
+    if(!res || !res.ok) return;
+    var np = res.row ? { status:res.row.status, rep:String(res.row.rep_sid) } : { status:"none", rep:"" };
+    var changed = !TF.peek || TF.peek.status !== np.status || TF.peek.rep !== np.rep;
+    TF.peek = np;
+    if(changed && cur === "project") RENDER.project();
+  }, function(){});
+}
+function tfPeekLine(){
+  if(!TF.peek) return "";
+  var p = TF.peek, me = tfMe();
+  var t = { none:"우리 조는 아직 시작하지 않았어요", draft:"작성 중이에요 (대표 " + nameOfSid(p.rep) + ")", submitted:"제출했어요 ✓", returned:"보완 요청이 있어요 — 다시 써 주세요" }[p.status] || "";
+  return '<div class="ps-todo' + (p.status === "submitted" ? ' none' : '') + '" style="margin-top:8px">우리 조 상태: <b>' + esc(t) + '</b></div>';
+}
+
+/* ==========================================================================
+ * 👩‍🏫 교수 화면 — 주제 선정서 9조 현황 (읽기 + 보완 요청 · 대표 바꾸기 · 마감)
+ * ========================================================================*/
+var TFP = { rows:null, err:"", open:"", pollT:null, loading:false };
+function tfpStatusLabel(r){
+  if(!r) return "미착수";
+  if(r.status === "returned") return "보완 요청";
+  if(r.status === "submitted") return r.edited_after_submit ? "제출 후 수정됨" : "제출됨";
+  return "작성 중";
+}
+function tfpClosedNow(){ var d = effectiveDeadlineP11(); return !!(d && d.getTime() <= Date.now()); }
+function effectiveDeadlineP11(){
+  var m = loadReportDeadlineMap(); if(!(m && m.p11)) return null;
+  var d = new Date(m.p11); return isNaN(d.getTime()) ? null : d;
+}
+function tfpLoad(done){
+  if(TFP.loading) return; TFP.loading = true;
+  GLR.call("/rest/v1/gl_topic_forms?select=*&order=team_id.asc", { headers:GLR.hdr(false) }).then(function(rows){
+    TFP.loading = false; TFP.rows = rows || []; TFP.err = ""; if(done) done();
+  }, function(err){ TFP.loading = false; TFP.err = tfErrText(err); if(done) done(); });
+}
+function tfpDupMap(rows){
+  /* 제출된 글끼리, 먼저 제출한 조가 이기고 늦은 조에 표시 */
+  var sub = (rows || []).filter(function(r){ return r.submitted_at; }).sort(function(a, b){ return new Date(a.submitted_at) - new Date(b.submitted_at); });
+  var seen = {}, dup = {};
+  sub.forEach(function(r){
+    var k = String((r.data && r.data.topic) || "").toLowerCase().replace(/\s+/g, "");
+    if(!k) return;
+    if(seen[k]) dup[r.team_id] = seen[k]; else seen[k] = r.team_id;
+  });
+  return dup;
+}
+function tfpCopyText(){
+  var teams = loadTeams().slice().sort(function(a, b){ return a.no - b.no; });
+  var map = {}; (TFP.rows || []).forEach(function(r){ map[r.team_id] = r; });
+  var clean = function(s){ return String(s || "").replace(/[\t\r\n]+/g, " ").trim(); };
+  var lines = ["조\t사례명\t핵심 유전공학 기술\t연도\t출처 링크"];
+  teams.forEach(function(t){
+    var r = map[t.id], p = r && r.submitted_at ? tfServerPayload(r.data) : null;
+    lines.push([t.no + "조", p ? clean(p.topic) : "", p ? clean(p.tech) : "", p ? clean(p.year) : "", p ? clean(p.links[0]) : ""].join("\t"));
+  });
+  return lines.join("\n");
+}
+function tfpCopy(){
+  var txt = tfpCopyText();
+  var ok = function(){ toast("복사했어요. 문서나 스프레드시트에 붙여넣으세요. (제출된 조만 채워져요)"); };
+  try{
+    if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(ok, function(){ tfpCopyFallback(txt, ok); }); return; }
+  }catch(e){}
+  tfpCopyFallback(txt, ok);
+}
+function tfpCopyFallback(txt, ok){
+  var ta = document.createElement("textarea"); ta.value = txt; ta.style.cssText = "position:fixed;left:-9999px;top:0";
+  document.body.appendChild(ta); ta.select();
+  var done = false; try{ done = document.execCommand("copy"); }catch(e){}
+  document.body.removeChild(ta);
+  if(done) ok(); else toast("복사하지 못했어요. 브라우저 설정을 확인해 주세요.");
+}
+function tfpSetDeadline(on){
+  var m = setReportDeadlineLocal("p11", on ? new Date().toISOString() : "");
+  if(window.GLR && GLR.on) GLR.syncReportDeadline(m);
+}
+RENDER.topicsprof = function(){
+  var sc = $("sc-topicsprof"); if(!sc) return;
+  var h = '<button class="btn sm ghost" type="button" data-go="profdash" style="margin-bottom:10px;text-align:left">← 교수 확인으로</button>';
+  if(!TOPIC_FORM){ sc.innerHTML = h + '<div class="tf-note">주제 선정서는 꺼져 있어요.</div>'; bindGo(sc); return; }
+  if(state.role !== "prof"){ sc.innerHTML = h + '<div class="tf-note">교수님만 볼 수 있어요.</div>'; bindGo(sc); return; }
+  if(!(window.GLR && GLR.on)){ sc.innerHTML = h + '<div class="tf-note amber">서버에 연결되어 있을 때만 볼 수 있어요.</div>'; bindGo(sc); return; }
+  if(TFP.rows === null){
+    sc.innerHTML = h + '<div class="tf-note">불러오는 중이에요…</div>'; bindGo(sc);
+    tfpLoad(function(){ if(cur === "topicsprof") RENDER.topicsprof(); }); return;
+  }
+  if(!TFP.pollT){
+    TFP.pollT = setInterval(function(){
+      if(cur !== "topicsprof" || !window.GLR || !GLR.on){ clearInterval(TFP.pollT); TFP.pollT = null; return; }
+      tfpLoad(function(){ if(cur === "topicsprof" && !TFP.open) RENDER.topicsprof(); });
+    }, 15000);
+  }
+  var teams = loadTeams().slice().sort(function(a, b){ return a.no - b.no; });
+  var map = {}; (TFP.rows || []).forEach(function(r){ map[r.team_id] = r; });
+  var dup = tfpDupMap(TFP.rows), byTeam = {}; teams.forEach(function(t){ byTeam[t.id] = t; });
+  var nSub = 0, nDraft = 0, nNone = 0;
+  teams.forEach(function(t){ var r = map[t.id]; if(!r) nNone++; else if(r.status === "submitted") nSub++; else nDraft++; });
+  var stepOpen = projectStepOpen("p11"), closed = tfpClosedNow();
+  h += '<h2 class="sc-h">📝 주제 선정서 ' + teams.length + '조 현황</h2>';
+  if(TFP.err) h += '<div class="tf-note red">' + esc(TFP.err) + '</div>';
+  h += '<div class="tf-top"><span class="tf-pill ok">제출 ' + nSub + '</span><span class="tf-pill amber">작성 중·보완 ' + nDraft + '</span><span class="tf-pill">미착수 ' + nNone + '</span></div>';
+  h += '<div class="tf-note ' + (stepOpen ? (closed ? 'amber' : '') : 'amber') + '">학생에게: <b>' + (!stepOpen ? '2단계가 아직 닫혀 있어요 (대시보드의 프로젝트 단계 공개에서 열기)' : (closed ? '🔒 마감됨 (' + esc(deadlineLabel(effectiveDeadlineP11()).replace('⏰ 제출 기한: ', '').replace(' (한국시간)', '')) + ')' : '열려 있어요 (쓰기 가능)')) + '</b></div>';
+  h += '<div class="tf-btns" style="margin-bottom:10px">' +
+       (closed ? '<button class="btn sm center" type="button" id="tfpOpen">마감 풀기</button>' : '<button class="btn sm primary center" type="button" id="tfpClose"' + (stepOpen ? '' : ' disabled') + '>마감</button>') +
+       '<button class="btn sm center" type="button" id="tfpCopy">표 복사</button><button class="btn sm ghost center" type="button" id="tfpRefresh">새로고침</button></div>';
+  h += '<div class="tf-list">';
+  teams.forEach(function(t){
+    var r = map[t.id], p = r ? tfServerPayload(r.data) : null;
+    var stc = !r ? '' : (r.status === "submitted" ? ' ok' : (r.status === "returned" ? ' yel' : ' amber'));
+    h += '<div class="tf-lrow" role="button" tabindex="0" data-tfp="' + esc(t.id) + '"><div class="tf-l1"><b>' + t.no + '조</b><span class="tf-rep">' + (r ? '대표 ' + esc(nameOfSid(r.rep_sid)) : '대표 없음') + '</span>' +
+         '<span class="tf-pill' + stc + '">' + esc(tfpStatusLabel(r)) + '</span>' + (r && r.submitted_at ? '<span class="small">' + esc(tfHM(r.submitted_at)) + ' 제출</span>' : '') + '</div>' +
+         '<div class="tf-l2">' + (p && p.topic ? esc(p.topic) : '<span class="small">주제명 없음</span>') + '</div>' +
+         (dup[t.id] ? '<div><span class="tf-pill amber">⚠ 같은 주제명 · ' + esc(byTeam[dup[t.id]] ? byTeam[dup[t.id]].no + '조가 먼저 제출' : '먼저 제출한 조 있음') + '</span></div>' : '') + '</div>';
+    if(TFP.open === t.id){
+      h += '<div class="tf-det">';
+      if(!r) h += '<div class="small">아직 대표를 정하지 않았어요.</div>';
+      else{
+        h += '<div class="small">대표 ' + esc(nameOfSid(r.rep_sid)) + ' · 마지막 저장 ' + esc(tfHM(r.saved_at)) + ' ' + esc(tfWho(r.saved_by || r.rep_sid)) + (r.edited_after_submit ? ' · <b>제출 후 수정됨</b>' : '') + '</div>';
+        h += tfReadonlyBody(r.data, t.members);
+        if(r.review && r.review.comment) h += '<div class="tf-note yel" style="margin-top:10px"><b>보낸 코멘트</b><br>' + esc(r.review.comment) + (r.review.answered_at ? '<br><span class="small">학생이 다시 제출함 ' + esc(tfHM(r.review.answered_at)) + '</span>' : '') + '</div>';
+        h += '<label class="tf-l">보완 요청 코멘트 <small>선택 · 300자</small></label><textarea id="tfpC" class="tf-in" maxlength="300" style="min-height:80px"></textarea>';
+        h += '<div class="tf-btns"><button class="btn sm primary center" type="button" data-tfpret="' + esc(t.id) + '">보완 요청</button>' +
+             (r.status === "returned" ? '<button class="btn sm center" type="button" data-tfpclr="' + esc(t.id) + '">요청 취소</button>' : '') + '</div>';
+      }
+      h += '<label class="tf-l">대표 바꾸기</label><div class="tf-hand">' + t.members.map(function(s){
+        return '<button class="btn sm center" type="button" data-tfprep="' + esc(t.id) + '|' + esc(String(s)) + '"' + (r && String(r.rep_sid) === String(s) ? ' disabled' : '') + '>' + esc(nameOfSid(s)) + '</button>'; }).join("") + '</div>';
+      h += '</div>';
+    }
+  });
+  h += '</div>';
+  h += '<p class="small" style="margin-top:8px">행을 누르면 글이 열려요(읽기 전용). 교수님은 내용을 고칠 수 없고 [보완 요청]·[대표 바꾸기]만 할 수 있어요. 같은 주제명은 늦게 제출한 조에 ⚠가 붙어요(같은 글자일 때만 찾아요).<br>※ <b>마감 뒤</b>에 시작하지 않은 조는 [대표 바꾸기]로 대표를 정한 다음 [보완 요청]을 누르면 쓸 수 있어요.</p>';
+  sc.innerHTML = h; bindGo(sc);
+  sc.querySelectorAll("[data-tfp]").forEach(function(tr){ tr.onclick = function(){ var id = tr.getAttribute("data-tfp"); TFP.open = (TFP.open === id) ? "" : id; RENDER.topicsprof(); }; tr.onkeydown = function(e){ if(e.key === "Enter" || e.key === " "){ e.preventDefault(); tr.click(); } }; });
+  if($("tfpRefresh")) $("tfpRefresh").onclick = function(){ tfpLoad(function(){ RENDER.topicsprof(); toast("새로 불러왔어요."); }); };
+  if($("tfpCopy")) $("tfpCopy").onclick = tfpCopy;
+  if($("tfpClose")) $("tfpClose").onclick = function(){
+    askConfirm("주제 선정서 쓰기를 지금 마감합니다.\n마감 뒤에는 학생이 고칠 수 없어요. (조별 [보완 요청]을 걸면 그 조만 다시 쓸 수 있어요. [마감 풀기]로 되돌릴 수 있어요.)\n학생은 새로고침 없이도 바로 막혀요.", function(){
+      tfpSetDeadline(true); toast("마감했어요."); RENDER.topicsprof();
+    }, { yes:"마감", yesClass:"primary" });
+  };
+  if($("tfpOpen")) $("tfpOpen").onclick = function(){
+    askConfirm("마감을 풀고 학생이 다시 쓸 수 있게 합니다. 풀까요?", function(){ tfpSetDeadline(false); toast("마감을 풀었어요."); RENDER.topicsprof(); }, { yes:"마감 풀기", yesClass:"primary" });
+  };
+  sc.querySelectorAll("[data-tfpret]").forEach(function(b){ b.onclick = function(){
+    var id = b.getAttribute("data-tfpret"), c = ($("tfpC") || {}).value || "";
+    askConfirm("이 조에 보완을 요청할까요?" + (c.trim() ? "" : "\n(코멘트가 없으면 기본 안내 문구가 나가요)"), function(){
+      GLR.rpc("gl_topic_review", { p_team:id, p_action:"return", p_comment:c }).then(function(res){
+        if(res && res.ok){ toast("보완을 요청했어요."); tfpLoad(function(){ RENDER.topicsprof(); }); } else toast(TF_CODE_MSG[res && res.code] || "처리하지 못했어요.");
+      }, function(err){ toast(tfErrText(err)); });
+    }, { yes:"보완 요청", yesClass:"primary" });
+  }; });
+  sc.querySelectorAll("[data-tfpclr]").forEach(function(b){ b.onclick = function(){
+    var id = b.getAttribute("data-tfpclr");
+    GLR.rpc("gl_topic_review", { p_team:id, p_action:"clear", p_comment:"" }).then(function(res){
+      if(res && res.ok){ toast("요청을 취소했어요."); tfpLoad(function(){ RENDER.topicsprof(); }); } else toast("처리하지 못했어요.");
+    }, function(err){ toast(tfErrText(err)); });
+  }; });
+  sc.querySelectorAll("[data-tfprep]").forEach(function(b){ b.onclick = function(){
+    var a = b.getAttribute("data-tfprep").split("|");
+    askConfirm(nameOfSid(a[1]) + "님을 이 조의 대표로 바꿀까요?", function(){
+      GLR.rpc("gl_topic_set_rep", { p_team:a[0], p_new_sid:a[1] }).then(function(res){
+        if(res && res.ok){ toast("대표를 바꿨어요."); tfpLoad(function(){ RENDER.topicsprof(); }); } else toast(TF_CODE_MSG[res && res.code] || "처리하지 못했어요.");
+      }, function(err){ toast(tfErrText(err)); });
+    }, { yes:"바꾸기", yesClass:"primary" });
+  }; });
+};
+
+/* ==========================================================================
+ * 👥 조 편성 확정 (O-0635) — 확정되면 학생은 조를 만들거나 없앨 수 없다(서버 정책이 막는다).
+ *   서버 gl_app_meta 의 k='team_lock' 한 줄({"locked":true}). 교수 대시보드에서 [조 편성 확정] / [확정 풀기].
+ * ========================================================================*/
+var TEAMLOCK_KEY = "dmu_gene_team_lock";
+function teamLocked(){
+  if(!TOPIC_FORM) return false;
+  try{ var o = JSON.parse(localStorage.getItem(TEAMLOCK_KEY) || "null"); return !!(o && o.locked); }catch(e){ return false; }
+}
+function setTeamLockLocal(on){ try{ localStorage.setItem(TEAMLOCK_KEY, JSON.stringify({ locked:!!on })); }catch(e){} }
+var TEAMLOCK_MSG = "조 편성이 확정됐어요. 바꾸려면 교수님께 말씀해 주세요.";
+function teamLockCardHTML(){
+  if(!TOPIC_FORM) return "";
+  var roster = getRoster(), noTeam = roster.filter(function(st){ return !isEarly(st.sid) && !teamOf(String(st.sid)); }).length;
+  var on = teamLocked(), h = '<div class="card tight" style="border-color:#bcd6f0;background:var(--mintdk)">';
+  h += '<div class="small" style="margin:0 0 6px"><b>👥 조 편성 확정</b> — ' + (on ? '<b>확정됨</b>: 학생이 조를 만들거나 없앨 수 없어요.' : '확정 전: 학생이 스스로 조를 만들고 바꿀 수 있어요.') + '</div>';
+  h += '<div class="small" style="margin:0 0 8px">현재 ' + loadTeams().length + '조 · 조가 없는 학생(면제 제외) <b>' + noTeam + '명</b>. 11주차 주제 선정서 전에 한 번 확정해 주세요.</div>';
+  if(!(window.GLR && GLR.on)) h += '<div class="small" style="color:var(--amber)">이 기기 저장 모드에서는 서버에 반영되지 않아요.</div>';
+  h += '<button class="btn sm ' + (on ? '' : 'primary') + ' center" type="button" id="teamLockBtn" data-to="' + (on ? '0' : '1') + '">' + (on ? '확정 풀기' : '조 편성 확정') + '</button></div>';
+  return h;
+}
+function bindTeamLock(sc){
+  var b = sc.querySelector("#teamLockBtn"); if(!b) return;
+  b.onclick = function(){
+    var to = b.getAttribute("data-to") === "1";
+    /* 확정 직전에 서버의 최신 조 목록을 받아 「조가 없는 학생」 수를 정확히 센다(교수 화면은 조 변경을 실시간으로 받지 않으므로) */
+    var go2 = function(){ tfConfirmLock(to); };
+    if(window.GLR && GLR.on){
+      GLR.call("/rest/v1/gl_teams?select=*&order=no.asc", { headers:GLR.hdr(false) }).then(function(rows){
+        try{ localStorage.setItem(TEAMS_KEY, JSON.stringify((rows || []).map(function(t){ return { id:t.id, no:t.no, members:((t.data && t.data.members) || []).map(String) }; }))); }catch(e){}
+        go2();
+      }, go2);
+    }else go2();
+  };
+}
+function tfConfirmLock(to){
+  (function(){
+    var noTeam = getRoster().filter(function(st){ return !isEarly(st.sid) && !teamOf(String(st.sid)); }).length;
+    var msg = to ? ("조 편성을 확정합니다.\n확정 뒤에는 학생이 조를 만들거나 없애거나 바꿀 수 없어요." + (noTeam ? "\n※ 지금 조가 없는 학생(면제 제외)이 " + noTeam + "명 있어요." : "") + "\n확정할까요?")
+                 : "확정을 풀고 학생이 다시 조를 바꿀 수 있게 합니다. 풀까요?";
+    askConfirm(msg, function(){
+      setTeamLockLocal(to);
+      if(window.GLR && GLR.on) GLR.syncTeamLock(to);
+      toast(to ? "조 편성을 확정했어요." : "확정을 풀었어요.");
+      RENDER.profdash();
+    }, { yes:to ? "확정" : "풀기", yesClass:"primary" });
+  })();
+}
+
+/* ---- 조 편성 확정 뒤 오래된 화면 방지 (O-0635) ----
+   [조 다시 짜기]·[조 만들기 확정]을 누르기 직전에 서버의 확정 상태를 새로 읽는다. 이미 확정됐으면 바꾸지 않고 안내만 한다
+   (서버가 삭제 요청을 0행으로 조용히 무시해도 화면이 어긋나지 않게). 확정 순간과 누른 순간이 겹치는 극히 짧은 경우는 서버 정책이 막고,
+   화면은 5초 폴링이 서버 값으로 되돌린다. */
+function tfTeamGate(cb){
+  if(!(window.GLR && GLR.on)){ cb(); return; }
+  GLR.loadMeta().then(function(){
+    if(teamLocked()){ toast(TEAMLOCK_MSG); RENDER.team(); } else cb();
+  }, function(){ cb(); });
+}
+function tfWrapTeamGate(el){
+  if(!el || !(window.GLR && GLR.on)) return;
+  var orig = el.onclick;
+  el.onclick = function(ev){ var self = this; tfTeamGate(function(){ if(orig) orig.call(self, ev); }); };
+}
+
 
 /* ==========================================================================
  * 실습 허브 (= 주차 실습 안 · 3단계 메뉴)
@@ -2615,10 +3509,14 @@ RENDER.team = function(){
     });
     h += '</div></div>';
     h += '<p class="small" style="margin-top:12px">조가 편성되었습니다. 보고서 머리말의 "조" 칸에 <b>' + myTm.no + '조</b>가 자동으로 채워집니다.</p>';
-    h += '<button class="btn sm danger center" type="button" id="teamRebuild" style="margin-top:4px">조 다시 짜기</button>';
-    h += '<p class="small" style="margin:2px 0 0;color:var(--tx3)">※ 다시 짜면 우리 조가 해체되고 조원 3명이 모두 미배정 상태가 됩니다. 새로 만들면 선착순 번호를 다시 받습니다.</p>';
+    if(teamLocked()){
+      h += '<div class="tf-note" style="margin-top:12px">🔒 ' + esc(TEAMLOCK_MSG) + '</div>';
+    }else{
+      h += '<button class="btn sm danger center" type="button" id="teamRebuild" style="margin-top:4px">조 다시 짜기</button>';
+      h += '<p class="small" style="margin:2px 0 0;color:var(--tx3)">※ 다시 짜면 우리 조가 해체되고 조원 3명이 모두 미배정 상태가 됩니다. 새로 만들면 선착순 번호를 다시 받습니다.</p>';
+    }
     h += teamStatusCard();
-    h += localNote;
+    if(!teamLocked()) h += localNote;
     sc.innerHTML = h; bindGo(sc);
     if($("teamRebuild")) $("teamRebuild").onclick = function(){
       askConfirm(myTm.no + "조를 해체하고 다시 짜시겠어요?\n조원 3명이 모두 미배정 상태가 되고, 새로 만들면 조 번호를 다시 받습니다.", function(){
@@ -2631,6 +3529,12 @@ RENDER.team = function(){
     return;
   }
 
+  /* O-0635: 조 편성 확정 — 조가 없는 학생도 새로 만들 수 없다 */
+  if(teamLocked()){
+    h += '<div class="tf-note amber">🔒 ' + esc(TEAMLOCK_MSG) + '</div>';
+    h += teamStatusCard();
+    sc.innerHTML = h; bindGo(sc); return;
+  }
   /* 모든 조가 찼는가 */
   if(teamsFull()){
     h += '<div class="card"><h3>모든 조가 구성되었습니다</h3><p class="muted">' + TEAM_MAX + '개 조가 모두 편성되어 더 만들 수 없습니다. 조 배정에 문제가 있으면 담당 교수님께 문의하세요.</p></div>';
@@ -2738,6 +3642,9 @@ function teamStatusCard(){
   h += '</div>';
   return h;
 }
+
+/* O-0635: 조 화면을 그린 뒤 변경 버튼에 「누르기 직전 확정 상태 재확인」을 건다 */
+(function(){ var _rt = RENDER.team; RENDER.team = function(){ _rt.apply(this, arguments); if(TOPIC_FORM){ tfWrapTeamGate($("teamRebuild")); tfWrapTeamGate($("teamMake")); } }; })();
 
 /* 로그인 학생 본인의 보고서 작성 화면을 연다 */
 function openReportSelf(){
@@ -3469,7 +4376,12 @@ RENDER.profdash = function(){
     if(!always) h += '<button class="btn sm ' + (isOpen ? "ghost" : "primary") + '" type="button" data-weekopen="' + esc(st.id) + '" data-to="' + (isOpen ? "0" : "1") + '">' + (isOpen ? "닫기" : "시작(열기)") + '</button>';
     h += '</div>';
   });
-  h += '<div class="small" style="color:var(--amber);margin:4px 0 2px">※ 2단계(주제 선정서)는 입력 기능이 완성된 뒤에만 열어 주세요.</div>';
+  if(TOPIC_FORM){
+    h += '<button class="btn sm primary center" type="button" data-go="topicsprof" style="margin-top:8px">📝 주제 선정서 현황 (제출·보완 요청·마감) →</button>';
+    h += '<div class="small" style="color:var(--amber);margin:2px 0 2px">※ 2단계를 <b>시작(열기)</b>해야 학생이 쓸 수 있어요. 열기 전에 아래 <b>[조 편성 확정]</b>을 한 번 눌러 주세요.</div>';
+  }else{
+    h += '<div class="small" style="color:var(--amber);margin:4px 0 2px">※ 2단계(주제 선정서)는 입력 기능이 완성된 뒤에만 열어 주세요.</div>';
+  }
   h += '<div class="small" style="color:var(--muted);margin-top:6px">' + ((window.GLR && GLR.on) ? '여기서 연 주차는 서버에 저장돼 <b>모든 학생 기기</b>에 반영됩니다.' : '⚠ 지금은 이 기기 저장 모드 — 서버에 반영되지 않아 <b>이 기기에서만</b> 적용됩니다(실제 수업은 서버 방식에서 여세요).') + '</div>';
   h += '</div>';
 
@@ -3548,6 +4460,7 @@ RENDER.profdash = function(){
   });
   h += '</table></div></div>';
 
+  h += teamLockCardHTML();   /* O-0635: 조 편성 확정 */
   /* 👥 출석부 관리 — 명단은 코드가 아니라 교수가 여기서 등록한다(localStorage 저장). (2026-09-02 위치 교체: 원래 맨 위에 있던 것을 이 자리로 옮김) */
   h += '<div class="card tight" style="border-color:#bcd6f0;background:var(--mintdk)">';
   h += '<div class="small" style="margin:0 0 6px"><b>👥 학생 명단관리</b> — 현재 <b>' + roster.length + '명</b> 등록' + (nEarly ? ' · <b>🎓면제 ' + nEarly + '명</b>' : '') + '.</div>';
@@ -3652,6 +4565,7 @@ RENDER.profdash = function(){
       }, { yes:"되돌리기", yesClass:"primary" });
     };
   });
+  if(TOPIC_FORM) bindTeamLock(sc);
   if($("pdBulkPdf")) $("pdBulkPdf").onclick = function(){ printBulkReports(wk); };
   if($("pdLogout")) $("pdLogout").onclick = logout;
   bindGo(sc);
@@ -5414,6 +6328,21 @@ var GLR = {
     if(json) h["Content-Type"]="application/json";
     return h;
   },
+  /* O-0635: 서버 함수(RPC) 호출 — 결과(jsonb)를 바로 돌려받는다. 출입증이 만료(401)면 한 번 갱신해 다시 부른다. */
+  rpc:function(name, body){
+    var self=this;
+    var run=function(){ return self.call("/rest/v1/rpc/"+name, { method:"POST", headers:self.hdr(true), body:JSON.stringify(body||{}) }); };
+    return run().then(null, function(err){
+      if(err && err.kind==="auth" && err.status===401 && self.tok && self.tok.refresh_token){ return self.refresh().then(run); }
+      throw err;
+    });
+  },
+  /* O-0635: 조 편성 확정 값을 gl_app_meta.team_lock 에 upsert(교수만 쓰기 — RLS). week_open 과 같은 경로. */
+  syncTeamLock:function(on){
+    if(!this.on) return;
+    this._push({op:"meta", k:"team_lock", v:{locked:!!on}});
+    this.saveQ(); this.showQ(); this.pump();
+  },
   ahdr:function(){ return { apikey:GLCONF.key, Authorization:"Bearer "+GLCONF.key, "Content-Type":"application/json" }; },
   call:function(path, opt){
     var self=this; opt=opt||{};
@@ -5580,7 +6509,7 @@ var GLR = {
      실패(네트워크 등)해도 마지막으로 받아둔 미러를 그대로 두어(덮지 않아) 학생이 갑자기 잠기지 않게 한다. */
   loadMeta:function(){
     /* week_open 과 report_deadline 두 줄을 한 번에 받아 각각 로컬 미러로 옮긴다. */
-    return this.call("/rest/v1/gl_app_meta?k=in.(week_open,report_deadline)&select=k,v", { headers:this.hdr(false) })
+    return this.call("/rest/v1/gl_app_meta?k=in.(week_open,report_deadline,team_lock)&select=k,v", { headers:this.hdr(false) })
       .then(function(rows){
         var byk={}; (rows||[]).forEach(function(r){ byk[r.k]=r.v; });
         try{
@@ -5592,6 +6521,11 @@ var GLR = {
           var rd = byk.report_deadline;
           if(rd && typeof rd==="object") localStorage.setItem(REPORTDL_KEY, JSON.stringify(rd));
           else localStorage.removeItem(REPORTDL_KEY);    /* 서버에 값이 없으면 코드 기본값(REPORT_DEADLINE) fallback */
+        }catch(e){}
+        try{   /* O-0635: 조 편성 확정 */
+          var tl = byk.team_lock;
+          if(tl && typeof tl==="object") localStorage.setItem("dmu_gene_team_lock", JSON.stringify(tl));
+          else localStorage.removeItem("dmu_gene_team_lock");
         }catch(e){}
       }, function(){ /* 조용히 실패 — 기존 미러 유지(마지막으로 알려진 상태 보존) */ });
   },
