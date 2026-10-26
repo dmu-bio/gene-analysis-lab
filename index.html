@@ -84,6 +84,17 @@ p.sc-p{color:var(--tx2);font-size:14.5px;margin:0 0 16px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin:0 0 12px;box-shadow:var(--shadow)}
 .card.tight{padding:12px}
 .card h3{margin:0 0 8px;font-size:16px}
+/* 내 점수 카드 (O-0628) — 움직임은 짧게(0.28초), 「움직임 줄이기」는 전역 규칙이 따른다 */
+.scorecard{border-color:var(--line2)}
+.scorecard.pop{animation:scEnter .28s ease-out}
+.scorecard h3{display:flex;align-items:center;gap:6px}
+.scorecard .sc-row{display:flex;justify-content:space-between;align-items:baseline;gap:10px;padding:9px 0;border-top:1px solid var(--line)}
+.scorecard h3 + .sc-row{border-top:0}
+.scorecard .sc-k{font-size:13.5px;color:var(--tx2);font-weight:700}
+.scorecard .sc-v{font-size:19px;font-weight:800;color:var(--tx);text-align:right}
+.scorecard .sc-v small{font-size:12.5px;font-weight:600;color:var(--tx2)}
+.scorecard .sc-note{font-size:13px;color:var(--tx2);line-height:1.55}
+.scorecard .sc-fail{font-size:13.5px;color:var(--red);font-weight:700}
 .muted{color:var(--tx2);font-size:14px}
 .small{font-size:13px;color:var(--tx3)}
 .src{font-size:12px;color:var(--tx3);margin-top:8px;border-top:1px dashed var(--line2);padding-top:7px}
@@ -727,7 +738,7 @@ var TEST_OPEN_ALL = false;  /* 테스트용 날짜 잠금 해제. 실제 수업/
  *      형식: YYYYMMDDNN(날짜 + 그날 순번 2자리). 숫자가 클수록 새 버전.
  *      배포 전 확인: `python bump_build.py --check` (둘이 다르면 오류로 멈춘다).
  * ========================================================================*/
-var APP_BUILD = "2026101401";
+var APP_BUILD = "2026102606";
 
 /* ==========================================================================
  * 활성 주차 — 지금은 2주차(w02 · 세포배양)만 열려 있다.
@@ -1851,6 +1862,7 @@ var TUT_CARDS = [
  * ========================================================================*/
 var roleGateStep = { role: null };
 function showLogin(){
+  scoresReset();   /* O-0628: 점수는 메모리에만 — 로그인 화면으로 오면 비운다 */
   var lab = curLab();
   var h = "";
   h += '<div style="height:14px"></div>';
@@ -1915,6 +1927,95 @@ function showLogin(){
   $("rgStart").onclick = submitLogin;
   $("rgId").onkeydown = function(e){ if(e.key === "Enter") submitLogin(); };
 }
+/* ==========================================================================
+ * 내 점수 (O-0628, 2026-10-26) — 서버 표 gl_scores(중간고사 점수) 읽기 전용.
+ *   · 서버(RLS)가 공개 시각 전에는 학생에게 0줄을 돌려준다 → 앱은 「0줄 = 아직 공개 전」으로만 처리한다(앱에서 시각 판정 안 함).
+ *   · 점수는 메모리(SCORES)에만 둔다. localStorage 에 넣지 않고 로그아웃·로그인 화면에서 비운다.
+ *   · 문항별 O/X·정답·해설·평균·순위는 학생에게 절대 보이지 않는다(시험 힌트 금지). 합계도 만들지 않는다.
+ *   · 실험 결과보고서 점수 = 주차별 제출 5/작성 중 3/없음 0 (별도 저장 없음, 앱이 이미 읽은 본인 보고서에서 계산).
+ * ========================================================================*/
+var SCORE_MIDTERM_MAX = 15;          /* 중간고사 만점(서버 줄의 max_score 가 있으면 그 값) */
+var SCORE_MIDTERM_Q = 30;            /* 중간고사 문항 수 — 「맞힌 개수 ○/30」 */
+var SCORE_REPORT_PER = 5;            /* 보고서 1개 — 최종 제출 5점 */
+var SCORE_REPORT_DRAFT = 3;          /* 작성하다 마무리 못 한 보고서 3점, 시작 안 함 0점 (교수님 확정 2026-10-26) */
+var SCORE_EARLY_MIN = 3;             /* 면제(gl_early) 학생은 보고서 주차마다 최소 3점(교수님 확정 2026-10-26) — 실제로 제출한 주차(5점)는 그대로 5점: 주차별 max(실제 판정, 3). 없애려면 0 */
+var SCORE_RELEASE_NOTE = "점수는 10/28(수) 오후 2시부터 공개돼요. 그 뒤에도 보이지 않으면 교수님께 문의해 주세요.";   /* 앱은 시각을 판정하지 않으므로 두 문장을 함께 둔다 */
+var SCORES = null, SCORES_TOK = 0;   /* SCORES = {st:"loading"|"ok"|"fail", rows:[]} */
+function scoresReset(){ SCORES = null; SCORES_TOK++; }
+function scoresLoad(force){
+  if(!(window.GLR && GLR.on)) return Promise.resolve();
+  if(SCORES && !force) return Promise.resolve();   /* 실패(fail)도 자동으로 다시 시도하지 않는다 — 「다시 불러오기」 버튼으로만 */
+  var tok = ++SCORES_TOK;
+  SCORES = { st:"loading", rows:[] };
+  var q = "/rest/v1/gl_scores?select=sid,exam,score,max_score,correct,data&order=sid.asc";
+  if(state && state.role === "student") q += "&sid=eq." + encodeURIComponent(state.studentId || "");   /* 학생은 본인 줄만(서버 RLS 와 이중으로) — 교수는 전체 */
+  return GLR.call(q, { headers: GLR.hdr(false) }).then(function(rows){
+    if(tok !== SCORES_TOK) return;
+    SCORES = { st:"ok", rows: Array.isArray(rows) ? rows : [] };
+  }, function(){
+    if(tok !== SCORES_TOK) return;
+    SCORES = { st:"fail", rows:[] };
+  }).then(function(){
+    if(tok === SCORES_TOK && typeof cur !== "undefined" && cur === "labs" && RENDER.labs && state && state.role === "student") RENDER.labs();
+  });
+}
+function fmtScore(n){ n = Number(n); return isFinite(n) ? String(Math.round(n * 100) / 100) : "-"; }
+function scoreRowOf(sid, exam){
+  if(!SCORES || SCORES.st !== "ok") return null;
+  var r = null;
+  SCORES.rows.forEach(function(x){ if(x && String(x.sid) === String(sid) && x.exam === exam) r = x; });
+  return r;
+}
+/* 보고서 점수 — w02~w08 주차별: 최종 제출 5 / 작성 중(내용 있음·미제출) 3 / 그 밖 0. 본인 줄(기기에 받아 둔 서버 사본)에서 계산. */
+function reportScoreOf(sid){
+  var early = isEarly(sid);
+  /* 면제 학생 중 교수님이 특정 주차 보고서를 0점 처리한 경우: 서버 gl_scores 의 exam='report_adj' 줄 data.zero_weeks(예: ["w05"])를 읽어
+     그 주차는 제출 여부와 관계없이 0점(면제 최소 3점도 적용하지 않음). 학번은 코드에 없고 서버에만 있다. */
+  var zw = [];
+  if(early){
+    var adj = scoreRowOf(sid, "report_adj");
+    if(adj && adj.data && Array.isArray(adj.data.zero_weeks)) zw = adj.data.zero_weeks.map(String);
+  }
+  var r = { sub:0, draft:0, pts:0, early:early, zero:0, max: LABS_WITH_CONTENT.length * SCORE_REPORT_PER };
+  LABS_WITH_CONTENT.forEach(function(w){
+    var p = 0;
+    try{
+      var rep = loadReport(sid, w);
+      if(rep.submitted){ r.sub++; p = SCORE_REPORT_PER; }
+      else if(reportHasContent(rep)){ r.draft++; p = SCORE_REPORT_DRAFT; }
+    }catch(e){}
+    if(early){
+      if(zw.indexOf(w) !== -1){ p = 0; r.zero++; }
+      else if(p < SCORE_EARLY_MIN) p = SCORE_EARLY_MIN;
+    }
+    r.pts += p;
+  });
+  return r;
+}
+function scoreCardHTML(){
+  if(!(state && state.role === "student" && window.GLR && GLR.on)) return "";
+  scoresLoad();
+  var sid = state.studentId, h = '<div class="card scorecard' + (SCORES && SCORES.st === "ok" ? ' pop' : '') + '"><h3>🎯 내 점수</h3>';
+  if(!SCORES || SCORES.st === "loading"){
+    h += '<div class="sc-note">점수를 불러오는 중이에요…</div>';
+  }else if(SCORES.st === "fail"){
+    h += '<div class="sc-fail">점수를 불러오지 못했어요</div>';
+    h += '<div class="sc-note" style="margin:4px 0 8px">0점이 아니라, 아직 받아오지 못한 거예요. 잠시 뒤 다시 눌러 주세요.</div>';
+    h += '<button class="btn sm ghost" type="button" id="scoreRetry">다시 불러오기</button>';
+  }else{
+    var mid = scoreRowOf(sid, "midterm");
+    if(!mid){
+      h += '<div class="sc-note">' + esc(SCORE_RELEASE_NOTE) + '</div>';
+    }else{
+      var mx = (mid.max_score != null && isFinite(Number(mid.max_score))) ? Number(mid.max_score) : SCORE_MIDTERM_MAX;
+      h += '<div class="sc-row"><div class="sc-k">중간고사</div><div class="sc-v">' + esc(fmtScore(mid.score)) + ' / ' + esc(fmtScore(mx)) + '점<br><small>맞힌 개수 ' + esc(fmtScore(mid.correct)) + '/' + SCORE_MIDTERM_Q + '</small></div></div>';
+      var rs = reportScoreOf(sid);
+      h += '<div class="sc-row"><div class="sc-k">실험 결과보고서</div><div class="sc-v">' + fmtScore(rs.pts) + ' / ' + fmtScore(rs.max) + '점<br><small>' + (rs.early ? '면제 학생 기준 반영' : '제출 ' + rs.sub + '개 · 작성 중 ' + rs.draft + '개') + '</small></div></div>';
+    }
+  }
+  return h + '</div>';
+}
+
 /* 로그아웃 — 세션을 지우고 로그인 화면으로. 진도·보고서는 기기에 그대로 남는다. */
 function logout(){
   flushReportPending();   /* O-0074 N1: 로그아웃 전에 대기 중 자동저장을 먼저 끝낸다(출입증이 지워지기 전) */
@@ -1999,6 +2100,8 @@ RENDER.labs = function(){
   h += '<span class="chip">' + (isProf ? "교번 인증됨" : "학번 " + esc(state.studentId || "")) + '</span>';
   h += '</div></div>';
 
+  h += scoreCardHTML();   /* O-0628: 내 점수(학생 · 서버 모드에서만) */
+
   if(isProf){
     h += '<button class="btn primary" type="button" data-go="profdash" style="margin-bottom:12px">🧑‍🏫 학생 확인 대시보드로</button>';
   }
@@ -2078,6 +2181,7 @@ RENDER.labs = function(){
     };
   });
   if($("labsTeamCard")) $("labsTeamCard").onclick = function(){ go("team"); };
+  if($("scoreRetry")) $("scoreRetry").onclick = function(){ scoresLoad(true); RENDER.labs(); };
   if($("logoutBtn")) $("logoutBtn").onclick = logout;
   bindGo(sc);   /* ★ 누락 수정: 교수 미리보기의 '학생 확인 대시보드로'(data-go="profdash") 버튼을 실제로 연결한다 */
 };
@@ -3351,25 +3455,46 @@ function buildWeekPlan(){
   return h;
 }
 
-/* ③ 성적 점수표 — 배점 미정이라 「빈 틀」만. 세로=학생 명단, 가로=주차 + 합계·비고. 점수 칸은 빈칸. */
+/* ③ 성적 점수표 — 세로=학생 명단, 가로=주차(빈칸) + 중간고사(15)·보고서(35) 열(앱 자료) + 합계·비고.
+   (O-0628) 중간고사 = 서버 gl_scores(교수 로그인에서만 전체, 메모리에만), 보고서 = 제출 5점·작성 중 3점·미시작 0점(주차별). 주차별 열·합계는 빈칸 그대로. */
 function buildGradeSheet(){
   var roster = getRoster();
   var labList = (C && Array.isArray(C.labs)) ? C.labs : [];
+  var scOk = !!(SCORES && SCORES.st === "ok");
   var h = '<div class="paper">';
   h += '<div class="p-head"><div class="p-title">유전자분석 · 성적 점수표</div>';
-  h += '<div class="p-course">담당 곽호석 · 배점 미정(빈 틀) — 손으로 기입하거나 배점 확정 후 사용</div></div>';
+  h += '<div class="p-course">담당 곽호석 · 중간고사·보고서 열은 앱 자료, 주차별 열·합계는 손으로 기입</div></div>';
   if(!roster.length){ h += '<div class="p-body p-empty">등록된 학생 명단이 없습니다. 「학생 명단관리」에서 명단을 등록한 뒤 출력하세요.</div></div>'; return h; }
   var cols = labList.map(function(l){ return l.weekLabel || l.id; });
-  h += '<table class="p-grid"><tr><th style="width:6%">#</th><th style="width:14%">학번</th><th class="l" style="width:12%">이름</th>';
+  var repMax = LABS_WITH_CONTENT.length * SCORE_REPORT_PER;
+  h += '<table class="p-grid"><tr><th style="width:5%">#</th><th style="width:11%">학번</th><th class="l" style="width:10%">이름</th>';
   cols.forEach(function(c){ h += '<th>' + esc(c) + '</th>'; });
-  h += '<th>합계</th><th style="width:10%">비고</th></tr>';
+  h += '<th style="width:10%">중간고사(' + SCORE_MIDTERM_MAX + ')</th><th style="width:9%">보고서(' + repMax + ')</th><th>합계</th><th style="width:7%">비고</th></tr>';
+  var mids = [], zeroStu = 0;
   roster.forEach(function(st, i){
     h += '<tr><td>' + (i+1) + '</td><td>' + esc(st.sid) + '</td><td class="l">' + esc(st.name) + '</td>';
     cols.forEach(function(){ h += '<td></td>'; });
+    var mr = scOk ? scoreRowOf(st.sid, "midterm") : null;
+    if(mr && isFinite(Number(mr.score))){ mids.push(Number(mr.score)); h += '<td>' + esc(fmtScore(mr.score)) + '<br><span style="font-size:10px">(' + esc(fmtScore(mr.correct)) + '/' + SCORE_MIDTERM_Q + ')</span></td>'; }
+    else h += '<td>' + (scOk ? '-' : '') + '</td>';
+    var rs = reportScoreOf(st.sid);
+    if(rs.zero) zeroStu++;
+    h += '<td>' + fmtScore(rs.pts) + '<br><span style="font-size:10px">' + (rs.early ? '(면제)' : '(제출' + rs.sub + '·작성중' + rs.draft + ')') + '</span></td>';
     h += '<td></td><td></td></tr>';
   });
   h += '</table>';
-  h += '<div class="p-note">※ 점수 칸은 비어 있습니다(배점 미정). 주차별 배점이 확정되면 채워 넣으세요. 재적 ' + roster.length + '명. 칸이 좁으면 인쇄창에서 용지 방향을 <b>가로</b>로 바꾸면 넉넉합니다.</div>';
+  var note = '※ 중간고사 칸의 괄호는 맞힌 개수(/' + SCORE_MIDTERM_Q + ')입니다. 보고서 칸은 주차별 최종 제출 ' + SCORE_REPORT_PER + '점, 작성 중 ' + SCORE_REPORT_DRAFT + '점, 시작 안 함 0점의 합이며 괄호는 각 개수입니다. (면제)는 면제 학생 기준으로, 주차마다 최소 ' + SCORE_EARLY_MIN + '점(실제 제출 주차는 ' + SCORE_REPORT_PER + '점)을 줍니다. 주차별 칸과 합계는 비어 있습니다. 재적 ' + roster.length + '명.';
+  if(scOk && mids.length){
+    var sum = mids.reduce(function(a, b){ return a + b; }, 0);
+    note += ' 중간고사 응시 ' + mids.length + '명 · 평균 ' + fmtScore(sum / mids.length) + ' · 최고 ' + fmtScore(Math.max.apply(null, mids)) + ' · 최저 ' + fmtScore(Math.min.apply(null, mids)) + '.';
+  }else if(window.GLR && GLR.on && !scOk){
+    note += ' <b>중간고사 점수를 서버에서 불러오지 못해 이 열은 비워 두었습니다.</b>';
+  }else if(!(window.GLR && GLR.on)){
+    note += ' (이 기기 저장 모드에서는 중간고사 점수를 불러오지 않습니다.)';
+  }
+  if(zeroStu) note += ' 면제 중 보고서 0점 처리 ' + zeroStu + '명 반영.';
+  note += ' 칸이 좁으면 인쇄창에서 용지 방향을 <b>가로</b>로 바꾸면 넉넉합니다.';
+  h += '<div class="p-note">' + note + '</div>';
   h += '</div>';
   return h;
 }
@@ -3565,7 +3690,7 @@ RENDER.outputs = function(){
   }
   h += item('①', '강의소개 · 앱 소개 유인물', '학생 배포용. 강의 개요(과목·학년·학점·담당·평가)와 학습 지원 앱 사용법(로그인·조 구성·퀴즈·미션·보고서)·앱 주소를 A4 1~2장으로.', 'outIntro');
   h += item('②', '주차별 계획', '7개 실습의 주차·날짜·실험 주제·상태를 표로.', 'outPlan');
-  h += item('③', '성적 점수표 (빈 틀)', '세로 학생 명단 × 가로 주차 + 합계·비고의 빈 표. 배점 미정이라 점수 칸은 비어 있습니다(손으로 기입).', 'outGrade');
+  h += item('③', '성적 점수표', '세로 학생 명단 × 가로 주차 + <b>중간고사(15)·보고서(35)</b> + 합계·비고. 중간고사·보고서 칸은 앱 자료로 채워지고, 주차별 칸·합계는 비어 있습니다(손으로 기입).', 'outGrade');
   h += item('④', '실험보고서 (빈 양식)', '학생이 손으로 작성할 빈 보고서 양식(선택 주차 · <b>' + esc(lab.weekLabel || '') + '</b> 기준). 앱에서 제출된 보고서는 대시보드의 [보고서]·[이 주차 제출 보고서 전체 PDF]로 뽑습니다.', 'outBlank');
   h += item('⑤', '주차별 학습·미션 결과', '선택 주차(<b>' + esc(lab.weekLabel || '') + '</b>)의 학생별 학습 완료·미션 점수·보고서 제출 여부 집계표.', 'outResults');
   h += item('⑥', '조편성 현황', '학기 공통(주차 무관). 조별 조원(학번·이름)과 미배정 학생 목록을 표로. 🎓면제 표시 포함.', 'outTeams');
@@ -3576,7 +3701,10 @@ RENDER.outputs = function(){
   });
   if($("outIntro")) $("outIntro").onclick = function(){ printOut(buildIntroHandout()); };
   if($("outPlan")) $("outPlan").onclick = function(){ printOut(buildWeekPlan()); };
-  if($("outGrade")) $("outGrade").onclick = function(){ printOut(buildGradeSheet()); };
+  if($("outGrade")) $("outGrade").onclick = function(){
+    var doPrint = function(){ printOut(buildGradeSheet()); };
+    if(window.GLR && GLR.on){ toast("점수를 불러오는 중…"); scoresLoad(true).then(doPrint, doPrint); } else doPrint();   /* O-0628: 교수 로그인에서만 전체 점수를 메모리로 */
+  };
   if($("outBlank")) $("outBlank").onclick = function(){ printOut(buildBlankReport(DASH_WEEK)); };
   if($("outResults")) $("outResults").onclick = function(){ printOut(buildWeekResults(DASH_WEEK)); };
   if($("outTeams")) $("outTeams").onclick = function(){ printOut(buildTeamRoster()); };
