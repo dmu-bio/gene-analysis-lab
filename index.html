@@ -408,6 +408,33 @@ th.nw{white-space:nowrap}
 .peval b{color:var(--tx)}
 @media (prefers-reduced-motion: reduce){ .bigcard{transition:none} }
 
+/* ---------- 🧑‍🏫 교수 화면 2분할 (PROF_SPLIT) — 줄은 학생 프로젝트 줄(.pstep)과 같은 모양 ---------- */
+.prow{background:var(--card);border:1px solid var(--line2);border-radius:14px;margin-bottom:8px;overflow:hidden}
+.prow .pr-main{display:flex;gap:10px;align-items:flex-start;width:100%;min-height:44px;padding:12px;margin:0;background:none;border:0;
+  text-align:left;color:inherit;font:inherit;cursor:pointer}
+.prow .pr-main:active{background:var(--card2)}
+.prow div.pr-main{cursor:default}
+.prow div.pr-main:active{background:none}
+.prow .pr-n{flex:0 0 auto;min-width:50px;padding:7px 4px;border-radius:10px;background:var(--mintdk);color:var(--mint);font-weight:800;font-size:14px;text-align:center;line-height:1.2}
+.prow .pr-bd{flex:1 1 auto;min-width:0;display:block}
+.prow .pr-w{display:block;font-size:12.5px;color:var(--tx3);line-height:1.5}
+.prow .pr-t{display:block;font-size:16px;font-weight:800;color:var(--tx);line-height:1.35}
+.prow .pr-s{display:block;font-size:13px;color:var(--tx2);line-height:1.45;margin-top:2px}
+.prow .pr-s .am{color:var(--amber);font-weight:700}
+.prow .pr-s .gr{color:var(--green);font-weight:700}
+.prow .pr-ar{flex:0 0 auto;align-self:center;color:var(--tx3);font-size:20px}
+.prow .pr-act{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:0 12px 12px}
+.prow .pr-act .sp{flex:1 1 auto}
+.prow .pr-act .btn{width:auto;min-height:44px;margin:0;padding:9px 14px;font-size:14.5px}
+.prow.shut{background:var(--card2)}
+.pmgr{background:var(--card);border:1px solid var(--line2);border-radius:14px;margin:0 0 12px}
+.pmgr>summary{list-style:none;cursor:pointer;min-height:44px;padding:12px 14px;font-weight:700;font-size:14.5px;line-height:1.45}
+.pmgr>summary::-webkit-details-marker{display:none}
+.pmgr>summary::after{content:"▾";float:right;color:var(--tx3)}
+.pmgr[open]>summary::after{content:"▴"}
+.pmgr .pmgr-b{padding:0 14px 14px}
+.pmgr .pmgr-h{margin:10px 0 2px;font-size:13.5px}
+
 /* ---------- 📝 프로젝트 2단계 · 주제 선정서 (O-0635) ---------- */
 .tf-top{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:0 0 10px;font-size:15px}
 .tf-rep{color:var(--tx2);font-size:14px}
@@ -754,6 +781,9 @@ details.tf-mine summary{cursor:pointer;font-weight:700}
     <section id="sc-growth"   class="screen"></section>
     <section id="sc-summary"  class="screen"></section>
     <section id="sc-profdash" class="screen"></section>
+    <section id="sc-proflab"  class="screen"></section>
+    <section id="sc-profproj" class="screen"></section>
+    <section id="sc-profweek" class="screen"></section>
     <section id="sc-roster"   class="screen"></section>
     <section id="sc-outputs"  class="screen"></section>
   </div>
@@ -850,7 +880,7 @@ var TEST_OPEN_ALL = false;  /* 테스트용 날짜 잠금 해제. 실제 수업/
  *      형식: YYYYMMDDNN(날짜 + 그날 순번 2자리). 숫자가 클수록 새 버전.
  *      배포 전 확인: `python bump_build.py --check` (둘이 다르면 오류로 멈춘다).
  * ========================================================================*/
-var APP_BUILD = "2026102613";
+var APP_BUILD = "2026102614";
 
 /* ==========================================================================
  * 활성 주차 — 지금은 2주차(w02 · 세포배양)만 열려 있다.
@@ -1078,11 +1108,17 @@ var HOME_SPLIT = true;
 /* O-0635 2단계: 조별 주제 선정서 + 조 편성 확정. false 로 바꾸면 2단계는 예전처럼 「곧 열려요」 안내만 나오고,
    교수 화면의 선정서·조 편성 확정 줄도 숨는다(서버 표·함수는 그대로 두어도 무해). 되돌리는 스위치. */
 var TOPIC_FORM = true;
+/* 교수 화면 2분할(O-0635 후속): 교수 처음 화면 = 「팀프로젝트」 + 「실습」 두 갈래, 각각 안에서 주차·단계별로 본다.
+   false 로 바꾸면 교수 화면이 예전처럼 한 페이지(profdash 하나)로 돌아간다 — 같은 그림 함수(profFull)가 mode 만 바꿔 그린다.
+   서버·학생 화면과 무관한 스위치(되돌리는 법: 이 줄만 false → bump_build). */
+var PROF_SPLIT = true;
 function studentHome(){ return HOME_SPLIT ? "home" : "labs"; }
 function parentScreen(name){
   if(name === "home") return "home";
   if(TOPIC_FORM && name === "topic") return "project";
-  if(TOPIC_FORM && name === "topicsprof") return "profdash";
+  if(TOPIC_FORM && name === "topicsprof") return PROF_SPLIT ? "profproj" : "profdash";
+  if(PROF_SPLIT && (name === "proflab" || name === "profproj")) return "profdash";
+  if(PROF_SPLIT && name === "profweek") return "proflab";
   if(HOME_SPLIT && (name === "labs" || name === "project" || name === "team")) return "home";
   return "labs";
 }
@@ -1655,12 +1691,12 @@ function MISSION_REASON(){ return (POOL && POOL.info && POOL.info.mission && POO
 /* ==========================================================================
  * checkContent() — 로드 시 자동 실행되는 자체 검증 (새 화면·pool 반영)
  * ========================================================================*/
-var SCREENS = ["home","project","topic","topicsprof","labs","lobby","team","report","learn","lquiz","mission","notes","growth","summary","profdash","roster","outputs"];
+var SCREENS = ["home","project","topic","topicsprof","labs","lobby","team","report","learn","lquiz","mission","notes","growth","summary","profdash","proflab","profproj","profweek","roster","outputs"];
 var NAV_EDGES = {
   home:     ["labs","project","team","profdash"],
   project:  ["team","home","topic"],
   topic:    ["project","team"],
-  topicsprof: ["profdash"],
+  topicsprof: ["profdash","profproj"],
   labs:     ["lobby","profdash","team","home"],
   lobby:    ["labs","report","learn","lquiz","mission","notes","growth","summary"],
   team:     ["labs","home"],
@@ -1671,7 +1707,10 @@ var NAV_EDGES = {
   notes:    ["lquiz","lobby"],
   growth:   ["lobby","notes"],
   summary:  ["lobby"],
-  profdash: ["labs","home","report","lobby","roster","outputs","topicsprof"],
+  profdash: ["labs","home","report","lobby","roster","outputs","topicsprof","proflab","profproj"],
+  proflab:  ["profweek","profdash"],
+  profweek: ["proflab","profdash","report"],
+  profproj: ["topicsprof","profdash"],
   roster:   ["profdash"],
   outputs:  ["profdash"]
 };
@@ -1884,7 +1923,7 @@ function go(name, push){
   flushReportPending();   /* O-0074 N1: 떠나기 전, 보고서 화면에 남은 입력을 그 보고서 주차로 바로 저장 */
   if(push !== false){
     /* 처음 화면·실습 목록으로 되돌아가는 링크는 쌓지 않고 그 자리로 되감는다(그래야 [←]가 제자리 돌기를 하지 않는다) */
-    var ix = (name === "home" || name === "labs") ? navStack.lastIndexOf(name) : -1;
+    var ix = (name === "home" || name === "labs" || (PROF_SPLIT && (name === "profdash" || name === "proflab" || name === "profproj" || name === "profweek"))) ? navStack.lastIndexOf(name) : -1;
     if(ix >= 0){ navStack.length = ix; }
     else if(cur !== name) navStack.push(cur);
   }
@@ -1916,6 +1955,9 @@ var TITLES = {
   growth: "내 기록",
   summary: "요약 카드",
   profdash: "교수 확인",
+  proflab: "실습 관리",
+  profproj: "팀프로젝트 관리",
+  profweek: "주차 현황",
   roster: "학생 명단관리",
   outputs: "출력물"
 };
@@ -1966,7 +2008,7 @@ function paintTop(){
   $("tbSub").textContent = who;
   $("backBtn").style.visibility = (cur === "home" || cur === "profdash" || (cur === "labs" && !HOME_SPLIT)) ? "hidden" : "visible";
   $("notice").innerHTML = "<b>" + esc(notice) + "</b>";
-  $("notice").style.display = (cur === "home" || cur === "project" || cur === "team" || cur === "topic" || cur === "topicsprof") ? "none" : "";   /* O-0635: 성적 반영 안내 띠는 실습·미션 화면용 — 처음 화면·프로젝트·우리 조에서는 숨김 */
+  $("notice").style.display = (cur === "home" || cur === "project" || cur === "team" || cur === "topic" || cur === "topicsprof" || (PROF_SPLIT && (cur === "profdash" || cur === "proflab" || cur === "profproj"))) ? "none" : "";   /* O-0635: 성적 반영 안내 띠는 실습·미션 화면용 — 처음 화면·프로젝트·우리 조에서는 숨김 */
 
   /* HUD 아바타 — 항상 연구원 동그래. 한 번만 그린다. */
   if(!coliMiniPainted){ $("coliMini").innerHTML = coli("idle", "static"); coliMiniPainted = true; }
@@ -1987,6 +2029,15 @@ function paintTop(){
   }else if(cur === "profdash"){
     if(bar) bar.style.width = "0%";
     if(bl) bl.textContent = "확인";
+  }else if(cur === "proflab"){
+    if(bar) bar.style.width = "0%";
+    if(bl) bl.textContent = "실습 관리";
+  }else if(cur === "profproj"){
+    if(bar) bar.style.width = "0%";
+    if(bl) bl.textContent = "팀프로젝트 관리";
+  }else if(cur === "profweek"){
+    if(bar) bar.style.width = "0%";
+    if(bl) bl.textContent = "주차 현황";
   }else if(cur === "roster"){
     if(bar) bar.style.width = "0%";
     if(bl) bl.textContent = "출석부";
@@ -3179,7 +3230,8 @@ function tfpSetDeadline(on){
 }
 RENDER.topicsprof = function(){
   var sc = $("sc-topicsprof"); if(!sc) return;
-  var h = '<button class="btn sm ghost" type="button" data-go="profdash" style="margin-bottom:10px;text-align:left">← 교수 확인으로</button>';
+  var h = PROF_SPLIT ? '<button class="btn sm ghost" type="button" data-go="profproj" style="margin-bottom:10px;text-align:left">← 팀프로젝트로</button>'
+                     : '<button class="btn sm ghost" type="button" data-go="profdash" style="margin-bottom:10px;text-align:left">← 교수 확인으로</button>';
   if(!TOPIC_FORM){ sc.innerHTML = h + '<div class="tf-note">주제 선정서는 꺼져 있어요.</div>'; bindGo(sc); return; }
   if(state.role !== "prof"){ sc.innerHTML = h + '<div class="tf-note">교수님만 볼 수 있어요.</div>'; bindGo(sc); return; }
   if(!(window.GLR && GLR.on)){ sc.innerHTML = h + '<div class="tf-note amber">서버에 연결되어 있을 때만 볼 수 있어요.</div>'; bindGo(sc); return; }
@@ -3279,12 +3331,13 @@ function teamLocked(){
 }
 function setTeamLockLocal(on){ try{ localStorage.setItem(TEAMLOCK_KEY, JSON.stringify({ locked:!!on })); }catch(e){} }
 var TEAMLOCK_MSG = "조 편성이 확정됐어요. 바꾸려면 교수님께 말씀해 주세요.";
-function teamLockCardHTML(){
+function teamLockCardHTML(forProj){
   if(!TOPIC_FORM) return "";
   var roster = getRoster(), noTeam = roster.filter(function(st){ return !isEarly(st.sid) && !teamOf(String(st.sid)); }).length;
   var on = teamLocked(), h = '<div class="card tight" style="border-color:#bcd6f0;background:var(--mintdk)">';
   h += '<div class="small" style="margin:0 0 6px"><b>👥 조 편성 확정</b> — ' + (on ? '<b>확정됨</b>: 학생이 조를 만들거나 없앨 수 없어요.' : '확정 전: 학생이 스스로 조를 만들고 바꿀 수 있어요.') + '</div>';
   h += '<div class="small" style="margin:0 0 8px">현재 ' + loadTeams().length + '조 · 조가 없는 학생(면제 제외) <b>' + noTeam + '명</b>. 11주차 주제 선정서 전에 한 번 확정해 주세요.</div>';
+  if(forProj) h += '<div class="small" style="margin:0 0 8px">💡 <b>실험 조에도 같이 적용돼요.</b> (확정하면 실험 조도 학생이 바꿀 수 없어요)</div>';
   if(!(window.GLR && GLR.on)) h += '<div class="small" style="color:var(--amber)">이 기기 저장 모드에서는 서버에 반영되지 않아요.</div>';
   h += '<button class="btn sm ' + (on ? '' : 'primary') + ' center" type="button" id="teamLockBtn" data-to="' + (on ? '0' : '1') + '">' + (on ? '확정 풀기' : '조 편성 확정') + '</button></div>';
   return h;
@@ -3307,12 +3360,12 @@ function tfConfirmLock(to){
   (function(){
     var noTeam = getRoster().filter(function(st){ return !isEarly(st.sid) && !teamOf(String(st.sid)); }).length;
     var msg = to ? ("조 편성을 확정합니다.\n확정 뒤에는 학생이 조를 만들거나 없애거나 바꿀 수 없어요." + (noTeam ? "\n※ 지금 조가 없는 학생(면제 제외)이 " + noTeam + "명 있어요." : "") + "\n확정할까요?")
-                 : "확정을 풀고 학생이 다시 조를 바꿀 수 있게 합니다. 풀까요?";
+                 : ("확정을 풀고 학생이 다시 조를 바꿀 수 있게 합니다." + (PROF_SPLIT ? "\n※ 학생이 작성 중일 수 있어요." : "") + " 풀까요?");
     askConfirm(msg, function(){
       setTeamLockLocal(to);
       if(window.GLR && GLR.on) GLR.syncTeamLock(to);
       toast(to ? "조 편성을 확정했어요." : "확정을 풀었어요.");
-      RENDER.profdash();
+      profRefresh();
     }, { yes:to ? "확정" : "풀기", yesClass:"primary" });
   })();
 }
@@ -4012,7 +4065,7 @@ RENDER.report = function(){
 
   if(!def){
     sc.innerHTML = '<h2 class="sc-h">실험 결과보고서</h2><div class="card"><p class="muted">이 주차에는 보고서 양식이 없습니다.</p></div>' +
-      '<button class="btn ghost center" type="button" data-go="' + (state.role==="prof"?"profdash":"lobby") + '">돌아가기</button>';
+      '<button class="btn ghost center" type="button" data-go="' + (state.role==="prof"?profReportBack():"lobby") + '">돌아가기</button>';
     bindGo(sc); return;
   }
 
@@ -4151,7 +4204,7 @@ RENDER.report = function(){
     if(saveTimer){ clearTimeout(saveTimer); saveTimer = null; }
     var _dlPassed = !!(state && state.role === "student" && reportDeadlinePassed(R.week || ACTIVE_WEEK));
     if(!readonly && !_dlPassed) persist(true);
-    go(state.role==="prof"?"profdash":"lobby");
+    go(state.role==="prof"?profReportBack():"lobby");
   };
   if($("rfSave")) $("rfSave").onclick = function(){ persist(false); };
   if($("rfPreview")) $("rfPreview").onclick = function(){ R.data = readonly ? data : persist(true); R.view = "preview"; RENDER.report(); };
@@ -4258,14 +4311,155 @@ function renderReportPreview(sc, R, def){
     saveReport(R.sid, data, R.week); toast("보고서를 제출했습니다.");
     RENDER.report();
   };
-  $("rvHub").onclick = function(){ go(state.role==="prof"?"profdash":"lobby"); };
+  $("rvHub").onclick = function(){ go(state.role==="prof"?profReportBack():"lobby"); };
 }
 
 /* ==========================================================================
  * 교수 확인 대시보드 — 학생별 ①보고서 제출 ②학습 완료 ③미션 합격
  *   서버 방식: 교수는 전체 학생의 진도·보고서를 서버에서 읽어 집계한다(RLS 로 교수만 전체 조회).
  * ========================================================================*/
-RENDER.profdash = function(){
+/* ==========================================================================
+ * 🧑‍🏫 교수 화면 공용 조각 — 열기/닫기 줄 · 제출기한 줄 · 그 핸들러(전체 화면·실습 목록·프로젝트 목록·주차 상세가 같이 쓴다)
+ * ========================================================================*/
+var PROF_UI = { mgr:false };
+/* 지금 보고 있는 교수 화면을 다시 그린다(열기/닫기·기한 저장 뒤에 처음 화면으로 튀지 않게) */
+function profRefresh(){
+  if(["profdash","proflab","profproj","profweek"].indexOf(cur) >= 0 && RENDER[cur]) RENDER[cur]();
+}
+function profReportBack(){ return PROF_SPLIT ? "profweek" : "profdash"; }
+function deadlineShort(d){ var p = kstParts(d); return p.mo + '/' + p.d + ' ' + pad2(p.h) + ':' + pad2(p.mi); }
+function weekOpenRowHTML(wid){
+  var l = labById(wid); if(!l) return "";
+  var isOpen = weekIsOpen(wid);
+  var h = '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0;padding:6px 0;border-top:1px solid #f0dcc6">';
+  h += '<span style="min-width:170px;font-weight:700">' + esc(l.weekLabel || wid) + ' · ' + esc(l.title || "") + '</span>';
+  h += '<span class="pill ' + (isOpen ? "ok" : "no") + '">' + (isOpen ? "열림(학생공개)" : "닫힘(미공개)") + '</span>';
+  h += '<button class="btn sm ' + (isOpen ? "ghost" : "primary") + '" type="button" data-weekopen="' + esc(wid) + '" data-to="' + (isOpen ? "0" : "1") + '">' + (isOpen ? "닫기" : "시작(열기)") + '</button>';
+  h += '</div>';
+  return h;
+}
+function openModeNote(){
+  return '<div class="small" style="color:var(--muted);margin-top:6px">' + ((window.GLR && GLR.on) ? '여기서 연 주차는 서버에 저장돼 <b>모든 학생 기기</b>에 반영됩니다.' : '⚠ 지금은 이 기기 저장 모드 — 서버에 반영되지 않아 <b>이 기기에서만</b> 적용됩니다(실제 수업은 서버 방식에서 여세요).') + '</div>';
+}
+function deadlineRowHTML(wid){
+  var l = labById(wid); if(!l) return "";
+  var eff = effectiveDeadline(wid);
+  var srv = hasServerDeadline(wid);
+  var curTxt = eff ? (deadlineLabel(eff).replace('⏰ 제출 기한: ','').replace(' (한국시간)','')) : '설정 안 됨(제한 없음)';
+  var h = '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0;padding:8px 0;border-top:1px solid #cfe0f4">';
+  h += '<span style="min-width:120px;font-weight:700">' + esc(l.weekLabel || wid) + '</span>';
+  h += '<span class="small" style="min-width:230px">현재 마감: <b>' + esc(curTxt) + '</b> ' + (srv ? '<span class="pill ok">교수지정</span>' : '<span class="pill mid">기본값</span>') + '</span>';
+  h += '<input type="datetime-local" data-dlweek="' + esc(wid) + '" value="' + esc(dtLocalValue(eff)) + '" style="padding:5px 6px;border:1px solid #9bbce0;border-radius:6px;font-size:14px">';
+  h += '<button class="btn sm primary" type="button" data-dlsave="' + esc(wid) + '">저장</button>';
+  h += '<button class="btn sm ghost" type="button" data-dltoday="' + esc(wid) + '">오늘 자정까지</button>';
+  /* 2026-09-26(O-0067 B7): 교수 지정값을 지우고 코드 기본값(REPORT_DEADLINE)으로 되돌린다 */
+  h += '<button class="btn sm ghost" type="button" data-dlreset="' + esc(wid) + '"' + (srv ? '' : ' disabled title="이미 기본값입니다"') + '>기본값으로</button>';
+  h += '</div>';
+  return h;
+}
+function dlModeNote(){
+  return '<div class="small" style="color:var(--muted);margin-top:6px">' + ((window.GLR && GLR.on) ? '여기서 정한 기한은 서버에 저장돼 <b>모든 학생 기기</b>에 반영됩니다. <b>학생 화면은 새로고침(재접속) 후 반영</b>됩니다.' : '⚠ 지금은 이 기기 저장 모드 — 서버에 반영되지 않아 <b>이 기기에서만</b> 적용됩니다(실제 수업은 서버 방식에서 정하세요).') + '</div>';
+}
+function profRosterCardHTML(){
+  var roster = getRoster();
+  var nEarly = roster.filter(function(st){ return isEarly(st.sid); }).length;
+  var h = '<div class="card tight" style="border-color:#bcd6f0;background:var(--mintdk)">';
+  h += '<div class="small" style="margin:0 0 6px"><b>👥 학생 명단관리</b> — 현재 <b>' + roster.length + '명</b> 등록' + (nEarly ? ' · <b>🎓면제 ' + nEarly + '명</b>' : '') + '.</div>';
+  if(roster.length === 0){
+    h += '<div class="small" style="color:var(--amber);margin:0 0 8px">아직 등록된 명단이 없습니다. 아래 버튼에서 명단을 붙여넣어 등록하세요. (명단이 없어도 학생은 이름·학번을 입력해 로그인할 수 있습니다.)</div>';
+  }
+  h += '<button class="btn sm" type="button" data-go="roster">학생 명단관리 열기 →</button>';
+  if(window.GLR && GLR.on && GLR.hasSnapshot()){
+    h += '<div style="margin-top:8px"><button class="btn sm" type="button" onclick="glMigratePrompt()">📤 이 기기의 예전 자료를 서버로 올리기</button>';
+    h += '<div class="small" style="color:var(--muted);margin-top:4px">서버로 바꾸기 전 이 기기에 있던 명단·조·진도·보고서를 한 번에 올립니다(덮어쓰지 않고 합칩니다).</div></div>';
+  }
+  h += '</div>';
+  return h;
+}
+/* 🚦 주차·프로젝트 단계 열기/닫기 — 인앱 확인모달(askConfirm) 뒤 이 기기 미러 갱신 + 서버 저장(교수만 쓰기). */
+function bindWeekOpen(sc){
+  sc.querySelectorAll("[data-weekopen]").forEach(function(b){
+    b.onclick = function(){
+      var wid = b.getAttribute("data-weekopen");
+      var to = b.getAttribute("data-to") === "1";       /* true=열기, false=닫기 */
+      var l = labById(wid), pst = projectStepById(wid);
+      var wlabel = pst ? ("프로젝트 " + pst.no + "단계(" + pst.wk + ")") : ((l && (l.weekLabel || wid)) || wid);
+      var msg = pst
+        ? (to ? wlabel + " 을(를) 지금 학생에게 엽니다.\n학생 화면의 프로젝트에서 이 단계가 열린 것으로 보입니다(학생은 새로고침 후 반영). 여시겠습니까?"
+              : wlabel + " 을(를) 닫습니다(비공개).\n학생 화면에서 다시 「수업 시간에 열어 드려요」로 보입니다." + (PROF_SPLIT ? "\n※ 학생이 작성 중일 수 있어요." : "") + " 닫으시겠습니까?")
+        : to
+        ? wlabel + " 을(를) 지금 학생에게 엽니다.\n학생이 이 주차에 들어올 수 있게 됩니다. 여시겠습니까?"
+        : wlabel + " 을(를) 닫습니다(비공개).\n학생이 이 주차에 들어올 수 없게 됩니다. 이미 저장된 학생 자료(보고서·진도)는 지워지지 않습니다. 닫으시겠습니까?";
+      askConfirm(msg, function(){
+        var m = setWeekOpenLocal(wid, to);
+        if(window.GLR && GLR.on) GLR.syncWeekOpen(m);
+        toast(wlabel + (to ? " 을 열었습니다." : " 을 닫았습니다."));
+        profRefresh();
+      }, { yes: to ? "열기" : "닫기" });
+    };
+  });
+}
+/* 📅 제출기한 저장 · 오늘 자정 · 기본값으로 */
+function bindDeadlines(sc){
+  /* 📅 제출기한 저장 — 교수가 고른 datetime-local(KST) 을 +09:00 ISO 로 바꿔 미러+서버 저장. */
+  sc.querySelectorAll("[data-dlsave]").forEach(function(b){
+    b.onclick = function(){
+      var wid = b.getAttribute("data-dlsave");
+      var inp = sc.querySelector('[data-dlweek="' + wid + '"]');
+      var val = inp ? inp.value : "";
+      if(!val){ toast("먼저 날짜와 시간을 고르세요."); return; }
+      var iso = dtLocalToISO(val);
+      var d = iso ? new Date(iso) : null;
+      if(!iso || !d || isNaN(d.getTime())){ toast("올바른 날짜·시간이 아닙니다."); return; }
+      var l = labById(wid); var wlabel = (l && (l.weekLabel || wid)) || wid;
+      var dtxt = deadlineLabel(d).replace('⏰ 제출 기한: ','').replace(' (한국시간)','');
+      /* 2026-09-26(O-0067 B7): 저장 전 확인(askConfirm — window.confirm 금지) */
+      askConfirm(wlabel + " 보고서 마감을 " + dtxt + "로 바꿉니다.\n학생 화면에는 새로고침(재접속) 후 반영됩니다. 바꿀까요?", function(){
+        var m = setReportDeadlineLocal(wid, iso);
+        if(window.GLR && GLR.on) GLR.syncReportDeadline(m);
+        toast(wlabel + " 마감을 " + dtxt + "로 변경했습니다.");
+        profRefresh();
+      }, { yes:"바꾸기", yesClass:"primary" });
+    };
+  });
+  /* 📅 오늘 자정(23:59:59)까지 — 빠른 편의 버튼. 오늘(KST) 23:59:59 로 세팅. */
+  sc.querySelectorAll("[data-dltoday]").forEach(function(b){
+    b.onclick = function(){
+      var wid = b.getAttribute("data-dltoday");
+      var t = kstParts(new Date());
+      var iso = t.y + '-' + pad2(t.mo) + '-' + pad2(t.d) + 'T23:59:59+09:00';
+      var l = labById(wid); var wlabel = (l && (l.weekLabel || wid)) || wid;
+      var todayTxt = t.y + '-' + pad2(t.mo) + '-' + pad2(t.d);
+      /* 2026-09-26(O-0067 B7): 한 번 눌러 바로 바뀌던 것을 확인 뒤 실행(미래 주차를 잘못 누르면 학생이 보고서를 못 쓰게 됨) */
+      askConfirm(wlabel + " 보고서 마감을 오늘(" + todayTxt + ") 23:59로 바꿉니다.\n오늘 자정이 지나면 학생은 이 주차 보고서를 저장·제출할 수 없습니다. 바꿀까요?", function(){
+        var m = setReportDeadlineLocal(wid, iso);
+        if(window.GLR && GLR.on) GLR.syncReportDeadline(m);
+        toast(wlabel + " 마감을 오늘(" + todayTxt + ") 23:59로 설정했습니다.");
+        profRefresh();
+      }, { yes:"바꾸기", yesClass:"primary" });
+    };
+  });
+  /* 📅 기본값으로 — 서버 report_deadline 에서 그 주차 값을 지워 코드 기본값(REPORT_DEADLINE)으로 되돌린다(교수 모드만). */
+  sc.querySelectorAll("[data-dlreset]").forEach(function(b){
+    b.onclick = function(){
+      if(!state || state.role !== "prof"){ toast("교수만 바꿀 수 있습니다."); return; }
+      var wid = b.getAttribute("data-dlreset");
+      var l = labById(wid); var wlabel = (l && (l.weekLabel || wid)) || wid;
+      if(!hasServerDeadline(wid)){ toast(wlabel + " 마감은 이미 기본값입니다."); return; }
+      var dl = REPORT_DEADLINE[wid];
+      var defTxt = (dl && dl.at instanceof Date) ? deadlineLabel(dl.at).replace('⏰ 제출 기한: ','').replace(' (한국시간)','') : "제한 없음";
+      askConfirm(wlabel + " 마감을 기본값(" + defTxt + ")으로 되돌립니다.\n교수님이 지정한 값은 지워집니다. 되돌릴까요?", function(){
+        var m = setReportDeadlineLocal(wid, "");     /* 이 주차 키를 지운 전체 맵 */
+        if(window.GLR && GLR.on) GLR.syncReportDeadline(m);
+        toast(wlabel + " 마감을 기본값(" + defTxt + ")으로 되돌렸습니다.");
+        profRefresh();
+      }, { yes:"되돌리기", yesClass:"primary" });
+    };
+  });
+}
+
+function profFull(mode){
+  var WK = (mode === "week");   /* "week" = 주차 상세(profweek), 그 밖 = 예전 한 페이지 전체(profdash, PROF_SPLIT=false) */
   var roster = getRoster();
   var need = UNLOCK_N();
   var labList = (C && Array.isArray(C.labs)) ? C.labs : [];
@@ -4317,7 +4511,20 @@ RENDER.profdash = function(){
   var nActive = rows.filter(function(r){ return r.hasData; }).length + extraRows.length;
   var lab = labById(wk) || curLab();
 
+  function wkpickCard(cap){
+    var q = '<div class="card tight"><div class="small" style="margin:0 0 6px">' + cap + '</div>';
+    q += '<div class="wkpick">';
+    labList.forEach(function(l){
+      var on = (l.id === wk);
+      var ready = weekPrepared(l.id);
+      var mark = ready ? '' : '<span class="pre">·준비전</span>';
+      q += '<button class="wkbtn' + (on ? ' on' : '') + '" type="button" data-week="' + esc(l.id) + '">' + esc(l.weekLabel || l.id) + mark + '</button>';
+    });
+    q += '</div></div>';
+    return q;
+  }
   var h = "";
+  if(WK) h += '<button class="btn sm ghost" type="button" data-go="proflab" style="margin-bottom:10px;text-align:left">← 실습 목록으로</button>';
   h += '<div class="hero">' + helixSVG();
   h += '<div class="k">유전자분석 · 교수 확인</div>';
   h += '<h1>' + esc(lab.weekLabel || "") + ' 수행 현황</h1>';
@@ -4336,6 +4543,7 @@ RENDER.profdash = function(){
   }
   h += '</div>';
 
+  if(!WK){
   /* 🧑‍🎓 학생 화면 미리보기 — (2026-09-02 위치 교체: 원래 맨 아래에 있던 것을 이 자리로 옮김. 아래 "학생 명단관리"와 자리를 맞바꿨다) */
   h += '<button class="btn sm ghost center" type="button" data-go="' + studentHome() + '">🧑‍🎓 학생 화면 미리보기</button>';
 
@@ -4343,29 +4551,13 @@ RENDER.profdash = function(){
   h += '<button class="btn sm primary center" type="button" data-go="outputs" style="margin-bottom:12px">📤 출력물 — 인쇄물(PDF) 만들기</button>';
 
   /* 📅 주차 선택 — 7개 실습 중 확인할 주차를 고른다(작은 버튼, 줄바꿈으로 가로 스크롤 없이 다 보임). 준비된 주차만 실제 데이터가 있다. */
-  h += '<div class="card tight"><div class="small" style="margin:0 0 6px"><b>확인할 주차</b> — 주차를 눌러 그 주차의 학생 현황을 봅니다.</div>';
-  h += '<div class="wkpick">';
-  labList.forEach(function(l){
-    var on = (l.id === wk);
-    var ready = weekPrepared(l.id);
-    var mark = ready ? '' : '<span class="pre">·준비전</span>';
-    h += '<button class="wkbtn' + (on ? ' on' : '') + '" type="button" data-week="' + esc(l.id) + '">' + esc(l.weekLabel || l.id) + mark + '</button>';
-  });
-  h += '</div></div>';
+  h += wkpickCard('<b>확인할 주차</b> — 주차를 눌러 그 주차의 학생 현황을 봅니다.');
 
   /* 🚦 주차 공개 관리 — 교수가 각 주차를 학생에게 열고/닫는다. 날짜가 지나도 여기서 열어야 학생이 들어온다.
    *   상태는 서버(gl_app_meta.week_open)에 저장돼 모든 학생 기기에 반영된다. */
   h += '<div class="card tight" style="border-color:#f0c9a8;background:#fdf3ea">';
   h += '<div class="small" style="margin:0 0 8px"><b>🚦 주차 공개 관리</b> — <b>「시작(열기)」을 눌러야 학생이 그 주차에 들어갈 수 있습니다.</b> 날짜가 지나도 자동으로 열리지 않습니다. 실수로 열었으면 「닫기」로 되돌릴 수 있습니다(저장된 학생 자료는 지워지지 않습니다).</div>';
-  LABS_WITH_CONTENT.forEach(function(wid){
-    var l = labById(wid); if(!l) return;
-    var isOpen = weekIsOpen(wid);
-    h += '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0;padding:6px 0;border-top:1px solid #f0dcc6">';
-    h += '<span style="min-width:170px;font-weight:700">' + esc(l.weekLabel || wid) + ' · ' + esc(l.title || "") + '</span>';
-    h += '<span class="pill ' + (isOpen ? "ok" : "no") + '">' + (isOpen ? "열림(학생공개)" : "닫힘(미공개)") + '</span>';
-    h += '<button class="btn sm ' + (isOpen ? "ghost" : "primary") + '" type="button" data-weekopen="' + esc(wid) + '" data-to="' + (isOpen ? "0" : "1") + '">' + (isOpen ? "닫기" : "시작(열기)") + '</button>';
-    h += '</div>';
-  });
+  LABS_WITH_CONTENT.forEach(function(wid){ h += weekOpenRowHTML(wid); });
   h += '<div class="small" style="margin:20px 0 4px;padding-top:12px;border-top:3px solid #e2bf94"><b>🎬 프로젝트 단계 공개</b> — 1단계(프로젝트 안내)는 항상 열려 있고, <b>2~4단계는 수업 시간에 여기서 열어야</b> 학생 화면에 나타납니다.</div>';
   PROJECT_STEPS.forEach(function(st){
     var always = st.id === "p10";
@@ -4382,45 +4574,34 @@ RENDER.profdash = function(){
   }else{
     h += '<div class="small" style="color:var(--amber);margin:4px 0 2px">※ 2단계(주제 선정서)는 입력 기능이 완성된 뒤에만 열어 주세요.</div>';
   }
-  h += '<div class="small" style="color:var(--muted);margin-top:6px">' + ((window.GLR && GLR.on) ? '여기서 연 주차는 서버에 저장돼 <b>모든 학생 기기</b>에 반영됩니다.' : '⚠ 지금은 이 기기 저장 모드 — 서버에 반영되지 않아 <b>이 기기에서만</b> 적용됩니다(실제 수업은 서버 방식에서 여세요).') + '</div>';
+  h += openModeNote();
   h += '</div>';
 
   /* 📅 제출기한 설정 — 교수가 각 주차의 보고서 마감을 직접 정하거나 연장한다(서버 gl_app_meta.report_deadline). */
   h += '<div class="card tight" style="border-color:#a8c8ec;background:#eaf2fc">';
   h += '<div class="small" style="margin:0 0 8px"><b>📅 제출기한 설정</b> — 각 주차 보고서 <b>마감 날짜·시간을 직접 정하거나 연장</b>할 수 있습니다. 달력에서 날짜와 시간을 고르고 <b>[저장]</b>을 누르세요. 기한이 지나면 학생은 보고서를 <b>새로 쓰거나 이어 쓸 수 없습니다.</b></div>';
-  LABS_WITH_CONTENT.forEach(function(wid){
-    var l = labById(wid); if(!l) return;
-    var eff = effectiveDeadline(wid);
-    var srv = hasServerDeadline(wid);
-    var curTxt = eff ? (deadlineLabel(eff).replace('⏰ 제출 기한: ','').replace(' (한국시간)','')) : '설정 안 됨(제한 없음)';
-    h += '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0;padding:8px 0;border-top:1px solid #cfe0f4">';
-    h += '<span style="min-width:120px;font-weight:700">' + esc(l.weekLabel || wid) + '</span>';
-    h += '<span class="small" style="min-width:230px">현재 마감: <b>' + esc(curTxt) + '</b> ' + (srv ? '<span class="pill ok">교수지정</span>' : '<span class="pill mid">기본값</span>') + '</span>';
-    h += '<input type="datetime-local" data-dlweek="' + esc(wid) + '" value="' + esc(dtLocalValue(eff)) + '" style="padding:5px 6px;border:1px solid #9bbce0;border-radius:6px;font-size:14px">';
-    h += '<button class="btn sm primary" type="button" data-dlsave="' + esc(wid) + '">저장</button>';
-    h += '<button class="btn sm ghost" type="button" data-dltoday="' + esc(wid) + '">오늘 자정까지</button>';
-    /* 2026-09-26(O-0067 B7): 교수 지정값을 지우고 코드 기본값(REPORT_DEADLINE)으로 되돌린다 */
-    h += '<button class="btn sm ghost" type="button" data-dlreset="' + esc(wid) + '"' + (srv ? '' : ' disabled title="이미 기본값입니다"') + '>기본값으로</button>';
-    h += '</div>';
-  });
-  h += '<div class="small" style="color:var(--muted);margin-top:6px">' + ((window.GLR && GLR.on) ? '여기서 정한 기한은 서버에 저장돼 <b>모든 학생 기기</b>에 반영됩니다. <b>학생 화면은 새로고침(재접속) 후 반영</b>됩니다.' : '⚠ 지금은 이 기기 저장 모드 — 서버에 반영되지 않아 <b>이 기기에서만</b> 적용됩니다(실제 수업은 서버 방식에서 정하세요).') + '</div>';
+  LABS_WITH_CONTENT.forEach(function(wid){ h += deadlineRowHTML(wid); });
+  h += dlModeNote();
   h += '</div>';
+  }
 
   if(!prepared){
     /* 미준비 주차 — 콘텐츠(문항·보고서 양식)가 아직 없어 학생 기록이 생길 수 없다. */
     h += '<div class="card tight" style="border-color:#e6d9b8;background:#fbf6e7"><div class="small" style="color:#8a6d1a">📭 <b>이 주차는 아직 문항이 준비되지 않았습니다(데이터 없음).</b><br>학생이 수행할 학습·미션·보고서 양식이 준비되면, 이 화면에 그 주차의 현황이 채워집니다. 현재는 <b>2주차(세포배양)</b>만 실제 데이터가 있습니다.</div></div>';
   }
 
+  var srvNoteHTML = "";
   if(window.GLR && GLR.on){
-    h += '<div class="card tight"><div class="small" style="color:var(--green)">🌐 서버 방식 — <b>전체 학생의 기록</b>을 서버에서 불러와 집계합니다(현재 자료가 있는 학생 ' + nActive + '명). 학생이 다른 기기에서 저장해도 여기 반영됩니다.</div></div>';
+    srvNoteHTML = '<div class="card tight"><div class="small" style="color:var(--green)">🌐 서버 방식 — <b>전체 학생의 기록</b>을 서버에서 불러와 집계합니다(현재 자료가 있는 학생 ' + nActive + '명). 학생이 다른 기기에서 저장해도 여기 반영됩니다.</div></div>';
   }else{
-    h += '<div class="card tight"><div class="small" style="color:var(--amber)">⚠ 이 기기 저장 모드 — <b>이 기기에 저장된 기록만</b> 표시됩니다(이 기기에서 활동한 학생 ' + nActive + '명).</div></div>';
+    srvNoteHTML = '<div class="card tight"><div class="small" style="color:var(--amber)">⚠ 이 기기 저장 모드 — <b>이 기기에 저장된 기록만</b> 표시됩니다(이 기기에서 활동한 학생 ' + nActive + '명).</div></div>';
   }
+  if(!WK) h += srvNoteHTML;
 
   /* 📄 주차별 제출 보고서 일괄 PDF — 그 주차의 '제출'본 전체를 한 번의 인쇄로 내려받는다. */
-  if(prepared){
+  var _bulkIncNote = (nSubIncomplete ? ' · 미완성 제출본은 제목에 (미완성) 표시' : '');
+  if(prepared && !WK){
     h += '<div class="card tight" style="border-color:#cbb8e0;background:#f6f1fb">';
-    var _bulkIncNote = (nSubIncomplete ? ' · 미완성 제출본은 제목에 (미완성) 표시' : '');
     h += '<div class="small" style="margin:0 0 8px"><b>📄 이 주차 제출 보고서 전체 PDF</b> — ' + esc(lab.weekLabel || "") + ' <b>제출 ' + nSubAll + '건</b>' + (nSubExtra ? '(명단 ' + nSub + '건 + 미등록 ' + nSubExtra + '건)' : '') + '을 한 문서로 이어서 인쇄합니다(학생마다 새 페이지, 작성 중·미작성 제외' + _bulkIncNote + ').</div>';
     h += '<button class="btn sm primary" type="button" id="pdBulkPdf"' + (nSubAll ? '' : ' disabled') + '>📄 이 주차 제출 보고서 전체 PDF</button>';
     h += '<div class="small" style="color:var(--muted);margin-top:6px">브라우저 인쇄창에서 \'대상\'을 \'PDF로 저장\'으로 고르시면 됩니다.' + (nSubAll ? '' : ' (현재 제출된 보고서가 없습니다.)') + '</div>';
@@ -4429,7 +4610,7 @@ RENDER.profdash = function(){
 
   var rosterCntLabel = roster.length + '명' + (extraRows.length ? ' + 미등록 ' + extraRows.length + '명' : '');
   h += '<div class="card"><h3>학생별 현황 <span class="small">' + rosterCntLabel + '</span></h3>';
-  h += '<p class="small" style="margin:0 0 8px"><b>조기취업(면제)</b>은 위 <b>[학생 명단관리]</b>에서 학생별로 체크합니다. 여기 표에는 <b>🎓면제</b> 여부만 표시됩니다.</p>';
+  h += '<p class="small" style="margin:0 0 8px"><b>조기취업(면제)</b>은 ' + (WK ? '처음 화면의 ' : '위 ') + '<b>[학생 명단관리]</b>에서 학생별로 체크합니다. 여기 표에는 <b>🎓면제</b> 여부만 표시됩니다.</p>';
   if(extraRows.length){
     h += '<p class="small" style="margin:0 0 8px;color:var(--amber)"><b>⚠ (미등록)</b> 행은 <b>명단에 없는 학번으로 로그인해 보고서를 낸 학생</b>입니다. 명단관리에서 이름·학번을 확인해 등록해 주세요(집계 분모에는 아직 포함되지 않습니다).</p>';
   }
@@ -4460,24 +4641,38 @@ RENDER.profdash = function(){
   });
   h += '</table></div></div>';
 
+  if(!WK){
   h += teamLockCardHTML();   /* O-0635: 조 편성 확정 */
   /* 👥 출석부 관리 — 명단은 코드가 아니라 교수가 여기서 등록한다(localStorage 저장). (2026-09-02 위치 교체: 원래 맨 위에 있던 것을 이 자리로 옮김) */
-  h += '<div class="card tight" style="border-color:#bcd6f0;background:var(--mintdk)">';
-  h += '<div class="small" style="margin:0 0 6px"><b>👥 학생 명단관리</b> — 현재 <b>' + roster.length + '명</b> 등록' + (nEarly ? ' · <b>🎓면제 ' + nEarly + '명</b>' : '') + '.</div>';
-  if(roster.length === 0){
-    h += '<div class="small" style="color:var(--amber);margin:0 0 8px">아직 등록된 명단이 없습니다. 아래 버튼에서 명단을 붙여넣어 등록하세요. (명단이 없어도 학생은 이름·학번을 입력해 로그인할 수 있습니다.)</div>';
-  }
-  h += '<button class="btn sm" type="button" data-go="roster">학생 명단관리 열기 →</button>';
-  if(window.GLR && GLR.on && GLR.hasSnapshot()){
-    h += '<div style="margin-top:8px"><button class="btn sm" type="button" onclick="glMigratePrompt()">📤 이 기기의 예전 자료를 서버로 올리기</button>';
-    h += '<div class="small" style="color:var(--muted);margin-top:4px">서버로 바꾸기 전 이 기기에 있던 명단·조·진도·보고서를 한 번에 올립니다(덮어쓰지 않고 합칩니다).</div></div>';
-  }
-  h += '</div>';
+  h += profRosterCardHTML();
 
   h += '<button class="btn sm danger center" type="button" id="pdLogout">🚪 로그아웃</button>';
   h += '<p class="small" style="margin-top:10px">' + esc(storageNoteText()) + '</p>';
+  }else{
+    /* 주차 상세: 학생 표 바로 아래에 「이 주차 관리」 접이식 카드 하나(공개 · 제출기한 · 전체 PDF), 그 아래 서버 안내와 옆 주차 건너가기 */
+    var manageable = LABS_WITH_CONTENT.indexOf(wk) >= 0;
+    var dlEff = effectiveDeadline(wk), dlTxt = dlEff ? ('마감 ' + deadlineShort(dlEff)) : '마감 없음';
+    var sumTxt = '🛠 이 주차 관리 — ' + (manageable ? (weekIsOpen(wk) ? '열림' : '닫힘') + ' · ' + dlTxt : '준비 전') + (prepared ? ' · 전체 PDF' : '');
+    h += '<details class="pmgr" id="pwkMgr"' + (PROF_UI.mgr ? ' open' : '') + '><summary>' + sumTxt + '</summary><div class="pmgr-b">';
+    if(manageable){
+      h += '<div class="small pmgr-h"><b>🚦 주차 공개</b> — 「시작(열기)」을 눌러야 학생이 들어갈 수 있어요. 날짜가 지나도 자동으로 열리지 않아요.</div>';
+      h += weekOpenRowHTML(wk);
+      h += openModeNote();
+      h += '<div class="small pmgr-h" style="margin-top:14px"><b>📅 제출기한</b> — 날짜와 시간을 고르고 [저장]을 누르세요. 기한이 지나면 학생은 보고서를 새로 쓰거나 이어 쓸 수 없어요.</div>';
+      h += deadlineRowHTML(wk);
+      h += dlModeNote();
+    }
+    if(prepared){
+      h += '<div class="small pmgr-h" style="margin-top:14px"><b>📄 이 주차 제출 보고서 전체 PDF</b> — ' + esc(lab.weekLabel || "") + ' <b>제출 ' + nSubAll + '건</b>' + (nSubExtra ? '(명단 ' + nSub + '건 + 미등록 ' + nSubExtra + '건)' : '') + '을 한 문서로 이어서 인쇄합니다(학생마다 새 페이지, 작성 중·미작성 제외' + _bulkIncNote + ').</div>';
+      h += '<button class="btn sm primary" type="button" id="pdBulkPdf" style="margin-top:6px"' + (nSubAll ? '' : ' disabled') + '>📄 이 주차 제출 보고서 전체 PDF</button>';
+      h += '<div class="small" style="color:var(--muted)">브라우저 인쇄창에서 \'대상\'을 \'PDF로 저장\'으로 고르시면 됩니다.' + (nSubAll ? '' : ' (현재 제출된 보고서가 없습니다.)') + '</div>';
+    }
+    h += '</div></details>';
+    h += srvNoteHTML;
+    h += wkpickCard('<b>다른 주차 보기</b> — 주차를 눌러 그 주차의 학생 현황으로 바꿔요.');
+  }
 
-  var sc = $("sc-profdash"); sc.innerHTML = h;
+  var sc = $(WK ? "sc-profweek" : "sc-profdash"); sc.innerHTML = h;
   sc.querySelectorAll("[data-open]").forEach(function(b){
     b.onclick = function(){
       ctx.report = { sid: b.getAttribute("data-open"), name: b.getAttribute("data-name"), readonly: true, view: "preview", week: wk };
@@ -4487,89 +4682,170 @@ RENDER.profdash = function(){
   });
   /* 📅 주차 전환 — 대시보드 조회 주차만 바꾼다(학생용 ACTIVE_WEEK 은 그대로). */
   sc.querySelectorAll("[data-week]").forEach(function(b){
-    b.onclick = function(){ DASH_WEEK = b.getAttribute("data-week"); RENDER.profdash(); };
+    b.onclick = function(){ DASH_WEEK = b.getAttribute("data-week"); profRefresh(); };
   });
-  /* 🚦 주차 열기/닫기 — 인앱 확인모달(askConfirm) 뒤 이 기기 미러 갱신 + 서버 저장(교수만 쓰기). */
-  sc.querySelectorAll("[data-weekopen]").forEach(function(b){
-    b.onclick = function(){
-      var wid = b.getAttribute("data-weekopen");
-      var to = b.getAttribute("data-to") === "1";       /* true=열기, false=닫기 */
-      var l = labById(wid), pst = projectStepById(wid);
-      var wlabel = pst ? ("프로젝트 " + pst.no + "단계(" + pst.wk + ")") : ((l && (l.weekLabel || wid)) || wid);
-      var msg = pst
-        ? (to ? wlabel + " 을(를) 지금 학생에게 엽니다.\n학생 화면의 프로젝트에서 이 단계가 열린 것으로 보입니다(학생은 새로고침 후 반영). 여시겠습니까?"
-              : wlabel + " 을(를) 닫습니다(비공개).\n학생 화면에서 다시 「수업 시간에 열어 드려요」로 보입니다. 닫으시겠습니까?")
-        : to
-        ? wlabel + " 을(를) 지금 학생에게 엽니다.\n학생이 이 주차에 들어올 수 있게 됩니다. 여시겠습니까?"
-        : wlabel + " 을(를) 닫습니다(비공개).\n학생이 이 주차에 들어올 수 없게 됩니다. 이미 저장된 학생 자료(보고서·진도)는 지워지지 않습니다. 닫으시겠습니까?";
-      askConfirm(msg, function(){
-        var m = setWeekOpenLocal(wid, to);
-        if(window.GLR && GLR.on) GLR.syncWeekOpen(m);
-        toast(wlabel + (to ? " 을 열었습니다." : " 을 닫았습니다."));
-        RENDER.profdash();
-      }, { yes: to ? "열기" : "닫기" });
-    };
-  });
-  /* 📅 제출기한 저장 — 교수가 고른 datetime-local(KST) 을 +09:00 ISO 로 바꿔 미러+서버 저장. */
-  sc.querySelectorAll("[data-dlsave]").forEach(function(b){
-    b.onclick = function(){
-      var wid = b.getAttribute("data-dlsave");
-      var inp = sc.querySelector('[data-dlweek="' + wid + '"]');
-      var val = inp ? inp.value : "";
-      if(!val){ toast("먼저 날짜와 시간을 고르세요."); return; }
-      var iso = dtLocalToISO(val);
-      var d = iso ? new Date(iso) : null;
-      if(!iso || !d || isNaN(d.getTime())){ toast("올바른 날짜·시간이 아닙니다."); return; }
-      var l = labById(wid); var wlabel = (l && (l.weekLabel || wid)) || wid;
-      var dtxt = deadlineLabel(d).replace('⏰ 제출 기한: ','').replace(' (한국시간)','');
-      /* 2026-09-26(O-0067 B7): 저장 전 확인(askConfirm — window.confirm 금지) */
-      askConfirm(wlabel + " 보고서 마감을 " + dtxt + "로 바꿉니다.\n학생 화면에는 새로고침(재접속) 후 반영됩니다. 바꿀까요?", function(){
-        var m = setReportDeadlineLocal(wid, iso);
-        if(window.GLR && GLR.on) GLR.syncReportDeadline(m);
-        toast(wlabel + " 마감을 " + dtxt + "로 변경했습니다.");
-        RENDER.profdash();
-      }, { yes:"바꾸기", yesClass:"primary" });
-    };
-  });
-  /* 📅 오늘 자정(23:59:59)까지 — 빠른 편의 버튼. 오늘(KST) 23:59:59 로 세팅. */
-  sc.querySelectorAll("[data-dltoday]").forEach(function(b){
-    b.onclick = function(){
-      var wid = b.getAttribute("data-dltoday");
-      var t = kstParts(new Date());
-      var iso = t.y + '-' + pad2(t.mo) + '-' + pad2(t.d) + 'T23:59:59+09:00';
-      var l = labById(wid); var wlabel = (l && (l.weekLabel || wid)) || wid;
-      var todayTxt = t.y + '-' + pad2(t.mo) + '-' + pad2(t.d);
-      /* 2026-09-26(O-0067 B7): 한 번 눌러 바로 바뀌던 것을 확인 뒤 실행(미래 주차를 잘못 누르면 학생이 보고서를 못 쓰게 됨) */
-      askConfirm(wlabel + " 보고서 마감을 오늘(" + todayTxt + ") 23:59로 바꿉니다.\n오늘 자정이 지나면 학생은 이 주차 보고서를 저장·제출할 수 없습니다. 바꿀까요?", function(){
-        var m = setReportDeadlineLocal(wid, iso);
-        if(window.GLR && GLR.on) GLR.syncReportDeadline(m);
-        toast(wlabel + " 마감을 오늘(" + todayTxt + ") 23:59로 설정했습니다.");
-        RENDER.profdash();
-      }, { yes:"바꾸기", yesClass:"primary" });
-    };
-  });
-  /* 📅 기본값으로 — 서버 report_deadline 에서 그 주차 값을 지워 코드 기본값(REPORT_DEADLINE)으로 되돌린다(교수 모드만). */
-  sc.querySelectorAll("[data-dlreset]").forEach(function(b){
-    b.onclick = function(){
-      if(!state || state.role !== "prof"){ toast("교수만 바꿀 수 있습니다."); return; }
-      var wid = b.getAttribute("data-dlreset");
-      var l = labById(wid); var wlabel = (l && (l.weekLabel || wid)) || wid;
-      if(!hasServerDeadline(wid)){ toast(wlabel + " 마감은 이미 기본값입니다."); return; }
-      var dl = REPORT_DEADLINE[wid];
-      var defTxt = (dl && dl.at instanceof Date) ? deadlineLabel(dl.at).replace('⏰ 제출 기한: ','').replace(' (한국시간)','') : "제한 없음";
-      askConfirm(wlabel + " 마감을 기본값(" + defTxt + ")으로 되돌립니다.\n교수님이 지정한 값은 지워집니다. 되돌릴까요?", function(){
-        var m = setReportDeadlineLocal(wid, "");     /* 이 주차 키를 지운 전체 맵 */
-        if(window.GLR && GLR.on) GLR.syncReportDeadline(m);
-        toast(wlabel + " 마감을 기본값(" + defTxt + ")으로 되돌렸습니다.");
-        RENDER.profdash();
-      }, { yes:"되돌리기", yesClass:"primary" });
-    };
-  });
+  bindWeekOpen(sc);
+  bindDeadlines(sc);
   if(TOPIC_FORM) bindTeamLock(sc);
   if($("pdBulkPdf")) $("pdBulkPdf").onclick = function(){ printBulkReports(wk); };
+  var _mg = $("pwkMgr"); if(_mg) _mg.addEventListener("toggle", function(){ PROF_UI.mgr = !!_mg.open; });
   if($("pdLogout")) $("pdLogout").onclick = logout;
   bindGo(sc);
+}
+
+/* ==========================================================================
+ * 🧑‍🏫 교수 화면 2분할 (PROF_SPLIT) — 처음 화면(profdash) · 실습 목록(proflab) · 프로젝트 목록(profproj) · 주차 상세(profweek)
+ *   · 처음 화면: 「팀프로젝트」 위 · 「실습」 아래 큰 카드 두 개 + 공통 도구(학생 화면 미리보기·출력물·학생 명단관리).
+ *   · 주차 상세(profweek)는 예전 한 페이지 화면과 같은 그림 함수(profFull)가 mode="week" 로 그린다 — 코드를 따로 복사하지 않았다.
+ *   · PROF_SPLIT=false 면 RENDER.profdash 가 profFull("full") = 예전 한 페이지 화면이 된다.
+ *   · 열기/닫기·제출기한·조 편성 확정 뒤에는 profRefresh() 가 지금 보던 화면을 그대로 다시 그린다.
+ *   · 서버·학생 화면·실습 로직은 건드리지 않는다.
+ * ========================================================================*/
+/* 한 주차의 제출 집계 — 면제자는 분모에서 뺀다(주차 상세의 「보고서 제출 n/분모」와 같은 기준) */
+function profWeekStats(wid){
+  var roster = getRoster(), nEarly = 0, nSub = 0;
+  var prepared = weekPrepared(wid);
+  roster.forEach(function(st){
+    if(isEarly(st.sid)){ nEarly++; return; }
+    if(prepared && isSubmittedStatus(reportStatusOf(loadReport(st.sid, wid), wid))) nSub++;
+  });
+  var denom = roster.length - nEarly;
+  return { prepared: prepared, denom: denom, nSub: nSub, nNot: Math.max(0, denom - nSub) };
+}
+/* 목록 한 줄의 틀 — 「열림 배지 + 열기/닫기 + (선택) 현황 보기 버튼 1개」.
+   o = { chip, wk, title, sub, mainAttr(눌러서 들어갈 곳: 있으면 줄 전체가 버튼), pill:{t,cls}, open:{id,isOpen}|null, view:{go,label}|null, shut } */
+function profRowHTML(o){
+  var inner = '<span class="pr-n">' + esc(o.chip) + '</span><span class="pr-bd">' +
+    (o.wk ? '<span class="pr-w">' + o.wk + '</span>' : '') +
+    '<span class="pr-t">' + esc(o.title) + '</span>' +
+    (o.sub ? '<span class="pr-s">' + o.sub + '</span>' : '') + '</span>';
+  var h = '<div class="prow' + (o.shut ? ' shut' : '') + '">';
+  if(o.mainAttr) h += '<button class="pr-main" type="button" ' + o.mainAttr + '>' + inner + '<span class="pr-ar" aria-hidden="true">›</span></button>';
+  else h += '<div class="pr-main">' + inner + '</div>';
+  h += '<div class="pr-act"><span class="pill ' + o.pill.cls + '">' + esc(o.pill.t) + '</span><span class="sp"></span>';
+  if(o.view) h += '<button class="btn sm ghost" type="button" data-go="' + o.view.go + '">' + o.view.label + '</button>';
+  if(o.open) h += '<button class="btn sm ' + (o.open.isOpen ? 'ghost' : 'primary') + '" type="button" data-weekopen="' + esc(o.open.id) + '" data-to="' + (o.open.isOpen ? '0' : '1') + '">' + (o.open.isOpen ? '닫기' : '시작(열기)') + '</button>';
+  h += '</div></div>';
+  return h;
+}
+/* 프로젝트 단계별 「현황 보기」 — 2단계(주제 선정서)만 있다. 단계가 늘면 여기에 한 줄 추가 */
+var PROF_STEP_VIEW = { p11: { go:"topicsprof", label:"📝 선정서 현황" } };
+
+/* ---- 교수 처음 화면 ---- */
+function profHome(){
+  var sc = $("sc-profdash");
+  var labs = labList();
+  var h = '<div class="home-hi"><div class="hi-t"><b>' + esc(state.studentName || "교수") + '</b> 교수님</div>';
+  h += '<button class="btn sm ghost" type="button" id="pdLogout">🚪 로그아웃</button></div>';
+
+  /* ── 팀프로젝트 카드 (위) ── */
+  var lastNo = 1;
+  PROJECT_STEPS.forEach(function(st){ if(projectStepOpen(st.id)) lastNo = st.no; });
+  var pt, pc = '';
+  if(TOPIC_FORM){
+    var locked = teamLocked(), p11 = projectStepOpen("p11");
+    pt = (locked ? '조 편성 확정됨' : '조 편성 확정 전') + ' · ' + (p11 ? lastNo + '단계까지 열림' : '2단계 닫힘');
+    pc = locked ? 'g' : 'a';
+  }else{
+    pt = (lastNo === 1 ? '1단계만 열림' : lastNo + '단계까지 열림');
+  }
+  h += '<button class="bigcard bc-proj" type="button" id="pdProj"><div class="bc-ic" aria-hidden="true">🎬</div><div class="bc-t">팀프로젝트</div>';
+  h += '<p class="bc-d">조 편성 확정 · 단계 열기/닫기 · 주제 선정서 현황</p><span class="bc-st ' + pc + '">' + esc(pt) + '</span></button>';
+
+  /* ── 실습 카드 (아래) ── */
+  var openLabs = labs.filter(function(l){ return l.ready && weekIsOpen(l.id); });
+  var lt, lc;
+  if(openLabs.length){
+    var last = openLabs[openLabs.length - 1], stt = profWeekStats(last.id);
+    lt = (last.weekLabel || last.id) + '까지 열림' + (stt.prepared && stt.denom ? ' · 보고서 제출 ' + stt.nSub + '/' + stt.denom : '');
+    lc = 'g';
+  }else{ lt = '아직 열린 실습이 없어요'; lc = 'x'; }
+  var labDesc = labs.length ? ((labs[0].weekLabel || "").replace("주차", "") + '~' + (labs[labs.length - 1].weekLabel || "") + ' 실습 ' + labs.length + '개 · 열기/닫기 · 학생 현황 · 제출기한') : '실습 · 학생 현황';
+  h += '<button class="bigcard bc-lab" type="button" id="pdLab"><div class="bc-ic" aria-hidden="true">🧪</div><div class="bc-t">실습</div>';
+  h += '<p class="bc-d">' + esc(labDesc) + '</p><span class="bc-st ' + lc + '">' + esc(lt) + '</span></button>';
+
+  /* ── 공통 도구 ── */
+  h += '<div class="small" style="margin:16px 0 6px"><b>공통 도구</b></div>';
+  h += '<button class="btn sm ghost center" type="button" data-go="' + studentHome() + '">🧑‍🎓 학생 화면 미리보기</button>';
+  h += '<button class="btn sm primary center" type="button" data-go="outputs" style="margin-bottom:12px">📤 출력물 — 인쇄물(PDF) 만들기</button>';
+  h += profRosterCardHTML();
+  h += '<p class="small" style="margin-top:10px">' + esc(storageNoteText()) + '</p>';
+
+  sc.innerHTML = h;
+  $("pdProj").onclick = function(){ go("profproj"); };
+  $("pdLab").onclick = function(){ go("proflab"); };
+  if($("pdLogout")) $("pdLogout").onclick = logout;
+  bindGo(sc);
+}
+
+/* ---- 실습 주차 목록 ---- */
+RENDER.proflab = function(){
+  var sc = $("sc-proflab");
+  var h = '<button class="btn sm ghost" type="button" data-go="profdash" style="margin-bottom:10px;text-align:left">← 처음으로</button>';
+  h += '<h2 class="prj-h">실습 · 주차별 관리</h2>';
+  h += '<p class="prj-p">주차를 누르면 그 주차의 학생 현황을 볼 수 있어요. <b>「시작(열기)」</b>을 눌러야 학생이 들어갈 수 있고, 날짜가 지나도 자동으로 열리지 않아요.</p>';
+  labList().forEach(function(l){
+    var wid = l.id, prepared = weekPrepared(wid), mgr = LABS_WITH_CONTENT.indexOf(wid) >= 0;
+    var isOpen = mgr && weekIsOpen(wid);
+    var st = profWeekStats(wid), dl = effectiveDeadline(wid);
+    var bits = [];
+    if(prepared && st.denom) bits.push('제출 ' + st.nSub + '/' + st.denom);
+    if(dl) bits.push('마감 ' + deadlineShort(dl));
+    var sub = esc(bits.join(' · '));
+    if(prepared && isOpen && st.denom){
+      sub += (sub ? ' · ' : '') + (st.nNot > 0 ? '<span class="am">제출 안 한 학생 ' + st.nNot + '명</span>' : '<span class="gr">전원 제출</span>');
+    }
+    if(!prepared) sub = '문항 준비 전';
+    h += profRowHTML({
+      chip: l.weekLabel || wid, wk: esc(l.dateLabel || ""), title: l.title || "", sub: sub,
+      mainAttr: 'data-profwk="' + esc(wid) + '"',
+      pill: !mgr ? { t:"준비 전", cls:"no" } : (isOpen ? { t:"열림(학생공개)", cls:"ok" } : { t:"닫힘(미공개)", cls:"no" }),
+      open: mgr ? { id:wid, isOpen:isOpen } : null, shut: !isOpen
+    });
+  });
+  h += openModeNote();
+  sc.innerHTML = h;
+  sc.querySelectorAll("[data-profwk]").forEach(function(b){
+    b.onclick = function(){ DASH_WEEK = b.getAttribute("data-profwk"); PROF_UI.mgr = false; go("profweek"); };
+  });
+  bindWeekOpen(sc);
+  bindGo(sc);
 };
+
+/* ---- 팀프로젝트 단계 목록 ---- */
+RENDER.profproj = function(){
+  var sc = $("sc-profproj");
+  var h = '<button class="btn sm ghost" type="button" data-go="profdash" style="margin-bottom:10px;text-align:left">← 처음으로</button>';
+  h += '<h2 class="prj-h">팀프로젝트 · 단계별 관리</h2>';
+  h += '<p class="prj-p">1단계는 항상 열려 있어요. <b>2~4단계는 수업 시간에 「시작(열기)」</b>을 눌러야 학생 화면에 나타나요.</p>';
+  h += teamLockCardHTML(true);
+  PROJECT_STEPS.forEach(function(st, i){
+    if(i === 2) h += '<div class="pgap">11/11은 휴강, 12주차(11/18)는 현장견학이라 프로젝트 수업이 없어요</div>';
+    var always = st.id === "p10", isOpen = projectStepOpen(st.id);
+    var view = PROF_STEP_VIEW[st.id] || null;
+    if(st.id === "p11" && !TOPIC_FORM) view = null;
+    h += profRowHTML({
+      chip: st.no + '단계', wk: esc(st.wk) + ' · ' + esc(st.date), title: st.title, sub: esc(st.desc),
+      pill: always ? { t:"항상 열림", cls:"ok" } : (isOpen ? { t:"열림(학생공개)", cls:"ok" } : { t:"닫힘(미공개)", cls:"no" }),
+      view: view, open: always ? null : { id:st.id, isOpen:isOpen }, shut: !isOpen
+    });
+    if(st.id === "p11"){
+      if(TOPIC_FORM){
+        if(!teamLocked() && !isOpen) h += '<div class="small" style="color:var(--amber);margin:-2px 0 10px">※ 2단계를 <b>시작(열기)</b>하기 전에 위 <b>[조 편성 확정]</b>을 한 번 눌러 주세요.</div>';
+      }else{
+        h += '<div class="small" style="color:var(--amber);margin:-2px 0 10px">※ 2단계(주제 선정서)는 입력 기능이 완성된 뒤에만 열어 주세요.</div>';
+      }
+    }
+  });
+  h += openModeNote();
+  sc.innerHTML = h;
+  bindWeekOpen(sc);
+  if(TOPIC_FORM) bindTeamLock(sc);
+  bindGo(sc);
+};
+
+RENDER.profdash = PROF_SPLIT ? profHome : function(){ profFull("full"); };
+RENDER.profweek = function(){ profFull("week"); };
 
 /* ==========================================================================
  * 📤 출력물 — 교수용 인쇄물 5종 (window.print → 인쇄창에서 'PDF로 저장')
