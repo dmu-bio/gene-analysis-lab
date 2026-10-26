@@ -880,7 +880,7 @@ var TEST_OPEN_ALL = false;  /* 테스트용 날짜 잠금 해제. 실제 수업/
  *      형식: YYYYMMDDNN(날짜 + 그날 순번 2자리). 숫자가 클수록 새 버전.
  *      배포 전 확인: `python bump_build.py --check` (둘이 다르면 오류로 멈춘다).
  * ========================================================================*/
-var APP_BUILD = "2026102614";
+var APP_BUILD = "2026102701";
 
 /* ==========================================================================
  * 활성 주차 — 지금은 2주차(w02 · 세포배양)만 열려 있다.
@@ -4695,7 +4695,7 @@ function profFull(mode){
 
 /* ==========================================================================
  * 🧑‍🏫 교수 화면 2분할 (PROF_SPLIT) — 처음 화면(profdash) · 실습 목록(proflab) · 프로젝트 목록(profproj) · 주차 상세(profweek)
- *   · 처음 화면: 「팀프로젝트」 위 · 「실습」 아래 큰 카드 두 개 + 공통 도구(학생 화면 미리보기·출력물·학생 명단관리).
+ *   · 처음 화면: 「실습」 위 · 「팀프로젝트」 아래 큰 카드 두 개(학생 처음 화면과 같은 순서) + 공통 도구(학생 화면 미리보기·출력물·학생 명단관리).
  *   · 주차 상세(profweek)는 예전 한 페이지 화면과 같은 그림 함수(profFull)가 mode="week" 로 그린다 — 코드를 따로 복사하지 않았다.
  *   · PROF_SPLIT=false 면 RENDER.profdash 가 profFull("full") = 예전 한 페이지 화면이 된다.
  *   · 열기/닫기·제출기한·조 편성 확정 뒤에는 profRefresh() 가 지금 보던 화면을 그대로 다시 그린다.
@@ -4738,7 +4738,19 @@ function profHome(){
   var h = '<div class="home-hi"><div class="hi-t"><b>' + esc(state.studentName || "교수") + '</b> 교수님</div>';
   h += '<button class="btn sm ghost" type="button" id="pdLogout">🚪 로그아웃</button></div>';
 
-  /* ── 팀프로젝트 카드 (위) ── */
+  /* ── 실습 카드 (위) ── */
+  var openLabs = labs.filter(function(l){ return l.ready && weekIsOpen(l.id); });
+  var lt, lc;
+  if(openLabs.length){
+    var last = openLabs[openLabs.length - 1], stt = profWeekStats(last.id);
+    lt = (last.weekLabel || last.id) + '까지 열림' + (stt.prepared && stt.denom ? ' · 보고서 제출 ' + stt.nSub + '/' + stt.denom : '');
+    lc = 'g';
+  }else{ lt = '아직 열린 실습이 없어요'; lc = 'x'; }
+  var labDesc = labs.length ? ((labs[0].weekLabel || "").replace("주차", "") + '~' + (labs[labs.length - 1].weekLabel || "") + ' 실습 ' + labs.length + '개 · 열기/닫기 · 학생 현황 · 제출기한') : '실습 · 학생 현황';
+  h += '<button class="bigcard bc-lab" type="button" id="pdLab"><div class="bc-ic" aria-hidden="true">🧪</div><div class="bc-t">실습</div>';
+  h += '<p class="bc-d">' + esc(labDesc) + '</p><span class="bc-st ' + lc + '">' + esc(lt) + '</span></button>';
+
+  /* ── 팀프로젝트 카드 (아래) ── */
   var lastNo = 1;
   PROJECT_STEPS.forEach(function(st){ if(projectStepOpen(st.id)) lastNo = st.no; });
   var pt, pc = '';
@@ -4751,18 +4763,6 @@ function profHome(){
   }
   h += '<button class="bigcard bc-proj" type="button" id="pdProj"><div class="bc-ic" aria-hidden="true">🎬</div><div class="bc-t">팀프로젝트</div>';
   h += '<p class="bc-d">조 편성 확정 · 단계 열기/닫기 · 주제 선정서 현황</p><span class="bc-st ' + pc + '">' + esc(pt) + '</span></button>';
-
-  /* ── 실습 카드 (아래) ── */
-  var openLabs = labs.filter(function(l){ return l.ready && weekIsOpen(l.id); });
-  var lt, lc;
-  if(openLabs.length){
-    var last = openLabs[openLabs.length - 1], stt = profWeekStats(last.id);
-    lt = (last.weekLabel || last.id) + '까지 열림' + (stt.prepared && stt.denom ? ' · 보고서 제출 ' + stt.nSub + '/' + stt.denom : '');
-    lc = 'g';
-  }else{ lt = '아직 열린 실습이 없어요'; lc = 'x'; }
-  var labDesc = labs.length ? ((labs[0].weekLabel || "").replace("주차", "") + '~' + (labs[labs.length - 1].weekLabel || "") + ' 실습 ' + labs.length + '개 · 열기/닫기 · 학생 현황 · 제출기한') : '실습 · 학생 현황';
-  h += '<button class="bigcard bc-lab" type="button" id="pdLab"><div class="bc-ic" aria-hidden="true">🧪</div><div class="bc-t">실습</div>';
-  h += '<p class="bc-d">' + esc(labDesc) + '</p><span class="bc-st ' + lc + '">' + esc(lt) + '</span></button>';
 
   /* ── 공통 도구 ── */
   h += '<div class="small" style="margin:16px 0 6px"><b>공통 도구</b></div>';
