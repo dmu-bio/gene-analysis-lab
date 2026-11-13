@@ -880,7 +880,7 @@ var TEST_OPEN_ALL = false;  /* 테스트용 날짜 잠금 해제. 실제 수업/
  *      형식: YYYYMMDDNN(날짜 + 그날 순번 2자리). 숫자가 클수록 새 버전.
  *      배포 전 확인: `python bump_build.py --check` (둘이 다르면 오류로 멈춘다).
  * ========================================================================*/
-var APP_BUILD = "2026111601";
+var APP_BUILD = "2026111602";
 
 /* ==========================================================================
  * 활성 주차 — 지금은 2주차(w02 · 세포배양)만 열려 있다.
@@ -1356,7 +1356,7 @@ function loadTeams(){
     var r = localStorage.getItem(TEAMS_KEY);
     if(r){ var a = JSON.parse(r); if(Array.isArray(a)){
       return a.filter(function(t){ return t && t.no && Array.isArray(t.members); })
-              .map(function(t){ return { id: t.id || ("t_leg_" + t.no), no: t.no, members: t.members.map(String) }; });
+              .map(function(t){ var o = { id: t.id || ("t_leg_" + t.no), no: t.no, members: t.members.map(String) }; if(typeof t.n === "number") o.n = t.n; return o; });   /* O-0855: n = 서버가 알려 준 인원수(다른 조는 조원 이름 없이 인원수만) */
     } }
   }catch(e){}
   return [];
@@ -3689,7 +3689,8 @@ function teamStatusCard(){
   var h = '<div class="card"><h3>편성 현황 <span class="small">' + ts.length + ' / ' + TEAM_MAX + '조</span></h3>';
   if(!ts.length){ h += '<p class="muted">아직 편성된 조가 없습니다.</p></div>'; return h; }
   ts.slice().sort(function(a,b){ return a.no - b.no; }).forEach(function(t){
-    var nm = t.members.map(function(s){ return nameOfSid(s); }).join(", ");
+    /* O-0855: 학생에게는 다른 조의 조원 이름을 주지 않는다(서버가 안 줌) — 인원수만 */
+    var nm = t.members.length ? t.members.map(function(s){ return nameOfSid(s); }).join(", ") : ((typeof t.n === "number" ? t.n + "명" : "편성됨"));
     h += '<div class="tm-row" style="margin-top:7px"><span class="tm-tag" style="color:var(--mint);background:var(--mintdk)">' + t.no + '조</span><span>' + esc(nm) + '</span></div>';
   });
   h += '</div>';
@@ -6806,15 +6807,48 @@ var GLR = {
       }, function(){ /* 조용히 실패 — 기존 미러 유지(마지막으로 알려진 상태 보존) */ });
   },
 
+  /* ---- O-0855: 학생에게는 전체 명단·조 편성·면제 표를 통째로 주지 않는다 ----
+     서버 함수 gl_class_view 가 「본인 · 같은 조원 이름 · 조 번호/인원수 · (조 만들기 때만) 아직 조 없는 학생」만 돌려준다.
+     · 교수(role=prof) 이거나 함수가 아직 서버에 없으면(404) 예전 방식(표 통째로 읽기) 그대로 — 서버·앱 어느 쪽을 먼저 바꿔도 안 깨진다.
+     · 함수 호출이 401 이 아닌 이유로 실패해도 로그인을 막지 않고 예전 방식으로 돌아간다. */
+  cvMode:"legacy",
+  classView:function(){
+    return this.rpc("gl_class_view", {}).then(function(v){
+      return (v && v.ok && v.role==="student") ? v : null;
+    }, function(err){
+      if(err && err.status===401) throw err;     /* 출입증 문제는 기존 처리(refresh)로 */
+      return null;
+    });
+  },
+  /* 서버가 준 학생용 보기 → 기존 읽기 함수(loadRoster/loadTeams/loadEarly)가 읽는 미러 3개로 */
+  _applyClassView:function(v){
+    var seen={}, roster=[], me=String((v.me&&v.me.sid)||"");
+    (v.names||[]).concat(v.candidates||[]).forEach(function(r){ var s=String(r.sid); if(!seen[s]){ seen[s]=1; roster.push({sid:s, name:r.name}); } });
+    var mine=((v.team&&v.team.members)||[]).map(String);
+    var teams=(v.teams||[]).map(function(t){ return { id:t.id, no:t.no, members:(t.mine ? mine : []), n:t.n }; });
+    try{ localStorage.setItem(ROSTER_KEY, JSON.stringify(roster)); }catch(e){}
+    try{ localStorage.setItem(TEAMS_KEY, JSON.stringify(teams)); }catch(e){}
+    try{ localStorage.setItem(EARLY_KEY, JSON.stringify(v.early && me ? [me] : [])); }catch(e){}
+  },
   loadAll:function(){
     var self=this;
-    this.snapshotPreMigrate();
-    this.clearMirror();
+    return this.classView().then(function(cv){
+      self.cvMode = cv ? "student" : "legacy";
+      if(!cv) self.snapshotPreMigrate();      /* 학생 기기에는 전체 명단 복사본(백업)을 새로 만들지 않는다 */
+      self.clearMirror();
+      return self._loadAllTables(cv);
+    });
+  },
+  _loadAllTables:function(cv){
+    var self=this;
     var names=["roster","teams","early","progress","reports"];
-    return Promise.all(names.map(function(t){ return self.loadTable(t); }).concat([self.loadMeta()])).then(function(res){
+    return Promise.all(names.map(function(t){ return (cv && (t==="roster"||t==="teams"||t==="early")) ? Promise.resolve(null) : self.loadTable(t); }).concat([self.loadMeta()])).then(function(res){
+      if(cv){ self._applyClassView(cv); }
+      else{
       try{ localStorage.setItem(ROSTER_KEY, JSON.stringify((res[0]||[]).map(function(r){ return {sid:r.sid, name:r.name}; }))); }catch(e){}
       try{ localStorage.setItem(TEAMS_KEY, JSON.stringify((res[1]||[]).map(function(t){ return {id:t.id, no:t.no, members:((t.data&&t.data.members)||[]).map(String)}; }))); }catch(e){}
       try{ localStorage.setItem(EARLY_KEY, JSON.stringify((res[2]||[]).map(function(e){ return String(e.sid); }))); }catch(e){}
+      }
       (res[3]||[]).forEach(function(r){ try{ localStorage.setItem("dmu_gene_lab_"+r.week+"_"+r.sid, JSON.stringify(r.data||{})); }catch(e){} });
       /* 🔵 보고서: 사진(base64)은 미러에 넣지 않는다 — 경로만 담아 '가볍게' 저장한다.
        *   예전에는 여기서 사진을 전부 dataURL 로 받아 localStorage 에 통째로 넣었는데,
@@ -6876,7 +6910,11 @@ var GLR = {
         if(err && err.status===409 && /gl_teams_no_uq/.test(msg)){
           if(attempt >= (typeof TEAM_MAX!=="undefined"?TEAM_MAX:9)) throw err;   /* 무한루프 방지 */
           /* 다른 학생이 그 번호를 먼저 가져갔다 — 현재 조 목록을 받아 빈 번호로 바꿔 다시 */
-          return self.call("/rest/v1/gl_teams?select=no", { headers:self.hdr(false) }).then(function(rows){
+          /* O-0855: 학생은 다른 조 행을 못 읽으므로(서버 gl_class_view) 번호 목록은 그 함수에서 받는다. */
+          var nos = (self.cvMode==="student")
+            ? self.rpc("gl_class_view", {}).then(function(v){ return ((v&&v.teams)||[]).map(function(t){ return {no:t.no}; }); })
+            : self.call("/rest/v1/gl_teams?select=no", { headers:self.hdr(false) });
+          return nos.then(function(rows){
             var used={}; (rows||[]).forEach(function(r){ used[r.no]=1; });
             var n=1; while(used[n]) n++;
             job.no=n; self._relabelLocalTeam(job.id, n);
@@ -6916,11 +6954,32 @@ var GLR = {
   pollTeams:function(){
     var self=this;
     if(this._pollBusy) return; this._pollBusy=true;
-    this.call("/rest/v1/gl_teams?select=*&order=no.asc", { headers:this.hdr(false) }).then(function(rows){
+    /* O-0855: 학생은 gl_class_view(내 조·조 번호·아직 조 없는 학생)로, 그 밖(교수·예전 서버)은 예전처럼 표를 읽는다. */
+    var src = (this.cvMode==="student")
+      ? this.rpc("gl_class_view", {}).then(function(v){
+          if(!(v && v.ok && v.role==="student")) throw {kind:"server", status:0};
+          var mine=((v.team&&v.team.members)||[]).map(String);
+          return { cv:v, mirror:(v.teams||[]).map(function(t){ return {id:t.id, no:t.no, members:(t.mine?mine:[]), n:t.n}; }) };
+        })
+      : this.call("/rest/v1/gl_teams?select=*&order=no.asc", { headers:this.hdr(false) }).then(function(rows){
+          return { cv:null, mirror:(rows||[]).map(function(t){ return {id:t.id, no:t.no, members:((t.data&&t.data.members)||[]).map(String)}; }) };
+        });
+    src.then(function(got){
       self._pollBusy=false;
-      var mirror=(rows||[]).map(function(t){ return {id:t.id, no:t.no, members:((t.data&&t.data.members)||[]).map(String)}; });
+      var mirror=got.mirror;
       var newJson=JSON.stringify(mirror), oldJson="[]";
       try{ oldJson=localStorage.getItem(TEAMS_KEY)||"[]"; }catch(e){}
+      if(got.cv){   /* 이름·면제 표시도 같은 응답으로 갱신(조 만들기 때 후보 학생이 바뀔 수 있다) */
+        var oldR="", oldE="";
+        try{ oldR=localStorage.getItem(ROSTER_KEY)||""; oldE=localStorage.getItem(EARLY_KEY)||""; }catch(e){}
+        var before=oldR+"|"+oldE;
+        self._applyClassView(got.cv);
+        var newJson2=localStorage.getItem(TEAMS_KEY)||"[]";
+        if(newJson2!==oldJson || before!==((localStorage.getItem(ROSTER_KEY)||"")+"|"+(localStorage.getItem(EARLY_KEY)||""))){
+          if(typeof RENDER!=="undefined" && typeof cur!=="undefined" && (cur==="team"||cur==="labs"||cur==="home"||cur==="project") && RENDER[cur]) RENDER[cur]();
+        }
+        return;
+      }
       if(newJson!==oldJson){
         try{ localStorage.setItem(TEAMS_KEY, newJson); }catch(e){}
         /* 화면 갱신 — 학생이 조원 고르는 중(선택항목)이라면 선택은 ctx.teamPick 로 보존된다 */
