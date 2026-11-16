@@ -1995,6 +1995,7 @@ var REPORT_PENDING = null, REPORT_LATEST = {}, REPORT_TOK = 0;
 var PHOTO_PROC = {}, PHOTO_PROC_N = 0;
 function flushReportPending(){ var p = REPORT_PENDING; REPORT_PENDING = null; if(p && p.flush){ try{ p.flush(); }catch(e){} } }
 function go(name, push){
+  if(name === "evalprof" && cur !== "evalprof" && typeof EVP !== "undefined") EVP.res = null;   /* 14주 평가 현황: 들어갈 때마다 서버에서 새로 받는다(오래된 값이 안 보이게) */
   if(SCREENS.indexOf(name) < 0){ if(window.console) console.error("정의되지 않은 화면: " + name); return; }
   if(TOPIC_FORM && tfOnNav(name, push) === false) return;   /* O-0635: 주제 선정서에서 나갈 때 저장·확인 */
   flushReportPending();   /* O-0074 N1: 떠나기 전, 보고서 화면에 남은 입력을 그 보고서 주차로 바로 저장 */
@@ -4969,6 +4970,9 @@ var EV_CODE_MSG = {
   bad_score:"고른 값이 올바르지 않아요. 앱을 새로고침해 주세요.", incomplete:"다섯 항목을 모두 골라야 제출할 수 있어요.", auth:"로그인이 필요해요. 다시 로그인해 주세요."
 };
 function evRubric(){ return (window.PROJECT_EVAL_RUBRIC && window.PROJECT_EVAL_RUBRIC.length === 5) ? window.PROJECT_EVAL_RUBRIC : []; }
+/* 점수 묶음을 항목 순서(c1~c5)로 정규화한 글자 — 키 순서가 달라도 같은 값이면 같다 */
+function evNorm(sc){ sc = sc || {}; return EV_KEYS.map(function(k){ return (sc[k] == null || sc[k] === "") ? "-" : String(Number(sc[k])); }).join(","); }
+function evSame(a, b){ return evNorm(a) === evNorm(b); }
 function evTotalOf(sc){
   var n = 0, s = 0; sc = sc || {};
   EV_KEYS.forEach(function(k){ if(sc[k] != null && sc[k] !== ""){ n++; s += Number(sc[k]); } });
@@ -5053,7 +5057,7 @@ RENDER.eval = function(){
 };
 function evRowState(t){
   var loc = evLocalGet(t.id), row = t.row;
-  if(loc && (!row || JSON.stringify(loc.scores) !== JSON.stringify(row.scores))) return { t:"이 폰에만 저장됨", c:"amber" };
+  if(loc && (!row || !evSame(loc.scores, row.scores))) return { t:"이 폰에만 저장됨", c:"amber" };
   if(!row) return { t:"아직 안 했어요", c:"" };
   if(row.status === "submitted") return { t:"제출함 ✓ " + row.total + "점", c:"ok" };
   return { t:"작성 중", c:"yel" };
@@ -5078,7 +5082,7 @@ function evOpenForm(tid){
   var t = evTeamRow(tid); if(!t) return;
   var loc = evLocalGet(tid), base = (t.row && t.row.scores) ? t.row.scores : {};
   EV.tid = tid; EV.draft = JSON.parse(JSON.stringify(loc ? loc.scores : base));
-  EV.fromLocal = !!(loc && JSON.stringify(loc.scores) !== JSON.stringify(base));
+  EV.fromLocal = !!(loc && !evSame(loc.scores, base));
   EV.dirty = EV.fromLocal; EV.offline = false;
   RENDER.eval(); window.scrollTo(0, 0);
 }
@@ -5132,7 +5136,7 @@ function evSave(submit){
     if(res && res.ok){
       var t = evTeamRow(tid);
       if(t) t.row = { status:res.status, scores:d, total:res.total, edits:res.edits };
-      if(JSON.stringify(EV.draft || {}) === JSON.stringify(d)){ EV.dirty = false; EV.offline = false; EV.fromLocal = false; evLocalClear(tid); }
+      if(evSame(EV.draft, d)){ EV.dirty = false; EV.offline = false; EV.fromLocal = false; evLocalClear(tid); }
       if(res.status === "submitted"){ toast("제출했어요 ✓ " + res.total + "점"); EV.tid = ""; if(cur === "eval") RENDER.eval(); }
       else{ toast("임시저장했어요 ✓"); evPaintBar(); }
       return;
@@ -5152,20 +5156,21 @@ function evSave(submit){
 function evLeave(){
   var t = evTeamRow(EV.tid), submitted = !!(t && t.row && t.row.status === "submitted");
   var out = function(){ EV.tid = ""; EV.dirty = false; EV.fromLocal = false; RENDER.eval(); window.scrollTo(0, 0); };
-  if(EV.dirty && submitted){
+  if(!EV.dirty){ out(); return; }
+  if(submitted){
     askConfirm("저장하지 않은 수정이 있어요.\n[수정 저장]을 누르지 않고 나가면 이 수정은 서버에 가지 않아요. (이 폰에는 남아 있어요)", out, { yes:"그냥 나가기", no:"계속 고치기", yesClass:"ghost" });
     return;
   }
-  if(EV.dirty && !submitted && !EV.offline){
-    var tid = EV.tid, d = JSON.parse(JSON.stringify(EV.draft || {}));
-    if(evTotalOf(d).n > 0){
-      GLR.rpc("gl_eval_team_save", { p_team:tid, p_scores:d, p_submit:false }).then(function(res){
-        if(res && res.ok){ if(t) t.row = { status:res.status, scores:d, total:res.total, edits:res.edits }; evLocalClear(tid); toast("임시저장했어요 ✓"); }
-        if(cur === "eval") RENDER.eval();
-      }, function(){ toast("인터넷이 끊겨 서버에는 저장하지 못했어요. 입력한 값은 이 폰에 남아 있어요."); if(cur === "eval") RENDER.eval(); });
-    }
-  }
-  out();
+  var tid = EV.tid, d = JSON.parse(JSON.stringify(EV.draft || {})), has = evTotalOf(d).n > 0;
+  if(!has){ out(); return; }
+  askConfirm("고른 내용이 아직 서버에 저장되지 않았어요.\n" + (EV.offline ? "지금은 인터넷이 연결되지 않아요. 이 폰에는 남아 있고, 연결된 뒤 다시 열어 [임시저장]을 눌러 주세요." : "[임시저장하고 나가기]를 누르면 서버에 임시저장해요."), function(){
+    if(EV.offline){ out(); return; }
+    GLR.rpc("gl_eval_team_save", { p_team:tid, p_scores:d, p_submit:false }).then(function(res){
+      if(res && res.ok){ if(t) t.row = { status:res.status, scores:d, total:res.total, edits:res.edits }; evLocalClear(tid); toast("임시저장했어요 ✓"); }
+      else toast(EV_CODE_MSG[res && res.code] || "임시저장하지 못했어요. 입력한 값은 이 폰에 남아 있어요.");
+      out();
+    }, function(){ toast("인터넷이 끊겨 서버에는 저장하지 못했어요. 입력한 값은 이 폰에 남아 있어요."); out(); });
+  }, { yes: EV.offline ? "이 폰에 두고 나가기" : "임시저장하고 나가기", no:"계속 고치기", yesClass:"primary" });
 }
 /* 인터넷이 다시 연결되면 임시저장을 자동으로 다시 보낸다(제출 전 값만 — 제출·수정 저장은 항상 학생이 직접 누른다) */
 if(!EV.onlineBound && typeof window.addEventListener === "function"){
@@ -5191,12 +5196,13 @@ function evpLoad(done){
   }, function(err){ EVP.loading = false; EVP.err = evErrText(err); if(done) done(); });
 }
 function evpFlagText(f){ return { inactive:"활동 0명 — 평가 안 함", prof_incomplete:"교수 평가 미완", no_students:"학생 평가 없음" }[f] || f; }
-function evpTeamLine(t){
+function evpTeamLine(t, closed){
   var h = '<div class="ev-trow" role="button" tabindex="0" data-evpt="' + esc(t.id) + '"><div class="ev-t1"><b>' + esc(t.no) + '조</b><span class="small">활동 ' + t.active + '/' + t.all + '명' + (t.out ? ' (면제 ' + t.out + ')' : '') + '</span>';
   (t.flags || []).forEach(function(f){ h += '<span class="tf-pill ' + (f === "inactive" ? '' : 'amber') + '">' + esc(evpFlagText(f)) + '</span>'; });
   h += '</div>';
   if(t.active > 0){
-    h += '<div class="ev-t2"><span>교수 <b>' + (t.prof_total == null ? '—' : t.prof_total) + '</b></span><span>학생 <b>' + fmt1(t.s_avg) + '</b> <span class="small">(' + t.s_n + '명)</span></span><span>합산 <b>' + fmt1(t.f) + '</b></span><span class="ev-q">20점 <b>' + fmt1(t.q20) + '</b></span></div>';
+    if(closed) h += '<div class="ev-t2"><span>교수 <b>' + (t.prof_total == null ? '—' : t.prof_total) + '</b></span><span>학생 <b>' + fmt1(t.s_avg) + '</b> <span class="small">(' + t.s_n + '명)</span></span><span>합산 <b>' + fmt1(t.f) + '</b></span><span class="ev-q">20점 <b>' + fmt1(t.q20) + '</b></span></div>';
+    else h += '<div class="ev-t2"><span>교수 <b>' + (t.prof_total == null ? '—' : t.prof_total) + '</b></span><span>학생 제출 <b>' + t.s_n + '</b>명</span><span class="small">학생 점수·합산은 마감하면 보여요</span></div>';
   }
   h += '</div>';
   return h;
@@ -5205,7 +5211,7 @@ function evpCopyText(){
   var res = EVP.res; if(!res) return "";
   var lines = ["조\t활동 인원\t교수(100)\t학생 평균(100)\t학생 수\t합산(100)\t프로젝트 점수(20)"];
   res.teams.forEach(function(t){
-    lines.push([t.no + "조", t.active + "/" + t.all, t.prof_total == null ? "" : t.prof_total, t.s_avg == null || t.active === 0 ? "" : fmt1(t.s_avg), t.active === 0 ? "" : t.s_n, t.f == null ? "" : fmt1(t.f), t.q20 == null ? "" : fmt1(t.q20)].join("\t"));
+    lines.push([t.no + "조", t.active + "/" + t.all, t.prof_total == null ? "" : t.prof_total, (!res.closed || t.s_avg == null || t.active === 0) ? "" : fmt1(t.s_avg), t.active === 0 ? "" : t.s_n, t.f == null ? "" : fmt1(t.f), t.q20 == null ? "" : fmt1(t.q20)].join("\t"));
   });
   return lines.join("\n");
 }
@@ -5263,11 +5269,12 @@ RENDER.evalprof = function(){
   h += (closedLocal ? '<button class="btn sm center" type="button" id="evpOpenAgain">마감 풀기</button>' : '<button class="btn sm primary center" type="button" id="evpClose"' + (stepOpen ? '' : ' disabled') + '>마감하기</button>');
   h += '<button class="btn sm ghost center" type="button" id="evpRefresh">새로고침</button></div>';
   h += '<div class="ev-prog"><div class="ev-pt">학생 제출 <b>' + res.complete + '</b> / ' + res.eligible + '명 <span class="small">(평가할 조를 모두 제출한 학생)</span></div><div class="ev-pb"><i style="width:' + (res.eligible ? Math.round(res.complete / res.eligible * 100) : 0) + '%"></i></div></div>';
+  if(!res.closed) h += '<div class="tf-note amber">학생 평균·합산·20점 환산은 <b>마감하면 보여요</b>. 열려 있는 동안 점수가 보이면 누가 몇 점을 줬는지 짐작할 수 있어서 서버가 숨겨요. 학생 제출 수와 미제출 명단은 지금도 볼 수 있어요.</div>';
   h += '<div class="small" style="margin:0 0 8px">합산 = 교수 평가 40% + 학생 평가 60%(다른 조 학생 합계의 평균) · 프로젝트 점수 = 합산 × 0.2 (20점 만점). 비율은 고정이에요.</div>';
-  h += '<div class="tf-btns" style="margin-bottom:8px"><button class="btn sm center" type="button" id="evpCopy">표 복사</button></div>';
+  h += '<div class="tf-btns" style="margin-bottom:8px"><button class="btn sm center" type="button" id="evpCopy">표 복사</button></div>' + (res.closed ? '' : '<div class="small" style="margin:-4px 0 8px">※ 마감 전에는 표에 교수 평가만 채워져요.</div>');
   h += '<div class="ev-list">';
   res.teams.forEach(function(t){
-    h += evpTeamLine(t);
+    h += evpTeamLine(t, !!res.closed);
     if(EVP.open === t.id){
       h += '<div class="ev-pan">';
       if(t.active === 0) h += '<div class="small">활동하는 조원이 없어 평가하지 않아요.</div>';
