@@ -337,6 +337,40 @@ th.nw{white-space:nowrap}
 .ex-log .ex-lr:first-child{border-top:0}
 #confirmOv .cf-btns .btn{margin:0;flex:1}
 
+/* ---------- 14주 영상 평가(EVAL_FORM) ---------- */
+#confirmOv .cf-big{font-size:26px;font-weight:900;line-height:1.25;margin:0 0 8px;color:var(--mint)}
+.ev-head{text-align:center;background:var(--mintdk);border:1px solid #c3ddf5;border-radius:16px;padding:14px 12px;margin:0 0 12px}
+.ev-big{font-size:44px;font-weight:900;line-height:1.1;color:var(--mint)}
+.ev-hs{font-size:13px;color:var(--tx2);margin-top:4px;line-height:1.45}
+.ev-crit{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;margin:0 0 12px}
+.ev-ct{font-weight:800;font-size:16px;margin:0 0 8px;display:flex;align-items:center;gap:8px;line-height:1.35}
+.ev-cn{flex:0 0 auto;width:24px;height:24px;border-radius:50%;background:var(--mint);color:#fff;font-size:13px;display:inline-flex;align-items:center;justify-content:center}
+.ev-opt{display:block;width:100%;text-align:left;margin:0 0 7px;padding:11px 12px;min-height:48px;border:2px solid var(--line2);border-radius:12px;background:var(--card2);color:var(--tx);font:inherit;font-size:14.5px;line-height:1.5;cursor:pointer}
+.ev-opt:last-child{margin-bottom:0}
+.ev-opt:active{background:var(--card3)}
+.ev-opt .ev-lv{display:block;font-size:12px;font-weight:900;color:var(--tx3);margin-bottom:1px}
+.ev-opt.on{border-color:var(--mint);background:var(--mintdk);box-shadow:inset 0 0 0 1px var(--mint)}
+.ev-opt.on .ev-lv{color:var(--mint)}
+.ev-opt.on .ev-tx{font-weight:700}
+.ev-bar{position:sticky;bottom:0;z-index:30;background:#fff;border-top:2px solid var(--line2);margin:0 -14px;padding:10px 14px calc(10px + env(safe-area-inset-bottom,0px));box-shadow:0 -6px 16px rgba(16,42,72,.10)}
+.ev-sum{font-size:16px;margin:0 0 8px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.ev-bar .tf-btns{margin:0}
+.ev-row{display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;margin:0 0 8px;min-height:56px;font:inherit;cursor:pointer}
+.ev-row:active{background:var(--card3)}
+.ev-rn{font-size:22px;font-weight:900;min-width:52px}
+.ev-go{margin-left:auto;font-size:22px;color:var(--tx3)}
+.ev-prog{margin:0 0 10px}
+.ev-pt{font-size:15px;margin:0 0 4px}
+.ev-pb{height:9px;border-radius:99px;background:var(--card3);border:1px solid var(--line);overflow:hidden}
+.ev-pb i{display:block;height:100%;background:var(--green)}
+.ev-trow{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:0 0 6px;cursor:pointer;min-height:44px}
+.ev-trow:active{background:var(--card3)}
+.ev-t1{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:15px}
+.ev-t2{display:flex;gap:6px 14px;flex-wrap:wrap;margin-top:6px;font-size:14px}
+.ev-q{margin-left:auto;color:var(--green)}
+.ev-pan{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:10px;margin:-2px 0 10px}
+.ev-miss{display:flex;gap:6px;flex-wrap:wrap}
+
 /* ---------- 로비 카드 ---------- */
 .lobbycard{border:1px solid var(--line)}
 .lc2-row{display:flex;gap:11px;align-items:flex-start}
@@ -782,6 +816,8 @@ details.tf-mine summary{cursor:pointer;font-weight:700}
     <section id="sc-project"  class="screen"></section>
     <section id="sc-topic"    class="screen"></section>
     <section id="sc-topicsprof" class="screen"></section>
+    <section id="sc-eval"     class="screen"></section>
+    <section id="sc-evalprof" class="screen"></section>
     <section id="sc-labs"     class="screen active"></section>
     <section id="sc-lobby"    class="screen"></section>
     <section id="sc-team"     class="screen"></section>
@@ -1132,6 +1168,8 @@ function parentScreen(name){
   if(name === "home") return "home";
   if(TOPIC_FORM && name === "topic") return "project";
   if(TOPIC_FORM && name === "topicsprof") return PROF_SPLIT ? "profproj" : "profdash";
+  if(name === "eval") return "project";
+  if(name === "evalprof") return PROF_SPLIT ? "profproj" : "profdash";
   if(PROF_SPLIT && (name === "proflab" || name === "profproj")) return "profdash";
   if(PROF_SPLIT && name === "profweek") return "proflab";
   if(HOME_SPLIT && (name === "labs" || name === "project" || name === "team")) return "home";
@@ -1232,6 +1270,7 @@ function askConfirm(message, onYes, opts){
     document.body.appendChild(ov);
   }
   var msgHtml = esc(message).replace(/\n/g, "<br>");
+  if(opts.big) msgHtml = '<div class="cf-big">' + esc(opts.big) + '</div>' + msgHtml;
   var yesTxt = esc(opts.yes || "예");
   var noTxt = esc(opts.no || "아니오");
   var yesCls = opts.yesClass || "danger";
@@ -1727,10 +1766,12 @@ function MISSION_REASON(){ return (POOL && POOL.info && POOL.info.mission && POO
 /* ==========================================================================
  * checkContent() — 로드 시 자동 실행되는 자체 검증 (새 화면·pool 반영)
  * ========================================================================*/
-var SCREENS = ["home","project","topic","topicsprof","labs","lobby","team","report","learn","lquiz","mission","notes","growth","summary","profdash","proflab","profproj","profweek","roster","outputs"];
+var SCREENS = ["home","project","topic","topicsprof","eval","evalprof","labs","lobby","team","report","learn","lquiz","mission","notes","growth","summary","profdash","proflab","profproj","profweek","roster","outputs"];
 var NAV_EDGES = {
   home:     ["labs","project","team","profdash"],
-  project:  ["team","home","topic"],
+  project:  ["team","home","topic","eval"],
+  eval:     ["project"],
+  evalprof: ["profproj","profdash"],
   topic:    ["project","team"],
   topicsprof: ["profdash","profproj"],
   labs:     ["lobby","profdash","team","home"],
@@ -1746,7 +1787,7 @@ var NAV_EDGES = {
   profdash: ["labs","home","report","lobby","roster","outputs","topicsprof","proflab","profproj"],
   proflab:  ["profweek","profdash"],
   profweek: ["proflab","profdash","report"],
-  profproj: ["topicsprof","profdash"],
+  profproj: ["topicsprof","evalprof","profdash"],
   roster:   ["profdash"],
   outputs:  ["profdash"]
 };
@@ -1980,6 +2021,8 @@ var TITLES = {
   project: "팀프로젝트",
   topic: "주제 선정서",
   topicsprof: "주제 선정서 현황",
+  eval: "영상 평가",
+  evalprof: "영상 평가 현황",
   labs: HOME_SPLIT ? "실습" : "유전자분석",
   lobby: "실습 허브",
   team: "우리 조",
@@ -2044,7 +2087,7 @@ function paintTop(){
   $("tbSub").textContent = who;
   $("backBtn").style.visibility = (cur === "home" || cur === "profdash" || (cur === "labs" && !HOME_SPLIT)) ? "hidden" : "visible";
   $("notice").innerHTML = "<b>" + esc(notice) + "</b>";
-  $("notice").style.display = (cur === "home" || cur === "project" || cur === "team" || cur === "topic" || cur === "topicsprof" || (PROF_SPLIT && (cur === "profdash" || cur === "proflab" || cur === "profproj"))) ? "none" : "";   /* O-0635: 성적 반영 안내 띠는 실습·미션 화면용 — 처음 화면·프로젝트·우리 조에서는 숨김 */
+  $("notice").style.display = (cur === "home" || cur === "project" || cur === "team" || cur === "topic" || cur === "topicsprof" || cur === "eval" || cur === "evalprof" || (PROF_SPLIT && (cur === "profdash" || cur === "proflab" || cur === "profproj"))) ? "none" : "";   /* O-0635: 성적 반영 안내 띠는 실습·미션 화면용 — 처음 화면·프로젝트·우리 조에서는 숨김 */
 
   /* HUD 아바타 — 항상 연구원 동그래. 한 번만 그린다. */
   if(!coliMiniPainted){ $("coliMini").innerHTML = coli("idle", "static"); coliMiniPainted = true; }
@@ -2062,6 +2105,9 @@ function paintTop(){
   }else if(cur === "topic" || cur === "topicsprof"){
     if(bar) bar.style.width = "0%";
     if(bl) bl.textContent = "주제 선정서";
+  }else if(cur === "eval" || cur === "evalprof"){
+    if(bar) bar.style.width = "0%";
+    if(bl) bl.textContent = "영상 평가";
   }else if(cur === "profdash"){
     if(bar) bar.style.width = "0%";
     if(bl) bl.textContent = "확인";
@@ -2566,7 +2612,20 @@ function projectStepBody(st, viewOnlyProf){
     b += '<div class="ps-todo none">학생이 따로 작성할 것은 없어요.</div>';
   }else if(st.id === "p14"){
     b += '<ul><li>최종 <b>영상 파일</b>은 따로 제출해요(방법과 기한은 따로 안내해요).</li><li>그 파일로 영상을 함께 보고, 학생 각자 앱에서 평가해요(우리 조는 제외).</li></ul>';
-    b += '<div class="ps-todo">평가 화면은 곧 열려요. 수업 시간에 안내해 드릴게요.</div>';
+    if(EVAL_FORM){
+      if(viewOnlyProf || state.role === "prof"){
+        b += '<button class="btn primary center" type="button" data-go="evalprof">🎬 영상 평가 현황 보기</button>';
+      }else if(meIsEarly()){
+        b += '<div class="ps-todo none">' + esc(EARLY_PROJ_MSG) + '</div>';
+      }else if(!tfTeam()){
+        b += '<div class="ps-todo none">조가 없어 평가하지 않아요.</div>';
+      }else{
+        b += '<button class="btn primary center" type="button" id="evGo" style="margin-top:8px">🎬 영상 평가하기</button>';
+        setTimeout(function(){ var g = $("evGo"); if(g) g.onclick = function(){ EV.tid = ""; EV.my = null; EV.err = ""; go("eval"); }; }, 0);
+      }
+    }else{
+      b += '<div class="ps-todo">평가 화면은 곧 열려요. 수업 시간에 안내해 드릴게요.</div>';
+    }
   }
   if(viewOnlyProf) b = '<div class="small" style="margin-bottom:6px;color:var(--amber)">교수 미리보기 — 학생에게는 아직 닫혀 있어요.</div>' + b;
   return b;
@@ -4364,7 +4423,7 @@ function renderReportPreview(sc, R, def){
 var PROF_UI = { mgr:false };
 /* 지금 보고 있는 교수 화면을 다시 그린다(열기/닫기·기한 저장 뒤에 처음 화면으로 튀지 않게) */
 function profRefresh(){
-  if(["profdash","proflab","profproj","profweek"].indexOf(cur) >= 0 && RENDER[cur]) RENDER[cur]();
+  if(["profdash","proflab","profproj","profweek","evalprof"].indexOf(cur) >= 0 && RENDER[cur]) RENDER[cur]();
 }
 function profReportBack(){ return PROF_SPLIT ? "profweek" : "profdash"; }
 function deadlineShort(d){ var p = kstParts(d); return p.mo + '/' + p.d + ' ' + pad2(p.h) + ':' + pad2(p.mi); }
@@ -4769,7 +4828,7 @@ function profRowHTML(o){
   return h;
 }
 /* 프로젝트 단계별 「현황 보기」 — 2단계(주제 선정서)만 있다. 단계가 늘면 여기에 한 줄 추가 */
-var PROF_STEP_VIEW = { p11: { go:"topicsprof", label:"📝 선정서 현황" } };
+var PROF_STEP_VIEW = { p11: { go:"topicsprof", label:"📝 선정서 현황" }, p14: { go:"evalprof", label:"🎬 평가 현황" } };
 
 /* ---- 교수 처음 화면 ---- */
 function profHome(){
@@ -4864,6 +4923,7 @@ RENDER.profproj = function(){
     var always = st.id === "p10", isOpen = projectStepOpen(st.id);
     var view = PROF_STEP_VIEW[st.id] || null;
     if(st.id === "p11" && !TOPIC_FORM) view = null;
+    if(st.id === "p14" && !EVAL_FORM) view = null;
     h += profRowHTML({
       chip: st.no + '단계', wk: esc(st.wk) + ' · ' + esc(st.date), title: st.title, sub: esc(st.desc),
       pill: always ? { t:"항상 열림", cls:"ok" } : (isOpen ? { t:"열림(학생공개)", cls:"ok" } : { t:"닫힘(미공개)", cls:"no" }),
@@ -4886,6 +4946,376 @@ RENDER.profproj = function(){
 
 RENDER.profdash = PROF_SPLIT ? profHome : function(){ profFull("full"); };
 RENDER.profweek = function(){ profFull("week"); };
+
+/* ==========================================================================
+ * 🎬 프로젝트 4단계(14주차 12/2) — 영상 발표 평가 (지시: 2026-11-16, 설계 DESIGN_v3/v4 · B단계)
+ *   · EVAL_FORM=false 로 바꾸면 이 기능 전체가 꺼진다(4단계 카드는 예전처럼 「평가 화면은 곧 열려요」 안내만, 교수 화면 평가 현황 버튼도 숨김).
+ *     서버 표·함수는 그대로 두어도 무해하다. 되돌리는 스위치(이 줄만 false → bump_build).
+ *   · 학생은 다른 조(활동 조)만 평가한다. 자기 조·면제·조 없는 학생은 서버가 항상 거부한다.
+ *     5항목 × 4단계 문장 버튼(점수 숫자가 아니라 문장을 고른다). 문장은 content.js 의 PROJECT_EVAL_RUBRIC(수업자료 11주 PPT 최종본과 같음).
+ *   · 저장은 서버 함수(RPC gl_eval_*)로만 한다 — 결과를 바로 받는다. 서버가 확인하기 전에는 「제출했어요」를 보이지 않는다.
+ *     제출한 뒤에도 교수님이 마감하기 전까지는 고칠 수 있다. 입력 중인 값은 이 폰에도 보관한다(인터넷이 끊겨도 잃지 않게).
+ *   · 교수: 조별 평가 입력 · 학생 평균 · 합산(교수 40% + 학생 60%) · 20점 환산 · 미제출 명단. 평가자별 점수는 교수에게도 오지 않는다(서버가 안 줌).
+ *   · 합산식: F = 0.4 × P(교수 합계) + 0.6 × S(다른 조 학생 합계의 단순 평균), 프로젝트 점수 = F × 0.2. 40:60 은 고정(화면에 바꾸는 칸 없음).
+ * ========================================================================*/
+var EVAL_FORM = true;
+var EV_KEYS = ["c1", "c2", "c3", "c4", "c5"];
+var EV_LEVEL_NAMES = { 20:"매우 우수", 15:"우수", 10:"보통", 5:"미흡" };
+var EV = { my:null, err:"", loading:false, tid:"", draft:null, dirty:false, saving:false, offline:false, fromLocal:false, onlineBound:false };
+var EVP = { res:null, err:"", loading:false, open:"", pollT:null, busy:{}, again:{}, saved:{}, copyMsg:"" };
+var EV_CODE_MSG = {
+  exempt:"조기 취업이라 평가는 하지 않아요.", no_team:"조가 없어 평가하지 않아요.", closed:"평가가 마감됐거나 아직 열리지 않았어요.",
+  own_team:"우리 조는 평가하지 않아요.", inactive_team:"그 조는 지금 평가하지 않아요.", bad_team:"그 조를 찾지 못했어요.",
+  bad_score:"고른 값이 올바르지 않아요. 앱을 새로고침해 주세요.", incomplete:"다섯 항목을 모두 골라야 제출할 수 있어요.", auth:"로그인이 필요해요. 다시 로그인해 주세요."
+};
+function evRubric(){ return (window.PROJECT_EVAL_RUBRIC && window.PROJECT_EVAL_RUBRIC.length === 5) ? window.PROJECT_EVAL_RUBRIC : []; }
+function evTotalOf(sc){
+  var n = 0, s = 0; sc = sc || {};
+  EV_KEYS.forEach(function(k){ if(sc[k] != null && sc[k] !== ""){ n++; s += Number(sc[k]); } });
+  return { n:n, sum:s, full:n === 5 };
+}
+function fmt1(v){ return (v === null || v === undefined || isNaN(v)) ? "—" : (Math.round(Number(v) * 10) / 10).toFixed(1); }
+function evErrText(err){
+  if(err && err.kind === "net") return "지금 접속이 되지 않아요. 잠시 뒤 다시 해 주세요.";
+  if(err && err.kind === "auth") return "로그인이 만료됐어요. 다시 로그인해 주세요.";
+  var m = String((err && err.msg) || ""); if(/gl_eval|function|does not exist|schema cache/i.test(m)) return "평가 화면은 아직 준비 중이에요. 수업 시간에 안내해 드릴게요.";
+  return "불러오지 못했어요. 잠시 뒤 다시 해 주세요.";
+}
+/* ---- 이 폰에 보관(인터넷이 끊겨도 입력값을 잃지 않게). 서버가 받았다고 확인한 뒤에만 지운다 ---- */
+function evLocalKey(tid){ return "dmu_gene_eval_" + tfMe() + "_" + tid; }
+function evLocalGet(tid){ try{ var o = JSON.parse(localStorage.getItem(evLocalKey(tid)) || "null"); return (o && typeof o === "object" && o.scores) ? o : null; }catch(e){ return null; } }
+function evLocalSet(tid, sc){ try{ localStorage.setItem(evLocalKey(tid), JSON.stringify({ scores:sc, at:Date.now() })); }catch(e){} }
+function evLocalClear(tid){ try{ localStorage.removeItem(evLocalKey(tid)); }catch(e){} }
+function evTeamRow(tid){
+  var ts = (EV.my && EV.my.teams) || [];
+  for(var i = 0; i < ts.length; i++){ if(ts[i].id === tid) return ts[i]; }
+  return null;
+}
+function evLoad(done){
+  if(EV.loading) return; EV.loading = true;
+  GLR.rpc("gl_eval_my", {}).then(function(res){
+    EV.loading = false;
+    if(res && res.ok){ EV.my = res; EV.err = ""; }
+    else{ EV.my = null; EV.err = EV_CODE_MSG[res && res.code] || "불러오지 못했어요. 잠시 뒤 다시 해 주세요."; }
+    if(done) done();
+  }, function(err){ EV.loading = false; EV.my = null; EV.err = evErrText(err); if(done) done(); });
+}
+/* ---- 공용: 5항목 × 4문장 고르개 HTML. attr 은 버튼 구분(ev=학생, evp=교수) ---- */
+function evRubricHTML(scores, attr){
+  var h = "";
+  evRubric().forEach(function(it, i){
+    var cur = scores ? scores[it.id] : null;
+    h += '<div class="ev-crit" data-evcrit="' + it.id + '"><div class="ev-ct"><span class="ev-cn">' + (i + 1) + '</span>' + esc(it.name) + '</div>';
+    it.levels.forEach(function(lv){
+      var on = Number(cur) === lv.pt;
+      h += '<button type="button" class="ev-opt' + (on ? ' on' : '') + '" ' + attr + '="1" data-c="' + it.id + '" data-pt="' + lv.pt + '" aria-pressed="' + (on ? 'true' : 'false') + '">' +
+           '<span class="ev-lv">' + esc(EV_LEVEL_NAMES[lv.pt]) + '</span><span class="ev-tx">' + esc(lv.text) + '</span></button>';
+    });
+    h += '</div>';
+  });
+  return h;
+}
+/* =================== 학생 화면 =================== */
+function evWhyNot(my){
+  if(my.reason === "exempt") return "조기 취업이라 평가는 하지 않아요.";
+  if(my.reason === "no_team") return "조가 없어 평가하지 않아요.";
+  return "";
+}
+RENDER.eval = function(){
+  var sc = $("sc-eval"); if(!sc) return;
+  var back = '<button class="btn sm ghost" type="button" data-go="project" style="margin-bottom:10px;text-align:left">← 프로젝트로</button>';
+  if(!EVAL_FORM){ sc.innerHTML = back + '<div class="tf-note">평가 화면은 아직 열리지 않았어요.</div>'; bindGo(sc); return; }
+  if(state.role === "prof"){
+    sc.innerHTML = back + '<div class="tf-note">교수님은 <b>평가 현황</b>에서 볼 수 있어요.</div><button class="btn primary center" type="button" data-go="evalprof">🎬 평가 현황 보기</button>'; bindGo(sc); return;
+  }
+  if(meIsEarly()){ sc.innerHTML = back + '<div class="tf-note">' + esc(EARLY_PROJ_MSG) + '</div>'; bindGo(sc); return; }
+  if(!(window.GLR && GLR.on)){ sc.innerHTML = back + '<div class="tf-note amber">서버에 연결되어 있을 때만 평가할 수 있어요.</div>'; bindGo(sc); return; }
+  if(EV.my === null && !EV.err){
+    sc.innerHTML = back + '<div class="tf-note">불러오는 중이에요…</div>'; bindGo(sc);
+    evLoad(function(){ if(cur === "eval") RENDER.eval(); }); return;
+  }
+  if(EV.err){
+    sc.innerHTML = back + '<div class="tf-note red">' + esc(EV.err) + '</div><button class="btn primary center" type="button" id="evRetry">다시 불러오기</button>'; bindGo(sc);
+    $("evRetry").onclick = function(){ EV.err = ""; EV.my = null; RENDER.eval(); };
+    return;
+  }
+  var my = EV.my;
+  if(!my.can){ sc.innerHTML = back + '<div class="tf-note">' + esc(evWhyNot(my) || "평가는 하지 않아요.") + '</div>'; bindGo(sc); return; }
+  if(!my.open){
+    var msg = projectStepOpen("p14") ? "평가가 마감됐어요. 고칠 내용이 있으면 교수님께 말씀해 주세요." : "아직 열리지 않았어요. 수업 시간에 열어 드려요.";
+    sc.innerHTML = back + '<div class="tf-note amber">' + esc(msg) + '</div><button class="btn sm ghost center" type="button" id="evRetry">새로 확인하기</button>'; bindGo(sc);
+    $("evRetry").onclick = function(){ EV.my = null; RENDER.eval(); };
+    return;
+  }
+  if(!EV.tid || !evTeamRow(EV.tid)) EV.tid = "";
+  if(EV.tid) return evRenderForm(sc);
+  evRenderList(sc, back);
+};
+function evRowState(t){
+  var loc = evLocalGet(t.id), row = t.row;
+  if(loc && (!row || JSON.stringify(loc.scores) !== JSON.stringify(row.scores))) return { t:"이 폰에만 저장됨", c:"amber" };
+  if(!row) return { t:"아직 안 했어요", c:"" };
+  if(row.status === "submitted") return { t:"제출함 ✓ " + row.total + "점", c:"ok" };
+  return { t:"작성 중", c:"yel" };
+}
+function evRenderList(sc, back){
+  var my = EV.my, ts = my.teams || [], done = 0;
+  ts.forEach(function(t){ if(t.row && t.row.status === "submitted") done++; });
+  var h = back;
+  h += '<h2 class="sc-h">🎬 영상 평가</h2>';
+  h += '<div class="tf-note">우리 조는 <b>' + esc(my.my_team_no) + '조</b>예요. <b>우리 조는 평가하지 않고</b>, 다른 조 영상만 평가해요.<br>영상을 보고 조마다 5개 항목의 문장을 골라요. 제출한 뒤에도 교수님이 마감하기 전까지는 고칠 수 있어요.</div>';
+  if(!ts.length){ h += '<div class="tf-note amber">평가할 조가 아직 없어요.</div>'; $("sc-eval").innerHTML = h; bindGo($("sc-eval")); return; }
+  h += '<div class="ev-prog"><div class="ev-pt">제출 <b>' + done + '</b> / ' + ts.length + '조</div><div class="ev-pb"><i style="width:' + Math.round(done / ts.length * 100) + '%"></i></div></div>';
+  ts.forEach(function(t){
+    var st = evRowState(t);
+    h += '<button type="button" class="ev-row" data-evt="' + esc(t.id) + '"><span class="ev-rn">' + esc(t.no) + '조</span><span class="tf-pill ' + st.c + '">' + esc(st.t) + '</span><span class="ev-go" aria-hidden="true">›</span></button>';
+  });
+  h += '<p class="small" style="margin-top:8px">조를 눌러 평가해요. 점수는 다른 사람에게 보이지 않아요(누가 몇 점을 줬는지는 교수님도 몰라요).</p>';
+  sc.innerHTML = h; bindGo(sc);
+  sc.querySelectorAll("[data-evt]").forEach(function(b){ b.onclick = function(){ evOpenForm(b.getAttribute("data-evt")); }; });
+}
+function evOpenForm(tid){
+  var t = evTeamRow(tid); if(!t) return;
+  var loc = evLocalGet(tid), base = (t.row && t.row.scores) ? t.row.scores : {};
+  EV.tid = tid; EV.draft = JSON.parse(JSON.stringify(loc ? loc.scores : base));
+  EV.fromLocal = !!(loc && JSON.stringify(loc.scores) !== JSON.stringify(base));
+  EV.dirty = EV.fromLocal; EV.offline = false;
+  RENDER.eval(); window.scrollTo(0, 0);
+}
+function evRenderForm(sc){
+  var t = evTeamRow(EV.tid), submitted = !!(t.row && t.row.status === "submitted");
+  var h = '<button class="btn sm ghost" type="button" id="evBack" style="margin-bottom:8px;text-align:left">← 조 목록으로</button>';
+  h += '<div class="ev-head"><div class="ev-big">' + esc(t.no) + '조</div><div class="ev-hs">영상 평가 · 다섯 항목마다 영상에 가장 가까운 문장을 골라요</div></div>';
+  if(EV.fromLocal) h += '<div class="tf-note amber">이 폰에 저장해 둔 값을 불러왔어요. <b>[임시저장]</b>을 눌러야 서버에 저장돼요.</div>';
+  if(submitted) h += '<div class="tf-note">이미 제출했어요 ✓ 마감 전까지는 고칠 수 있어요. 고친 뒤 <b>[수정 저장]</b>을 눌러야 반영돼요.</div>';
+  h += '<div id="evCrits">' + evRubricHTML(EV.draft, "data-evo") + '</div>';
+  h += '<div class="ev-bar" id="evBar"></div>';
+  sc.innerHTML = h;
+  $("evBack").onclick = evLeave;
+  sc.querySelectorAll("[data-evo]").forEach(function(b){ b.onclick = function(){ evPick(b.getAttribute("data-c"), Number(b.getAttribute("data-pt"))); }; });
+  evPaintBar();
+}
+function evPick(c, pt){
+  if(!EV.draft) EV.draft = {};
+  EV.draft[c] = pt; EV.dirty = true; EV.fromLocal = false; evLocalSet(EV.tid, EV.draft);
+  var box = document.querySelector('[data-evcrit="' + c + '"]');
+  if(box) box.querySelectorAll("[data-evo]").forEach(function(b){ var on = Number(b.getAttribute("data-pt")) === pt; b.classList.toggle("on", on); b.setAttribute("aria-pressed", on ? "true" : "false"); });
+  evPaintBar();
+}
+function evPaintBar(){
+  var bar = $("evBar"); if(!bar) return;
+  var t = evTeamRow(EV.tid), tt = evTotalOf(EV.draft), submitted = !!(t && t.row && t.row.status === "submitted");
+  var h = '<div class="ev-sum"><b>합계 ' + (tt.full ? tt.sum : "—") + '</b>' + (tt.full ? ' / 100점' : '') + ' <span class="small">· ' + tt.n + '/5 항목</span>' +
+          (EV.offline ? ' <span class="tf-pill amber">인터넷 연결 안 됨 · 이 폰에 보관 중</span>' : (EV.dirty ? ' <span class="tf-pill amber">저장 안 됨</span>' : '')) + '</div>';
+  h += '<div class="tf-btns">';
+  if(!submitted) h += '<button class="btn sm center" type="button" id="evDraft"' + ((EV.saving || tt.n === 0) ? ' disabled' : '') + '>임시저장</button>';
+  h += '<button class="btn sm primary center" type="button" id="evSubmit"' + ((EV.saving || !tt.full) ? ' disabled' : '') + '>' + (submitted ? '수정 저장' : '제출하기') + '</button></div>';
+  bar.innerHTML = h;
+  if($("evDraft")) $("evDraft").onclick = function(){ evSave(false); };
+  $("evSubmit").onclick = evConfirmSubmit;
+}
+function evConfirmSubmit(){
+  var t = evTeamRow(EV.tid), tt = evTotalOf(EV.draft); if(!t || !tt.full) return;
+  var submitted = !!(t.row && t.row.status === "submitted");
+  var lines = evRubric().map(function(it, i){ return (i + 1) + ". " + it.name + " — " + EV_LEVEL_NAMES[EV.draft[it.id]]; });
+  var same = EV_KEYS.every(function(k){ return EV.draft[k] === EV.draft.c1; });
+  var msg = lines.join("\n") + "\n\n합계 " + tt.sum + "점\n" + (submitted ? "고친 내용으로 바꿔요." : "제출한 뒤에도 마감 전까지는 고칠 수 있어요.");
+  if(same) msg = "⚠ 다섯 항목을 모두 같은 단계로 골랐어요. 맞게 골랐는지 한 번 더 봐 주세요.\n\n" + msg;
+  askConfirm(msg, function(){ evSave(true); }, { big: t.no + "조 영상 평가", yes: submitted ? "수정 저장" : "제출하기", no: "다시 볼게요", yesClass: "primary" });
+}
+function evSave(submit){
+  if(EV.saving || !EV.tid) return;
+  var tid = EV.tid, d = JSON.parse(JSON.stringify(EV.draft || {}));
+  EV.saving = true; evPaintBar();
+  GLR.rpc("gl_eval_team_save", { p_team:tid, p_scores:d, p_submit:!!submit }).then(function(res){
+    EV.saving = false;
+    if(res && res.ok){
+      var t = evTeamRow(tid);
+      if(t) t.row = { status:res.status, scores:d, total:res.total, edits:res.edits };
+      if(JSON.stringify(EV.draft || {}) === JSON.stringify(d)){ EV.dirty = false; EV.offline = false; EV.fromLocal = false; evLocalClear(tid); }
+      if(res.status === "submitted"){ toast("제출했어요 ✓ " + res.total + "점"); EV.tid = ""; if(cur === "eval") RENDER.eval(); }
+      else{ toast("임시저장했어요 ✓"); evPaintBar(); }
+      return;
+    }
+    var code = res && res.code;
+    if(code === "closed" && EV.my) EV.my.open = false;
+    toast(EV_CODE_MSG[code] || "저장하지 못했어요. 잠시 뒤 다시 해 주세요.");
+    if(code === "closed" || code === "exempt" || code === "no_team"){ EV.tid = ""; EV.my = null; EV.dirty = false; if(cur === "eval") RENDER.eval(); } else evPaintBar();
+  }, function(err){
+    EV.saving = false;
+    if(err && err.kind === "net"){ EV.offline = true; toast("인터넷이 끊겨 저장하지 못했어요. 입력한 값은 이 폰에 남아 있어요. 연결되면 다시 눌러 주세요."); }
+    else if(err && err.kind === "auth"){ toast("로그인이 만료됐어요. 다시 로그인해 주세요."); }
+    else toast("저장하지 못했어요. 입력한 값은 이 폰에 남아 있어요. 잠시 뒤 다시 눌러 주세요.");
+    evPaintBar();
+  });
+}
+function evLeave(){
+  var t = evTeamRow(EV.tid), submitted = !!(t && t.row && t.row.status === "submitted");
+  var out = function(){ EV.tid = ""; EV.dirty = false; EV.fromLocal = false; RENDER.eval(); window.scrollTo(0, 0); };
+  if(EV.dirty && submitted){
+    askConfirm("저장하지 않은 수정이 있어요.\n[수정 저장]을 누르지 않고 나가면 이 수정은 서버에 가지 않아요. (이 폰에는 남아 있어요)", out, { yes:"그냥 나가기", no:"계속 고치기", yesClass:"ghost" });
+    return;
+  }
+  if(EV.dirty && !submitted && !EV.offline){
+    var tid = EV.tid, d = JSON.parse(JSON.stringify(EV.draft || {}));
+    if(evTotalOf(d).n > 0){
+      GLR.rpc("gl_eval_team_save", { p_team:tid, p_scores:d, p_submit:false }).then(function(res){
+        if(res && res.ok){ if(t) t.row = { status:res.status, scores:d, total:res.total, edits:res.edits }; evLocalClear(tid); toast("임시저장했어요 ✓"); }
+        if(cur === "eval") RENDER.eval();
+      }, function(){ toast("인터넷이 끊겨 서버에는 저장하지 못했어요. 입력한 값은 이 폰에 남아 있어요."); if(cur === "eval") RENDER.eval(); });
+    }
+  }
+  out();
+}
+/* 인터넷이 다시 연결되면 임시저장을 자동으로 다시 보낸다(제출 전 값만 — 제출·수정 저장은 항상 학생이 직접 누른다) */
+if(!EV.onlineBound && typeof window.addEventListener === "function"){
+  EV.onlineBound = true;
+  window.addEventListener("online", function(){
+    if(cur !== "eval" || !EV.tid || !EV.dirty || EV.saving) return;
+    var t = evTeamRow(EV.tid); if(!t || (t.row && t.row.status === "submitted")) return;
+    if(evTotalOf(EV.draft).n > 0) evSave(false);
+  });
+}
+
+/* =================== 교수 화면 =================== */
+function evpClosedLocal(){
+  var m = loadReportDeadlineMap(); if(!(m && m.p14)) return null;
+  var d = new Date(m.p14); return isNaN(d.getTime()) ? null : d;
+}
+function evpLoad(done){
+  if(EVP.loading) return; EVP.loading = true;
+  GLR.rpc("gl_eval_results", {}).then(function(res){
+    EVP.loading = false;
+    if(res && res.ok){ EVP.res = res; EVP.err = ""; } else{ EVP.err = (res && res.code === "auth") ? "교수님 계정으로만 볼 수 있어요." : "불러오지 못했어요. 잠시 뒤 다시 해 주세요."; }
+    if(done) done();
+  }, function(err){ EVP.loading = false; EVP.err = evErrText(err); if(done) done(); });
+}
+function evpFlagText(f){ return { inactive:"활동 0명 — 평가 안 함", prof_incomplete:"교수 평가 미완", no_students:"학생 평가 없음" }[f] || f; }
+function evpTeamLine(t){
+  var h = '<div class="ev-trow" role="button" tabindex="0" data-evpt="' + esc(t.id) + '"><div class="ev-t1"><b>' + esc(t.no) + '조</b><span class="small">활동 ' + t.active + '/' + t.all + '명' + (t.out ? ' (면제 ' + t.out + ')' : '') + '</span>';
+  (t.flags || []).forEach(function(f){ h += '<span class="tf-pill ' + (f === "inactive" ? '' : 'amber') + '">' + esc(evpFlagText(f)) + '</span>'; });
+  h += '</div>';
+  if(t.active > 0){
+    h += '<div class="ev-t2"><span>교수 <b>' + (t.prof_total == null ? '—' : t.prof_total) + '</b></span><span>학생 <b>' + fmt1(t.s_avg) + '</b> <span class="small">(' + t.s_n + '명)</span></span><span>합산 <b>' + fmt1(t.f) + '</b></span><span class="ev-q">20점 <b>' + fmt1(t.q20) + '</b></span></div>';
+  }
+  h += '</div>';
+  return h;
+}
+function evpCopyText(){
+  var res = EVP.res; if(!res) return "";
+  var lines = ["조\t활동 인원\t교수(100)\t학생 평균(100)\t학생 수\t합산(100)\t프로젝트 점수(20)"];
+  res.teams.forEach(function(t){
+    lines.push([t.no + "조", t.active + "/" + t.all, t.prof_total == null ? "" : t.prof_total, t.s_avg == null || t.active === 0 ? "" : fmt1(t.s_avg), t.active === 0 ? "" : t.s_n, t.f == null ? "" : fmt1(t.f), t.q20 == null ? "" : fmt1(t.q20)].join("\t"));
+  });
+  return lines.join("\n");
+}
+function evpMissingText(){
+  var res = EVP.res; if(!res) return "";
+  return (res.missing || []).map(function(m){ return m.name + "\t" + m.done + "/" + m.need + "조 제출"; }).join("\n");
+}
+function evpCopy(txt, okMsg){
+  var ok = function(){ toast(okMsg); };
+  try{ if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(ok, function(){ tfpCopyFallback(txt, ok); }); return; } }catch(e){}
+  tfpCopyFallback(txt, ok);
+}
+function evpSave(tid){
+  if(EVP.busy[tid]){ EVP.again[tid] = true; return; }
+  var t = EVP.res && EVP.res.teams.filter(function(x){ return x.id === tid; })[0]; if(!t) return;
+  EVP.busy[tid] = true; EVP.again[tid] = false;
+  var sc = JSON.parse(JSON.stringify(t.prof_scores || {}));
+  GLR.rpc("gl_eval_prof_save", { p_team:tid, p_scores:sc }).then(function(res){
+    EVP.busy[tid] = false;
+    if(res && res.ok){ t.prof_total = res.total; EVP.saved[tid] = Date.now(); }
+    else{ toast(EV_CODE_MSG[res && res.code] || "저장하지 못했어요."); }
+    if(EVP.again[tid]) return evpSave(tid);
+    evpLoad(function(){ if(cur === "evalprof") RENDER.evalprof(); });
+  }, function(err){
+    EVP.busy[tid] = false; toast("저장하지 못했어요. " + evErrText(err));
+    evpLoad(function(){ if(cur === "evalprof") RENDER.evalprof(); });
+  });
+}
+RENDER.evalprof = function(){
+  var sc = $("sc-evalprof"); if(!sc) return;
+  var h = '<button class="btn sm ghost" type="button" data-go="profproj" style="margin-bottom:10px;text-align:left">← 팀프로젝트로</button>';
+  if(!EVAL_FORM){ sc.innerHTML = h + '<div class="tf-note">영상 평가는 꺼져 있어요.</div>'; bindGo(sc); return; }
+  if(state.role !== "prof"){ sc.innerHTML = h + '<div class="tf-note">교수님만 볼 수 있어요.</div>'; bindGo(sc); return; }
+  if(!(window.GLR && GLR.on)){ sc.innerHTML = h + '<div class="tf-note amber">서버에 연결되어 있을 때만 볼 수 있어요.</div>'; bindGo(sc); return; }
+  if(EVP.res === null){
+    sc.innerHTML = h + (EVP.err ? '<div class="tf-note red">' + esc(EVP.err) + '</div><button class="btn primary center" type="button" id="evpRetry">다시 불러오기</button>' : '<div class="tf-note">불러오는 중이에요…</div>'); bindGo(sc);
+    if($("evpRetry")) $("evpRetry").onclick = function(){ EVP.err = ""; RENDER.evalprof(); };
+    else evpLoad(function(){ if(cur === "evalprof") RENDER.evalprof(); });
+    return;
+  }
+  if(!EVP.pollT){
+    EVP.pollT = setInterval(function(){
+      if(cur !== "evalprof" || !window.GLR || !GLR.on){ clearInterval(EVP.pollT); EVP.pollT = null; return; }
+      if(EVP.open || Object.keys(EVP.busy).some(function(k){ return EVP.busy[k]; })) return;
+      evpLoad(function(){ if(cur === "evalprof" && !EVP.open) RENDER.evalprof(); });
+    }, 15000);
+  }
+  var res = EVP.res, stepOpen = projectStepOpen("p14"), dl = evpClosedLocal(), closedLocal = !!(dl && dl.getTime() <= Date.now());
+  h += '<h2 class="sc-h">🎬 영상 평가 현황</h2>';
+  if(EVP.err) h += '<div class="tf-note red">' + esc(EVP.err) + ' (아래는 마지막으로 받은 값이에요)</div>';
+  var state1 = !stepOpen ? '4단계가 아직 닫혀 있어요 — 학생에게 안 보여요' : (closedLocal ? '🔒 마감됨 — 학생은 더 고칠 수 없어요' : '열려 있어요 — 학생이 평가·수정할 수 있어요');
+  h += '<div class="tf-note ' + (stepOpen && !closedLocal ? '' : 'amber') + '">학생에게: <b>' + esc(state1) + '</b><br><span class="small">서버 기준: ' + (res.open ? '저장 가능' : '저장 불가(닫힘·마감)') + '</span></div>';
+  h += '<div class="tf-btns" style="margin-bottom:10px">';
+  h += '<button class="btn sm ' + (stepOpen ? 'ghost' : 'primary') + ' center" type="button" data-weekopen="p14" data-to="' + (stepOpen ? '0' : '1') + '">' + (stepOpen ? '4단계 닫기' : '4단계 시작(열기)') + '</button>';
+  h += (closedLocal ? '<button class="btn sm center" type="button" id="evpOpenAgain">마감 풀기</button>' : '<button class="btn sm primary center" type="button" id="evpClose"' + (stepOpen ? '' : ' disabled') + '>마감하기</button>');
+  h += '<button class="btn sm ghost center" type="button" id="evpRefresh">새로고침</button></div>';
+  h += '<div class="ev-prog"><div class="ev-pt">학생 제출 <b>' + res.complete + '</b> / ' + res.eligible + '명 <span class="small">(평가할 조를 모두 제출한 학생)</span></div><div class="ev-pb"><i style="width:' + (res.eligible ? Math.round(res.complete / res.eligible * 100) : 0) + '%"></i></div></div>';
+  h += '<div class="small" style="margin:0 0 8px">합산 = 교수 평가 40% + 학생 평가 60%(다른 조 학생 합계의 평균) · 프로젝트 점수 = 합산 × 0.2 (20점 만점). 비율은 고정이에요.</div>';
+  h += '<div class="tf-btns" style="margin-bottom:8px"><button class="btn sm center" type="button" id="evpCopy">표 복사</button></div>';
+  h += '<div class="ev-list">';
+  res.teams.forEach(function(t){
+    h += evpTeamLine(t);
+    if(EVP.open === t.id){
+      h += '<div class="ev-pan">';
+      if(t.active === 0) h += '<div class="small">활동하는 조원이 없어 평가하지 않아요.</div>';
+      else{
+        h += '<div class="small" style="margin-bottom:6px"><b>교수 평가</b> — 누르면 바로 저장돼요. 다섯 항목을 모두 고르면 합계가 계산돼요.' + (EVP.saved[t.id] && Date.now() - EVP.saved[t.id] < 8000 ? ' <span class="tf-pill ok">저장됨 ✓</span>' : '') + '</div>';
+        h += '<div data-evpteam="' + esc(t.id) + '">' + evRubricHTML(t.prof_scores, "data-evpo") + '</div>';
+      }
+      h += '</div>';
+    }
+  });
+  h += '</div>';
+  h += '<h3 class="sc-h" style="font-size:16px;margin:14px 0 6px">미제출 학생 ' + (res.missing || []).length + '명</h3>';
+  if(!(res.missing || []).length) h += '<div class="tf-note">평가할 조를 모두 제출했어요 ✓</div>';
+  else{
+    h += '<div class="ev-miss">' + res.missing.map(function(m){ return '<span class="tf-pill amber">' + esc(m.name) + ' ' + m.done + '/' + m.need + '</span>'; }).join(" ") + '</div>';
+    h += '<div class="tf-btns" style="margin-top:8px"><button class="btn sm center" type="button" id="evpCopyMiss">명단 복사</button></div>';
+  }
+  h += '<p class="small" style="margin-top:10px">※ 조기 취업(면제) 학생은 평가에 참여하지 않아요. 면제 학생 본인의 프로젝트 점수는 <b>해당 없음</b>이고, 성적 반영은 교수님이 정해요.<br>※ 누가 몇 점을 줬는지는 교수님께도 보이지 않아요(익명). 면제로 바뀐 학생이 이미 낸 평가는 지워지지 않고 계산에서만 빠져요(면제를 풀면 다시 들어가요).<br>※ 활동 인원 = 조원 − 면제 학생. 표를 누르면 교수 평가를 입력해요.</p>';
+  sc.innerHTML = h; bindGo(sc); bindWeekOpen(sc);
+  sc.querySelectorAll("[data-evpt]").forEach(function(tr){
+    tr.onclick = function(){ var id = tr.getAttribute("data-evpt"); EVP.open = (EVP.open === id) ? "" : id; RENDER.evalprof(); };
+    tr.onkeydown = function(e){ if(e.key === "Enter" || e.key === " "){ e.preventDefault(); tr.click(); } };
+  });
+  sc.querySelectorAll("[data-evpo]").forEach(function(b){
+    b.onclick = function(){
+      var pan = b.closest("[data-evpteam]"), tid = pan.getAttribute("data-evpteam"), c = b.getAttribute("data-c"), pt = Number(b.getAttribute("data-pt"));
+      var t = res.teams.filter(function(x){ return x.id === tid; })[0]; if(!t) return;
+      t.prof_scores = t.prof_scores || {}; t.prof_scores[c] = pt;
+      var box = pan.querySelector('[data-evcrit="' + c + '"]');
+      box.querySelectorAll("[data-evpo]").forEach(function(x){ var on = Number(x.getAttribute("data-pt")) === pt; x.classList.toggle("on", on); x.setAttribute("aria-pressed", on ? "true" : "false"); });
+      evpSave(tid);
+    };
+  });
+  if($("evpRefresh")) $("evpRefresh").onclick = function(){ evpLoad(function(){ RENDER.evalprof(); toast("새로 불러왔어요."); }); };
+  if($("evpCopy")) $("evpCopy").onclick = function(){ evpCopy(evpCopyText(), "복사했어요. 문서나 스프레드시트에 붙여넣으세요."); };
+  if($("evpCopyMiss")) $("evpCopyMiss").onclick = function(){ evpCopy(evpMissingText(), "미제출 명단을 복사했어요."); };
+  var setDl = function(on){
+    var m = setReportDeadlineLocal("p14", on ? new Date().toISOString() : "");
+    if(window.GLR && GLR.on) GLR.syncReportDeadline(m);
+    setTimeout(function(){ evpLoad(function(){ if(cur === "evalprof") RENDER.evalprof(); }); }, 1500);
+  };
+  if($("evpClose")) $("evpClose").onclick = function(){
+    askConfirm("영상 평가를 지금 마감합니다.\n마감 뒤에는 학생이 평가를 고칠 수 없어요. [마감 풀기]로 되돌릴 수 있어요.\n학생은 새로고침 없이도 바로 막혀요.", function(){ setDl(true); toast("마감했어요."); RENDER.evalprof(); }, { yes:"마감", yesClass:"primary" });
+  };
+  if($("evpOpenAgain")) $("evpOpenAgain").onclick = function(){
+    askConfirm("마감을 풀고 학생이 다시 평가·수정할 수 있게 합니다. 풀까요?", function(){ setDl(false); toast("마감을 풀었어요."); RENDER.evalprof(); }, { yes:"마감 풀기", yesClass:"primary" });
+  };
+};
 
 /* ==========================================================================
  * 📤 출력물 — 교수용 인쇄물 5종 (window.print → 인쇄창에서 'PDF로 저장')
