@@ -322,7 +322,19 @@ th.nw{white-space:nowrap}
 #confirmOv.on{display:flex}
 #confirmOv .cf-box{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px 18px;max-width:400px;width:100%;box-shadow:0 12px 40px rgba(16,42,72,.3)}
 #confirmOv .cf-msg{color:var(--tx);font-size:15px;line-height:1.6;margin:0 0 16px}
+#confirmOv .cf-box.big{max-height:calc(100vh - 32px);overflow-y:auto;-webkit-overflow-scrolling:touch}
 #confirmOv .cf-btns{display:flex;gap:10px}
+#confirmOv .ex-h{font-size:16px;font-weight:800;margin:0 0 8px;color:var(--tx)}
+#confirmOv .ex-p{font-size:14.5px;line-height:1.6;margin:0 0 8px;color:var(--tx)}
+#confirmOv .ex-red{font-size:14px;line-height:1.55;margin:0 0 8px;padding:8px 10px;border-radius:10px;border:1px solid var(--red);background:var(--reddk);color:#7a2020;font-weight:700}
+#confirmOv .ex-amb{font-size:14px;line-height:1.55;margin:0 0 8px;padding:8px 10px;border-radius:10px;border:1px solid #e6d3a8;background:var(--amberdk);color:#6b4a10}
+#confirmOv .ex-pick{display:flex;align-items:center;gap:10px;min-height:44px;padding:6px 10px;margin:0 0 6px;border:1px solid var(--line);border-radius:10px;background:var(--card);font-size:15px;cursor:pointer}
+#confirmOv .ex-pick input{width:20px;height:20px;flex:0 0 auto;margin:0}
+#confirmOv .ex-pick.on{border-color:var(--mint);background:var(--mintdk)}
+.out-tag{display:inline-block;font-size:11px;font-weight:800;line-height:1.5;padding:0 8px;margin-left:6px;border-radius:999px;border:1px solid #e6d3a8;background:var(--amberdk);color:#8a6516;white-space:nowrap;vertical-align:middle}
+.ex-log{margin:10px 0 0;font-size:13px;line-height:1.5}
+.ex-log .ex-lr{display:flex;flex-wrap:wrap;gap:4px 8px;padding:7px 0;border-top:1px solid var(--line2)}
+.ex-log .ex-lr:first-child{border-top:0}
 #confirmOv .cf-btns .btn{margin:0;flex:1}
 
 /* ---------- 로비 카드 ---------- */
@@ -880,7 +892,7 @@ var TEST_OPEN_ALL = false;  /* 테스트용 날짜 잠금 해제. 실제 수업/
  *      형식: YYYYMMDDNN(날짜 + 그날 순번 2자리). 숫자가 클수록 새 버전.
  *      배포 전 확인: `python bump_build.py --check` (둘이 다르면 오류로 멈춘다).
  * ========================================================================*/
-var APP_BUILD = "2026111602";
+var APP_BUILD = "2026111603";
 
 /* ==========================================================================
  * 활성 주차 — 지금은 2주차(w02 · 세포배양)만 열려 있다.
@@ -1112,6 +1124,9 @@ var TOPIC_FORM = true;
    false 로 바꾸면 교수 화면이 예전처럼 한 페이지(profdash 하나)로 돌아간다 — 같은 그림 함수(profFull)가 mode 만 바꿔 그린다.
    서버·학생 화면과 무관한 스위치(되돌리는 법: 이 줄만 false → bump_build). */
 var PROF_SPLIT = true;
+/* 면제 체크 보강(A단계, 2026-11-16): 명단관리 「조기취업(면제)」 체크를 누르면 확인창(영향 안내) → 서버 함수 gl_early_set 한 번에 처리
+   → 성공을 확인한 뒤에만 완료 표시. false 로 바꾸면 예전처럼 체크 즉시 저장(서버 함수는 그대로 두어도 무해). 되돌리는 스위치(이 줄만 false → bump_build). */
+var EXEMPT_V2 = true;
 function studentHome(){ return HOME_SPLIT ? "home" : "labs"; }
 function parentScreen(name){
   if(name === "home") return "home";
@@ -1339,14 +1354,35 @@ function loadEarly(){
   return [];
 }
 function isEarly(sid){ if(!sid) return false; return loadEarly().indexOf(String(sid)) !== -1; }
-function toggleEarly(sid, on){
+/* 이 기기의 면제 미러만 바꾼다(서버는 건드리지 않음) — 서버가 이미 처리했을 때(gl_early_set 성공 뒤) 쓴다. */
+function setEarlyLocal(sid, on){
   if(!sid) return;
   var list = loadEarly(); var s = String(sid); var i = list.indexOf(s);
   if(on && i === -1) list.push(s);
   else if(!on && i !== -1) list.splice(i, 1);
   try{ localStorage.setItem(EARLY_KEY, JSON.stringify(list)); }catch(e){}
+}
+function toggleEarly(sid, on){
+  if(!sid) return;
+  var s = String(sid);
+  setEarlyLocal(s, on);
   if(window.GLR && GLR.on) GLR.syncEarly(s, !!on);
 }
+/* 같은 조 조원 화면의 「프로젝트 불참」 표시(학생 화면용). 사유(조기취업)는 쓰지 않는다.
+   기본은 이 기기에 받은 면제 목록(EARLY_KEY). 서버 gl_class_view 가 조원 학번만 따로 주는 방식으로 바뀌면(O-0855 합칠 때)
+   그 함수의 'out' 목록을 OUT_KEY 에 저장하면 같은 표시가 그대로 나온다. */
+var OUT_KEY = "dmu_gene_lab_out";
+function isOutMember(sid){
+  if(!state || state.role !== "student" || !sid) return false;
+  return isInactiveSid(sid);
+}
+function outTag(sid){ return isOutMember(sid) ? '<span class="out-tag">프로젝트 불참</span>' : ""; }
+function outTextSuffix(sid){ return isOutMember(sid) ? " (프로젝트 불참)" : ""; }
+function isInactiveSid(sid){
+  if(isEarly(sid)) return true;
+  try{ var a = JSON.parse(localStorage.getItem(OUT_KEY) || "[]"); return Array.isArray(a) && a.map(String).indexOf(String(sid)) !== -1; }catch(e){ return false; }
+}
+function teamActiveCount(t){ var n = 0; ((t && t.members) || []).forEach(function(s){ if(!isInactiveSid(s)) n++; }); return n; }
 /* 로그인한 학생 본인이 면제 대상인가 */
 function meIsEarly(){ return state && state.role === "student" && isEarly(state.studentId); }
 
@@ -2370,7 +2406,7 @@ RENDER.labs = function(){
     var stCls, stTxt, dTxt;
     if(isProf){ stCls = ""; stTxt = "미리보기"; dTxt = "학생이 조원 2명을 골라 3명 한 조를 만듭니다. 현재 " + nTeams + "/" + TEAM_MAX + "조 편성."; }
     else if(meEarly){ stCls = ""; stTxt = "면제"; dTxt = "조기 취업 면제 — 우리 조 편성 대상이 아닙니다."; }
-    else if(myTm){ stCls = "on"; stTxt = "우리 조 " + myTm.no + "조"; dTxt = "우리 조: " + myTm.no + "조 · " + esc(myTm.members.map(function(s){ return nameOfSid(s); }).join(", ")); }
+    else if(myTm){ stCls = "on"; stTxt = "우리 조 " + myTm.no + "조"; dTxt = "우리 조: " + myTm.no + "조 · " + esc(myTm.members.map(function(s){ return nameOfSid(s) + outTextSuffix(s); }).join(", ")); }
     else if(nTeams >= TEAM_MAX){ stCls = ""; stTxt = "편성 마감"; dTxt = "모든 조(" + TEAM_MAX + "조)가 구성되었습니다."; }
     else{ stCls = "on"; stTxt = "조 만들기"; dTxt = "3명이 한 조로 실험합니다. 조원 2명을 골라 조를 만드세요. (현재 " + nTeams + "/" + TEAM_MAX + "조)"; }
     h += '<button class="lab-card open" type="button" id="labsTeamCard">';
@@ -2428,7 +2464,7 @@ function teamLineHTML(){
   var nTeams = loadTeams().length;
   var tx, warn = false;
   if(myTm){
-    tx = '우리 조 <b>' + myTm.no + '조</b> · ' + esc(myTm.members.map(function(s){ return nameOfSid(s); }).join(", "));
+    tx = '우리 조 <b>' + myTm.no + '조</b> · ' + esc(myTm.members.map(function(s){ return nameOfSid(s) + outTextSuffix(s); }).join(", "));
   }else if(nTeams >= TEAM_MAX){
     warn = true; tx = '우리 조 · 모든 조(' + TEAM_MAX + '조)가 구성되었어요';
   }else{
@@ -2991,7 +3027,7 @@ function tfEditBody(t, status){
   h += '</div>';
   h += '<label class="tf-l">역할 분담 <small>점수에 반영되지 않아요 · 선택</small></label>';
   t.members.forEach(function(s){
-    h += '<div class="tf-role"><span>' + esc(nameOfSid(s)) + '</span><input type="text" class="tf-in" data-role="' + esc(String(s)) + '" maxlength="' + TF_LIM.role + '" placeholder="맡은 일" value="' + esc(TF.form.roles[String(s)] || "") + '"></div>';
+    h += '<div class="tf-role"><span>' + esc(nameOfSid(s)) + outTag(s) + '</span><input type="text" class="tf-in" data-role="' + esc(String(s)) + '" maxlength="' + TF_LIM.role + '" placeholder="맡은 일" value="' + esc(TF.form.roles[String(s)] || "") + '"></div>';
   });
   return h;
 }
@@ -3069,7 +3105,7 @@ RENDER.topic = function(){
     }else{
       h += '<div class="tf-note amber">🔒 쓰기가 <b>마감</b>됐어요. 우리 조는 대표를 정하지 않았어요. 교수님께 말씀해 주세요.</div>';
     }
-    h += '<div class="tf-help">조원: ' + t.members.map(function(s){ return esc(nameOfSid(s)) + (String(s) === me ? '(나)' : ''); }).join(" · ") + '</div>';
+    h += '<div class="tf-help">조원: ' + t.members.map(function(s){ return esc(nameOfSid(s)) + (String(s) === me ? '(나)' : '') + outTag(s); }).join(" · ") + '</div>';
     h += '<div class="tf-card" id="tfTaken" style="margin-top:12px">' + tfTakenInner() + '</div>';
     sc.innerHTML = h; tfBind(); if($("tfClaim")) $("tfClaim").onclick = tfClaim; return;
   }
@@ -3084,7 +3120,7 @@ RENDER.topic = function(){
     else h += '<button class="btn center" type="button" id="tfDraft">💾 임시저장</button><button class="btn primary center" type="button" id="tfSubmit">' + (status === "returned" ? "다시 제출" : "제출하기") + '</button>';
     h += '<button class="btn sm ghost center" type="button" id="tfHandBtn">대표 넘기기</button></div>';
     if(TF.showHand){
-      h += '<div class="tf-hand">' + t.members.filter(function(s){ return String(s) !== me; }).map(function(s){
+      h += '<div class="tf-hand">' + t.members.filter(function(s){ return String(s) !== me && !isOutMember(s); }).map(function(s){
         return '<button class="btn sm center" type="button" data-hand="' + esc(String(s)) + '">' + esc(nameOfSid(s)) + '님에게 넘기기</button>'; }).join("") + '</div>';
     }
     h += '</div>';
@@ -3263,7 +3299,9 @@ RENDER.topicsprof = function(){
     var r = map[t.id], p = r ? tfServerPayload(r.data) : null;
     var stc = !r ? '' : (r.status === "submitted" ? ' ok' : (r.status === "returned" ? ' yel' : ' amber'));
     h += '<div class="tf-lrow" role="button" tabindex="0" data-tfp="' + esc(t.id) + '"><div class="tf-l1"><b>' + t.no + '조</b><span class="tf-rep">' + (r ? '대표 ' + esc(nameOfSid(r.rep_sid)) : '대표 없음') + '</span>' +
-         '<span class="tf-pill' + stc + '">' + esc(tfpStatusLabel(r)) + '</span>' + (r && r.submitted_at ? '<span class="small">' + esc(tfHM(r.submitted_at)) + ' 제출</span>' : '') + '</div>' +
+         '<span class="tf-pill' + stc + '">' + esc(tfpStatusLabel(r)) + '</span>' + (r && r.submitted_at ? '<span class="small">' + esc(tfHM(r.submitted_at)) + ' 제출</span>' : '') +
+         (teamActiveCount(t) < t.members.length ? '<span class="tf-pill ' + (teamActiveCount(t) === 0 ? '' : 'amber') + '">활동 ' + teamActiveCount(t) + '명</span>' : '') +
+         (r && isEarly(r.rep_sid) ? '<span class="tf-pill" style="background:var(--reddk);border-color:var(--red);color:var(--red)">대표가 면제예요</span>' : '') + '</div>' +
          '<div class="tf-l2">' + (p && p.topic ? esc(p.topic) : '<span class="small">주제명 없음</span>') + '</div>' +
          (dup[t.id] ? '<div><span class="tf-pill amber">⚠ 같은 주제명 · ' + esc(byTeam[dup[t.id]] ? byTeam[dup[t.id]].no + '조가 먼저 제출' : '먼저 제출한 조 있음') + '</span></div>' : '') + '</div>';
     if(TFP.open === t.id){
@@ -3278,7 +3316,7 @@ RENDER.topicsprof = function(){
              (r.status === "returned" ? '<button class="btn sm center" type="button" data-tfpclr="' + esc(t.id) + '">요청 취소</button>' : '') + '</div>';
       }
       h += '<label class="tf-l">대표 바꾸기</label><div class="tf-hand">' + t.members.map(function(s){
-        return '<button class="btn sm center" type="button" data-tfprep="' + esc(t.id) + '|' + esc(String(s)) + '"' + (r && String(r.rep_sid) === String(s) ? ' disabled' : '') + '>' + esc(nameOfSid(s)) + '</button>'; }).join("") + '</div>';
+        return '<button class="btn sm center" type="button" data-tfprep="' + esc(t.id) + '|' + esc(String(s)) + '"' + ((r && String(r.rep_sid) === String(s)) || isEarly(s) ? ' disabled' : '') + '>' + esc(nameOfSid(s)) + '</button>'; }).join("") + '</div>';
       h += '</div>';
     }
   });
@@ -3558,9 +3596,10 @@ RENDER.team = function(){
     h += '<div class="tm-mem">';
     myTm.members.forEach(function(s){
       var isMe = String(s) === String(mySid);
-      h += '<div class="tm-row"><span class="tm-tag">' + (isMe ? '나' : '조원') + '</span><b>' + esc(nameOfSid(s)) + '</b><span class="pk-sid" style="margin-left:auto;color:var(--tx3);font-size:12px">' + esc(String(s)) + '</span></div>';
+      h += '<div class="tm-row"><span class="tm-tag">' + (isMe ? '나' : '조원') + '</span><b>' + esc(nameOfSid(s)) + '</b>' + outTag(s) + '<span class="pk-sid" style="margin-left:auto;color:var(--tx3);font-size:12px">' + esc(String(s)) + '</span></div>';
     });
     h += '</div></div>';
+    if(teamActiveCount(myTm) < myTm.members.length) h += '<p class="small" style="margin:8px 0 0">조원 ' + myTm.members.length + '명 (활동 ' + teamActiveCount(myTm) + '명) — 「프로젝트 불참」 조원은 주제 선정서·영상 평가를 하지 않아요.</p>';
     h += '<p class="small" style="margin-top:12px">조가 편성되었습니다. 보고서 머리말의 "조" 칸에 <b>' + myTm.no + '조</b>가 자동으로 채워집니다.</p>';
     if(teamLocked()){
       h += '<div class="tf-note" style="margin-top:12px">🔒 ' + esc(TEAMLOCK_MSG) + '</div>';
@@ -5241,6 +5280,140 @@ function copyText(text, okMsg){
   }
 }
 
+/* ==========================================================================
+ * 🎓 면제(조기취업) 변경 — 확인창(영향 안내) → 서버 gl_early_set 한 번에 → 성공을 확인한 뒤에만 완료 표시 (2026-11-16, A단계)
+ *   · 서버가 영향을 계산한다(gl_early_impact). 조 소속(gl_teams)은 건드리지 않고 「활동 인원 = 조원 − 면제자」로만 센다.
+ *   · 주제 선정서 대표가 면제가 되면 같은 창에서 활동 조원 중 새 대표를 고를 수 있다(안 골라도 면제는 된다).
+ *   · 실패(인터넷·권한·서버 미준비)는 체크를 되돌리고 화면에 알린다. 성공한 척 큐에 쌓지 않는다.
+ * ========================================================================*/
+var EX = { busy:false };
+var EXLOG = { open:false, rows:null, err:"", loading:false };
+var EX_CODE_MSG = {
+  auth:"교수 로그인이 필요해요. 다시 로그인해 주세요.", not_found:"명단에서 그 학생을 찾지 못했어요.",
+  bad_rep:"새 대표는 같은 조의 활동 조원이어야 해요.", bad_args:"요청이 올바르지 않아요."
+};
+function exErrText(err){
+  if(err && err.kind === "net") return "바꾸지 못했어요. 인터넷을 확인하고 다시 눌러 주세요.";
+  if(err && err.kind === "auth") return "바꾸지 못했어요. 교수 로그인이 만료됐어요. 다시 로그인해 주세요.";
+  var m = String((err && err.msg) || "");
+  if(/gl_early_(impact|set)|schema cache|could not find the function|PGRST202/i.test(m) || (err && err.status === 404)) return "바꾸지 못했어요. 서버에 면제 처리 기능이 아직 준비되지 않았어요.";
+  return "바꾸지 못했어요. 잠시 뒤 다시 눌러 주세요.";
+}
+function exImpactHTML(imp, on, nm){
+  var h = "", no = imp.team_no, ev = imp.submitted_evals || 0;
+  if(on){
+    h += '<div class="ex-h">' + esc(nm) + ' 님을 조기취업 면제로 바꿀까요?</div>';
+    if(no == null){
+      h += '<p class="ex-p">조가 없는 학생이라 조에는 영향이 없어요.</p>';
+    }else{
+      h += '<p class="ex-p"><b>' + no + '조</b> 소속이에요. 조에는 그대로 남고, ' + no + '조의 활동 인원은 <b>' + imp.active_before + '명 → ' + imp.active_after + '명</b>이 돼요.</p>';
+      h += '<p class="ex-p">이 학생은 주제 선정서·영상 평가를 하지 않아요.' + (ev > 0 ? ' 이미 낸 평가 <b>' + ev + '건</b>은 집계에서만 빠져요(삭제되지 않아요).' : '') + '</p>';
+    }
+    if(imp.is_rep){
+      h += '<div class="ex-red">이 학생이 ' + no + '조 주제 선정서 대표예요. 바꾸지 않으면 ' + no + '조는 글을 고칠 수 없어요.</div>';
+      if((imp.candidates || []).length){
+        h += '<p class="ex-p" style="margin-bottom:6px">새 대표가 될 조원을 고르세요(고르지 않아도 면제로 바꿀 수 있어요).</p>';
+        (imp.candidates || []).forEach(function(c){
+          h += '<label class="ex-pick"><input type="radio" name="exRep" value="' + esc(c) + '"><span>' + esc(nameOfSid(c)) + '</span></label>';
+        });
+      }
+    }
+    if(no != null && imp.active_after === 0){
+      h += '<div class="ex-amb">⚠ ' + no + '조의 활동 인원이 <b>0명</b>이 돼요. 이 조는 평가 목록과 집계에서 빠져요.</div>';
+      h += '<label class="ex-pick" id="exZeroWrap"><input type="checkbox" id="exZero"><span>활동 인원이 0명이 되는 것을 확인했어요</span></label>';
+    }
+  }else{
+    h += '<div class="ex-h">' + esc(nm) + ' 님의 면제를 풀까요?</div>';
+    if(no == null){
+      h += '<p class="ex-p">이 학생은 조가 없어요. 면제를 풀어도 <b>조가 없으면 평가·주제 선정서에 참여하지 못해요.</b></p>';
+      h += '<div class="ex-amb">' + (teamLocked()
+        ? '조 편성이 <b>확정</b>돼 있어 학생이 조를 만들 수 없어요. 처음 화면의 <b>[확정 풀기]</b>를 누르면 학생이 [조 만들기]로 조를 만들 수 있어요.'
+        : '학생이 [조 만들기]로 조를 만들 수 있어요(조 편성이 아직 확정되지 않았어요).') + '</div>';
+    }else{
+      h += '<p class="ex-p"><b>' + no + '조</b> 소속이에요. 면제를 풀면 ' + no + '조의 활동 인원은 <b>' + imp.active_before + '명 → ' + imp.active_after + '명</b>이 돼요.</p>';
+      h += '<p class="ex-p">이 학생은 다시 주제 선정서·영상 평가를 해요.' + (ev > 0 ? ' 이전에 낸 평가 <b>' + ev + '건</b>이 집계에 다시 들어가요.' : '') + '</p>';
+    }
+  }
+  return h;
+}
+/* 면제 확인창 — #confirmOv 를 같은 모양으로 쓴다. 닫으면(취소·바깥·ESC) onCancel 로 체크 원복. */
+function exDialog(imp, on, nm, onGo, onCancel){
+  var ov = $("confirmOv");
+  if(!ov){ ov = document.createElement("div"); ov.id = "confirmOv"; document.body.appendChild(ov); }
+  var needZero = on && imp.team_no != null && imp.active_after === 0;
+  ov.innerHTML = '<div class="cf-box big" role="alertdialog" aria-modal="true" aria-label="면제 변경 확인"><div class="cf-msg" style="margin-bottom:12px">' + exImpactHTML(imp, on, nm) + '</div>' +
+    '<div class="cf-btns"><button type="button" class="btn sm ghost center" id="cfNo">취소</button><button type="button" class="btn sm center primary" id="cfYes">' + (on ? '면제로 바꾸기' : '면제 풀기') + '</button></div></div>';
+  ov.classList.add("on");
+  var yes = $("cfYes"), done = false;
+  function pickVal(){ var r = ov.querySelector('input[name="exRep"]:checked'); return r ? r.value : null; }
+  function refresh(){
+    var pv = pickVal();
+    if(on && imp.is_rep) yes.textContent = pv ? "면제로 바꾸고 대표도 바꾸기" : "면제로 바꾸기";
+    ov.querySelectorAll(".ex-pick").forEach(function(l){ var i = l.querySelector("input"); l.classList.toggle("on", !!(i && i.checked && i.type === "radio")); });
+    yes.disabled = needZero && !$("exZero").checked;
+  }
+  ov.querySelectorAll("input").forEach(function(i){ i.onchange = refresh; });
+  refresh();
+  function onKey(e){ if(e.key === "Escape") cancel(); }
+  function close(){ ov.classList.remove("on"); ov.innerHTML = ""; document.removeEventListener("keydown", onKey); }
+  function cancel(){ if(done) return; done = true; close(); if(onCancel) onCancel(); }
+  document.addEventListener("keydown", onKey);
+  ov.onclick = function(e){ if(e.target === ov) cancel(); };
+  $("cfNo").onclick = cancel;
+  yes.onclick = function(){ if(yes.disabled || done) return; done = true; var pv = pickVal(); close(); onGo(pv); };
+}
+function exemptChange(sid, on){
+  sid = String(sid);
+  var nm = nameOfSid(sid), box = document.querySelector('[data-early="' + sid + '"]');
+  if(EX.busy){ toast("앞의 변경을 처리하는 중이에요. 잠시만요."); RENDER.roster(); return; }
+  EX.busy = true;
+  if(box) box.disabled = true;
+  toast("영향을 확인하는 중이에요…");
+  GLR.rpc("gl_early_impact", { p_sid:sid, p_on:!!on }).then(function(imp){
+    if(!imp || !imp.ok){ EX.busy = false; toast(EX_CODE_MSG[imp && imp.code] || "확인하지 못했어요. 다시 눌러 주세요."); RENDER.roster(); return; }
+    if(imp.already === !!on){        /* 서버는 이미 그 상태 — 이 기기 표시만 맞춘다 */
+      EX.busy = false; setEarlyLocal(sid, !!on); toast("이미 " + (on ? "면제" : "면제 해제") + " 상태예요. 표시를 맞췄어요."); RENDER.roster(); return;
+    }
+    exDialog(imp, !!on, nm, function(newRep){
+      toast("처리하는 중이에요…");
+      GLR.rpc("gl_early_set", { p_sid:sid, p_on:!!on, p_new_rep:newRep || null }).then(function(res){
+        EX.busy = false;
+        if(res && res.ok){
+          setEarlyLocal(sid, !!on);                    /* 서버 성공을 확인한 뒤에만 이 기기 표시를 바꾼다 */
+          TFP.rows = null; EXLOG.rows = null;           /* 선정서 대표·변경 기록은 다음에 다시 불러온다 */
+          toast((on ? "면제로 바꿨어요 ✓" : "면제를 풀었어요 ✓") + (res.impact && res.impact.rep_changed ? " 대표도 바꿨어요." : ""));
+          if(EXLOG.open) exLogLoad();
+        }else{
+          toast("바꾸지 못했어요. " + (EX_CODE_MSG[res && res.code] || "잠시 뒤 다시 눌러 주세요."));
+        }
+        RENDER.roster();
+      }, function(err){ EX.busy = false; toast(exErrText(err)); RENDER.roster(); });
+    }, function(){ EX.busy = false; RENDER.roster(); });      /* 취소 → 체크가 원래대로 돌아간다 */
+  }, function(err){ EX.busy = false; toast(exErrText(err)); RENDER.roster(); });
+}
+function exLogLoad(){
+  if(EXLOG.loading) return; EXLOG.loading = true; EXLOG.err = "";
+  GLR.call("/rest/v1/gl_early_log?select=*&order=id.desc&limit=30", { headers:GLR.hdr(false) }).then(function(rows){
+    EXLOG.loading = false; EXLOG.rows = rows || []; if(cur === "roster") RENDER.roster();
+  }, function(err){
+    EXLOG.loading = false; EXLOG.rows = []; EXLOG.err = (err && err.status === 404) ? "변경 기록 표가 서버에 아직 없어요." : "변경 기록을 불러오지 못했어요."; if(cur === "roster") RENDER.roster();
+  });
+}
+function exLogInner(){
+  if(EXLOG.rows === null){ if(!EXLOG.loading) exLogLoad(); return '<div class="small">불러오는 중이에요…</div>'; }
+  if(EXLOG.err) return '<div class="small" style="color:var(--red)">' + esc(EXLOG.err) + '</div>';
+  if(!EXLOG.rows.length) return '<div class="small">아직 변경 기록이 없어요. (이 기능을 쓴 뒤부터 쌓여요)</div>';
+  var h = '<div class="small" style="margin-bottom:4px">최근 ' + EXLOG.rows.length + '건 · 최신순</div>';
+  EXLOG.rows.forEach(function(r){
+    var i = r.impact || {}, bits = [];
+    if(i.team_no != null) bits.push(i.team_no + '조 활동 ' + i.active_before + '→' + i.active_after + '명');
+    if(i.rep_changed) bits.push('대표 교체');
+    if(i.submitted_evals) bits.push('낸 평가 ' + i.submitted_evals + '건');
+    h += '<div class="ex-lr"><span>' + esc(tfHM(r.at)) + '</span><b>' + esc(nameOfSid(r.sid)) + '</b><span class="pill ' + (r.on_off ? 'mid' : 'no') + '">' + (r.on_off ? '면제 켬' : '면제 끔') + '</span><span style="color:var(--tx3)">' + esc(bits.join(' · ')) + '</span></div>';
+  });
+  return h;
+}
+
 RENDER.roster = function(){
   var sc = $("sc-roster");
   var list = getRoster();
@@ -5289,12 +5462,19 @@ RENDER.roster = function(){
   if(list.length === 0){
     h += '<p class="small" style="color:var(--amber)">아직 등록된 명단이 없습니다. 위에서 등록해 주세요.</p>';
   }else{
-    h += '<p class="small" style="margin:0 0 8px"><b>조기취업</b> 칸을 체크하면 그 학생은 보고서·학습·미션이 <b>면제</b>되고, 교수 대시보드 집계 분모에서 빠집니다(' + ((window.GLR && GLR.on) ? '서버에 저장' : '이 기기에 저장') + '). 면제 학생 본인이 로그인하면 면제 안내가 표시됩니다.</p>';
+    var exV2 = EXEMPT_V2 && window.GLR && GLR.on;
+    h += '<p class="small" style="margin:0 0 8px"><b>조기취업</b> 칸을 체크하면 그 학생은 보고서·학습·미션이 <b>면제</b>되고, 교수 대시보드 집계 분모에서 빠집니다(' + ((window.GLR && GLR.on) ? '서버에 저장' : '이 기기에 저장') + '). 면제 학생 본인이 로그인하면 면제 안내가 표시됩니다.' + (exV2 ? '<br>체크하면 <b>영향 안내 창</b>이 먼저 떠요. 조·주제 선정서 대표에 어떤 영향이 있는지 보고 [면제로 바꾸기]를 눌러야 반영돼요. 조 소속은 그대로 두고 활동 인원만 줄어요.' : '') + '</p>';
+    if(exV2){
+      h += '<div class="row" style="gap:8px;margin:0 0 8px"><button class="btn sm ghost" type="button" id="exLogBtn">' + (EXLOG.open ? '면제 변경 기록 닫기' : '📜 면제 변경 기록') + '</button></div>';
+      if(EXLOG.open) h += '<div class="card tight ex-log" id="exLogBox">' + exLogInner() + '</div>';
+    }
     h += '<div class="tblwrap"><table class="dash-tbl">';
-    h += '<tr><th>#</th><th>학번</th><th>이름</th><th class="c">조기취업<br>(면제)</th><th class="c">삭제</th></tr>';
+    h += '<tr><th>#</th><th>학번</th><th>이름</th><th class="c">조</th><th class="c">조기취업<br>(면제)</th><th class="c">삭제</th></tr>';
     list.forEach(function(r, i){
       var early = isEarly(r.sid);
-      h += '<tr' + (early ? ' style="background:var(--greendk)"' : '') + '><td>' + (i+1) + '</td><td>' + esc(r.sid) + '</td><td>' + esc(r.name) + (early ? ' <span class="pill mid">🎓조기취업(면제)</span>' : '') + '</td>';
+      var rtm = teamOf(r.sid);
+      h += '<tr' + (early ? ' style="background:var(--greendk)"' : '') + '><td>' + (i+1) + '</td><td style="white-space:nowrap">' + esc(r.sid) + '</td><td style="white-space:nowrap">' + esc(r.name) + (early ? ' <span class="pill mid">🎓조기취업(면제)</span>' : '') + '</td>';
+      h += '<td class="c" style="white-space:nowrap">' + (rtm ? rtm.no + '조' : '—') + '</td>';
       h += '<td class="c"><input type="checkbox" data-early="' + esc(r.sid) + '"' + (early ? ' checked' : '') + ' style="width:20px;height:20px;cursor:pointer" aria-label="조기취업 면제"></td>';
       h += '<td class="c"><button class="pill no" type="button" data-del="' + esc(r.sid) + '" data-name="' + esc(r.name) + '" style="cursor:pointer">삭제</button></td></tr>';
     });
@@ -5429,10 +5609,17 @@ RENDER.roster = function(){
   /* ③ 조기취업(면제) 체크 — 이 명단관리 탭이 조기취업 지정의 주 위치다. */
   sc.querySelectorAll("[data-early]").forEach(function(cb){
     cb.onchange = function(){
-      toggleEarly(cb.getAttribute("data-early"), cb.checked);
+      var sid = cb.getAttribute("data-early"), on = cb.checked;
+      if(EXEMPT_V2 && window.GLR && GLR.on){ exemptChange(sid, on); return; }   /* 확인창 → 서버 한 번에 → 성공 뒤에만 반영 */
+      toggleEarly(sid, on);
       RENDER.roster();                    /* 면제 표시·집계를 즉시 갱신 */
     };
   });
+  if($("exLogBtn")) $("exLogBtn").onclick = function(){
+    EXLOG.open = !EXLOG.open;
+    if(EXLOG.open && EXLOG.rows === null) exLogLoad();
+    RENDER.roster();
+  };
   /* ③ 삭제 / 전체 비우기 — 삭제한 학생의 조기취업 표시도 함께 정리한다. */
   sc.querySelectorAll("[data-del]").forEach(function(b){
     b.onclick = function(){
@@ -6829,6 +7016,8 @@ var GLR = {
     try{ localStorage.setItem(ROSTER_KEY, JSON.stringify(roster)); }catch(e){}
     try{ localStorage.setItem(TEAMS_KEY, JSON.stringify(teams)); }catch(e){}
     try{ localStorage.setItem(EARLY_KEY, JSON.stringify(v.early && me ? [me] : [])); }catch(e){}
+    /* 면제 A단계: 같은 조 조원 중 「프로젝트 불참」(면제)인 학번만(사유 없음) — 서버 gl_class_view 개정판(12번 SQL)의 'out'. 없으면 빈 목록. */
+    try{ localStorage.setItem(OUT_KEY, JSON.stringify((v.out||[]).map(String))); }catch(e){}
   },
   loadAll:function(){
     var self=this;
@@ -6971,11 +7160,11 @@ var GLR = {
       try{ oldJson=localStorage.getItem(TEAMS_KEY)||"[]"; }catch(e){}
       if(got.cv){   /* 이름·면제 표시도 같은 응답으로 갱신(조 만들기 때 후보 학생이 바뀔 수 있다) */
         var oldR="", oldE="";
-        try{ oldR=localStorage.getItem(ROSTER_KEY)||""; oldE=localStorage.getItem(EARLY_KEY)||""; }catch(e){}
+        try{ oldR=localStorage.getItem(ROSTER_KEY)||""; oldE=(localStorage.getItem(EARLY_KEY)||"")+(localStorage.getItem(OUT_KEY)||""); }catch(e){}
         var before=oldR+"|"+oldE;
         self._applyClassView(got.cv);
         var newJson2=localStorage.getItem(TEAMS_KEY)||"[]";
-        if(newJson2!==oldJson || before!==((localStorage.getItem(ROSTER_KEY)||"")+"|"+(localStorage.getItem(EARLY_KEY)||""))){
+        if(newJson2!==oldJson || before!==((localStorage.getItem(ROSTER_KEY)||"")+"|"+(localStorage.getItem(EARLY_KEY)||"")+(localStorage.getItem(OUT_KEY)||""))){
           if(typeof RENDER!=="undefined" && typeof cur!=="undefined" && (cur==="team"||cur==="labs"||cur==="home"||cur==="project") && RENDER[cur]) RENDER[cur]();
         }
         return;
