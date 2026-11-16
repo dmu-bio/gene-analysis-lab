@@ -892,7 +892,7 @@ var TEST_OPEN_ALL = false;  /* 테스트용 날짜 잠금 해제. 실제 수업/
  *      형식: YYYYMMDDNN(날짜 + 그날 순번 2자리). 숫자가 클수록 새 버전.
  *      배포 전 확인: `python bump_build.py --check` (둘이 다르면 오류로 멈춘다).
  * ========================================================================*/
-var APP_BUILD = "2026111603";
+var APP_BUILD = "2026111604";
 
 /* ==========================================================================
  * 활성 주차 — 지금은 2주차(w02 · 세포배양)만 열려 있다.
@@ -5310,7 +5310,7 @@ function exImpactHTML(imp, on, nm){
       h += '<p class="ex-p">이 학생은 주제 선정서·영상 평가를 하지 않아요.' + (ev > 0 ? ' 이미 낸 평가 <b>' + ev + '건</b>은 집계에서만 빠져요(삭제되지 않아요).' : '') + '</p>';
     }
     if(imp.is_rep){
-      h += '<div class="ex-red">이 학생이 ' + no + '조 주제 선정서 대표예요. 바꾸지 않으면 ' + no + '조는 글을 고칠 수 없어요.</div>';
+      h += '<div class="ex-red">이 학생이 ' + no + '조 주제 선정서 대표예요. 대표를 바꾸지 않으면 ' + no + '조는 주제 선정서를 고칠 수 없어요.</div>';
       if((imp.candidates || []).length){
         h += '<p class="ex-p" style="margin-bottom:6px">새 대표가 될 조원을 고르세요(고르지 않아도 면제로 바꿀 수 있어요).</p>';
         (imp.candidates || []).forEach(function(c){
@@ -5391,6 +5391,10 @@ function exemptChange(sid, on){
     }, function(){ EX.busy = false; RENDER.roster(); });      /* 취소 → 체크가 원래대로 돌아간다 */
   }, function(err){ EX.busy = false; toast(exErrText(err)); RENDER.roster(); });
 }
+function exLogWhen(iso){      /* 「11/16 14:05」 — 한국시간 */
+  var d = iso ? new Date(iso) : null; if(!d || isNaN(d.getTime())) return "";
+  var k = kstParts(d); return k.mo + "/" + k.d + " " + pad2(k.h) + ":" + pad2(k.mi);
+}
 function exLogLoad(){
   if(EXLOG.loading) return; EXLOG.loading = true; EXLOG.err = "";
   GLR.call("/rest/v1/gl_early_log?select=*&order=id.desc&limit=30", { headers:GLR.hdr(false) }).then(function(rows){
@@ -5409,7 +5413,7 @@ function exLogInner(){
     if(i.team_no != null) bits.push(i.team_no + '조 활동 ' + i.active_before + '→' + i.active_after + '명');
     if(i.rep_changed) bits.push('대표 교체');
     if(i.submitted_evals) bits.push('낸 평가 ' + i.submitted_evals + '건');
-    h += '<div class="ex-lr"><span>' + esc(tfHM(r.at)) + '</span><b>' + esc(nameOfSid(r.sid)) + '</b><span class="pill ' + (r.on_off ? 'mid' : 'no') + '">' + (r.on_off ? '면제 켬' : '면제 끔') + '</span><span style="color:var(--tx3)">' + esc(bits.join(' · ')) + '</span></div>';
+    h += '<div class="ex-lr"><span>' + esc(exLogWhen(r.at)) + '</span><b>' + esc(nameOfSid(r.sid)) + '</b><span class="pill ' + (r.on_off ? 'mid' : 'no') + '">' + (r.on_off ? '면제 켬' : '면제 끔') + '</span><span style="color:var(--tx3)">' + esc(bits.join(' · ')) + '</span></div>';
   });
   return h;
 }
