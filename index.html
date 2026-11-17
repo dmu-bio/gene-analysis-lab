@@ -928,7 +928,7 @@ var TEST_OPEN_ALL = false;  /* 테스트용 날짜 잠금 해제. 실제 수업/
  *      형식: YYYYMMDDNN(날짜 + 그날 순번 2자리). 숫자가 클수록 새 버전.
  *      배포 전 확인: `python bump_build.py --check` (둘이 다르면 오류로 멈춘다).
  * ========================================================================*/
-var APP_BUILD = "2026111605";
+var APP_BUILD = "2026111701";
 
 /* ==========================================================================
  * 활성 주차 — 지금은 2주차(w02 · 세포배양)만 열려 있다.
@@ -2198,10 +2198,11 @@ function showLogin(){
   }
 
   var isProf = roleGateStep.role === "prof";
-  h += '<div class="greet">' + coli("explain", "static") + '<div class="speech">' + (isProf ? "교수 로그인이에요. 이름과 교번을 입력해 주세요." : "학생 로그인이에요. 출석부의 이름과 학번을 정확히 입력해 주세요.") + '</div></div>';
+  h += '<div class="greet">' + coli("explain", "static") + '<div class="speech">' + (isProf ? ((window.GLR&&GLR.on) ? "교수 로그인이에요. 이름·교번과 비밀번호를 입력해 주세요." : "교수 로그인이에요. 이름과 교번을 입력해 주세요.") : "학생 로그인이에요. 출석부의 이름과 학번을 정확히 입력해 주세요.") + '</div></div>';
   h += '<div class="card idform"><h3>' + (isProf ? "교수 로그인" : "학생 로그인") + ' <span class="small">이름 · ' + (isProf ? "교번" : "학번") + '</span></h3>';
   h += '<label for="rgName">이름</label><input id="rgName" type="text" autocomplete="off" maxlength="20" placeholder="이름 입력" value="">';
   h += '<label for="rgId">' + (isProf ? "교번" : "학번") + '</label><input id="rgId" type="text" inputmode="numeric" autocomplete="off" maxlength="15" placeholder="' + (isProf ? "교번 입력" : "학번(숫자 8자리)") + '" value="">';
+  if(isProf && window.GLR && GLR.on) h += '<label for="rgPw">비밀번호</label><input id="rgPw" type="password" autocomplete="current-password" maxlength="100" placeholder="비밀번호 입력" value="">';
   h += '<p class="err" id="rgErr"></p>';
   h += '<p class="small" style="margin:6px 0 0">' + ((window.GLR&&GLR.on) ? '✔ 입력하신 이름·번호를 서버 명단과 대조해 로그인합니다. 기록은 서버에 저장돼 기기가 바뀌어도 이어집니다.' : '⚠ 이 기기 저장 모드 — 기록이 이 기기 안에만 남습니다.') + '</p></div>';
   h += '<button class="btn primary" id="rgStart" type="button">' + (isProf ? "교수 로그인 🧑‍🏫" : "학생 로그인 🧑‍🎓") + '</button>';
@@ -2217,6 +2218,8 @@ function showLogin(){
     var idv = ($("rgId").value || "").trim();
     var errBox = $("rgErr");
     if(!nm || !idv){ errBox.textContent = "이름과 " + (isProf ? "교번" : "학번") + "을 모두 입력해 주세요."; return; }
+    var pwv = $("rgPw") ? ($("rgPw").value || "") : "";
+    if(isProf && $("rgPw") && !pwv){ errBox.textContent = "비밀번호를 입력해 주세요."; return; }
     errBox.textContent = "";
     var remote = !!(window.GLR && GLR.on);
     if(remote){ errBox.textContent = "확인 중…"; if($("rgStart")) $("rgStart").disabled = true; }
@@ -2232,10 +2235,11 @@ function showLogin(){
         paintTop(); go(studentHome(), false);
         toast(((stu && stu.name) || nm) + "님, 로그인되었습니다.");
       }
-    });
+    }, pwv);
   }
   $("rgStart").onclick = submitLogin;
   $("rgId").onkeydown = function(e){ if(e.key === "Enter") submitLogin(); };
+  if($("rgPw")) $("rgPw").onkeydown = function(e){ if(e.key === "Enter") submitLogin(); };
 }
 /* ==========================================================================
  * 내 점수 (O-0628, 2026-10-26) — 서버 표 gl_scores(중간고사 점수) 읽기 전용.
@@ -7309,9 +7313,11 @@ var GLR = {
   loadQ:function(){ try{ this.q=JSON.parse(localStorage.getItem(this.QKEY)||"[]")||[]; }catch(e){ this.q=[]; } },
 
   /* ---- 로그인: gene-login → verify → access_token ---- */
-  login:function(name, num, role){
+  login:function(name, num, role, password){
     var self=this;
-    return this.call("/functions/v1/gene-login", { method:"POST", headers:this.ahdr(), body:JSON.stringify({name:name,num:num,role:role}) })
+    var lb={name:name,num:num,role:role};
+    if(role==="prof") lb.password=String(password||"");   /* 교수 로그인만 비밀번호를 함께 보낸다(학생 요청은 예전과 동일) */
+    return this.call("/functions/v1/gene-login", { method:"POST", headers:this.ahdr(), body:JSON.stringify(lb) })
       .then(function(r){
         if(!r || !r.token_hash) throw {kind:"auth", msg:"명단에서 찾을 수 없습니다."};
         return self.call("/auth/v1/verify", { method:"POST", headers:self.ahdr(), body:JSON.stringify({type:"magiclink", token_hash:r.token_hash}) })
@@ -7806,12 +7812,12 @@ var GLR = {
 window.GLR = GLR; window.GLCONF = GLCONF; window.glMigratePrompt = glMigratePrompt;
 
 /* 로그인(로컬/원격 공통) — 성공 시 신원 적용, cb(err, role, stu) */
-function doLogin(role, name, num, cb){
+function doLogin(role, name, num, cb, password){
   if(!(window.GLR && GLR.on)){
     if(role==="prof"){ if(!checkProf(name, num)) return cb("교수 이름·교번이 일치하지 않습니다."); applyIdentity("prof","",C.prof.name); return cb(null,"prof"); }
     var stu=findStudent(name, num); if(stu.error) return cb(stu.error); applyIdentity("student", stu.sid, stu.name); return cb(null,"student",stu);
   }
-  GLR.login(name, num, role).then(function(acc){
+  GLR.login(name, num, role, password).then(function(acc){
     GLR.setOwner(role==="prof" ? "prof" : String(num));   /* O-0075 #3: 이 사람 작업만 큐에(다른 사람 것은 보관) — loadAll 의 재전송도 이 기준 */
     GLR.ready=false;
     GLR.loadAll().then(function(){
@@ -7819,7 +7825,13 @@ function doLogin(role, name, num, cb){
       else{ applyIdentity("student", num, acc.name||name); cb(null,"student",{sid:num, name:acc.name||name}); }
       GLR.pump();
     }, function(){ cb("자료를 받지 못했습니다. 잠시 뒤 다시 시도해 주세요."); });
-  }, function(err){ cb((err&&err.kind==="auth") ? "명단에서 찾을 수 없습니다. 이름과 번호를 다시 확인해 주세요." : "지금 접속이 되지 않습니다. 잠시 뒤 다시 시도해 주세요."); });
+  }, function(err){
+    if(role==="prof" && err && (err.status===401 || err.status===429)){   /* 교수: 서버 안내(비밀번호 틀림·잠금)를 그대로 보여 준다 */
+      var m=""; try{ m=(JSON.parse(err.msg||"{}")||{}).error||""; }catch(e){}
+      return cb(m || (err.status===429 ? "잠시 후 다시 시도해 주세요(15분)." : "이름·교번·비밀번호를 다시 확인해 주세요."));
+    }
+    cb((err&&err.kind==="auth") ? "명단에서 찾을 수 없습니다. 이름과 번호를 다시 확인해 주세요." : "지금 접속이 되지 않습니다. 잠시 뒤 다시 시도해 주세요.");
+  });
 }
 
 /* 교수 대시보드의 「이 기기 데이터를 서버로 올리기」 */
